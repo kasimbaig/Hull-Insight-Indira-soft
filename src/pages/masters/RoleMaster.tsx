@@ -60,8 +60,12 @@ const RoleMaster = () => {
 
   const fetchRoles = async (pageNum: number = 1) => {
     try {
-      const res = await get(`/access/user-roles/?page=${pageNum}&order_by=-name`); // <-- updated endpoint
-      setRoles(res || []);
+      const res = await get(`/access/user-roles/?page=${pageNum}&order_by=-name`);
+      
+      // Handle different response structures like in UserMaster
+      const rolesData = res?.results?.data || res?.results || res?.data || res || [];
+      const rolesArray = Array.isArray(rolesData) ? rolesData : [];
+      setRoles(rolesArray);
       setTotalPages(Math.ceil((res.count || 0) / 10));
     } catch (err) {
       toast({
@@ -94,11 +98,10 @@ const RoleMaster = () => {
 
     try {
       if (editingRole) {
-        const payloadWithId = { ...payload, id: editingRole.id };
-        await put(`/access/user-roles/`, payloadWithId); // <-- updated endpoint
+        await put(`/access/user-roles/${editingRole.id}/`, payload);
         toast({ title: "Success", description: "Role updated successfully" });
       } else {
-        await post(`/access/user-roles/`, payload); // <-- updated endpoint
+        await post(`/access/user-roles/`, payload);
         toast({ title: "Success", description: "Role created successfully" });
       }
 
@@ -122,13 +125,23 @@ const RoleMaster = () => {
   const handleDelete = async (id: number) => {
     if (confirm("Are you sure you want to delete this role?")) {
       try {
-        const payload = { id: id, delete: true };
-        await del(`/access/user-roles/`, payload); // <-- updated endpoint
-        setRoles((prev) => prev.filter((r) => r.id !== id));
-        toast({
-          title: "Success",
-          description: "Role deleted successfully",
-        });
+        const response = await del(`/access/user-roles/${id}/`);
+        
+        // Check if the response indicates successful deletion
+        if (response.status === 204 || response.message === "Successfully deleted") {
+          setRoles((prev) => prev.filter((r) => r.id !== id));
+          toast({
+            title: "Success",
+            description: "Role deleted successfully",
+          });
+        } else {
+          // Handle other successful responses
+          setRoles((prev) => prev.filter((r) => r.id !== id));
+          toast({
+            title: "Success",
+            description: "Role deleted successfully",
+          });
+        }
       } catch (err) {
         toast({
           title: "Error",
@@ -162,8 +175,12 @@ const RoleMaster = () => {
             { name: "description", label: "Description", type: "text" },
             {
               name: "status",
-              label: "Active",
-              type: "checkbox",
+              label: "Status",
+              type: "dropdown",
+              options: [
+                { value: "Active", label: "Active" },
+                { value: "Inactive", label: "Inactive" }
+              ],
               required: false,
             },
           ]}

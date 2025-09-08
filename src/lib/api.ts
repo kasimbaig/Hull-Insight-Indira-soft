@@ -46,8 +46,35 @@ export function put(endpoint: string, data?: any) {
   return request("PUT", endpoint, data);
 }
 
-export function del(endpoint: string) {
-  return request("DELETE", endpoint);
+export async function del(endpoint: string) {
+  const token = getAuthToken();
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+  };
+  if (token) {
+    headers["Authorization"] = `Bearer ${token}`;
+  }
+  const response = await fetch(`${API_URL}${endpoint}`, {
+    method: "DELETE",
+    headers,
+  });
+  
+  if (!response.ok) {
+    throw new Error("API error: " + response.statusText);
+  }
+  
+  // Handle 204 No Content response
+  if (response.status === 204) {
+    return { status: 204, message: "Successfully deleted" };
+  }
+  
+  // For other successful responses, try to parse JSON
+  const contentType = response.headers.get("content-type");
+  if (contentType && contentType.includes("application/json")) {
+    return response.json();
+  }
+  
+  return { status: response.status, message: "Success" };
 }
 
 // Login API (does not use auth token)
