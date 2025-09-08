@@ -31,7 +31,7 @@ const Login = () => {
     }
   };
 
-  if (redirect) return <Navigate to="/dashboard" replace />;
+  if (redirect) return <Navigate to="/app/dashboard" replace />;
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden bg-gradient-to-br from-[#0f172a] via-[#1e293b] to-[#0f172a]">
