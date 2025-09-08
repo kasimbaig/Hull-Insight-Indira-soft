@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { DataTable, Column } from "@/components/ui/table";
 import { Edit, Plus, Search, Trash2, X } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { get, post, put } from "@/lib/api";
+import { get, post, put, del } from "@/lib/api";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
@@ -316,8 +316,7 @@ const UserMaster = () => {
 
     try {
       if (editingUser) {
-        const payloadWithId = { ...payload, id: editingUser.id };
-        await put(`api/auth/users/`, payloadWithId);
+        await put(`api/auth/users/${editingUser.id}/`, payload);
         toast({ title: "Success", description: "User updated successfully" });
       } else {
         await post(`api/auth/users/`, payload);
@@ -377,8 +376,7 @@ const UserMaster = () => {
   const handleDelete = async (id: number) => {
     if (confirm("Are you sure you want to delete this user?")) {
       try {
-        const payload = { id: id, delete: true };
-        await post(`api/auth/users/`, payload);
+        await del(`api/auth/users/${id}/`);
         setUsers((prev) => prev.filter((user) => user.id !== id));
         toast({
           title: "Success",
