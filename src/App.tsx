@@ -39,29 +39,28 @@ const App = () => (
       <Sonner />
       <Routes>
         <Route path="/login" element={<Login />} />
-        <Route path="/" element={<Navigate to="/landing" replace />} />
         <Route path="/landing" element={<Landing />} />
-        <Route path="/app" element={<MainLayout />}>
-          <Route index element={<Navigate to="/app/dashboard" replace />} />
+        <Route path="/" element={<MainLayout />}>
+          <Route index element={<Navigate to="/landing" replace />} />
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="masters/fleet" element={<FleetMaster />} />
           <Route path="masters/unit" element={<UnitMaster />} />
           <Route path="masters/command" element={<CommandMaster />} />
           <Route path="masters/vessel" element={<VesselMaster />} />
           <Route path="masters/dockyard" element={<DockyardMaster />} />
-          <Route path="masters/equipment" element={<EquipmentMaster />} />
-          <Route path="masters/module" element={<ModuleMaster />} />
-          <Route path="masters/submodule" element={<SubmoduleMaster />} />
-          <Route path="masters/damagetype" element={<DamageTypeMaster />} />
-          <Route path="masters/severity" element={<SeverityMaster />} />
-          <Route path="masters/operationalstatus" element={<OperationalStatusMaster />} />
-          <Route path="masters/compartment" element={<CompartmentMaster />} />
-          <Route path="masters/system" element={<SystemMaster />} />
-          <Route path="masters/user" element={<UserMaster />} />
-          <Route path="masters/rootconfig" element={<RootConfigMaster />} />
-          <Route path="masters/role" element={<RoleMaster />} />
-          <Route path="masters/roleaccess" element={<RoleAccess />} />
-          <Route path="masters/vesselclass" element={<VesselClassMaster />} />
+          <Route path="/masters/equipment" element={<EquipmentMaster />} />
+          <Route path="/masters/module" element={<ModuleMaster />} /> {/* <-- Add this line */}
+          <Route path="/masters/submodule" element={<SubmoduleMaster />} />
+          <Route path="/masters/damagetype" element={<DamageTypeMaster />} />
+          <Route path="/masters/severity" element={<SeverityMaster />} />
+          <Route path="/masters/operationalstatus" element={<OperationalStatusMaster />} />
+          <Route path="/masters/compartment" element={<CompartmentMaster />} />
+          <Route path="/masters/system" element={<SystemMaster />} />
+          <Route path="/masters/user" element={<UserMaster />} />
+          <Route path="/masters/rootconfig" element={<RootConfigMaster />} />
+          <Route path="/masters/role" element={<RoleMaster />} />
+          <Route path="/masters/roleaccess" element={<RoleAccess />} />
+          <Route path="/masters/vesselclass" element={<VesselClassMaster />} />
           {/* Placeholder routes for other masters */}
           <Route path="masters/*" element={<div className="p-8 text-center text-muted-foreground">Master page coming soon...</div>} />
           
@@ -72,7 +71,7 @@ const App = () => (
           <Route path="ship/*" element={<ShipModule />} />
           
           <Route
-            path="drawing"
+            path="/drawing"
             element={
               
                 <Drawing />
