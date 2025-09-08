@@ -27,6 +27,8 @@ import RoleMaster from "@/pages/masters/RoleMaster";
 import RoleAccess from "./pages/masters/RoleAccess";
 import VesselClassMaster from "./pages/masters/VesselClassMaster";
 import Landing from "./pages/Landing";
+import HvacReport from "./pages/HvacReport";
+import ReportsSelection from "./pages/ReportsSelection";
 // Module imports
 import YardModule from "./pages/yard/YardModule";
 import ShipModule from "./pages/ship/ShipModule";
@@ -40,27 +42,27 @@ const App = () => (
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/landing" element={<Landing />} />
-        <Route path="/" element={<MainLayout />}>
-          <Route index element={<Navigate to="/landing" replace />} />
+        <Route path="/app" element={<MainLayout />}>
+          <Route index element={<Navigate to="/app/dashboard" replace />} />
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="masters/fleet" element={<FleetMaster />} />
           <Route path="masters/unit" element={<UnitMaster />} />
           <Route path="masters/command" element={<CommandMaster />} />
           <Route path="masters/vessel" element={<VesselMaster />} />
           <Route path="masters/dockyard" element={<DockyardMaster />} />
-          <Route path="/masters/equipment" element={<EquipmentMaster />} />
-          <Route path="/masters/module" element={<ModuleMaster />} /> {/* <-- Add this line */}
-          <Route path="/masters/submodule" element={<SubmoduleMaster />} />
-          <Route path="/masters/damagetype" element={<DamageTypeMaster />} />
-          <Route path="/masters/severity" element={<SeverityMaster />} />
-          <Route path="/masters/operationalstatus" element={<OperationalStatusMaster />} />
-          <Route path="/masters/compartment" element={<CompartmentMaster />} />
-          <Route path="/masters/system" element={<SystemMaster />} />
-          <Route path="/masters/user" element={<UserMaster />} />
-          <Route path="/masters/rootconfig" element={<RootConfigMaster />} />
-          <Route path="/masters/role" element={<RoleMaster />} />
-          <Route path="/masters/roleaccess" element={<RoleAccess />} />
-          <Route path="/masters/vesselclass" element={<VesselClassMaster />} />
+          <Route path="masters/equipment" element={<EquipmentMaster />} />
+          <Route path="masters/module" element={<ModuleMaster />} />
+          <Route path="masters/submodule" element={<SubmoduleMaster />} />
+          <Route path="masters/damagetype" element={<DamageTypeMaster />} />
+          <Route path="masters/severity" element={<SeverityMaster />} />
+          <Route path="masters/operationalstatus" element={<OperationalStatusMaster />} />
+          <Route path="masters/compartment" element={<CompartmentMaster />} />
+          <Route path="masters/system" element={<SystemMaster />} />
+          <Route path="masters/user" element={<UserMaster />} />
+          <Route path="masters/rootconfig" element={<RootConfigMaster />} />
+          <Route path="masters/role" element={<RoleMaster />} />
+          <Route path="masters/roleaccess" element={<RoleAccess />} />
+          <Route path="masters/vesselclass" element={<VesselClassMaster />} />
           {/* Placeholder routes for other masters */}
           <Route path="masters/*" element={<div className="p-8 text-center text-muted-foreground">Master page coming soon...</div>} />
           
@@ -70,13 +72,9 @@ const App = () => (
           {/* Ship Operations Module */}
           <Route path="ship/*" element={<ShipModule />} />
           
-          <Route
-            path="/drawing"
-            element={
-              
-                <Drawing />
-            }
-          />
+          <Route path="drawing" element={<Drawing />} />
+          <Route path="hvac-report" element={<HvacReport />} />
+          <Route path="reports" element={<ReportsSelection />} />
         </Route>
         {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
         <Route path="*" element={<NotFound />} />
