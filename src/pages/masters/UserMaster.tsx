@@ -20,10 +20,14 @@ interface User {
   first_name?: string;
   last_name?: string;
   phone_no?: string; // Changed from phone_number to phone_no
-  unit?: string;
-  vessel?: string;
-  process?: string;
+  unit?: number;
+  vessel?: number;
+  process?: number;
+  role?: number;
   user_role?: string; // Changed from role to user_role
+  unit_name?: string;
+  vessel_name?: string;
+  process_name?: string;
 }
 
 interface Vessel {
@@ -49,6 +53,7 @@ interface Role {
   id: number;
   role_name: string;
   process_name: string;
+  user_role?: number; // The actual role ID used in API calls
 }
 
 const UserMaster = () => {
@@ -203,8 +208,13 @@ const UserMaster = () => {
     setIsLoadingRoles(true);
     try {
       const res = await get(`/access/role-process-mappings/?process_id=${processId}`);
-      setRoles(res || []);
+      
+      // Handle different response structures like in RoleAccess
+      const rolesData = res?.results || res?.data || res || [];
+      const rolesArray = Array.isArray(rolesData) ? rolesData : [];
+      setRoles(rolesArray);
     } catch (err) {
+      console.error('Error fetching roles:', err);
       toast({
         title: "Error",
         description: "Failed to fetch roles",
@@ -221,6 +231,7 @@ const UserMaster = () => {
     fetchUnits();
     fetchProcesses();
   }, [page]);
+
 
   // Handle form input changes
   const handleInputChange = (field: string, value: string) => {
@@ -302,10 +313,10 @@ const UserMaster = () => {
       loginname: formData.loginname,
       email: formData.email,
       phone_no: formData.phone_number, // Changed from phone_number to phone_no
-      unit: formData.unit,
-      vessel: formData.vessel,
-      process: formData.process,
-      user_role: formData.role, // Changed from role to user_role
+      unit: formData.unit ? parseInt(formData.unit) : null,
+      vessel: formData.vessel ? parseInt(formData.vessel) : null,
+      process: formData.process ? parseInt(formData.process) : null,
+      role: formData.role ? parseInt(formData.role) : null, // Send role ID
       status: formData.status === "Active" ? 1 : 2, // Changed from active to status
     };
 
@@ -345,16 +356,16 @@ const UserMaster = () => {
       password: "",
       email: user.email || "",
       phone_number: user.phone_no || "", // Use phone_no from API
-      unit: user.unit || "",
-      vessel: user.vessel || "",
-      process: user.process || "",
-      role: user.user_role || user.role_name || "", // Use user_role from API, fallback to role_name
+      unit: user.unit?.toString() || "",
+      vessel: user.vessel?.toString() || "",
+      process: user.process?.toString() || "",
+      role: user.role?.toString() || "", // Use role ID for form
       status: user.status === 1 ? "Active" : "Inactive"
     });
     
     // If user has a process, fetch roles for that process
     if (user.process) {
-      fetchRoles(user.process);
+      fetchRoles(user.process.toString());
     }
     
     setIsDialogOpen(true);
@@ -376,12 +387,23 @@ const UserMaster = () => {
   const handleDelete = async (id: number) => {
     if (confirm("Are you sure you want to delete this user?")) {
       try {
-        await del(`api/auth/users/${id}/`);
-        setUsers((prev) => prev.filter((user) => user.id !== id));
-        toast({
-          title: "Success",
-          description: "User deleted successfully",
-        });
+        const response = await del(`api/auth/users/${id}/`);
+        
+        // Check if the response indicates successful deletion
+        if (response.status === 204 || response.message === "Successfully deleted") {
+          setUsers((prev) => prev.filter((user) => user.id !== id));
+          toast({
+            title: "Success",
+            description: "User deleted successfully",
+          });
+        } else {
+          // Handle other successful responses
+          setUsers((prev) => prev.filter((user) => user.id !== id));
+          toast({
+            title: "Success",
+            description: "User deleted successfully",
+          });
+        }
       } catch (err) {
         toast({
           title: "Error",
@@ -660,11 +682,15 @@ const UserMaster = () => {
                       {isLoadingRoles ? (
                         <SelectItem value="loading" disabled>Loading roles...</SelectItem>
                       ) : roles.length > 0 ? (
-                        roles.map((role) => (
-                          <SelectItem key={role.id} value={role.role_name}>
-                            {role.role_name}
-                          </SelectItem>
-                        ))
+                        roles.map((role) => {
+                          // Use user_role if available, otherwise fall back to id
+                          const roleValue = role.user_role?.toString() || role.id.toString();
+                          return (
+                            <SelectItem key={role.id} value={roleValue}>
+                              {role.role_name}
+                            </SelectItem>
+                          );
+                        })
                       ) : (
                         <SelectItem value="no-roles" disabled>
                           {formData.process ? "No roles available" : "Select process first"}
