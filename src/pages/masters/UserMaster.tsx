@@ -195,9 +195,11 @@ const fetchUsers = async (pageNum: number = 1) => {
                   username: editingUser.loginname,
                   email: editingUser.email,
                   role: editingUser.role_name,
-                  status: editingUser.status === 1 ? "Active" : "Inactive",
+                  status: "Active" ,
                 }
-              : {}
+              : {
+                  status: "Active"
+                }
           }
           trigger={
             <Button

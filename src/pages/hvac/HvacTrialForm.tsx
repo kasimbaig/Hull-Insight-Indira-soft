@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Plus, Edit, Trash2, Save, Search } from "lucide-react";
+import { Plus, Edit, Trash2, Save, Search, Calculator } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { DataTable, Column } from "@/components/ui/table";
 import { get, post, put, del } from "@/lib/api";
@@ -22,6 +22,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import CalculateAverageModal from "@/components/CalculateAverageModal";
 
 interface HvacTrial {
   id: number;
@@ -95,6 +96,14 @@ const HvacTrialForm = () => {
   const [editingTrial, setEditingTrial] = useState<HvacTrial | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
 
+  // Calculate Average Modal states
+  const [isCalculateAverageOpen, setIsCalculateAverageOpen] = useState(false);
+  const [currentRowForAverage, setCurrentRowForAverage] = useState<{
+    id: number;
+    noOfDucts: number;
+    type: 'airFlow' | 'machinery';
+  } | null>(null);
+
   const [trialForm, setTrialForm] = useState({
     ship: "",
     date_of_trials: "",
@@ -144,7 +153,8 @@ const fetchTrials = async () => {
     try {
       const res = await get("/master/vessels/");
       // earlier responses used res.results — adapt if needed
-      setShips(res.results || res.data || []);
+      const shipsData = res?.results || res?.data || res || [];
+      setShips(Array.isArray(shipsData) ? shipsData : []);
     } catch {
       /* ignore */
     }
@@ -153,7 +163,8 @@ const fetchTrials = async () => {
   const fetchCompartments = async () => {
     try {
       const res = await get("/master/compartments/");
-      setCompartments(res.results || res.data || []);
+      const compartmentsData = res?.results || res?.data || res || [];
+      setCompartments(Array.isArray(compartmentsData) ? compartmentsData : []);
     } catch {
       /* ignore */
     }
@@ -163,8 +174,13 @@ const fetchTrials = async () => {
     try {
       const air = await get(`/shipmodule/ac-measurements/?hvac_trial=${trialId}`);
       const mach = await get(`/shipmodule/machinery-measurements/?hvac_trial=${trialId}`);
-      setAirFlows(air || []);
-      setMachineryFlows(mach || []);
+      
+      // Ensure we always set arrays
+      const airData = air?.results || air?.data || air || [];
+      const machData = mach?.results || mach?.data || mach || [];
+      
+      setAirFlows(Array.isArray(airData) ? airData : []);
+      setMachineryFlows(Array.isArray(machData) ? machData : []);
     } catch {
       toast({
         title: "Error",
@@ -364,6 +380,69 @@ const fetchTrials = async () => {
     }
   };
 
+  // ---------------- Calculate Average handlers ----------------
+  const handleCalculateAverage = (row: AirFlow | MachineryAirFlow, type: 'airFlow' | 'machinery') => {
+    if (!row.no_of_ducts || row.no_of_ducts <= 0) {
+      toast({
+        title: "Error",
+        description: "No of Ducts must be greater than 0 to calculate averages",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    setCurrentRowForAverage({
+      id: row.id,
+      noOfDucts: row.no_of_ducts,
+      type: type
+    });
+    setIsCalculateAverageOpen(true);
+  };
+
+  const handleSaveAverages = (averages: {
+    airFlow: number;
+    flowRate: number;
+    designValue: number;
+    measuredValue: number;
+  }) => {
+    if (!currentRowForAverage) return;
+
+    if (currentRowForAverage.type === 'airFlow') {
+      setAirFlows((prev) =>
+        prev.map((row) =>
+          row.id === currentRowForAverage.id
+            ? {
+                ...row,
+                air_flow: averages.airFlow,
+                flow_rate_at_duct: averages.flowRate,
+                design_air_flow_rate: averages.designValue,
+                measured_air_flow_rate: averages.measuredValue,
+              }
+            : row
+        )
+      );
+    } else {
+      setMachineryFlows((prev) =>
+        prev.map((row) =>
+          row.id === currentRowForAverage.id
+            ? {
+                ...row,
+                air_flow: averages.airFlow,
+                flow_rate_at_duct: averages.flowRate,
+                design_air_flow_rate: averages.designValue,
+                measured_air_flow_rate: averages.measuredValue,
+              }
+            : row
+        )
+      );
+    }
+
+    toast({
+      title: "Success",
+      description: "Averages calculated and applied successfully",
+    });
+  };
+
   // ---------------- Edit trial ----------------
   const handleEdit = (trial: HvacTrial) => {
     setEditingTrial(trial);
@@ -401,7 +480,7 @@ const fetchTrials = async () => {
       header: "Ship", 
       accessor: "ship",
       render: (row) => {
-        const ship = ships.find(s => s.id.toString() === row.ship?.toString());
+        const ship = (Array.isArray(ships) ? ships : []).find(s => s.id.toString() === row.ship?.toString());
         return ship?.name || row.ship || "";
       }
     },
@@ -470,7 +549,7 @@ const fetchTrials = async () => {
       header: "Compartment Name",
       accessor: "compartment",
       render: (row) => {
-        const selectedCompartment = compartments.find(c => c.id.toString() === row.compartment?.toString());
+        const selectedCompartment = (Array.isArray(compartments) ? compartments : []).find(c => c.id.toString() === row.compartment?.toString());
         return (
           <Select
             value={row.compartment || ""}
@@ -640,7 +719,7 @@ const fetchTrials = async () => {
       header: "Actions",
       accessor: "actions",
       render: (row) => (
-        <div className="flex gap-1 w-32">
+        <div className="flex gap-1 w-40">
           <Button 
             size="sm" 
             variant={row.isEditing ? "default" : "outline"}
@@ -655,6 +734,15 @@ const fetchTrials = async () => {
           >
             {row.isEditing ? <Save className="mr-1 h-3 w-3" /> : <Edit className="mr-1 h-3 w-3" />}
             {row.isEditing ? "Save" : "Edit"}
+          </Button>
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={() => handleCalculateAverage(row, 'airFlow')}
+            className="text-blue-600 hover:text-blue-700"
+            title="Calculate Average"
+          >
+            <Calculator className="h-3 w-3" />
           </Button>
           <Button
             size="sm"
@@ -695,7 +783,7 @@ const fetchTrials = async () => {
       header: "Compartment Name",
       accessor: "compartment",
       render: (row) => {
-        const selectedCompartment = compartments.find(c => c.id.toString() === row.compartment?.toString());
+        const selectedCompartment = (Array.isArray(compartments) ? compartments : []).find(c => c.id.toString() === row.compartment?.toString());
         return (
           <Select
             value={row.compartment || ""}
@@ -865,7 +953,7 @@ const fetchTrials = async () => {
       header: "Actions",
       accessor: "actions",
       render: (row) => (
-        <div className="flex gap-1 w-32">
+        <div className="flex gap-1 w-40">
           <Button 
             size="sm" 
             variant={row.isEditing ? "default" : "outline"}
@@ -883,6 +971,15 @@ const fetchTrials = async () => {
           </Button>
           <Button
             size="sm"
+            variant="outline"
+            onClick={() => handleCalculateAverage(row, 'machinery')}
+            className="text-blue-600 hover:text-blue-700"
+            title="Calculate Average"
+          >
+            <Calculator className="h-3 w-3" />
+          </Button>
+          <Button
+            size="sm"
             variant="destructive"
             onClick={() => handleDeleteMachinery(row.id)}
           >
@@ -894,8 +991,8 @@ const fetchTrials = async () => {
   ];
 
   // ---------------- UI ----------------
-  const filtered = trials.filter((t) => {
-    const ship = ships.find(s => s.id.toString() === t.ship?.toString());
+  const filtered = (Array.isArray(trials) ? trials : []).filter((t) => {
+    const ship = (Array.isArray(ships) ? ships : []).find(s => s.id.toString() === t.ship?.toString());
     const shipName = ship?.name || "";
     return shipName.toLowerCase().includes(searchTerm.toLowerCase());
   });
@@ -905,14 +1002,22 @@ const fetchTrials = async () => {
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold">HVAC Trials</h1>
 
-        <Dialog open={isTrialDialogOpen} onOpenChange={setIsTrialDialogOpen}>
+        <Dialog open={isTrialDialogOpen} onOpenChange={(open) => {
+          // Only allow closing through explicit actions, not by clicking outside
+          if (!open) {
+            // Don't close automatically - require explicit close action
+            return;
+          }
+          setIsTrialDialogOpen(open);
+          
+        }}>
           <DialogTrigger asChild>
             <Button onClick={handleOpenNewTrial}>
               <Plus className="mr-2 h-4 w-4" /> Add Trial
             </Button>
           </DialogTrigger>
 
-          <DialogContent className="w-11/12 max-w-6xl rounded-2xl shadow-xl max-h-[90vh] overflow-hidden">
+          <DialogContent className="w-11/12 max-w-6xl shadow-xl max-h-[90vh] overflow-hidden">
             <DialogHeader className="bg-gradient-to-r from-[#1a2746] to-[#223366] p-4 text-white">
               <DialogTitle>
                 {editingTrial ? "Edit Trial" : "Add Trial"}
@@ -1058,7 +1163,7 @@ const fetchTrials = async () => {
                 <CardContent className="px-4 py-2">
                   <DataTable
                     columns={airFlowColumns}
-                    data={airFlows}
+                    data={Array.isArray(airFlows) ? airFlows : []}
                     rowsPerPage={5}
                     className="min-w-[1400px]"
                   />
@@ -1215,7 +1320,7 @@ const fetchTrials = async () => {
                 <CardContent className="px-4 py-2">
                   <DataTable
                     columns={machineryColumns}
-                    data={machineryFlows}
+                    data={Array.isArray(machineryFlows) ? machineryFlows : []}
                     rowsPerPage={5}
                     className="min-w-[1400px]"
                   />
@@ -1395,9 +1500,34 @@ const fetchTrials = async () => {
           <CardTitle>Trials</CardTitle>
         </CardHeader>
         <CardContent className="overflow-x-auto">
-          <DataTable columns={trialColumns} data={filtered} rowsPerPage={10} />
+          <DataTable columns={trialColumns} data={Array.isArray(filtered) ? filtered : []} rowsPerPage={10} />
         </CardContent>
       </Card>
+
+      {/* Calculate Average Modal */}
+      <CalculateAverageModal
+        visible={isCalculateAverageOpen}
+        onHide={() => {
+          setIsCalculateAverageOpen(false);
+          setCurrentRowForAverage(null);
+        }}
+        noOfDucts={currentRowForAverage?.noOfDucts || 0}
+        onSave={handleSaveAverages}
+        currentValues={currentRowForAverage ? {
+          airFlow: currentRowForAverage.type === 'airFlow' 
+            ? (Array.isArray(airFlows) ? airFlows : []).find(r => r.id === currentRowForAverage.id)?.air_flow || 0
+            : (Array.isArray(machineryFlows) ? machineryFlows : []).find(r => r.id === currentRowForAverage.id)?.air_flow || 0,
+          flowRate: currentRowForAverage.type === 'airFlow'
+            ? (Array.isArray(airFlows) ? airFlows : []).find(r => r.id === currentRowForAverage.id)?.flow_rate_at_duct || 0
+            : (Array.isArray(machineryFlows) ? machineryFlows : []).find(r => r.id === currentRowForAverage.id)?.flow_rate_at_duct || 0,
+          designValue: currentRowForAverage.type === 'airFlow'
+            ? (Array.isArray(airFlows) ? airFlows : []).find(r => r.id === currentRowForAverage.id)?.design_air_flow_rate || 0
+            : (Array.isArray(machineryFlows) ? machineryFlows : []).find(r => r.id === currentRowForAverage.id)?.design_air_flow_rate || 0,
+          measuredValue: currentRowForAverage.type === 'airFlow'
+            ? (Array.isArray(airFlows) ? airFlows : []).find(r => r.id === currentRowForAverage.id)?.measured_air_flow_rate || 0
+            : (Array.isArray(machineryFlows) ? machineryFlows : []).find(r => r.id === currentRowForAverage.id)?.measured_air_flow_rate || 0,
+        } : {}}
+      />
     </div>
   );
 };

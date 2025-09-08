@@ -47,6 +47,7 @@ const sidebarItems = [
       { title: "Damage Type", path: "/masters/damagetype" },
       { title: "System", path: "/masters/system" },
       { title: "Compartment", path: "/masters/compartment" },
+      { title: "Vessel Class", path: "/masters/vesselclass" },
     ],
   },
   {
@@ -59,7 +60,7 @@ const sidebarItems = [
         icon: Building2,
         items: [{ title: "Docking Plan", path: "/yard/docking" }],
       },
-      { title: "Reports", path: "/yard/reports" },
+      // { title: "Reports", path: "/yard/reports" },
     ],
   },
   {
@@ -75,10 +76,11 @@ const sidebarItems = [
           { title: "HVAC Trial", path: "/ship/hvac" },
         ],
       },
-      { title: "Reports", path: "/ship/reports" },
+      // { title: "Reports", path: "/ship/reports" },
     ],
   },
   { title: "Interactive Drawing", icon: PenTool, path: "/drawing" },
+  { title: "Reports", icon: BarChart3, path: "/reports" },
 ];
 
 interface SidebarProps {

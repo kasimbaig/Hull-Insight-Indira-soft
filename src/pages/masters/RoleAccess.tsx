@@ -21,6 +21,8 @@ interface SubModule {
 interface Module {
   id: number;
   name: string;
+  url?: string;
+  icon?: string;
   privileges: Privilege[];
   sub_modules?: SubModule[];
 }
@@ -31,7 +33,7 @@ interface Process {
 }
 
 const RoleAccess = () => {
-  const [roles, setRoles] = useState<{ id: number; name: string }[]>([]);
+  const [roles, setRoles] = useState<{ id: number; name?: string; role_name?: string; roleName?: string; user_role?: number }[]>([]);
   const [processes, setProcesses] = useState<Process[]>([]);
   const [selectedRole, setSelectedRole] = useState<number | null>(null);
   const [selectedProcess, setSelectedProcess] = useState<number | null>(null);
@@ -46,44 +48,64 @@ const RoleAccess = () => {
   // Fetch roles, processes, and parent menus
   useEffect(() => {
     const fetchRoles = async () => {
-      const res = await get("/access/user-roles/?page=1&order_by=-name");
-      setRoles(res ?? []);
+      if (selectedProcess) {
+        const res = await get(`/access/role-process-mappings/?process_id=${selectedProcess}/`);
+        setRoles(res ?? []);
+      }
     };
     const fetchProcesses = async () => {
       const res = await get("/access/processes/");
-      setProcesses(res ?? []);
+      const processesData = res ?? [];
+      setProcesses(processesData);
+      // Set first process as default if none selected
+      if (processesData.length > 0 && !selectedProcess) {
+        setSelectedProcess(processesData[0].id);
+      }
     };
     const fetchParentMenus = async () => {
       const res = await get("/access/menus/");
       setParentMenus(res ?? []);
     };
-    fetchRoles();
     fetchProcesses();
     fetchParentMenus();
   }, []);
+
+  // Fetch roles when selectedProcess changes
+  useEffect(() => {
+    const fetchRoles = async () => {
+      if (selectedProcess) {
+        const res = await get(`/access/role-process-mappings/?process_id=${selectedProcess}`);
+        // Handle different response structures
+        const rolesData = res?.results || res?.data || res || [];
+        setRoles(Array.isArray(rolesData) ? rolesData : []);
+      }
+    };
+    fetchRoles();
+  }, [selectedProcess]);
 
   // Fetch modules for selected role + process
   useEffect(() => {
     if (!selectedRole || !selectedProcess) return;
     const fetchModules = async () => {
+      // Find the selected role object to get the user_role value
+      const selectedRoleObj = roles.find(role => role.id === selectedRole);
+      const roleId = selectedRoleObj?.user_role;
+      
       const res = await get(
-        `/access/role-menu-mappings/?role_id=${selectedRole}&process_id=${selectedProcess}`
+        `/access/role-menu-mappings/?role_id=${roleId}&process_id=${selectedProcess}`
       );
       const mods = res.map((m: any) => ({
         id: m.id,
         name: m.name,
-        privileges: m.privileges.length
-          ? m.privileges
-          : [
-              { id: 1, name: "Add", description: "Add access", status: false },
-              { id: 6, name: "Privilege", description: "Privilege access", status: false },
-            ],
-        sub_modules: m.sub_modules || [],
+        url: m.url,
+        icon: m.icon,
+        privileges: m.privileges || [],
+        sub_modules: m.sub_menus || [],
       }));
       setModules(mods);
     };
     fetchModules();
-  }, [selectedRole, selectedProcess]);
+  }, [selectedRole, selectedProcess, roles]);
 
   const toggleExpand = (moduleId: number) => {
     setExpandedModules((prev) =>
@@ -95,7 +117,7 @@ const RoleAccess = () => {
   const columns: Column<Module>[] = [
     {
       header: "",
-      accessor: "expand",
+      accessor: "id",
       render: (row) => (
         <Button variant="ghost" size="icon" onClick={() => toggleExpand(row.id)}>
           {expandedModules.includes(row.id) ? <ChevronUp /> : <ChevronDown />}
@@ -105,7 +127,7 @@ const RoleAccess = () => {
     { header: "Module", accessor: "name" },
     {
       header: "Add",
-      accessor: "add",
+      accessor: "privileges",
       render: (row: Module) => {
         let priv = row.privileges.find((p) => p.name.toLowerCase() === "add");
         if (!priv) {
@@ -137,12 +159,12 @@ const RoleAccess = () => {
       },
     },
     {
-      header: "Privilege",
-      accessor: "privilege",
+      header: "Edit",
+      accessor: "privileges",
       render: (row: Module) => {
-        let priv = row.privileges.find((p) => p.name.toLowerCase() === "privilege");
+        let priv = row.privileges.find((p) => p.name.toLowerCase() === "edit");
         if (!priv) {
-          priv = { id: 6, name: "Privilege", description: "Privilege access", status: false };
+          priv = { id: 2, name: "Edit", description: "Edit access", status: false };
           row.privileges.push(priv);
         }
         return (
@@ -156,7 +178,7 @@ const RoleAccess = () => {
                     ? {
                         ...m,
                         privileges: m.privileges.map((p) =>
-                          p.name.toLowerCase() === "privilege"
+                          p.name.toLowerCase() === "edit"
                             ? { ...p, status: e.target.checked }
                             : p
                         ),
@@ -170,8 +192,74 @@ const RoleAccess = () => {
       },
     },
     {
-      header: "Enabled",
-      accessor: "enabled",
+      header: "View",
+      accessor: "privileges",
+      render: (row: Module) => {
+        let priv = row.privileges.find((p) => p.name.toLowerCase() === "view");
+        if (!priv) {
+          priv = { id: 3, name: "View", description: "View access", status: false };
+          row.privileges.push(priv);
+        }
+        return (
+          <input
+            type="checkbox"
+            checked={priv.status}
+            onChange={(e) =>
+              setModules((prev) =>
+                prev.map((m) =>
+                  m.id === row.id
+                    ? {
+                        ...m,
+                        privileges: m.privileges.map((p) =>
+                          p.name.toLowerCase() === "view"
+                            ? { ...p, status: e.target.checked }
+                            : p
+                        ),
+                      }
+                    : m
+                )
+              )
+            }
+          />
+        );
+      },
+    },
+    {
+      header: "Delete",
+      accessor: "privileges",
+      render: (row: Module) => {
+        let priv = row.privileges.find((p) => p.name.toLowerCase() === "delete");
+        if (!priv) {
+          priv = { id: 4, name: "Delete", description: "Delete access", status: false };
+          row.privileges.push(priv);
+        }
+        return (
+          <input
+            type="checkbox"
+            checked={priv.status}
+            onChange={(e) =>
+              setModules((prev) =>
+                prev.map((m) =>
+                  m.id === row.id
+                    ? {
+                        ...m,
+                        privileges: m.privileges.map((p) =>
+                          p.name.toLowerCase() === "delete"
+                            ? { ...p, status: e.target.checked }
+                            : p
+                        ),
+                      }
+                    : m
+                )
+              )
+            }
+          />
+        );
+      },
+    },
+    {
+      header: "Actions",
+      accessor: "id",
       render: (row: Module) => (
         <Switch
           checked={row.privileges.some((p) => p.status)}
@@ -243,7 +331,7 @@ const RoleAccess = () => {
       label: "Parent Menu",
       type: "dropdown",
       required: true,
-      options: parentMenus.map((m) => ({ label: m.name, value: m.id })),
+      apiEndpoint: "/access/menus/",
     },
   ];
 
@@ -269,10 +357,10 @@ const RoleAccess = () => {
         ]);
       }
       setFormOpen(false);
-      alert("Module saved successfully!");
+      // alert("Module saved successfully!");
     } catch (err) {
       console.error(err);
-      alert("Failed to save module");
+      // alert("Failed to save module");
     }
   };
 
@@ -287,7 +375,7 @@ const RoleAccess = () => {
         parent_menu: { id: values.parent_menu },
       };
       const res = await post("/access/menus/", payload);
-      alert("Sub Module added successfully!");
+      // alert("Sub Module added successfully!");
       setModules((prev) =>
         prev.map((m) =>
           m.id === currentModuleId
@@ -301,7 +389,7 @@ const RoleAccess = () => {
       setSubModuleFormOpen(false);
     } catch (err) {
       console.error(err);
-      alert("Failed to add sub module");
+      // alert("Failed to add sub module");
     }
   };
 
@@ -336,7 +424,7 @@ const RoleAccess = () => {
               <option value="">Select Role</option>
               {roles.map((r) => (
                 <option key={r.id} value={r.id}>
-                  {r.name}
+                  {r.name || r.role_name || r.roleName || `Role ${r.id}`}
                 </option>
               ))}
             </select>
@@ -347,14 +435,17 @@ const RoleAccess = () => {
               className="bg-indigo-600 hover:bg-indigo-700 text-white"
               onClick={async () => {
                 if (!selectedRole || !selectedProcess) {
-                  alert("Please select both a Role and a Process");
+                  // alert("Please select both a Role and a Process");
                   return;
                 }
+                // Find the selected role object to get the user_role value
+                const selectedRoleObj = roles.find(role => role.id === selectedRole);
+                
                 const payload = {
-                  role: { id: selectedRole },
+                  role: { id: selectedRoleObj?.user_role },
                   process: { id: selectedProcess },
                   menu_access: modules.map((m) => ({
-                    // id: m.id,
+                    id: m.id,
                     name: m.name,
                     url: "/",
                     icon: "icon",
@@ -369,11 +460,11 @@ const RoleAccess = () => {
                 };
                 try {
                   const res = await post("/access/role-menu-mappings/", payload);
-                  alert("Role access saved successfully!");
+                  // alert("Role access saved successfully!");
                   console.log("Save response:", res);
                 } catch (err) {
                   console.error("Error saving role access:", err);
-                  alert("Failed to save role access");
+                  // alert("Failed to save role access");
                 }
               }}
             >
@@ -407,38 +498,6 @@ const RoleAccess = () => {
               columns={columns}
               data={modules}
               className="rounded-lg border border-gray-200"
-              renderSubRow={(row) =>
-                expandedModules.includes(row.id) && row.sub_modules && row.sub_modules.length ? (
-                  <div className="bg-gray-100 p-4 rounded mb-4">
-                    <h3 className="font-semibold mb-2">Sub Modules</h3>
-                    <ul className="space-y-1">
-                      {row.sub_modules.map((sub) => (
-                        <li key={sub.id} className="flex justify-between items-center">
-                          <span>{sub.name}</span>
-                          <Button
-                            size="icon"
-                            variant="ghost"
-                            onClick={() =>
-                              setModules((prev) =>
-                                prev.map((m) =>
-                                  m.id === row.id
-                                    ? {
-                                        ...m,
-                                        sub_modules: m.sub_modules!.filter((s) => s.id !== sub.id),
-                                      }
-                                    : m
-                                )
-                              )
-                            }
-                          >
-                            <Trash2 className="h-4 w-4 text-red-500" />
-                          </Button>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                ) : null
-              }
             />
           </div>
         ) : (
