@@ -326,3 +326,14 @@ export function DataTable<T extends Record<string, any>>({
     </div>
   );
 }
+
+// Export all table components
+export {
+  Table,
+  TableHeader,
+  TableBody,
+  TableRow,
+  TableHead,
+  TableCell,
+  TablePagination,
+};

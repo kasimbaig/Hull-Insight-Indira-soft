@@ -8,6 +8,7 @@ import {
   Building2,
   PenTool,
   Users,
+  FileText,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -80,6 +81,7 @@ const sidebarItems = [
     ],
   },
   { title: "Interactive Drawing", icon: PenTool, path: "/app/drawing" },
+  { title: "Forms", icon: FileText, path: "/app/forms" },
   { title: "HVAC Report", icon: BarChart3, path: "/app/hvac-report" },
   { title: "Reports", icon: BarChart3, path: "/app/reports" },
 ];

@@ -29,6 +29,7 @@ import VesselClassMaster from "./pages/masters/VesselClassMaster";
 import Landing from "./pages/Landing";
 import HvacReport from "./pages/HvacReport";
 import ReportsSelection from "./pages/ReportsSelection";
+import Forms from "./pages/Forms";
 // Module imports
 import YardModule from "./pages/yard/YardModule";
 import ShipModule from "./pages/ship/ShipModule";
@@ -74,6 +75,7 @@ const App = () => (
           <Route path="ship/*" element={<ShipModule />} />
           
           <Route path="drawing" element={<Drawing />} />
+          <Route path="forms" element={<Forms />} />
           <Route path="hvac-report" element={<HvacReport />} />
           <Route path="reports" element={<ReportsSelection />} />
         </Route>
