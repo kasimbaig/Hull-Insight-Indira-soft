@@ -81,7 +81,22 @@ const sidebarItems = [
     ],
   },
   { title: "Interactive Drawing", icon: PenTool, path: "/app/drawing" },
-  { title: "Forms", icon: FileText, path: "/app/forms" },
+  {
+    title: "Forms",
+    icon: FileText,
+    items: [
+      { title: "Accommodation Ladder", path: "/app/forms/accommodation-ladder" },
+      { title: "Anchor Capstan", path: "/app/forms/anchor-capstan" },
+      { title: "APT Trial Protocol", path: "/app/forms/apt-trial-protocol" },
+      { title: "Aviation Aircraft Armament Lifts", path: "/app/forms/aviation-aircraft-armament-lifts" },
+      { title: "Boat Davit", path: "/app/forms/boat-davit" },
+      { title: "Cargo Lift (VKD)", path: "/app/forms/cargo-lift-vkd" },
+      { title: "Cargo Passenger and Galley Lifts", path: "/app/forms/cargo-passenger-galley-lifts" },
+      { title: "Cargo Winch", path: "/app/forms/cargo-winch" },
+      { title: "Citadel Trials", path: "/app/forms/citadel-trials" },
+      { title: "Deck Crane 40M", path: "/app/forms/deck-crane-40m" },
+    ],
+  },
   { title: "HVAC Report", icon: BarChart3, path: "/app/hvac-report" },
   { title: "Reports", icon: BarChart3, path: "/app/reports" },
 ];

@@ -1,205 +1,105 @@
-import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { FileText, X } from "lucide-react";
-import AccommodationLadderForm from "@/components/forms/AccommodationLadderForm";
-import AnchorCapstanForm from "@/components/forms/AnchorCapstanForm";
-import AptTrialProtocolForm from "@/components/forms/AptTrialProtocolForm";
-import AviationAircraftArmamentLiftsForm from "@/components/forms/AviationAircraftArmamentLiftsForm";
-import BoatDavitForm from "@/components/forms/BoatDavitForm";
-import CargoLiftVKDForm from "@/components/forms/CargoLiftVKDForm";
-import CargoPassengerGalleyLiftsForm from "@/components/forms/CargoPassengerGalleyLiftsForm";
-import CargoWinchForm from "@/components/forms/CargoWinchForm";
-import CitadelTrialsForm from "@/components/forms/CitadelTrialsForm";
-import DeckCrane40MForm from "@/components/forms/DeckCrane40MForm";
-import "../styles/forms.css";
+import { FileText, ArrowRight } from "lucide-react";
+import { Link } from "react-router-dom";
 
-// Forms data with React components
+// Forms data for navigation
 const formsData = [
   {
-    id: "accommodation_ladder",
+    id: "accommodation-ladder",
     name: "Accommodation Ladder",
     description: "Comprehensive accommodation ladder inspection and trials form",
-    component: AccommodationLadderForm,
+    path: "/app/forms/accommodation-ladder",
   },
   {
-    id: "anchor_capstan",
+    id: "anchor-capstan",
     name: "Anchor Capstan",
     description: "Anchor capstan inspection and trials form",
-    component: AnchorCapstanForm,
+    path: "/app/forms/anchor-capstan",
   },
   {
-    id: "apt_trial_protocol",
+    id: "apt-trial-protocol",
     name: "APT Trial Protocol",
     description: "APT trial protocol inspection and trials form",
-    component: AptTrialProtocolForm,
+    path: "/app/forms/apt-trial-protocol",
   },
   {
-    id: "aviation_aircraft_armament_lifts",
+    id: "aviation-aircraft-armament-lifts",
     name: "Aviation Aircraft Armament Lifts",
     description: "Aviation aircraft armament lifts inspection and trials form",
-    component: AviationAircraftArmamentLiftsForm,
+    path: "/app/forms/aviation-aircraft-armament-lifts",
   },
   {
-    id: "boat_davit",
+    id: "boat-davit",
     name: "Boat Davit",
     description: "Boat davit inspection and trials form",
-    component: BoatDavitForm,
+    path: "/app/forms/boat-davit",
   },
   {
-    id: "cargo_lift_vkd",
+    id: "cargo-lift-vkd",
     name: "Cargo Lift (VKD)",
     description: "Cargo lift (VKD) inspection and trials form",
-    component: CargoLiftVKDForm,
+    path: "/app/forms/cargo-lift-vkd",
   },
   {
-    id: "cargo_passenger_galley_lifts",
+    id: "cargo-passenger-galley-lifts",
     name: "Cargo Passenger and Galley Lifts",
     description: "Cargo passenger and galley lifts inspection and trials form",
-    component: CargoPassengerGalleyLiftsForm,
+    path: "/app/forms/cargo-passenger-galley-lifts",
   },
   {
-    id: "cargo_winch",
+    id: "cargo-winch",
     name: "Cargo Winch",
     description: "Cargo winch inspection and trials form",
-    component: CargoWinchForm,
+    path: "/app/forms/cargo-winch",
   },
   {
-    id: "citadel_trials",
+    id: "citadel-trials",
     name: "Citadel Trials",
     description: "Citadel trials inspection and testing form",
-    component: CitadelTrialsForm,
+    path: "/app/forms/citadel-trials",
   },
   {
-    id: "deck_crane_40m",
+    id: "deck-crane-40m",
     name: "Deck Crane 40M",
     description: "Deck crane 40M inspection and trials form",
-    component: DeckCrane40MForm,
+    path: "/app/forms/deck-crane-40m",
   },
 ];
 
 const Forms = () => {
-  const [selectedForm, setSelectedForm] = useState<string>("");
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const handleFormSelect = (formId: string) => {
-    setSelectedForm(formId);
-    const form = formsData.find((f) => f.id === formId);
-    if (form) {
-      if (form.component) {
-        // For React components, we don't need to set formContent
-        setIsModalOpen(true);
-      }
-    }
-  };
-
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-    setSelectedForm("");
-  };
-
-
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">Forms</h1>
           <p className="text-gray-600 mt-2">
-            Select and fill out various forms for naval operations
+            Access and fill out various forms for naval operations
           </p>
         </div>
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <FileText className="h-5 w-5" />
-            Form Selection
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Select Form
-                </label>
-                <Select value={selectedForm} onValueChange={setSelectedForm}>
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Choose a form to fill out" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {formsData.map((form) => (
-                      <SelectItem key={form.id} value={form.id}>
-                        <div>
-                          <div className="font-medium">{form.name}</div>
-                          <div className="text-sm text-gray-500">
-                            {form.description}
-                          </div>
-                        </div>
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              
-              {selectedForm && (
-                <Button 
-                  onClick={() => handleFormSelect(selectedForm)}
-                  className="w-full"
-                >
-                  <FileText className="h-4 w-4 mr-2" />
-                  Open Form
-                </Button>
-              )}
-            </div>
-
-            <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-              <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-                <DialogHeader>
-                  <DialogTitle className="flex items-center justify-between">
-                    <span>
-                      {selectedForm && formsData.find(f => f.id === selectedForm)?.name}
-                    </span>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={handleCloseModal}
-                      className="h-8 w-8 p-0"
-                    >
-                      <X className="h-4 w-4" />
-                    </Button>
-                  </DialogTitle>
-                </DialogHeader>
-                <div className="mt-4">
-                  {(() => {
-                    const currentForm = formsData.find(f => f.id === selectedForm);
-                    if (currentForm?.component) {
-                      const Component = currentForm.component;
-                      return <Component />;
-                    }
-                    return null;
-                  })()}
-                </div>
-              </DialogContent>
-            </Dialog>
-          </div>
-        </CardContent>
-      </Card>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {formsData.map((form) => (
+          <Card key={form.id} className="hover:shadow-lg transition-shadow duration-200">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <FileText className="h-5 w-5 text-blue-600" />
+                {form.name}
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-gray-600 mb-4">{form.description}</p>
+              <Link
+                to={form.path}
+                className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-800 font-medium transition-colors"
+              >
+                Open Form
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
     </div>
   );
 };

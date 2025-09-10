@@ -30,6 +30,17 @@ import Landing from "./pages/Landing";
 import HvacReport from "./pages/HvacReport";
 import ReportsSelection from "./pages/ReportsSelection";
 import Forms from "./pages/Forms";
+// Form page imports
+import AccommodationLadderPage from "./pages/forms/AccommodationLadderPage";
+import AnchorCapstanPage from "./pages/forms/AnchorCapstanPage";
+import AptTrialProtocolPage from "./pages/forms/AptTrialProtocolPage";
+import AviationAircraftArmamentLiftsPage from "./pages/forms/AviationAircraftArmamentLiftsPage";
+import BoatDavitPage from "./pages/forms/BoatDavitPage";
+import CargoLiftVKDPage from "./pages/forms/CargoLiftVKDPage";
+import CargoPassengerGalleyLiftsPage from "./pages/forms/CargoPassengerGalleyLiftsPage";
+import CargoWinchPage from "./pages/forms/CargoWinchPage";
+import CitadelTrialsPage from "./pages/forms/CitadelTrialsPage";
+import DeckCrane40MPage from "./pages/forms/DeckCrane40MPage";
 // Module imports
 import YardModule from "./pages/yard/YardModule";
 import ShipModule from "./pages/ship/ShipModule";
@@ -76,6 +87,16 @@ const App = () => (
           
           <Route path="drawing" element={<Drawing />} />
           <Route path="forms" element={<Forms />} />
+          <Route path="forms/accommodation-ladder" element={<AccommodationLadderPage />} />
+          <Route path="forms/anchor-capstan" element={<AnchorCapstanPage />} />
+          <Route path="forms/apt-trial-protocol" element={<AptTrialProtocolPage />} />
+          <Route path="forms/aviation-aircraft-armament-lifts" element={<AviationAircraftArmamentLiftsPage />} />
+          <Route path="forms/boat-davit" element={<BoatDavitPage />} />
+          <Route path="forms/cargo-lift-vkd" element={<CargoLiftVKDPage />} />
+          <Route path="forms/cargo-passenger-galley-lifts" element={<CargoPassengerGalleyLiftsPage />} />
+          <Route path="forms/cargo-winch" element={<CargoWinchPage />} />
+          <Route path="forms/citadel-trials" element={<CitadelTrialsPage />} />
+          <Route path="forms/deck-crane-40m" element={<DeckCrane40MPage />} />
           <Route path="hvac-report" element={<HvacReport />} />
           <Route path="reports" element={<ReportsSelection />} />
         </Route>
