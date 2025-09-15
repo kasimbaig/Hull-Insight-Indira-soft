@@ -238,6 +238,90 @@ const formsData = [
       description: "RHIB Ship Borne Boat Sea Trials form",
       path: "/app/forms/rhib-ship-borne-boat-sea-trials",
     },
+    {
+      id: "sac-lift-no-1",
+      name: "SAC Lift No. 1",
+      description: "SAC Lift No. 1 inspection and trials form",
+      path: "/app/forms/sac-lift-no-1",
+    },
+    {
+      id: "sewage-treatment-plant",
+      name: "Sewage Treatment Plant",
+      description: "Sewage treatment plant inspection and trials form",
+      path: "/app/forms/sewage-treatment-plant",
+    },
+    {
+      id: "ssk-aft-mooring-capstan",
+      name: "SSK AFT Mooring Capstan",
+      description: "SSK class aft mooring capstan inspection and trials form",
+      path: "/app/forms/ssk-aft-mooring-capstan",
+    },
+    {
+      id: "ssk-anchor-windlass-fwd-mooring-capstan",
+      name: "SSK Anchor Windlass and FWD Mooring Capstan",
+      description: "SSK class anchor windlass and forward mooring capstan inspection form",
+      path: "/app/forms/ssk-anchor-windlass-fwd-mooring-capstan",
+    },
+    {
+      id: "ssk-bollards-cleat-bull-ring",
+      name: "SSK Bollards/Cleat/Bull Ring",
+      description: "SSK class bollards, cleat and bull ring inspection form",
+      path: "/app/forms/ssk-bollards-cleat-bull-ring",
+    },
+    {
+      id: "ssk-doors-and-hatches",
+      name: "SSK Doors and Hatches",
+      description: "SSK class doors and hatches inspection form",
+      path: "/app/forms/ssk-doors-and-hatches",
+    },
+    {
+      id: "ssk-rescue-sphere",
+      name: "SSK Rescue Sphere",
+      description: "SSK class rescue sphere inspection and trials form",
+      path: "/app/forms/ssk-rescue-sphere",
+    },
+    {
+      id: "ssk-towing-arrangements",
+      name: "SSK Towing Arrangements",
+      description: "SSK class towing arrangements inspection and trials form",
+      path: "/app/forms/ssk-towing-arrangements",
+    },
+    {
+      id: "structural-soundness-helo-hanger",
+      name: "Structural Soundness of Helo Hanger",
+      description: "Structural soundness inspection and trials form for helicopter hanger",
+      path: "/app/forms/structural-soundness-helo-hanger",
+    },
+    {
+      id: "uw-compartments-hull-inspection-report",
+      name: "U/W Compartments Hull Inspection Report",
+      description: "Underwater compartments inspection report form",
+      path: "/app/forms/uw-compartments-hull-inspection-report",
+    },
+    {
+      id: "warping-capstan",
+      name: "Warping Capstan",
+      description: "Warping capstan inspection and trials form",
+      path: "/app/forms/warping-capstan",
+    },
+    {
+      id: "winch-system-accommodation-ladder",
+      name: "Winch System of Accommodation Ladder",
+      description: "Winch system inspection and trials form for accommodation ladder",
+      path: "/app/forms/winch-system-accommodation-ladder",
+    },
+    {
+      id: "wt-door",
+      name: "WT Door",
+      description: "Watertight door inspection and maintenance form",
+      path: "/app/forms/wt-door",
+    },
+    {
+      id: "wt-hatch",
+      name: "WT Hatch",
+      description: "Watertight hatch inspection and maintenance form",
+      path: "/app/forms/wt-hatch",
+    },
 ];
 
 const Forms = () => {

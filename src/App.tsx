@@ -77,6 +77,13 @@ import SSKAnchorWindlassAndFWDMooringCapstanPage from "./pages/forms/SSKAnchorWi
 import SSKBollardsCleatBullRingPage from "./pages/forms/SSKBollardsCleatBullRingPage";
 import SSKDoorsAndHatchesPage from "./pages/forms/SSKDoorsAndHatchesPage";
 import SSKRescueSpherePage from "./pages/forms/SSKRescueSpherePage";
+import SSKTowingArrangementsFormPage from "./pages/forms/SSKTowingArrangementsForm";
+import StructuralSoundnessOfHeloHangerFormPage from "./pages/forms/StructuralSoundnessOfHeloHangerForm";
+import UWCompartmentsHullInspectionReportFormPage from "./pages/forms/UWCompartmentsHullInspectionReportForm";
+import WarpingCapstanFormPage from "./pages/forms/WarpingCapstanForm";
+import WinchSystemOfAccommodationLadderFormPage from "./pages/forms/WinchSystemOfAccommodationLadderForm";
+import WTDoorFormPage from "./pages/forms/WTDoorForm";
+import WTHatchFormPage from "./pages/forms/WTHatchForm";
 // Module imports
 import YardModule from "./pages/yard/YardModule";
 import ShipModule from "./pages/ship/ShipModule";
@@ -169,6 +176,13 @@ const App = () => (
               <Route path="forms/ssk-bollards-cleat-bull-ring" element={<SSKBollardsCleatBullRingPage />} />
               <Route path="forms/ssk-doors-and-hatches" element={<SSKDoorsAndHatchesPage />} />
               <Route path="forms/ssk-rescue-sphere" element={<SSKRescueSpherePage />} />
+              <Route path="forms/ssk-towing-arrangements" element={<SSKTowingArrangementsFormPage />} />
+              <Route path="forms/structural-soundness-helo-hanger" element={<StructuralSoundnessOfHeloHangerFormPage />} />
+            <Route path="forms/uw-compartments-hull-inspection-report" element={<UWCompartmentsHullInspectionReportFormPage />} />
+            <Route path="forms/warping-capstan" element={<WarpingCapstanFormPage />} />
+            <Route path="forms/winch-system-accommodation-ladder" element={<WinchSystemOfAccommodationLadderFormPage />} />
+            <Route path="forms/wt-door" element={<WTDoorFormPage />} />
+            <Route path="forms/wt-hatch" element={<WTHatchFormPage />} />
           <Route path="hvac-report" element={<HvacReport />} />
           <Route path="reports" element={<ReportsSelection />} />
         </Route>
