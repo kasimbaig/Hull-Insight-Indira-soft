@@ -1,7 +1,11 @@
 import CitadelTrialsForm from "@/components/forms/CitadelTrialsForm";
 
 const CitadelTrialsPage = () => {
-  return <CitadelTrialsForm />;
+  return (
+    <div className="w-full min-h-screen">
+      <CitadelTrialsForm />
+    </div>
+  );
 };
 
 export default CitadelTrialsPage;

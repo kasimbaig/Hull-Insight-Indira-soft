@@ -94,7 +94,43 @@ const sidebarItems = [
       { title: "Cargo Passenger and Galley Lifts", path: "/app/forms/cargo-passenger-galley-lifts" },
       { title: "Cargo Winch", path: "/app/forms/cargo-winch" },
       { title: "Citadel Trials", path: "/app/forms/citadel-trials" },
-      { title: "Deck Crane 40M", path: "/app/forms/deck-crane-40m" },
+                  { title: "Deck Crane 40M", path: "/app/forms/deck-crane-40m" },
+                  { title: "EKM Anchor Capstan", path: "/app/forms/ekm-anchor-capstan" },
+                  { title: "EKM Mooring Capstan", path: "/app/forms/ekm-mooring-capstan" },
+                  { title: "EKM Doors and Hatches", path: "/app/forms/ekm-doors-hatches" },
+                  { title: "EKM Emergency Towing Arrangements", path: "/app/forms/ekm-emergency-towing-arrangements" },
+                  { title: "Final Underwater Hull Inspection", path: "/app/forms/final-underwater-hull-inspection" },
+                  { title: "Fire Screen Drive", path: "/app/forms/fire-screen-drive" },
+                  { title: "Hanger Door", path: "/app/forms/hanger-door" },
+                  { title: "Galley Lifts", path: "/app/forms/galley-lifts" },
+                  { title: "Hanger Shutter", path: "/app/forms/hanger-shutter" },
+                  { title: "Helo Deck Friction Test", path: "/app/forms/helo-deck-friction-test" },
+                  { title: "Helo Traversing System", path: "/app/forms/helo-traversing-system" },
+                  { title: "Hull Maintenance Inspection for Ships", path: "/app/forms/hull-maintenance-inspection-ships" },
+                  { title: "Hull Maintenance Inspection for Submarines", path: "/app/forms/hull-maintenance-inspection-submarines" },
+                  { title: "HVAC Phase I", path: "/app/forms/hvac-phase-1" },
+      { title: "HVAC Phase II", path: "/app/forms/hvac-phase-2" },
+      { title: "Impressed Current Cathodic Protection", path: "/app/forms/impressed-current-cathodic-protection" },
+      { title: "Intermediate Underwater Hull Inspection Report", path: "/app/forms/intermediate-underwater-hull-inspection-report" },
+      { title: "Manual Hoisting, Lifting and Transporting Devices in Magazines", path: "/app/forms/manual-hoisting-lifting-transporting-devices-magazines" },
+      { title: "P-75 AFT Mooring Capstan", path: "/app/forms/p75-aft-mooring-capstan" },
+      { title: "P-75 Anchor Windlass", path: "/app/forms/p75-anchor-windlass" },
+      { title: "P-75 Bollards/Fairleads", path: "/app/forms/p75-bollards-fairleads" },
+      { title: "P-75 Doors and Hatches", path: "/app/forms/p75-doors-hatches" },
+      { title: "P-75 FWD Mooring Capstan", path: "/app/forms/p75-fwd-mooring-capstan" },
+      { title: "Pre-Wetting System", path: "/app/forms/pre-wetting-system" },
+      { title: "Preliminary Underwater Hull Inspection Report", path: "/app/forms/preliminary-underwater-hull-inspection-report" },
+      { title: "RAS Capstan", path: "/app/forms/ras-capstan" },
+      { title: "RAS Winch", path: "/app/forms/ras-winch" },
+      { title: "RHIB - Ship Borne Boat - Harbour Checks", path: "/app/forms/rhib-harbour-checks" },
+      { title: "RHIB - Ship Borne Boat - Sea Trials", path: "/app/forms/rhib-ship-borne-boat-sea-trials" },
+      { title: "SAC Lift No.1", path: "/app/forms/sac-lift-no-1" },
+      { title: "Sewage Treatment Plant", path: "/app/forms/sewage-treatment-plant" },
+      { title: "SSK Class AFT Mooring Capstan", path: "/app/forms/ssk-aft-mooring-capstan" },
+      { title: "SSK Class Anchor Windlass and FWD Mooring Capstan", path: "/app/forms/ssk-anchor-windlass-fwd-mooring-capstan" },
+      { title: "SSK Class Bollards/Cleat/Bull Ring", path: "/app/forms/ssk-bollards-cleat-bull-ring" },
+      { title: "SSK Class Doors and Hatches", path: "/app/forms/ssk-doors-and-hatches" },
+      { title: "SSK Class Rescue Sphere", path: "/app/forms/ssk-rescue-sphere" },
     ],
   },
   { title: "HVAC Report", icon: BarChart3, path: "/app/hvac-report" },
@@ -106,7 +142,7 @@ interface SidebarProps {
 }
 
 const Sidebar = ({ collapsed }: SidebarProps) => {
-  const [expandedItems, setExpandedItems] = useState<string[]>(["Global Masters"]);
+  const [expandedItems, setExpandedItems] = useState<string[]>(["Global Masters", "Forms"]);
   const location = useLocation();
 
   const toggleExpanded = (title: string) => {

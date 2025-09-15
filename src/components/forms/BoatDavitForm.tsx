@@ -109,12 +109,15 @@ const BoatDavitForm: React.FC = () => {
   ];
 
   return (
-    <div className="max-w-4xl mx-auto p-6 space-y-6">
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-2xl font-bold text-center">BOAT DAVIT</CardTitle>
-        </CardHeader>
-        <CardContent>
+    <div className="w-full min-h-screen bg-gray-50">
+      <div className="container mx-auto p-6">
+        <div className="bg-white shadow-lg rounded-lg">
+          <div className="p-8">
+            {/* Form Header */}
+            <div className="text-center mb-8">
+              <h4 className="text-xl font-bold text-blue-600 mb-2">BOAT DAVIT</h4>
+              <h2 className="text-3xl font-bold text-gray-900 mb-4">INSPECTION AND TRIALS</h2>
+            </div>
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Section 1: Ship */}
             <div className="space-y-2">
@@ -966,8 +969,9 @@ const BoatDavitForm: React.FC = () => {
               </Button>
             </div>
           </form>
-        </CardContent>
-      </Card>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

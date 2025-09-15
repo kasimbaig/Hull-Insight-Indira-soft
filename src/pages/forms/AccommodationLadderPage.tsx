@@ -1,7 +1,11 @@
 import AccommodationLadderForm from "@/components/forms/AccommodationLadderForm";
 
 const AccommodationLadderPage = () => {
-  return <AccommodationLadderForm />;
+  return (
+    <div className="w-full min-h-screen">
+      <AccommodationLadderForm />
+    </div>
+  );
 };
 
 export default AccommodationLadderPage;

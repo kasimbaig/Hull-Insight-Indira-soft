@@ -10,6 +10,21 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Edit, Trash2 } from "lucide-react";
 
 const AccommodationLadderForm = () => {
   const [formData, setFormData] = useState({
@@ -48,6 +63,10 @@ const AccommodationLadderForm = () => {
     authority_signature: null as File | null,
   });
 
+  const [isDraftModalOpen, setIsDraftModalOpen] = useState(false);
+  const [drafts, setDrafts] = useState<any[]>([]);
+  const [hidDraftId, setHidDraftId] = useState("");
+
   const handleInputChange = (field: string, value: string | File) => {
     setFormData(prev => ({
       ...prev,
@@ -58,6 +77,24 @@ const AccommodationLadderForm = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     alert("Form submitted successfully!");
+  };
+
+  const handleSaveDraft = () => {
+    if (!formData.make || !formData.ship) {
+      alert("Please fill in Ship and Make before saving draft.");
+      return;
+    }
+    console.log("Saving draft:", formData);
+    alert("Draft saved successfully!");
+  };
+
+  const handleFetchDrafts = () => {
+    setIsDraftModalOpen(true);
+    // Mock draft data
+    setDrafts([
+      { id: 1, ship: "Sample Ship", make: "Sample Make", created_date: "2024-01-15" },
+      { id: 2, ship: "Another Ship", make: "Another Make", created_date: "2024-01-14" },
+    ]);
   };
 
   const handleClear = () => {
@@ -99,11 +136,17 @@ const AccommodationLadderForm = () => {
   };
 
   return (
-    <div className="accommodation-ladder-form">
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="form-header text-center mb-8">
-          <h2 className="text-2xl font-bold text-gray-800 mb-4">ACCOMMODATION LADDER</h2>
-        </div>
+    <div className="w-full min-h-screen bg-gray-50">
+      <div className="container mx-auto p-6">
+        <div className="bg-white shadow-lg rounded-lg">
+          <div className="p-8">
+            {/* Form Header */}
+            <div className="text-center mb-8">
+              <h4 className="text-xl font-bold text-blue-600 mb-2">ACCOMMODATION LADDER</h4>
+              <h2 className="text-3xl font-bold text-gray-900 mb-4">INSPECTION AND TRIALS</h2>
+            </div>
+
+            <form onSubmit={handleSubmit} className="space-y-8">
 
         <ul className="space-y-6">
           {/* Section 1: Ship */}
@@ -839,16 +882,67 @@ const AccommodationLadderForm = () => {
           </li>
         </ul>
 
-        {/* Form Actions */}
-        <div className="card-footer flex gap-4 justify-end mt-8">
-          <Button type="button" variant="outline" onClick={handleClear}>
-            Clear
-          </Button>
-          <Button type="submit" className="bg-blue-600 hover:bg-blue-700">
-            Save
-          </Button>
+              {/* Form Actions */}
+              <div className="flex justify-end space-x-4 pt-6 border-t border-gray-200">
+                <Button type="button" variant="outline" onClick={handleFetchDrafts}>
+                  Fetch Drafts
+                </Button>
+                <Button type="button" variant="outline" onClick={handleSaveDraft}>
+                  Save Draft
+                </Button>
+                <Button type="button" variant="outline" onClick={handleClear}>
+                  Clear
+                </Button>
+                <Button type="submit" className="bg-blue-600 hover:bg-blue-700">
+                  Save
+                </Button>
+              </div>
+            </form>
+          </div>
         </div>
-      </form>
+      </div>
+
+      {/* Draft Modal */}
+      <Dialog open={isDraftModalOpen} onOpenChange={setIsDraftModalOpen}>
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Draft Data</DialogTitle>
+          </DialogHeader>
+          <div className="mt-4">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Sr No.</TableHead>
+                  <TableHead>Ship</TableHead>
+                  <TableHead>Make</TableHead>
+                  <TableHead>Created Date</TableHead>
+                  <TableHead>Action</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {drafts.map((draft, index) => (
+                  <TableRow key={draft.id}>
+                    <TableCell>{index + 1}</TableCell>
+                    <TableCell>{draft.ship}</TableCell>
+                    <TableCell>{draft.make}</TableCell>
+                    <TableCell>{draft.created_date}</TableCell>
+                    <TableCell>
+                      <div className="flex space-x-2">
+                        <Button size="sm" variant="outline">
+                          <Edit className="h-4 w-4" />
+                        </Button>
+                        <Button size="sm" variant="outline">
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

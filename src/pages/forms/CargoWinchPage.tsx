@@ -1,7 +1,11 @@
 import CargoWinchForm from "@/components/forms/CargoWinchForm";
 
 const CargoWinchPage = () => {
-  return <CargoWinchForm />;
+  return (
+    <div className="w-full min-h-screen">
+      <CargoWinchForm />
+    </div>
+  );
 };
 
 export default CargoWinchPage;
