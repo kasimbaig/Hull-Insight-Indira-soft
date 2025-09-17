@@ -1,36 +1,36 @@
-import { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
+import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { DataTable, Column } from "@/components/ui/table";
-import { Edit, Plus, Search, Trash2 } from "lucide-react";
+import { Search, Plus, Edit, Trash2 } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
+import { DataTable, Column } from "@/components/ui/table";
 import { DynamicFormDialog } from "@/components/DynamicFormDialog";
 import { get, post, put, del } from "@/lib/api";
-import { Badge } from "@/components/ui/badge";
 
-interface Compartment {
+interface Country {
   id: number;
   name: string;
-  code?: string;
+  code: string;
   active: number; // 1 = Active, 2 = Inactive
-  created_by?: string;
-  created_on?: string;
+  created_on: string;
 }
 
-const CompartmentMaster = () => {
+const CountryMaster = () => {
   const { toast } = useToast();
-  const [compartments, setCompartments] = useState<Compartment[]>([]);
+  const [countries, setCountries] = useState<Country[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [editingCompartment, setEditingCompartment] = useState<Compartment | null>(null);
+  const [editingCountry, setEditingCountry] = useState<Country | null>(null);
 
-  // Pagination states
+  // Pagination
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
-  const columns: Column<Compartment>[] = [
-    { header: "Compartment Name", accessor: "name" },
+  // Table columns
+  const columns: Column<Country>[] = [
+    { header: "Name", accessor: "name" },
     { header: "Code", accessor: "code" },
     {
       header: "Status",
@@ -41,6 +41,7 @@ const CompartmentMaster = () => {
         </Badge>
       ),
     },
+    // { header: "Created Date", accessor: "created_on" },
     {
       header: "Actions",
       accessor: "actions",
@@ -65,23 +66,24 @@ const CompartmentMaster = () => {
     },
   ];
 
-  // Fetch compartments from API
-  const fetchCompartments = async (pageNum: number = 1) => {
+  // Fetch countries from API
+  const fetchCountries = async (pageNum: number = 1) => {
     try {
-      const res = await get(`/master/compartments/?page=${pageNum}`);
-      setCompartments(res.results || []);
+      const res = await get(`/master/countries/?page=${pageNum}`);
+      setCountries(res.results || []);
       setTotalPages(Math.ceil((res.count || 0) / 10));
     } catch (err) {
+      console.error("Failed to fetch countries", err);
       toast({
         title: "Error",
-        description: "Failed to fetch compartments",
+        description: "Failed to fetch countries",
         variant: "destructive",
       });
     }
   };
 
   useEffect(() => {
-    fetchCompartments(page);
+    fetchCountries(page);
   }, [page]);
 
   // Save / Update API
@@ -89,7 +91,7 @@ const CompartmentMaster = () => {
     if (!formData.name?.trim()) {
       toast({
         title: "Validation Error",
-        description: "Compartment name is required",
+        description: "Country name is required",
         variant: "destructive",
       });
       return;
@@ -102,49 +104,51 @@ const CompartmentMaster = () => {
     };
 
     try {
-      if (editingCompartment) {
+      if (editingCountry) {
         // UPDATE - using POST with ID in payload
-        const updatePayload = { ...payload, id: editingCompartment.id };
-        await post(`/master/compartments/`, updatePayload);
-        toast({ title: "Success", description: "Compartment updated successfully" });
+        const updatePayload = { ...payload, id: editingCountry.id };
+        await post(`/master/countries/`, updatePayload);
+        toast({ title: "Success", description: "Country updated successfully" });
       } else {
         // CREATE
-        await post(`/master/compartments/`, payload);
-        toast({ title: "Success", description: "Compartment created successfully" });
+        await post(`/master/countries/`, payload);
+        toast({ title: "Success", description: "Country created successfully" });
       }
 
-      fetchCompartments(page);
+      fetchCountries(page); // refresh table
       setIsDialogOpen(false);
-      setEditingCompartment(null);
+      setEditingCountry(null);
     } catch (err) {
+      console.error("Failed to save country", err);
       toast({
         title: "Error",
-        description: "Failed to save compartment",
+        description: "Failed to save country",
         variant: "destructive",
       });
     }
   };
 
-  const handleEdit = (compartment: Compartment) => {
-    setEditingCompartment(compartment);
+  const handleEdit = (country: Country) => {
+    setEditingCountry(country);
     setIsDialogOpen(true);
   };
 
   // Delete API
   const handleDelete = async (id: number) => {
-    if (confirm("Are you sure you want to delete this compartment?")) {
+    if (confirm("Are you sure you want to delete this country?")) {
       try {
         const payload = { id: id, delete: true };
-        await post(`/master/compartments/`, payload);
-        setCompartments((prev) => prev.filter((c) => c.id !== id));
+        await post(`/master/countries/`, payload);
+        setCountries((prev) => prev.filter((c) => c.id !== id));
         toast({
           title: "Success",
-          description: "Compartment deleted successfully",
+          description: "Country deleted successfully",
         });
       } catch (err) {
+        console.error("Delete failed", err);
         toast({
           title: "Error",
-          description: "Failed to delete compartment",
+          description: "Failed to delete country",
           variant: "destructive",
         });
       }
@@ -152,8 +156,9 @@ const CompartmentMaster = () => {
   };
 
   // Filter by search
-  const filteredCompartments = compartments.filter((c) =>
-    c.name.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredCountries = countries.filter((c) =>
+    c.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    c.code.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
@@ -161,20 +166,20 @@ const CompartmentMaster = () => {
       {/* Header + Add Button */}
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold text-primary">Compartment</h1>
+          <h1 className="text-3xl font-bold text-primary">Country</h1>
           <p className="text-muted-foreground">
-            Manage compartments
+            Manage countries and their information
           </p>
         </div>
 
         <DynamicFormDialog
           open={isDialogOpen}
           onOpenChange={setIsDialogOpen}
-          title={editingCompartment ? "Edit Compartment" : "Add Compartment"}
+          title={editingCountry ? "Edit Country" : "Add Country"}
           description="Fill out the details below"
           fields={[
-            { name: "name", label: "Compartment Name", type: "text", required: true },
-            { name: "code", label: "Compartment Code", type: "text" },
+            { name: "name", label: "Country Name", type: "text", required: true },
+            { name: "code", label: "Country Code", type: "text" },
             {
               name: "status",
               label: "Active",
@@ -184,25 +189,25 @@ const CompartmentMaster = () => {
           ]}
           onSubmit={handleSave}
           initialValues={
-            editingCompartment
+            editingCountry
               ? {
-                  name: editingCompartment.name,
-                  code: editingCompartment.code,
-                  status: editingCompartment.active === 1 ? "Active" : "Inactive",
+                  name: editingCountry.name,
+                  code: editingCountry.code,
+                  status: editingCountry.active === 1 ? "Active" : "Inactive",
                 }
               : {
-                  status: "Active" // Default to Active when adding new compartment
+                  status: "Active" // Default to Active when adding new country
                 }
           }
           trigger={
             <Button
               onClick={() => {
-                setEditingCompartment(null);
+                setEditingCountry(null);
                 setIsDialogOpen(true);
               }}
             >
               <Plus className="mr-2 h-4 w-4" />
-              Add Compartment
+              Add Country
             </Button>
           }
         />
@@ -214,7 +219,7 @@ const CompartmentMaster = () => {
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
-              placeholder="Search compartments..."
+              placeholder="Search countries..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="pl-10"
@@ -223,13 +228,13 @@ const CompartmentMaster = () => {
         </CardContent>
       </Card>
 
-      {/* Compartments Table */}
+      {/* Countries Table */}
       <Card>
         <CardHeader>
-          <CardTitle>Compartments</CardTitle>
+          <CardTitle>Countries</CardTitle>
         </CardHeader>
         <CardContent>
-          <DataTable columns={columns} data={filteredCompartments} rowsPerPage={10} />
+          <DataTable columns={columns} data={filteredCountries} rowsPerPage={10} />
         </CardContent>
       </Card>
 
@@ -257,4 +262,4 @@ const CompartmentMaster = () => {
   );
 };
 
-export default CompartmentMaster;
+export default CountryMaster;

@@ -68,7 +68,7 @@ const ModuleMaster = () => {
   // Fetch modules from API
   const fetchModules = async (pageNum: number = 1) => {
     try {
-      const res = await get(`/master/modules/?page=${pageNum}&order_by=-name`);
+      const res = await get(`/master/modules/?page=${pageNum}`);
       setModules(res.results || []);
       setTotalPages(Math.ceil((res.count || 0) / 10));
     } catch (err) {
@@ -103,10 +103,12 @@ const ModuleMaster = () => {
 
     try {
       if (editingModule) {
-        const payloadWithId = { ...payload, id: editingModule.id };
-        await put(`/master/modules/`, payloadWithId);
+        // UPDATE - using POST with ID in payload
+        const updatePayload = { ...payload, id: editingModule.id };
+        await post(`/master/modules/`, updatePayload);
         toast({ title: "Success", description: "Module updated successfully" });
       } else {
+        // CREATE
         await post(`/master/modules/`, payload);
         toast({ title: "Success", description: "Module created successfully" });
       }
@@ -133,7 +135,7 @@ const ModuleMaster = () => {
     if (confirm("Are you sure you want to delete this module?")) {
       try {
         const payload = { id: id, delete: true };
-        await del(`/master/modules/`, payload);
+        await post(`/master/modules/`, payload);
         setModules((prev) => prev.filter((m) => m.id !== id));
         toast({
           title: "Success",
@@ -188,7 +190,9 @@ const ModuleMaster = () => {
                   code: editingModule.code,
                   status: editingModule.active === 1 ? "Active" : "Inactive",
                 }
-              : {}
+              : {
+                  status: "Active" // Default to Active when adding new module
+                }
           }
           trigger={
             <Button

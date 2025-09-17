@@ -9,29 +9,41 @@ import { DataTable, Column } from "@/components/ui/table";
 import { DynamicFormDialog } from "@/components/DynamicFormDialog";
 import { get, post, put, del } from "@/lib/api";
 
-interface Command {
+interface Country {
   id: number;
   name: string;
   code: string;
+  active: number;
+}
+
+interface State {
+  id: number;
+  name: string;
+  code: string;
+  country_name?: string;
+  country?: number;
   active: number; // 1 = Active, 2 = Inactive
   created_on: string;
 }
 
-const CommandMaster = () => {
+const StateMaster = () => {
   const { toast } = useToast();
-  const [commands, setCommands] = useState<Command[]>([]);
+  const [states, setStates] = useState<State[]>([]);
+  const [countries, setCountries] = useState<Country[]>([]);
+  const [isLoadingCountries, setIsLoadingCountries] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [editingCommand, setEditingCommand] = useState<Command | null>(null);
+  const [editingState, setEditingState] = useState<State | null>(null);
 
   // Pagination
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
   // Table columns
-  const columns: Column<Command>[] = [
+  const columns: Column<State>[] = [
     { header: "Name", accessor: "name" },
     { header: "Code", accessor: "code" },
+    { header: "Country", accessor: "country_name" },
     {
       header: "Status",
       accessor: "active",
@@ -66,24 +78,48 @@ const CommandMaster = () => {
     },
   ];
 
-  // Fetch commands from API
-  const fetchCommands = async (pageNum: number = 1) => {
+  // Fetch countries from API
+  const fetchCountries = async () => {
+    setIsLoadingCountries(true);
     try {
-      const res = await get(`/master/commands/?page=${pageNum}`);
-      setCommands(res.results || []);
-      setTotalPages(Math.ceil((res.count || 0) / 10));
+      const res = await get(`/master/countries/`);
+      const countriesData = res.results || res.data || [];
+      setCountries(countriesData);
     } catch (err) {
-      console.error("Failed to fetch commands", err);
+      console.error("Failed to fetch countries", err);
       toast({
         title: "Error",
-        description: "Failed to fetch commands",
+        description: "Failed to fetch countries",
+        variant: "destructive",
+      });
+      setCountries([]);
+    } finally {
+      setIsLoadingCountries(false);
+    }
+  };
+
+  // Fetch states from API
+  const fetchStates = async (pageNum: number = 1) => {
+    try {
+      const res = await get(`/master/states/?page=${pageNum}`);
+      setStates(res.results || []);
+      setTotalPages(Math.ceil((res.count || 0) / 10));
+    } catch (err) {
+      console.error("Failed to fetch states", err);
+      toast({
+        title: "Error",
+        description: "Failed to fetch states",
         variant: "destructive",
       });
     }
   };
 
   useEffect(() => {
-    fetchCommands(page);
+    fetchCountries();
+  }, []);
+
+  useEffect(() => {
+    fetchStates(page);
   }, [page]);
 
   // Save / Update API
@@ -91,7 +127,16 @@ const CommandMaster = () => {
     if (!formData.name?.trim()) {
       toast({
         title: "Validation Error",
-        description: "Command name is required",
+        description: "State name is required",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!formData.country) {
+      toast({
+        title: "Validation Error",
+        description: "Country selection is required",
         variant: "destructive",
       });
       return;
@@ -100,55 +145,56 @@ const CommandMaster = () => {
     const payload = {
       name: formData.name,
       code: formData.code,
+      country: parseInt(formData.country),
       active: formData.status === "Active" ? 1 : 2,
     };
 
     try {
-      if (editingCommand) {
+      if (editingState) {
         // UPDATE - using POST with ID in payload
-        const updatePayload = { ...payload, id: editingCommand.id };
-        await post(`/master/commands/`, updatePayload);
-        toast({ title: "Success", description: "Command updated successfully" });
+        const updatePayload = { ...payload, id: editingState.id };
+        await post(`/master/states/`, updatePayload);
+        toast({ title: "Success", description: "State updated successfully" });
       } else {
         // CREATE
-        await post(`/master/commands/`, payload);
-        toast({ title: "Success", description: "Command created successfully" });
+        await post(`/master/states/`, payload);
+        toast({ title: "Success", description: "State created successfully" });
       }
 
-      fetchCommands(page); // refresh table
+      fetchStates(page); // refresh table
       setIsDialogOpen(false);
-      setEditingCommand(null);
+      setEditingState(null);
     } catch (err) {
-      console.error("Failed to save command", err);
+      console.error("Failed to save state", err);
       toast({
         title: "Error",
-        description: "Failed to save command",
+        description: "Failed to save state",
         variant: "destructive",
       });
     }
   };
 
-  const handleEdit = (command: Command) => {
-    setEditingCommand(command);
+  const handleEdit = (state: State) => {
+    setEditingState(state);
     setIsDialogOpen(true);
   };
 
   // Delete API
   const handleDelete = async (id: number) => {
-    if (confirm("Are you sure you want to delete this command?")) {
+    if (confirm("Are you sure you want to delete this state?")) {
       try {
         const payload = { id: id, delete: true };
-        await post(`/master/commands/`, payload);
-        setCommands((prev) => prev.filter((c) => c.id !== id));
+        await post(`/master/states/`, payload);
+        setStates((prev) => prev.filter((s) => s.id !== id));
         toast({
           title: "Success",
-          description: "Command deleted successfully",
+          description: "State deleted successfully",
         });
       } catch (err) {
         console.error("Delete failed", err);
         toast({
           title: "Error",
-          description: "Failed to delete command",
+          description: "Failed to delete state",
           variant: "destructive",
         });
       }
@@ -156,9 +202,10 @@ const CommandMaster = () => {
   };
 
   // Filter by search
-  const filteredCommands = commands.filter((c) =>
-    c.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    c.code.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredStates = states.filter((s) =>
+    s.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    s.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (s.country_name && s.country_name.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
   return (
@@ -166,20 +213,38 @@ const CommandMaster = () => {
       {/* Header + Add Button */}
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold text-primary">Command</h1>
+          <h1 className="text-3xl font-bold text-primary">State</h1>
           <p className="text-muted-foreground">
-            Manage naval commands and their headquarters
+            Manage states and provinces
           </p>
         </div>
 
         <DynamicFormDialog
           open={isDialogOpen}
           onOpenChange={setIsDialogOpen}
-          title={editingCommand ? "Edit Command" : "Add Command"}
+          title={editingState ? "Edit State" : "Add State"}
           description="Fill out the details below"
           fields={[
-            { name: "name", label: "Command Name", type: "text", required: true },
-            { name: "code", label: "Command Code", type: "text" },
+            { name: "name", label: "State Name", type: "text", required: true },
+            { name: "code", label: "State Code", type: "text" },
+            {
+              name: "country",
+              label: "Country",
+              type: "dropdown",
+              required: true,
+              options: (() => {
+                if (isLoadingCountries) {
+                  return [{ id: "loading", name: "Loading countries..." }];
+                }
+                if (countries.length === 0) {
+                  return [{ id: "no-countries", name: "No countries available" }];
+                }
+                return countries.map(country => ({ 
+                  id: country.id, 
+                  name: country.name 
+                }));
+              })(),
+            },
             {
               name: "status",
               label: "Active",
@@ -189,25 +254,26 @@ const CommandMaster = () => {
           ]}
           onSubmit={handleSave}
           initialValues={
-            editingCommand
+            editingState
               ? {
-                  name: editingCommand.name,
-                  code: editingCommand.code,
-                  status: editingCommand.active === 1 ? "Active" : "Inactive",
+                  name: editingState.name,
+                  code: editingState.code,
+                  country: editingState.country || "",
+                  status: editingState.active === 1 ? "Active" : "Inactive",
                 }
               : {
-                  status: "Active" // Default to Active when adding new command
+                  status: "Active" // Default to Active when adding new state
                 }
           }
           trigger={
             <Button
               onClick={() => {
-                setEditingCommand(null);
+                setEditingState(null);
                 setIsDialogOpen(true);
               }}
             >
               <Plus className="mr-2 h-4 w-4" />
-              Add Command
+              Add State
             </Button>
           }
         />
@@ -219,7 +285,7 @@ const CommandMaster = () => {
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
-              placeholder="Search commands..."
+              placeholder="Search states..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="pl-10"
@@ -228,13 +294,13 @@ const CommandMaster = () => {
         </CardContent>
       </Card>
 
-      {/* Commands Table */}
+      {/* States Table */}
       <Card>
         <CardHeader>
-          <CardTitle>Commands</CardTitle>
+          <CardTitle>States</CardTitle>
         </CardHeader>
         <CardContent>
-          <DataTable columns={columns} data={filteredCommands} rowsPerPage={10} />
+          <DataTable columns={columns} data={filteredStates} rowsPerPage={10} />
         </CardContent>
       </Card>
 
@@ -262,4 +328,4 @@ const CommandMaster = () => {
   );
 };
 
-export default CommandMaster;
+export default StateMaster;

@@ -68,7 +68,7 @@ const SystemMaster = () => {
   // Fetch systems from API
   const fetchSystems = async (pageNum: number = 1) => {
     try {
-      const res = await get(`/master/systems/?page=${pageNum}&order_by=-name`);
+      const res = await get(`/master/systems/?page=${pageNum}`);
       setSystems(res.results || []);
       setTotalPages(Math.ceil((res.count || 0) / 10));
     } catch (err) {
@@ -103,10 +103,12 @@ const SystemMaster = () => {
 
     try {
       if (editingSystem) {
-        const payloadWithId = { ...payload, id: editingSystem.id };
-        await put(`/master/systems/`, payloadWithId);
+        // UPDATE - using POST with ID in payload
+        const updatePayload = { ...payload, id: editingSystem.id };
+        await post(`/master/systems/`, updatePayload);
         toast({ title: "Success", description: "System updated successfully" });
       } else {
+        // CREATE
         await post(`/master/systems/`, payload);
         toast({ title: "Success", description: "System created successfully" });
       }
@@ -133,7 +135,7 @@ const SystemMaster = () => {
     if (confirm("Are you sure you want to delete this system?")) {
       try {
         const payload = { id: id, delete: true };
-        await del(`/master/systems/`, payload);
+        await post(`/master/systems/`, payload);
         setSystems((prev) => prev.filter((s) => s.id !== id));
         toast({
           title: "Success",
@@ -188,7 +190,9 @@ const SystemMaster = () => {
                   code: editingSystem.code,
                   status: editingSystem.active === 1 ? "Active" : "Inactive",
                 }
-              : {}
+              : {
+                  status: "Active" // Default to Active when adding new system
+                }
           }
           trigger={
             <Button

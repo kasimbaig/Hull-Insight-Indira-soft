@@ -68,7 +68,7 @@ const OperationalStatusMaster = () => {
   // Fetch operational statuses from API
   const fetchStatuses = async (pageNum: number = 1) => {
     try {
-      const res = await get(`/master/operationalstatuses/?page=${pageNum}&order_by=-name`);
+      const res = await get(`/master/operationalstatuses/?page=${pageNum}`);
       setStatuses(res.results || []);
       setTotalPages(Math.ceil((res.count || 0) / 10));
     } catch (err) {
@@ -103,10 +103,12 @@ const OperationalStatusMaster = () => {
 
     try {
       if (editingStatus) {
-        const payloadWithId = { ...payload, id: editingStatus.id };
-        await put(`/master/operationalstatuses/`, payloadWithId);
+        // UPDATE - using POST with ID in payload
+        const updatePayload = { ...payload, id: editingStatus.id };
+        await post(`/master/operationalstatuses/`, updatePayload);
         toast({ title: "Success", description: "Status updated successfully" });
       } else {
+        // CREATE
         await post(`/master/operationalstatuses/`, payload);
         toast({ title: "Success", description: "Status created successfully" });
       }
@@ -133,7 +135,7 @@ const OperationalStatusMaster = () => {
     if (confirm("Are you sure you want to delete this status?")) {
       try {
         const payload = { id: id, delete: true };
-        await del(`/master/operationalstatuses/`, payload);
+        await post(`/master/operationalstatuses/`, payload);
         setStatuses((prev) => prev.filter((s) => s.id !== id));
         toast({
           title: "Success",
@@ -188,7 +190,9 @@ const OperationalStatusMaster = () => {
                   code: editingStatus.code,
                   status: editingStatus.active === 1 ? "Active" : "Inactive",
                 }
-              : {}
+              : {
+                  status: "Active" // Default to Active when adding new status
+                }
           }
           trigger={
             <Button

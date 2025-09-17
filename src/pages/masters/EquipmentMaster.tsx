@@ -68,7 +68,7 @@ const EquipmentMaster = () => {
   // Fetch equipments from API
   const fetchEquipments = async (pageNum: number = 1) => {
     try {
-      const res = await get(`/master/equipments/?page=${pageNum}&order_by=-name`);
+      const res = await get(`/master/equipments/?page=${pageNum}`);
       setEquipments(res.results || []);
       setTotalPages(Math.ceil((res.count || 0) / 10));
     } catch (err) {
@@ -103,10 +103,12 @@ const EquipmentMaster = () => {
 
     try {
       if (editingEquipment) {
-        const payloadWithId = { ...payload, id: editingEquipment.id };
-        await put(`/master/equipments/`, payloadWithId);
+        // UPDATE - using POST with ID in payload
+        const updatePayload = { ...payload, id: editingEquipment.id };
+        await post(`/master/equipments/`, updatePayload);
         toast({ title: "Success", description: "Equipment updated successfully" });
       } else {
+        // CREATE
         await post(`/master/equipments/`, payload);
         toast({ title: "Success", description: "Equipment created successfully" });
       }
@@ -133,7 +135,7 @@ const EquipmentMaster = () => {
     if (confirm("Are you sure you want to delete this equipment?")) {
       try {
         const payload = { id: id, delete: true };
-        await del(`/master/equipments/`, payload);
+        await post(`/master/equipments/`, payload);
         setEquipments((prev) => prev.filter((equipment) => equipment.id !== id));
         toast({
           title: "Success",
@@ -188,7 +190,9 @@ const EquipmentMaster = () => {
                   code: editingEquipment.code,
                   status: editingEquipment.active === 1 ? "Active" : "Inactive",
                 }
-              : {}
+              : {
+                  status: "Active" // Default to Active when adding new equipment
+                }
           }
           trigger={
             <Button

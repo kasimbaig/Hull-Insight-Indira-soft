@@ -8,13 +8,6 @@ import { useToast } from "@/hooks/use-toast";
 import { DynamicFormDialog } from "@/components/DynamicFormDialog";
 import { get, post, put, del } from "@/lib/api";
 import { Badge } from "@/components/ui/badge";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
-} from "@/components/ui/dialog";
 
 interface VesselClass {
   id: number;
@@ -32,9 +25,6 @@ const VesselClassMaster = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingVesselClass, setEditingVesselClass] = useState<VesselClass | null>(null);
 
-  // For delete confirmation dialog
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [vesselClassToDelete, setVesselClassToDelete] = useState<VesselClass | null>(null);
 
   // Pagination states
   const [page, setPage] = useState(1);
@@ -67,7 +57,7 @@ const VesselClassMaster = () => {
           <Button
             variant="outline"
             size="icon"
-            onClick={() => openDeleteDialog(row)}
+            onClick={() => handleDelete(row.id)}
           >
             <Trash2 className="h-4 w-4" />
           </Button>
@@ -79,7 +69,7 @@ const VesselClassMaster = () => {
   // Fetch vessel classes from API
   const fetchVesselClasses = async (pageNum: number = 1) => {
     try {
-      const res = await get(`/master/classofvessels/?page=${pageNum}&order_by=-name`);
+      const res = await get(`/master/classofvessels/?page=${pageNum}`);
       setVesselClasses(res.results || []);
       setTotalPages(Math.ceil(res.count / 10));
     } catch (err) {     
@@ -115,9 +105,9 @@ const VesselClassMaster = () => {
 
     try {
       if (editingVesselClass) {
-        const payloadWithId = { ...payload, id: editingVesselClass.id };
-        // UPDATE
-        await put(`/master/classofvessels/`, payloadWithId);
+        // UPDATE - using POST with ID in payload
+        const updatePayload = { ...payload, id: editingVesselClass.id };
+        await post(`/master/classofvessels/`, updatePayload);
         toast({ title: "Success", description: "Vessel class updated successfully" });
       } else {
         // CREATE
@@ -143,33 +133,26 @@ const VesselClassMaster = () => {
     setIsDialogOpen(true);
   };
 
-  // Open delete confirmation dialog
-  const openDeleteDialog = (vesselClass: VesselClass) => {
-    setVesselClassToDelete(vesselClass);
-    setDeleteDialogOpen(true);
-  };
 
   // Delete API
-  const handleDelete = async () => {
-    if (!vesselClassToDelete) return;
-    try {
-      const payload = { id: vesselClassToDelete.id, delete: true };
-      await del(`/master/classofvessels/`, payload);
-      setVesselClasses((prev) => prev.filter((vesselClass) => vesselClass.id !== vesselClassToDelete.id));
-      toast({
-        title: "Success",
-        description: "Vessel class deleted successfully",
-      });
-    } catch (err) {
-      console.error("Delete failed", err);
-      toast({
-        title: "Error",
-        description: "Failed to delete vessel class",
-        variant: "destructive",
-      });
-    } finally {
-      setDeleteDialogOpen(false);
-      setVesselClassToDelete(null);
+  const handleDelete = async (id: number) => {
+    if (confirm("Are you sure you want to delete this vessel class?")) {
+      try {
+        const payload = { id: id, delete: true };
+        await post(`/master/classofvessels/`, payload);
+        setVesselClasses((prev) => prev.filter((vesselClass) => vesselClass.id !== id));
+        toast({
+          title: "Success",
+          description: "Vessel class deleted successfully",
+        });
+      } catch (err) {
+        console.error("Delete failed", err);
+        toast({
+          title: "Error",
+          description: "Failed to delete vessel class",
+          variant: "destructive",
+        });
+      }
     }
   };
 
@@ -212,7 +195,9 @@ const VesselClassMaster = () => {
                   code: editingVesselClass.code,
                   status: editingVesselClass.active === 1 ? "Active" : "Inactive",
                 }
-              : {}
+              : {
+                  status: "Active" // Default to Active when adding new vessel class
+                }
           }
           trigger={
             <Button
@@ -274,25 +259,6 @@ const VesselClassMaster = () => {
         </Button>
       </div>
 
-      {/* Delete Confirmation Dialog */}
-      <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Confirm Delete</DialogTitle>
-          </DialogHeader>
-          <p>
-            Are you sure you want to delete "{vesselClassToDelete?.name}"? This action cannot be undone.
-          </p>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setDeleteDialogOpen(false)}>
-              Cancel
-            </Button>
-            <Button variant="destructive" onClick={handleDelete}>
-              Delete
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 };

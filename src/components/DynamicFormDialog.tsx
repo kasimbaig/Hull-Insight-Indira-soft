@@ -22,6 +22,7 @@ export interface FieldConfig {
   apiEndpoint?: string; // optional: fetch options from API
   options?: { value: string | number; label: string }[]; // static options
   required?: boolean;
+  onChange?: (value: string) => void; // optional: custom change handler
 }
 
 interface DynamicFormDialogProps {
@@ -52,8 +53,24 @@ export function DynamicFormDialog({
 
   // Reset form when dialog opens
   useEffect(() => {
-    if (open) setFormData(initialValues);
-  }, [open, initialValues]);
+    if (open) {
+      setFormData(initialValues);
+    }
+  }, [open]); // Only depend on open, not initialValues
+
+  // Update form data when initialValues change (for editing scenarios)
+  useEffect(() => {
+    if (open && initialValues && Object.keys(initialValues).length > 0) {
+      // Only update if the form data is empty or if we're editing
+      setFormData(prev => {
+        const hasExistingData = Object.values(prev).some(value => value !== "" && value !== null && value !== undefined);
+        if (!hasExistingData) {
+          return { ...prev, ...initialValues };
+        }
+        return prev;
+      });
+    }
+  }, [initialValues, open]);
 
   // Fetch dropdowns from API
   useEffect(() => {
@@ -160,7 +177,13 @@ export function DynamicFormDialog({
                   id={field.name}
                   value={formData[field.name] || ""}
                   required={field.required}
-                  onChange={(e) => handleChange(field.name, e.target.value)}
+                  onChange={(e) => {
+                    handleChange(field.name, e.target.value);
+                    // Call custom onChange handler if provided
+                    if (field.onChange) {
+                      field.onChange(e.target.value);
+                    }
+                  }}
                   className="w-full rounded-lg border-gray-300 focus:border-indigo-500 focus:ring focus:ring-indigo-200 p-2"
                 >
                   <option value="">Select {field.label}</option>

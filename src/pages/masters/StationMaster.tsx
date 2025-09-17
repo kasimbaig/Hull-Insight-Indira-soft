@@ -11,27 +11,39 @@ import { get, post, put, del } from "@/lib/api";
 
 interface Command {
   id: number;
+  command_name: string;
+  code: string;
+  active: number;
+}
+
+interface Station {
+  id: number;
   name: string;
   code: string;
+  command_name?: string;
+  command?: number;
   active: number; // 1 = Active, 2 = Inactive
   created_on: string;
 }
 
-const CommandMaster = () => {
+const StationMaster = () => {
   const { toast } = useToast();
+  const [stations, setStations] = useState<Station[]>([]);
   const [commands, setCommands] = useState<Command[]>([]);
+  const [isLoadingCommands, setIsLoadingCommands] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [editingCommand, setEditingCommand] = useState<Command | null>(null);
+  const [editingStation, setEditingStation] = useState<Station | null>(null);
 
   // Pagination
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
   // Table columns
-  const columns: Column<Command>[] = [
+  const columns: Column<Station>[] = [
     { header: "Name", accessor: "name" },
     { header: "Code", accessor: "code" },
+    { header: "Command", accessor: "command_name" },
     {
       header: "Status",
       accessor: "active",
@@ -67,11 +79,14 @@ const CommandMaster = () => {
   ];
 
   // Fetch commands from API
-  const fetchCommands = async (pageNum: number = 1) => {
+  const fetchCommands = async () => {
+    setIsLoadingCommands(true);
     try {
-      const res = await get(`/master/commands/?page=${pageNum}`);
-      setCommands(res.results || []);
-      setTotalPages(Math.ceil((res.count || 0) / 10));
+      const res = await get(`/master/commands/`);
+      console.log("Commands API response:", res);
+      const commandsData = res.results || res.data || [];
+      setCommands(commandsData);
+      console.log("Commands set:", commandsData);
     } catch (err) {
       console.error("Failed to fetch commands", err);
       toast({
@@ -79,11 +94,34 @@ const CommandMaster = () => {
         description: "Failed to fetch commands",
         variant: "destructive",
       });
+      setCommands([]);
+    } finally {
+      setIsLoadingCommands(false);
+    }
+  };
+
+  // Fetch stations from API
+  const fetchStations = async (pageNum: number = 1) => {
+    try {
+      const res = await get(`/master/stations/?page=${pageNum}`);
+      setStations(res.results || []);
+      setTotalPages(Math.ceil((res.count || 0) / 10));
+    } catch (err) {
+      console.error("Failed to fetch stations", err);
+      toast({
+        title: "Error",
+        description: "Failed to fetch stations",
+        variant: "destructive",
+      });
     }
   };
 
   useEffect(() => {
-    fetchCommands(page);
+    fetchCommands();
+  }, []);
+
+  useEffect(() => {
+    fetchStations(page);
   }, [page]);
 
   // Save / Update API
@@ -91,7 +129,16 @@ const CommandMaster = () => {
     if (!formData.name?.trim()) {
       toast({
         title: "Validation Error",
-        description: "Command name is required",
+        description: "Station name is required",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!formData.command) {
+      toast({
+        title: "Validation Error",
+        description: "Command selection is required",
         variant: "destructive",
       });
       return;
@@ -100,55 +147,56 @@ const CommandMaster = () => {
     const payload = {
       name: formData.name,
       code: formData.code,
+      command: parseInt(formData.command),
       active: formData.status === "Active" ? 1 : 2,
     };
 
     try {
-      if (editingCommand) {
+      if (editingStation) {
         // UPDATE - using POST with ID in payload
-        const updatePayload = { ...payload, id: editingCommand.id };
-        await post(`/master/commands/`, updatePayload);
-        toast({ title: "Success", description: "Command updated successfully" });
+        const updatePayload = { ...payload, id: editingStation.id };
+        await post(`/master/stations/`, updatePayload);
+        toast({ title: "Success", description: "Station updated successfully" });
       } else {
         // CREATE
-        await post(`/master/commands/`, payload);
-        toast({ title: "Success", description: "Command created successfully" });
+        await post(`/master/stations/`, payload);
+        toast({ title: "Success", description: "Station created successfully" });
       }
 
-      fetchCommands(page); // refresh table
+      fetchStations(page); // refresh table
       setIsDialogOpen(false);
-      setEditingCommand(null);
+      setEditingStation(null);
     } catch (err) {
-      console.error("Failed to save command", err);
+      console.error("Failed to save station", err);
       toast({
         title: "Error",
-        description: "Failed to save command",
+        description: "Failed to save station",
         variant: "destructive",
       });
     }
   };
 
-  const handleEdit = (command: Command) => {
-    setEditingCommand(command);
+  const handleEdit = (station: Station) => {
+    setEditingStation(station);
     setIsDialogOpen(true);
   };
 
   // Delete API
   const handleDelete = async (id: number) => {
-    if (confirm("Are you sure you want to delete this command?")) {
+    if (confirm("Are you sure you want to delete this station?")) {
       try {
         const payload = { id: id, delete: true };
-        await post(`/master/commands/`, payload);
-        setCommands((prev) => prev.filter((c) => c.id !== id));
+        await post(`/master/stations/`, payload);
+        setStations((prev) => prev.filter((s) => s.id !== id));
         toast({
           title: "Success",
-          description: "Command deleted successfully",
+          description: "Station deleted successfully",
         });
       } catch (err) {
         console.error("Delete failed", err);
         toast({
           title: "Error",
-          description: "Failed to delete command",
+          description: "Failed to delete station",
           variant: "destructive",
         });
       }
@@ -156,9 +204,10 @@ const CommandMaster = () => {
   };
 
   // Filter by search
-  const filteredCommands = commands.filter((c) =>
-    c.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    c.code.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredStations = stations.filter((s) =>
+    s.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    s.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (s.command_name && s.command_name.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
   return (
@@ -166,20 +215,41 @@ const CommandMaster = () => {
       {/* Header + Add Button */}
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold text-primary">Command</h1>
+          <h1 className="text-3xl font-bold text-primary">Station</h1>
           <p className="text-muted-foreground">
-            Manage naval commands and their headquarters
+            Manage naval stations and their locations
           </p>
         </div>
 
         <DynamicFormDialog
           open={isDialogOpen}
           onOpenChange={setIsDialogOpen}
-          title={editingCommand ? "Edit Command" : "Add Command"}
+          title={editingStation ? "Edit Station" : "Add Station"}
           description="Fill out the details below"
           fields={[
-            { name: "name", label: "Command Name", type: "text", required: true },
-            { name: "code", label: "Command Code", type: "text" },
+            { name: "name", label: "Station Name", type: "text", required: true },
+            { name: "code", label: "Station Code", type: "text" },
+            {
+              name: "command",
+              label: "Command",
+              type: "dropdown",
+              required: true,
+              options: (() => {
+                if (isLoadingCommands) {
+                  return [{ id: "loading", name: "Loading commands..." }];
+                }
+                if (commands.length === 0) {
+                  return [{ id: "no-commands", name: "No commands available" }];
+                }
+                const mappedOptions = commands.map(cmd => ({ 
+                  id: cmd.id, 
+                  name: cmd.command_name || cmd.name || 'Unknown Command' 
+                }));
+                console.log("Commands for dropdown:", commands);
+                console.log("Mapped options:", mappedOptions);
+                return mappedOptions;
+              })(),
+            },
             {
               name: "status",
               label: "Active",
@@ -189,25 +259,26 @@ const CommandMaster = () => {
           ]}
           onSubmit={handleSave}
           initialValues={
-            editingCommand
+            editingStation
               ? {
-                  name: editingCommand.name,
-                  code: editingCommand.code,
-                  status: editingCommand.active === 1 ? "Active" : "Inactive",
+                  name: editingStation.name,
+                  code: editingStation.code,
+                  command: editingStation.command || "",
+                  status: editingStation.active === 1 ? "Active" : "Inactive",
                 }
               : {
-                  status: "Active" // Default to Active when adding new command
+                  status: "Active" // Default to Active when adding new station
                 }
           }
           trigger={
             <Button
               onClick={() => {
-                setEditingCommand(null);
+                setEditingStation(null);
                 setIsDialogOpen(true);
               }}
             >
               <Plus className="mr-2 h-4 w-4" />
-              Add Command
+              Add Station
             </Button>
           }
         />
@@ -219,7 +290,7 @@ const CommandMaster = () => {
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
-              placeholder="Search commands..."
+              placeholder="Search stations..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="pl-10"
@@ -228,13 +299,13 @@ const CommandMaster = () => {
         </CardContent>
       </Card>
 
-      {/* Commands Table */}
+      {/* Stations Table */}
       <Card>
         <CardHeader>
-          <CardTitle>Commands</CardTitle>
+          <CardTitle>Stations</CardTitle>
         </CardHeader>
         <CardContent>
-          <DataTable columns={columns} data={filteredCommands} rowsPerPage={10} />
+          <DataTable columns={columns} data={filteredStations} rowsPerPage={10} />
         </CardContent>
       </Card>
 
@@ -262,4 +333,4 @@ const CommandMaster = () => {
   );
 };
 
-export default CommandMaster;
+export default StationMaster;

@@ -8,6 +8,8 @@ import {
   Building2,
   PenTool,
   Users,
+  ArrowLeft,
+  MessageSquare,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -48,6 +50,12 @@ const sidebarItems = [
       { title: "System", path: "/app/masters/system" },
       { title: "Compartment", path: "/app/masters/compartment" },
       { title: "Vessel Class", path: "/app/masters/vesselclass" },
+      { title: "Station", path: "/app/masters/station" },
+      { title: "Country", path: "/app/masters/country" },
+      { title: "State", path: "/app/masters/state" },
+      { title: "City", path: "/app/masters/city" },
+      { title: "Refit", path: "/app/masters/refit" },
+      { title: "Cluster", path: "/app/masters/cluster" },
     ],
   },
   {
@@ -81,7 +89,42 @@ const sidebarItems = [
   },
   { title: "Interactive Drawing", icon: PenTool, path: "/app/drawing" },
   { title: "HVAC Report", icon: BarChart3, path: "/app/hvac-report" },
-  { title: "Reports", icon: BarChart3, path: "/app/reports" },
+  { title: "Commentor Sheet", icon: MessageSquare, path: "/app/form-comments" },
+  {
+    title: "Reports",
+    icon: BarChart3,
+    items: [
+      { title: "LOAD TEST REPORT", path: "/app/reports/load-test-report" },
+      { title: "BOAT HISTORY SHEET", path: "/app/reports/boat-history-sheet" },
+      { title: "SHIP WEIGHT MANAGEMENT", path: "/app/reports/ship-weight-management" },
+      { title: "QUARTERLY HULL POTENTIAL DATA OF SHIPS FITTED WITH SACRIFICIAL ANODES", path: "/app/reports/quarterly-hull-potential-sacrificial-anodes" },
+      { title: "PART-I QUARTERLY HULL POTENTIAL DATA OF SHIPS FITTED WITH ICCP SYSTEM", path: "/app/reports/quarterly-hull-potential-iccp-system" },
+      { title: "HULL POTENTIAL RETURN", path: "/app/reports/hull-potential-return" },
+      { title: "DOCKING REPORT SECTION - I", path: "/app/reports/docking-report-section-1" },
+      { title: "DOCKING REPORT SECTION - II", path: "/app/reports/docking-report-section-2" },
+      { title: "DOCKING REPORT SECTION - III", path: "/app/reports/docking-report-section-3" },
+      { title: "SHIP STAFF REPORT OF HULL INSPECTION", path: "/app/reports/ship-staff-report-hull-inspection" },
+    ],
+  },
+  {
+    title: "Returns",
+    icon: ArrowLeft,
+    items: [
+      { title: "SHIP WEIGHT MANAGEMENT", path: "/app/returns/ship-weight-management" },
+      { title: "BER CERTIFICATE", path: "/app/returns/ber-certificate" },
+      { title: "IN-378 RENDER PART-I", path: "/app/in378/render-part1" },
+      { title: "IN-378 RENDER PART-II", path: "/app/returns/in378-render-part2" },
+      { title: "LOAD TEST", path: "/app/returns/load-test" },
+      { title: "IN 305", path: "/app/returns/in305" },
+      { title: "BHS", path: "/app/returns/bhs" },
+      { title: "QUARTERLY HULL POTENTIAL DATA OF SHIPS FITTED WITH SACRIFICIAL ANODES", path: "/app/returns/hull-potential-data" },
+      { title: "QUARTERLY HULL POTENTIAL DATA OF SHIPS FITTED WITH ICCP SYSTEM", path: "/app/returns/iccp-hull-potential" },
+      { title: "PAINT DETAILS", path: "/app/returns/paint-details" },
+      { title: "SHIP STAFF REPORT OF HULL INSPECTION INS -", path: "/app/reports/hull-inspection" },
+      { title: "DOCKING PLAN APPROVAL", path: "/app/returns/docking-plan-approval" },
+      { title: "IN 379 > DOCKING REPORT SECTION -1", path: "/app/returns/in379-docking-report-section1" },
+    ],
+  },
 ];
 
 interface SidebarProps {

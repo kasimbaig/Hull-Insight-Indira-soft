@@ -8,13 +8,6 @@ import { useToast } from "@/hooks/use-toast";
 import { DynamicFormDialog } from "@/components/DynamicFormDialog";
 import { get, post, put, del } from "@/lib/api";
 import { Badge } from "@/components/ui/badge";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
-} from "@/components/ui/dialog"; // Add this import
 
 interface Unit {
   id: number;
@@ -32,9 +25,6 @@ const UnitMaster = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingUnit, setEditingUnit] = useState<Unit | null>(null);
 
-  // For delete confirmation dialog
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [unitToDelete, setUnitToDelete] = useState<Unit | null>(null);
 
   // Pagination states
   const [page, setPage] = useState(1);
@@ -67,7 +57,7 @@ const UnitMaster = () => {
           <Button
             variant="outline"
             size="icon"
-            onClick={() => openDeleteDialog(row)}
+            onClick={() => handleDelete(row.id)}
           >
             <Trash2 className="h-4 w-4" />
           </Button>
@@ -79,7 +69,7 @@ const UnitMaster = () => {
   // Fetch units from API
   const fetchUnits = async (pageNum: number = 1) => {
     try {
-      const res = await get(`/master/units/?page=${pageNum}&order_by=-name`);
+      const res = await get(`/master/units/?page=${pageNum}`);
       setUnits(res.results || []);
       setTotalPages(Math.ceil(res.count / 10));
     } catch (err) {     
@@ -115,9 +105,9 @@ const UnitMaster = () => {
 
     try {
       if (editingUnit) {
-        const payloadWithId = { ...payload, id: editingUnit.id };
-        // UPDATE
-        await put(`/master/units/`, payloadWithId);
+        // UPDATE - using POST with ID in payload
+        const updatePayload = { ...payload, id: editingUnit.id };
+        await post(`/master/units/`, updatePayload);
         toast({ title: "Success", description: "Unit updated successfully" });
       } else {
         // CREATE
@@ -143,33 +133,26 @@ const UnitMaster = () => {
     setIsDialogOpen(true);
   };
 
-  // Open delete confirmation dialog
-  const openDeleteDialog = (unit: Unit) => {
-    setUnitToDelete(unit);
-    setDeleteDialogOpen(true);
-  };
 
   // Delete API
-  const handleDelete = async () => {
-    if (!unitToDelete) return;
-    try {
-      const payload = { id: unitToDelete.id, delete: true };
-      await del(`/master/units/`, payload);
-      setUnits((prev) => prev.filter((unit) => unit.id !== unitToDelete.id));
-      toast({
-        title: "Success",
-        description: "Unit deleted successfully",
-      });
-    } catch (err) {
-      console.error("Delete failed", err);
-      toast({
-        title: "Error",
-        description: "Failed to delete unit",
-        variant: "destructive",
-      });
-    } finally {
-      setDeleteDialogOpen(false);
-      setUnitToDelete(null);
+  const handleDelete = async (id: number) => {
+    if (confirm("Are you sure you want to delete this unit?")) {
+      try {
+        const payload = { id: id, delete: true };
+        await post(`/master/units/`, payload);
+        setUnits((prev) => prev.filter((unit) => unit.id !== id));
+        toast({
+          title: "Success",
+          description: "Unit deleted successfully",
+        });
+      } catch (err) {
+        console.error("Delete failed", err);
+        toast({
+          title: "Error",
+          description: "Failed to delete unit",
+          variant: "destructive",
+        });
+      }
     }
   };
 
@@ -212,7 +195,9 @@ const UnitMaster = () => {
                   code: editingUnit.code,
                   status: editingUnit.active === 1 ? "Active" : "Inactive",
                 }
-              : {}
+              : {
+                  status: "Active" // Default to Active when adding new unit
+                }
           }
           trigger={
             <Button
