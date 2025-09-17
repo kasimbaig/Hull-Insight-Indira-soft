@@ -68,7 +68,7 @@ const SeverityMaster = () => {
   // Fetch severities from API
   const fetchSeverities = async (pageNum: number = 1) => {
     try {
-      const res = await get(`/master/severities/?page=${pageNum}&order_by=-name`);
+      const res = await get(`/master/severities/?page=${pageNum}`);
       setSeverities(res.results || []);
       setTotalPages(Math.ceil((res.count || 0) / 10));
     } catch (err) {
@@ -103,10 +103,12 @@ const SeverityMaster = () => {
 
     try {
       if (editingSeverity) {
-        const payloadWithId = { ...payload, id: editingSeverity.id };
-        await put(`/master/severities/`, payloadWithId);
+        // UPDATE - using POST with ID in payload
+        const updatePayload = { ...payload, id: editingSeverity.id };
+        await post(`/master/severities/`, updatePayload);
         toast({ title: "Success", description: "Severity updated successfully" });
       } else {
+        // CREATE
         await post(`/master/severities/`, payload);
         toast({ title: "Success", description: "Severity created successfully" });
       }
@@ -133,7 +135,7 @@ const SeverityMaster = () => {
     if (confirm("Are you sure you want to delete this severity?")) {
       try {
         const payload = { id: id, delete: true };
-        await del(`/master/severities/`, payload);
+        await post(`/master/severities/`, payload);
         setSeverities((prev) => prev.filter((s) => s.id !== id));
         toast({
           title: "Success",
@@ -188,7 +190,9 @@ const SeverityMaster = () => {
                   code: editingSeverity.code,
                   status: editingSeverity.active === 1 ? "Active" : "Inactive",
                 }
-              : {}
+              : {
+                  status: "Active" // Default to Active when adding new severity
+                }
           }
           trigger={
             <Button

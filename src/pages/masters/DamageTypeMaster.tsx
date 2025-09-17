@@ -68,7 +68,7 @@ const DamageTypeMaster = () => {
   // Fetch damage types from API
   const fetchDamageTypes = async (pageNum: number = 1) => {
     try {
-      const res = await get(`/master/damagetypes/?page=${pageNum}&order_by=-name`);
+      const res = await get(`/master/damagetypes/?page=${pageNum}`);
       setDamageTypes(res.results || []);
       setTotalPages(Math.ceil((res.count || 0) / 10));
     } catch (err) {
@@ -103,10 +103,12 @@ const DamageTypeMaster = () => {
 
     try {
       if (editingDamageType) {
-        const payloadWithId = { ...payload, id: editingDamageType.id };
-        await put(`/master/damagetypes/`, payloadWithId);
+        // UPDATE - using POST with ID in payload
+        const updatePayload = { ...payload, id: editingDamageType.id };
+        await post(`/master/damagetypes/`, updatePayload);
         toast({ title: "Success", description: "Damage Type updated successfully" });
       } else {
+        // CREATE
         await post(`/master/damagetypes/`, payload);
         toast({ title: "Success", description: "Damage Type created successfully" });
       }
@@ -133,7 +135,7 @@ const DamageTypeMaster = () => {
     if (confirm("Are you sure you want to delete this damage type?")) {
       try {
         const payload = { id: id, delete: true };
-        await del(`/master/damagetypes/`, payload);
+        await post(`/master/damagetypes/`, payload);
         setDamageTypes((prev) => prev.filter((dt) => dt.id !== id));
         toast({
           title: "Success",
@@ -188,7 +190,9 @@ const DamageTypeMaster = () => {
                   code: editingDamageType.code,
                   status: editingDamageType.active === 1 ? "Active" : "Inactive",
                 }
-              : {}
+              : {
+                  status: "Active" // Default to Active when adding new damage type
+                }
           }
           trigger={
             <Button

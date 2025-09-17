@@ -71,7 +71,7 @@ const SubmoduleMaster = () => {
   // Fetch Submodules
   const fetchSubmodules = async (pageNum: number = 1) => {
     try {
-      const res = await get(`/master/submodules/?page=${pageNum}&order_by=-name`);
+      const res = await get(`/master/submodules/?page=${pageNum}`);
       setSubmodules(res.results || []);
       setTotalPages(Math.ceil((res.count || 0) / 10));
     } catch (err) {
@@ -82,7 +82,7 @@ const SubmoduleMaster = () => {
   // Fetch Modules for dropdown
   const fetchModules = async () => {
     try {
-      const res = await get(`/master/modules/?order_by=-name`);
+      const res = await get(`/master/modules/`);
       setModules(res.results || []);
     } catch (err) {
       toast({ title: "Error", description: "Failed to fetch modules", variant: "destructive" });
@@ -110,9 +110,12 @@ const SubmoduleMaster = () => {
 
     try {
       if (editingSubmodule) {
-        await put(`/master/submodules/`, { ...payload, id: editingSubmodule.id });
+        // UPDATE - using POST with ID in payload
+        const updatePayload = { ...payload, id: editingSubmodule.id };
+        await post(`/master/submodules/`, updatePayload);
         toast({ title: "Success", description: "Submodule updated successfully" });
       } else {
+        // CREATE
         await post(`/master/submodules/`, payload);
         toast({ title: "Success", description: "Submodule created successfully" });
       }
@@ -132,7 +135,8 @@ const SubmoduleMaster = () => {
   const handleDelete = async (id: number) => {
     if (confirm("Are you sure you want to delete this submodule?")) {
       try {
-        await del(`/master/submodules/`, { id, delete: true });
+        const payload = { id: id, delete: true };
+        await post(`/master/submodules/`, payload);
         setSubmodules((prev) => prev.filter((s) => s.id !== id));
         toast({ title: "Success", description: "Submodule deleted successfully" });
       } catch (err) {
@@ -182,7 +186,9 @@ const SubmoduleMaster = () => {
                 module_id: editingSubmodule.module?.id || undefined,
                 status: editingSubmodule.active === 1 ? "Active" : "Inactive",
               }
-              : {}
+              : {
+                status: "Active" // Default to Active when adding new submodule
+              }
           }
           onSubmit={handleSave}
           trigger={

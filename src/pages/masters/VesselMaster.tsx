@@ -38,7 +38,7 @@ const VesselMaster = () => {
   // ---------------- Fetch vessels ----------------
   const fetchVessels = async (pageNum: number = 1) => {
     try {
-      const res = await get(`/master/vessels/?page=${pageNum}&order_by=-name`);
+      const res = await get(`/master/vessels/?page=${pageNum}`);
       setVessels(res.results || []);
       setTotalPages(Math.ceil((res.count || 0) / 10));
     } catch (err) {
@@ -89,14 +89,17 @@ const VesselMaster = () => {
   const handleSave = async (formData: any) => {
     const payload = {
       ...formData,
-      active: Number(formData.active),
+      active: formData.status === "Active" ? 1 : 2,
     };
 
     try {
       if (editingVessel) {
-        await put(`/master/vessels/${editingVessel.id}/`, payload);
+        // UPDATE - using POST with ID in payload
+        const updatePayload = { ...payload, id: editingVessel.id };
+        await post(`/master/vessels/`, updatePayload);
         toast({ title: "Success", description: "Vessel updated successfully" });
       } else {
+        // CREATE
         await post(`/master/vessels/`, payload);
         toast({ title: "Success", description: "Vessel created successfully" });
       }
@@ -116,7 +119,8 @@ const VesselMaster = () => {
   const handleDelete = async (id: number) => {
     if (confirm("Are you sure you want to delete this vessel?")) {
       try {
-        await del(`/master/vessels/${id}/`);
+        const payload = { id: id, delete: true };
+        await post(`/master/vessels/`, payload);
         toast({ title: "Success", description: "Vessel deleted successfully" });
         fetchVessels(page);
       } catch (err) {
@@ -175,7 +179,7 @@ const VesselMaster = () => {
     { name: "year_of_build", label: "Year of Build", type: "number" },
     { name: "year_of_delivery", label: "Year of Delivery", type: "number" },
    {
-    name: "active",
+    name: "status",
     label: "Active",
     type: "checkbox", // Checkbox type
   },
@@ -201,8 +205,10 @@ const VesselMaster = () => {
             vesseltype: editingVessel.vesseltype.id,
             command: editingVessel.command.id,
             yard: editingVessel.yard.id,
-            active: editingVessel.active,
-          } : {}}
+            status: editingVessel.active === 1 ? "Active" : "Inactive",
+          } : {
+            status: "Active" // Default to Active when adding new vessel
+          }}
           trigger={
             <Button onClick={() => { setEditingVessel(null); setIsDialogOpen(true); }}>
               <Plus className="mr-2 h-4 w-4" /> Add Vessel

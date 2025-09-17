@@ -81,7 +81,7 @@ const DockyardMaster = () => {
   const fetchDockyards = async (pageNum: number = 1) => {
     setLoading(true);
     try {
-      const res = await get(`/master/dockyards/?page=${pageNum}&order_by=-name`);
+      const res = await get(`/master/dockyards/?page=${pageNum}`);
       setDockyards(res.results || []);
       setTotalPages(Math.ceil((res.count || 0) / 5));
     } catch {
@@ -108,17 +108,13 @@ const DockyardMaster = () => {
     };
     try {
       if (editingDockyard) {
-        const updated = await put(
-          `/master/dockyards/${editingDockyard.id}/`,
-          payload
-        );
-        setDockyards((prev) =>
-          prev.map((d) => (d.id === editingDockyard.id ? updated : d))
-        );
+        // UPDATE - using POST with ID in payload
+        const updatePayload = { ...payload, id: editingDockyard.id };
+        await post("/master/dockyards/", updatePayload);
         toast({ title: "Success", description: "Dockyard updated successfully" });
       } else {
-        const created = await post("/master/dockyards/", payload);
-        setDockyards((prev) => [...prev, created]);
+        // CREATE
+        await post("/master/dockyards/", payload);
         toast({ title: "Success", description: "Dockyard created successfully" });
       }
       fetchDockyards(page);
@@ -147,7 +143,8 @@ const DockyardMaster = () => {
   const handleDelete = async (id: number) => {
     if (confirm("Are you sure you want to delete this dockyard?")) {
       try {
-        await del(`/master/dockyards/${id}/`);
+        const payload = { id: id, delete: true };
+        await post("/master/dockyards/", payload);
         setDockyards((prev) => prev.filter((d) => d.id !== id));
         toast({
           title: "Success",
@@ -199,7 +196,9 @@ const DockyardMaster = () => {
                   code: editingDockyard.code,
                   status: editingDockyard.active === 1 ? "Active" : "Inactive",
                 }
-              : {}
+              : {
+                  status: "Active" // Default to Active when adding new dockyard
+                }
           }
           trigger={
             <Button
