@@ -962,10 +962,60 @@ const BoatDavitForm: React.FC = () => {
               </div>
             </div>
 
-            {/* Submit Button */}
-            <div className="flex justify-center pt-6">
-              <Button type="submit" className="px-8 py-2">
-                Submit Form
+            {/* Action Buttons */}
+            <div className="flex flex-wrap gap-4 justify-center pt-6">
+              <Button
+                type="button"
+                onClick={() => alert('Fetch Drafts functionality not implemented yet')}
+                className="px-6 bg-cyan-500 hover:bg-cyan-600 text-white font-semibold uppercase"
+              >
+                FETCH DRAFTS
+              </Button>
+              <Button
+                type="button"
+                onClick={() => alert('Save Draft functionality not implemented yet')}
+                className="px-6 bg-green-500 hover:bg-green-600 text-white font-semibold uppercase"
+              >
+                SAVE DRAFT
+              </Button>
+              <Button
+                type="button"
+                onClick={() => {
+                  setFormData({
+                    ship: "",
+                    dateOfInspection: "",
+                    make: "",
+                    yearOfManufacture: "",
+                    observationsBoatDavit: "",
+                    remarksBoatDavit: "",
+                    observationsWinchMotor: "",
+                    remarksWinchMotor: "",
+                    observationsWireRope: "",
+                    remarksWireRope: "",
+                    observationsHydraulicSystem: "",
+                    remarksHydraulicSystem: "",
+                    observationsOperationalTrials: "",
+                    remarksOperationalTrials: "",
+                    observationsOilLevel: "",
+                    remarksOilLevel: "",
+                    observationsOilChange: "",
+                    remarksOilChange: "",
+                    observationsGreasing: "",
+                    remarksGreasing: "",
+                    remarksAnyOther: "",
+                    observationsOverall: "",
+                    authoritySignature: null,
+                  });
+                }}
+                className="px-6 bg-red-500 hover:bg-red-600 text-white font-semibold uppercase"
+              >
+                CLEAR
+              </Button>
+              <Button
+                type="submit"
+                className="px-6 bg-blue-600 hover:bg-blue-700 text-white font-semibold uppercase"
+              >
+                SAVE
               </Button>
             </div>
           </form>

@@ -24,7 +24,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Edit, Trash2 } from "lucide-react";
+import { Edit, Trash2, FileText, Save } from "lucide-react";
 
 const GalleyLiftsForm = () => {
   const [formData, setFormData] = useState({
@@ -173,6 +173,7 @@ const GalleyLiftsForm = () => {
     remarks_other_observ: "",
     remarks_overall: "",
     authority_signature: "",
+    note: "",
   });
 
   const [isDraftModalOpen, setIsDraftModalOpen] = useState(false);
@@ -377,6 +378,7 @@ const GalleyLiftsForm = () => {
       remarks_other_observ: "",
       remarks_overall: "",
       authority_signature: "",
+      note: "",
     });
     setHidDraftId("");
   };
@@ -678,6 +680,2061 @@ const GalleyLiftsForm = () => {
             </div>
           </div>
 
+          {/* Section 8: Structure */}
+          <div className="border border-gray-300 rounded-lg p-4">
+            <div className="flex items-center mb-4">
+              <span className="bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold mr-3">8</span>
+              <Label className="text-lg font-semibold">Structure</Label>
+            </div>
+            
+            {/* 8.1 Last Survey Date */}
+            <div className="mb-4">
+              <p className="text-sm text-gray-600 mb-2">8.1 Last Survey Date</p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <Label className="text-sm font-medium">Date:<span className="text-red-500">*</span></Label>
+                  <Input
+                    type="date"
+                    value={formData.last_survey_date}
+                    onChange={(e) => handleInputChange("last_survey_date", e.target.value)}
+                    className="w-full"
+                  />
+                </div>
+                <div className="md:col-span-2">
+                  <Label className="text-sm font-medium">Remarks:<span className="text-red-500">*</span></Label>
+                  <Textarea
+                    value={formData.last_survey_remarks}
+                    onChange={(e) => {
+                      if (validateSpecialChars(e.target.value)) {
+                        if (e.target.value.length <= 1000) {
+                          handleInputChange("last_survey_remarks", e.target.value);
+                        } else {
+                          alert("Remarks cannot exceed 1000 characters.");
+                        }
+                      } else {
+                        alert("Special characters are not allowed");
+                      }
+                    }}
+                    rows={2}
+                    className="w-full"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* 8.2 Pending Observations */}
+            <div className="mb-4">
+              <p className="text-sm text-gray-600 mb-2">8.2 Pending Observations</p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <Label className="text-sm font-medium">Date:<span className="text-red-500">*</span></Label>
+                  <Input
+                    type="date"
+                    value={formData.pending_observations_date}
+                    onChange={(e) => handleInputChange("pending_observations_date", e.target.value)}
+                    className="w-full"
+                  />
+                </div>
+                <div className="md:col-span-2">
+                  <Label className="text-sm font-medium">Remarks:<span className="text-red-500">*</span></Label>
+                  <Textarea
+                    value={formData.pending_observations_remarks}
+                    onChange={(e) => {
+                      if (validateSpecialChars(e.target.value)) {
+                        if (e.target.value.length <= 1000) {
+                          handleInputChange("pending_observations_remarks", e.target.value);
+                        } else {
+                          alert("Remarks cannot exceed 1000 characters.");
+                        }
+                      } else {
+                        alert("Special characters are not allowed");
+                      }
+                    }}
+                    rows={2}
+                    className="w-full"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Section 9: Maintenance Record/Inspection Log */}
+          <div className="border border-gray-300 rounded-lg p-4">
+            <div className="flex items-center mb-4">
+              <span className="bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold mr-3">9</span>
+              <Label className="text-lg font-semibold">Maintenance Record/Inspection Log</Label>
+            </div>
+            
+            {/* 9.1 Electrical Insulation */}
+            <div className="mb-4">
+              <p className="text-sm text-gray-600 mb-2">9.1 Electrical Insulation</p>
+              
+              {/* Weekly */}
+              <div className="mb-3">
+                <p className="text-xs text-gray-500 mb-1">Weekly</p>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div>
+                    <Label className="text-sm font-medium">Observations:<span className="text-red-500">*</span></Label>
+                    <Select value={formData.weekly_insulation_observations} onValueChange={(value) => handleInputChange("weekly_insulation_observations", value)}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="--Select--" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="0">--Select--</SelectItem>
+                        <SelectItem value="SAT">SAT</SelectItem>
+                        <SelectItem value="UNSAT">UNSAT</SelectItem>
+                        <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="md:col-span-2">
+                    <Label className="text-sm font-medium">Remarks:<span className="text-red-500">*</span></Label>
+                    <Textarea
+                      value={formData.weekly_insulation_remarks}
+                      onChange={(e) => {
+                        if (validateSpecialChars(e.target.value)) {
+                          if (e.target.value.length <= 1000) {
+                            handleInputChange("weekly_insulation_remarks", e.target.value);
+                          } else {
+                            alert("Remarks cannot exceed 1000 characters.");
+                          }
+                        } else {
+                          alert("Special characters are not allowed");
+                        }
+                      }}
+                      rows={2}
+                      className="w-full"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Prior Sailing */}
+              <div className="mb-3">
+                <p className="text-xs text-gray-500 mb-1">Prior Sailing</p>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div>
+                    <Label className="text-sm font-medium">Observations:<span className="text-red-500">*</span></Label>
+                    <Select value={formData.prior_sailing_observations} onValueChange={(value) => handleInputChange("prior_sailing_observations", value)}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="--Select--" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="0">--Select--</SelectItem>
+                        <SelectItem value="SAT">SAT</SelectItem>
+                        <SelectItem value="UNSAT">UNSAT</SelectItem>
+                        <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="md:col-span-2">
+                    <Label className="text-sm font-medium">Remarks:<span className="text-red-500">*</span></Label>
+                    <Textarea
+                      value={formData.prior_sailing_remarks}
+                      onChange={(e) => {
+                        if (validateSpecialChars(e.target.value)) {
+                          if (e.target.value.length <= 1000) {
+                            handleInputChange("prior_sailing_remarks", e.target.value);
+                          } else {
+                            alert("Remarks cannot exceed 1000 characters.");
+                          }
+                        } else {
+                          alert("Special characters are not allowed");
+                        }
+                      }}
+                      rows={2}
+                      className="w-full"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* 9.2 Inspection Log */}
+            <div className="mb-4">
+              <p className="text-sm text-gray-600 mb-2">9.2 Inspection Log</p>
+              
+              {/* Daily */}
+              <div className="mb-3">
+                <p className="text-xs text-gray-500 mb-1">Daily</p>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div>
+                    <Label className="text-sm font-medium">Observations:<span className="text-red-500">*</span></Label>
+                    <Select value={formData.daily_lift_inspection_observations} onValueChange={(value) => handleInputChange("daily_lift_inspection_observations", value)}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="--Select--" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="0">--Select--</SelectItem>
+                        <SelectItem value="SAT">SAT</SelectItem>
+                        <SelectItem value="UNSAT">UNSAT</SelectItem>
+                        <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="md:col-span-2">
+                    <Label className="text-sm font-medium">Remarks:<span className="text-red-500">*</span></Label>
+                    <Textarea
+                      value={formData.daily_lift_inspection_remarks}
+                      onChange={(e) => {
+                        if (validateSpecialChars(e.target.value)) {
+                          if (e.target.value.length <= 1000) {
+                            handleInputChange("daily_lift_inspection_remarks", e.target.value);
+                          } else {
+                            alert("Remarks cannot exceed 1000 characters.");
+                          }
+                        } else {
+                          alert("Special characters are not allowed");
+                        }
+                      }}
+                      rows={2}
+                      className="w-full"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* 10 Days Inactive */}
+              <div className="mb-3">
+                <p className="text-xs text-gray-500 mb-1">10 Days Inactive</p>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div>
+                    <Label className="text-sm font-medium">Observations:<span className="text-red-500">*</span></Label>
+                    <Select value={formData.lift_inactive_10days_observations} onValueChange={(value) => handleInputChange("lift_inactive_10days_observations", value)}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="--Select--" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="0">--Select--</SelectItem>
+                        <SelectItem value="SAT">SAT</SelectItem>
+                        <SelectItem value="UNSAT">UNSAT</SelectItem>
+                        <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="md:col-span-2">
+                    <Label className="text-sm font-medium">Remarks:<span className="text-red-500">*</span></Label>
+                    <Textarea
+                      value={formData.lift_inactive_10days_remarks}
+                      onChange={(e) => {
+                        if (validateSpecialChars(e.target.value)) {
+                          if (e.target.value.length <= 1000) {
+                            handleInputChange("lift_inactive_10days_remarks", e.target.value);
+                          } else {
+                            alert("Remarks cannot exceed 1000 characters.");
+                          }
+                        } else {
+                          alert("Special characters are not allowed");
+                        }
+                      }}
+                      rows={2}
+                      className="w-full"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* 3 Months */}
+              <div className="mb-3">
+                <p className="text-xs text-gray-500 mb-1">3 Months</p>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div>
+                    <Label className="text-sm font-medium">Observations:<span className="text-red-500">*</span></Label>
+                    <Select value={formData.quarterly_lift_inspection_observations} onValueChange={(value) => handleInputChange("quarterly_lift_inspection_observations", value)}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="--Select--" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="0">--Select--</SelectItem>
+                        <SelectItem value="SAT">SAT</SelectItem>
+                        <SelectItem value="UNSAT">UNSAT</SelectItem>
+                        <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="md:col-span-2">
+                    <Label className="text-sm font-medium">Remarks:<span className="text-red-500">*</span></Label>
+                    <Textarea
+                      value={formData.quarterly_lift_inspection_remarks}
+                      onChange={(e) => {
+                        if (validateSpecialChars(e.target.value)) {
+                          if (e.target.value.length <= 1000) {
+                            handleInputChange("quarterly_lift_inspection_remarks", e.target.value);
+                          } else {
+                            alert("Remarks cannot exceed 1000 characters.");
+                          }
+                        } else {
+                          alert("Special characters are not allowed");
+                        }
+                      }}
+                      rows={2}
+                      className="w-full"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* After Sailing */}
+              <div className="mb-3">
+                <p className="text-xs text-gray-500 mb-1">After Sailing</p>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div>
+                    <Label className="text-sm font-medium">Observations:<span className="text-red-500">*</span></Label>
+                    <Select value={formData.after_sailing_observations} onValueChange={(value) => handleInputChange("after_sailing_observations", value)}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="--Select--" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="0">--Select--</SelectItem>
+                        <SelectItem value="SAT">SAT</SelectItem>
+                        <SelectItem value="UNSAT">UNSAT</SelectItem>
+                        <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="md:col-span-2">
+                    <Label className="text-sm font-medium">Remarks:<span className="text-red-500">*</span></Label>
+                    <Textarea
+                      value={formData.after_sailing_remarks}
+                      onChange={(e) => {
+                        if (validateSpecialChars(e.target.value)) {
+                          if (e.target.value.length <= 1000) {
+                            handleInputChange("after_sailing_remarks", e.target.value);
+                          } else {
+                            alert("Remarks cannot exceed 1000 characters.");
+                          }
+                        } else {
+                          alert("Special characters are not allowed");
+                        }
+                      }}
+                      rows={2}
+                      className="w-full"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* 9.3 Galley Lifts */}
+            <div className="mb-4">
+              <p className="text-sm text-gray-600 mb-2">9.3 Galley Lifts</p>
+              
+              {/* 3 Months */}
+              <div className="mb-3">
+                <p className="text-xs text-gray-500 mb-1">3 Months</p>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div>
+                    <Label className="text-sm font-medium">Observations:<span className="text-red-500">*</span></Label>
+                    <Select value={formData.quarterly_lift_inspection_observations1} onValueChange={(value) => handleInputChange("quarterly_lift_inspection_observations1", value)}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="--Select--" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="0">--Select--</SelectItem>
+                        <SelectItem value="SAT">SAT</SelectItem>
+                        <SelectItem value="UNSAT">UNSAT</SelectItem>
+                        <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="md:col-span-2">
+                    <Label className="text-sm font-medium">Remarks:<span className="text-red-500">*</span></Label>
+                    <Textarea
+                      value={formData.quarterly_lift_inspection_remarks1}
+                      onChange={(e) => {
+                        if (validateSpecialChars(e.target.value)) {
+                          if (e.target.value.length <= 1000) {
+                            handleInputChange("quarterly_lift_inspection_remarks1", e.target.value);
+                          } else {
+                            alert("Remarks cannot exceed 1000 characters.");
+                          }
+                        } else {
+                          alert("Special characters are not allowed");
+                        }
+                      }}
+                      rows={2}
+                      className="w-full"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* After Sailing */}
+              <div className="mb-3">
+                <p className="text-xs text-gray-500 mb-1">After Sailing</p>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div>
+                    <Label className="text-sm font-medium">Observations:<span className="text-red-500">*</span></Label>
+                    <Select value={formData.after_sailing_observations1} onValueChange={(value) => handleInputChange("after_sailing_observations1", value)}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="--Select--" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="0">--Select--</SelectItem>
+                        <SelectItem value="SAT">SAT</SelectItem>
+                        <SelectItem value="UNSAT">UNSAT</SelectItem>
+                        <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="md:col-span-2">
+                    <Label className="text-sm font-medium">Remarks:<span className="text-red-500">*</span></Label>
+                    <Textarea
+                      value={formData.after_sailing_remarks1}
+                      onChange={(e) => {
+                        if (validateSpecialChars(e.target.value)) {
+                          if (e.target.value.length <= 1000) {
+                            handleInputChange("after_sailing_remarks1", e.target.value);
+                          } else {
+                            alert("Remarks cannot exceed 1000 characters.");
+                          }
+                        } else {
+                          alert("Special characters are not allowed");
+                        }
+                      }}
+                      rows={2}
+                      className="w-full"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Section 10: Greasing */}
+          <div className="border border-gray-300 rounded-lg p-4">
+            <div className="flex items-center mb-4">
+              <span className="bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold mr-3">10</span>
+              <Label className="text-lg font-semibold">Greasing</Label>
+            </div>
+            
+            {/* 10.1 Greasing Points */}
+            <div className="mb-4">
+              <p className="text-sm text-gray-600 mb-2">10.1 Greasing Points</p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <Label className="text-sm font-medium">Condition:<span className="text-red-500">*</span></Label>
+                  <Select value={formData.condition_greasing_points} onValueChange={(value) => handleInputChange("condition_greasing_points", value)}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="--Select--" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="0">--Select--</SelectItem>
+                      <SelectItem value="SAT">SAT</SelectItem>
+                      <SelectItem value="UNSAT">UNSAT</SelectItem>
+                      <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="md:col-span-2">
+                  <Label className="text-sm font-medium">Remarks:<span className="text-red-500">*</span></Label>
+                  <Textarea
+                    value={formData.remarks_greasing_points}
+                    onChange={(e) => {
+                      if (validateSpecialChars(e.target.value)) {
+                        if (e.target.value.length <= 1000) {
+                          handleInputChange("remarks_greasing_points", e.target.value);
+                        } else {
+                          alert("Remarks cannot exceed 1000 characters.");
+                        }
+                      } else {
+                        alert("Special characters are not allowed");
+                      }
+                    }}
+                    rows={2}
+                    className="w-full"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* 10.2 Grease Layer Thickness */}
+            <div className="mb-4">
+              <p className="text-sm text-gray-600 mb-2">10.2 Grease Layer Thickness</p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <Label className="text-sm font-medium">Condition:<span className="text-red-500">*</span></Label>
+                  <Select value={formData.condition_grease_layer} onValueChange={(value) => handleInputChange("condition_grease_layer", value)}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="--Select--" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="0">--Select--</SelectItem>
+                      <SelectItem value="SAT">SAT</SelectItem>
+                      <SelectItem value="UNSAT">UNSAT</SelectItem>
+                      <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="md:col-span-2">
+                  <Label className="text-sm font-medium">Remarks:<span className="text-red-500">*</span></Label>
+                  <Textarea
+                    value={formData.remarks_grease_layer}
+                    onChange={(e) => {
+                      if (validateSpecialChars(e.target.value)) {
+                        if (e.target.value.length <= 1000) {
+                          handleInputChange("remarks_grease_layer", e.target.value);
+                        } else {
+                          alert("Remarks cannot exceed 1000 characters.");
+                        }
+                      } else {
+                        alert("Special characters are not allowed");
+                      }
+                    }}
+                    rows={2}
+                    className="w-full"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* 10.3 Bearings */}
+            <div className="mb-4">
+              <p className="text-sm text-gray-600 mb-2">10.3 Bearings</p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <Label className="text-sm font-medium">Condition:<span className="text-red-500">*</span></Label>
+                  <Select value={formData.condition_bearings} onValueChange={(value) => handleInputChange("condition_bearings", value)}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="--Select--" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="0">--Select--</SelectItem>
+                      <SelectItem value="SAT">SAT</SelectItem>
+                      <SelectItem value="UNSAT">UNSAT</SelectItem>
+                      <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="md:col-span-2">
+                  <Label className="text-sm font-medium">Remarks:<span className="text-red-500">*</span></Label>
+                  <Textarea
+                    value={formData.remarks_bearings}
+                    onChange={(e) => {
+                      if (validateSpecialChars(e.target.value)) {
+                        if (e.target.value.length <= 1000) {
+                          handleInputChange("remarks_bearings", e.target.value);
+                        } else {
+                          alert("Remarks cannot exceed 1000 characters.");
+                        }
+                      } else {
+                        alert("Special characters are not allowed");
+                      }
+                    }}
+                    rows={2}
+                    className="w-full"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* 10.4 Lift Guides */}
+            <div className="mb-4">
+              <p className="text-sm text-gray-600 mb-2">10.4 Lift Guides</p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <Label className="text-sm font-medium">Condition:<span className="text-red-500">*</span></Label>
+                  <Select value={formData.condition_lift_guides} onValueChange={(value) => handleInputChange("condition_lift_guides", value)}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="--Select--" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="0">--Select--</SelectItem>
+                      <SelectItem value="SAT">SAT</SelectItem>
+                      <SelectItem value="UNSAT">UNSAT</SelectItem>
+                      <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="md:col-span-2">
+                  <Label className="text-sm font-medium">Remarks:<span className="text-red-500">*</span></Label>
+                  <Textarea
+                    value={formData.remarks_lift_guides}
+                    onChange={(e) => {
+                      if (validateSpecialChars(e.target.value)) {
+                        if (e.target.value.length <= 1000) {
+                          handleInputChange("remarks_lift_guides", e.target.value);
+                        } else {
+                          alert("Remarks cannot exceed 1000 characters.");
+                        }
+                      } else {
+                        alert("Special characters are not allowed");
+                      }
+                    }}
+                    rows={2}
+                    className="w-full"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* 10.5 Chain Holders */}
+            <div className="mb-4">
+              <p className="text-sm text-gray-600 mb-2">10.5 Chain Holders</p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <Label className="text-sm font-medium">Condition:<span className="text-red-500">*</span></Label>
+                  <Select value={formData.condition_chain_holders} onValueChange={(value) => handleInputChange("condition_chain_holders", value)}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="--Select--" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="0">--Select--</SelectItem>
+                      <SelectItem value="SAT">SAT</SelectItem>
+                      <SelectItem value="UNSAT">UNSAT</SelectItem>
+                      <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="md:col-span-2">
+                  <Label className="text-sm font-medium">Remarks:<span className="text-red-500">*</span></Label>
+                  <Textarea
+                    value={formData.remarks_chain_holders}
+                    onChange={(e) => {
+                      if (validateSpecialChars(e.target.value)) {
+                        if (e.target.value.length <= 1000) {
+                          handleInputChange("remarks_chain_holders", e.target.value);
+                        } else {
+                          alert("Remarks cannot exceed 1000 characters.");
+                        }
+                      } else {
+                        alert("Special characters are not allowed");
+                      }
+                    }}
+                    rows={2}
+                    className="w-full"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* 10.6 Rollers & Pulleys */}
+            <div className="mb-4">
+              <p className="text-sm text-gray-600 mb-2">10.6 Rollers & Pulleys</p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <Label className="text-sm font-medium">Condition:<span className="text-red-500">*</span></Label>
+                  <Select value={formData.condition_rollers_pulleys} onValueChange={(value) => handleInputChange("condition_rollers_pulleys", value)}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="--Select--" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="0">--Select--</SelectItem>
+                      <SelectItem value="SAT">SAT</SelectItem>
+                      <SelectItem value="UNSAT">UNSAT</SelectItem>
+                      <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="md:col-span-2">
+                  <Label className="text-sm font-medium">Remarks:<span className="text-red-500">*</span></Label>
+                  <Textarea
+                    value={formData.remarks_rollers_pulleys}
+                    onChange={(e) => {
+                      if (validateSpecialChars(e.target.value)) {
+                        if (e.target.value.length <= 1000) {
+                          handleInputChange("remarks_rollers_pulleys", e.target.value);
+                        } else {
+                          alert("Remarks cannot exceed 1000 characters.");
+                        }
+                      } else {
+                        alert("Special characters are not allowed");
+                      }
+                    }}
+                    rows={2}
+                    className="w-full"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* 10.7 Tracks */}
+            <div className="mb-4">
+              <p className="text-sm text-gray-600 mb-2">10.7 Tracks</p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <Label className="text-sm font-medium">Condition:<span className="text-red-500">*</span></Label>
+                  <Select value={formData.condition_tracks} onValueChange={(value) => handleInputChange("condition_tracks", value)}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="--Select--" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="0">--Select--</SelectItem>
+                      <SelectItem value="SAT">SAT</SelectItem>
+                      <SelectItem value="UNSAT">UNSAT</SelectItem>
+                      <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="md:col-span-2">
+                  <Label className="text-sm font-medium">Remarks:<span className="text-red-500">*</span></Label>
+                  <Textarea
+                    value={formData.remarks_tracks}
+                    onChange={(e) => {
+                      if (validateSpecialChars(e.target.value)) {
+                        if (e.target.value.length <= 1000) {
+                          handleInputChange("remarks_tracks", e.target.value);
+                        } else {
+                          alert("Remarks cannot exceed 1000 characters.");
+                        }
+                      } else {
+                        alert("Special characters are not allowed");
+                      }
+                    }}
+                    rows={2}
+                    className="w-full"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* 10.8 Wire Ropes */}
+            <div className="mb-4">
+              <p className="text-sm text-gray-600 mb-2">10.8 Wire Ropes</p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <Label className="text-sm font-medium">Condition:<span className="text-red-500">*</span></Label>
+                  <Select value={formData.condition_wire_ropes} onValueChange={(value) => handleInputChange("condition_wire_ropes", value)}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="--Select--" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="0">--Select--</SelectItem>
+                      <SelectItem value="SAT">SAT</SelectItem>
+                      <SelectItem value="UNSAT">UNSAT</SelectItem>
+                      <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="md:col-span-2">
+                  <Label className="text-sm font-medium">Remarks:<span className="text-red-500">*</span></Label>
+                  <Textarea
+                    value={formData.remarks_wire_ropes}
+                    onChange={(e) => {
+                      if (validateSpecialChars(e.target.value)) {
+                        if (e.target.value.length <= 1000) {
+                          handleInputChange("remarks_wire_ropes", e.target.value);
+                        } else {
+                          alert("Remarks cannot exceed 1000 characters.");
+                        }
+                      } else {
+                        alert("Special characters are not allowed");
+                      }
+                    }}
+                    rows={2}
+                    className="w-full"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* 10.9 Greasing Routine */}
+            <div className="mb-4">
+              <p className="text-sm text-gray-600 mb-2">10.9 Greasing Routine</p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <Label className="text-sm font-medium">Condition:<span className="text-red-500">*</span></Label>
+                  <Select value={formData.condition_greasing_routine} onValueChange={(value) => handleInputChange("condition_greasing_routine", value)}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="--Select--" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="0">--Select--</SelectItem>
+                      <SelectItem value="SAT">SAT</SelectItem>
+                      <SelectItem value="UNSAT">UNSAT</SelectItem>
+                      <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="md:col-span-2">
+                  <Label className="text-sm font-medium">Remarks:<span className="text-red-500">*</span></Label>
+                  <Textarea
+                    value={formData.remarks_greasing_routine}
+                    onChange={(e) => {
+                      if (validateSpecialChars(e.target.value)) {
+                        if (e.target.value.length <= 1000) {
+                          handleInputChange("remarks_greasing_routine", e.target.value);
+                        } else {
+                          alert("Remarks cannot exceed 1000 characters.");
+                        }
+                      } else {
+                        alert("Special characters are not allowed");
+                      }
+                    }}
+                    rows={2}
+                    className="w-full"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Section 11: Oil */}
+          <div className="border border-gray-300 rounded-lg p-4">
+            <div className="flex items-center mb-4">
+              <span className="bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold mr-3">11</span>
+              <Label className="text-lg font-semibold">Oil</Label>
+            </div>
+            
+            {/* 11.1 Type of Oil */}
+            <div className="mb-4">
+              <p className="text-sm text-gray-600 mb-2">11.1 Type of Oil</p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <Label className="text-sm font-medium">Observations:<span className="text-red-500">*</span></Label>
+                  <Select value={formData.observations_type_of_oil} onValueChange={(value) => handleInputChange("observations_type_of_oil", value)}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="--Select--" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="0">--Select--</SelectItem>
+                      <SelectItem value="SAT">SAT</SelectItem>
+                      <SelectItem value="UNSAT">UNSAT</SelectItem>
+                      <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="md:col-span-2">
+                  <Label className="text-sm font-medium">Remarks:<span className="text-red-500">*</span></Label>
+                  <Textarea
+                    value={formData.remarks_type_of_oil}
+                    onChange={(e) => {
+                      if (validateSpecialChars(e.target.value)) {
+                        if (e.target.value.length <= 1000) {
+                          handleInputChange("remarks_type_of_oil", e.target.value);
+                        } else {
+                          alert("Remarks cannot exceed 1000 characters.");
+                        }
+                      } else {
+                        alert("Special characters are not allowed");
+                      }
+                    }}
+                    rows={2}
+                    className="w-full"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* 11.2 Oil Level */}
+            <div className="mb-4">
+              <p className="text-sm text-gray-600 mb-2">11.2 Oil Level</p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <Label className="text-sm font-medium">Observations:<span className="text-red-500">*</span></Label>
+                  <Select value={formData.observations_oil_level} onValueChange={(value) => handleInputChange("observations_oil_level", value)}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="--Select--" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="0">--Select--</SelectItem>
+                      <SelectItem value="SAT">SAT</SelectItem>
+                      <SelectItem value="UNSAT">UNSAT</SelectItem>
+                      <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="md:col-span-2">
+                  <Label className="text-sm font-medium">Remarks:<span className="text-red-500">*</span></Label>
+                  <Textarea
+                    value={formData.remarks_oil_level}
+                    onChange={(e) => {
+                      if (validateSpecialChars(e.target.value)) {
+                        if (e.target.value.length <= 1000) {
+                          handleInputChange("remarks_oil_level", e.target.value);
+                        } else {
+                          alert("Remarks cannot exceed 1000 characters.");
+                        }
+                      } else {
+                        alert("Special characters are not allowed");
+                      }
+                    }}
+                    rows={2}
+                    className="w-full"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* 11.3 Date of Last Oil Change */}
+            <div className="mb-4">
+              <p className="text-sm text-gray-600 mb-2">11.3 Date of Last Oil Change</p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <Label className="text-sm font-medium">Date:<span className="text-red-500">*</span></Label>
+                  <Input
+                    type="date"
+                    value={formData.date_oil_change}
+                    onChange={(e) => handleInputChange("date_oil_change", e.target.value)}
+                    className="w-full"
+                  />
+                </div>
+                <div className="md:col-span-2">
+                  <Label className="text-sm font-medium">Remarks:<span className="text-red-500">*</span></Label>
+                  <Textarea
+                    value={formData.remarks_oil_change}
+                    onChange={(e) => {
+                      if (validateSpecialChars(e.target.value)) {
+                        if (e.target.value.length <= 1000) {
+                          handleInputChange("remarks_oil_change", e.target.value);
+                        } else {
+                          alert("Remarks cannot exceed 1000 characters.");
+                        }
+                      } else {
+                        alert("Special characters are not allowed");
+                      }
+                    }}
+                    rows={2}
+                    className="w-full"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* 11.4 Date of Last Oil Analysis */}
+            <div className="mb-4">
+              <p className="text-sm text-gray-600 mb-2">11.4 Date of Last Oil Analysis</p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <Label className="text-sm font-medium">Date:<span className="text-red-500">*</span></Label>
+                  <Input
+                    type="date"
+                    value={formData.date_last_oil_analysis}
+                    onChange={(e) => handleInputChange("date_last_oil_analysis", e.target.value)}
+                    className="w-full"
+                  />
+                </div>
+                <div className="md:col-span-2">
+                  <Label className="text-sm font-medium">Remarks:<span className="text-red-500">*</span></Label>
+                  <Textarea
+                    value={formData.remarks_last_oil_analysis}
+                    onChange={(e) => {
+                      if (validateSpecialChars(e.target.value)) {
+                        if (e.target.value.length <= 1000) {
+                          handleInputChange("remarks_last_oil_analysis", e.target.value);
+                        } else {
+                          alert("Remarks cannot exceed 1000 characters.");
+                        }
+                      } else {
+                        alert("Special characters are not allowed");
+                      }
+                    }}
+                    rows={2}
+                    className="w-full"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* 11.5 Oil Analysis Results */}
+            <div className="mb-4">
+              <p className="text-sm text-gray-600 mb-2">11.5 Oil Analysis Results</p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <Label className="text-sm font-medium">Observations:<span className="text-red-500">*</span></Label>
+                  <Select value={formData.observations_oil_analysis} onValueChange={(value) => handleInputChange("observations_oil_analysis", value)}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="--Select--" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="0">--Select--</SelectItem>
+                      <SelectItem value="SAT">SAT</SelectItem>
+                      <SelectItem value="UNSAT">UNSAT</SelectItem>
+                      <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="md:col-span-2">
+                  <Label className="text-sm font-medium">Remarks:<span className="text-red-500">*</span></Label>
+                  <Textarea
+                    value={formData.remarks_oil_analysis}
+                    onChange={(e) => {
+                      if (validateSpecialChars(e.target.value)) {
+                        if (e.target.value.length <= 1000) {
+                          handleInputChange("remarks_oil_analysis", e.target.value);
+                        } else {
+                          alert("Remarks cannot exceed 1000 characters.");
+                        }
+                      } else {
+                        alert("Special characters are not allowed");
+                      }
+                    }}
+                    rows={2}
+                    className="w-full"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* 11.6 Oil Leakages */}
+            <div className="mb-4">
+              <p className="text-sm text-gray-600 mb-2">11.6 Oil Leakages</p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <Label className="text-sm font-medium">Observations:<span className="text-red-500">*</span></Label>
+                  <Select value={formData.observations_oil_leakages} onValueChange={(value) => handleInputChange("observations_oil_leakages", value)}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="--Select--" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="0">--Select--</SelectItem>
+                      <SelectItem value="SAT">SAT</SelectItem>
+                      <SelectItem value="UNSAT">UNSAT</SelectItem>
+                      <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="md:col-span-2">
+                  <Label className="text-sm font-medium">Remarks:<span className="text-red-500">*</span></Label>
+                  <Textarea
+                    value={formData.remarks_oil_leakages}
+                    onChange={(e) => {
+                      if (validateSpecialChars(e.target.value)) {
+                        if (e.target.value.length <= 1000) {
+                          handleInputChange("remarks_oil_leakages", e.target.value);
+                        } else {
+                          alert("Remarks cannot exceed 1000 characters.");
+                        }
+                      } else {
+                        alert("Special characters are not allowed");
+                      }
+                    }}
+                    rows={2}
+                    className="w-full"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Section 12: Visual Condition */}
+          <div className="border border-gray-300 rounded-lg p-4">
+            <div className="flex items-center mb-4">
+              <span className="bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold mr-3">12</span>
+              <Label className="text-lg font-semibold">Visual Condition</Label>
+            </div>
+            
+            {/* 12.1 Lift Shaft */}
+            <div className="mb-4">
+              <p className="text-sm text-gray-600 mb-2">12.1 Lift Shaft</p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <Label className="text-sm font-medium">Observations:<span className="text-red-500">*</span></Label>
+                  <Select value={formData.observations_lift_shaft} onValueChange={(value) => handleInputChange("observations_lift_shaft", value)}>
+                    <SelectTrigger><SelectValue placeholder="--Select--" /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="0">--Select--</SelectItem>
+                      <SelectItem value="SAT">SAT</SelectItem>
+                      <SelectItem value="UNSAT">UNSAT</SelectItem>
+                      <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="md:col-span-2">
+                  <Label className="text-sm font-medium">Remarks:<span className="text-red-500">*</span></Label>
+                  <Textarea value={formData.remarks_lift_shaft} onChange={(e) => handleInputChange("remarks_lift_shaft", e.target.value)} rows={2} className="w-full" />
+                </div>
+              </div>
+            </div>
+
+            {/* 12.2 Cabin Structure */}
+            <div className="mb-4">
+              <p className="text-sm text-gray-600 mb-2">12.2 Cabin Structure</p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <Label className="text-sm font-medium">Observations:<span className="text-red-500">*</span></Label>
+                  <Select value={formData.observations_cabin_structure} onValueChange={(value) => handleInputChange("observations_cabin_structure", value)}>
+                    <SelectTrigger><SelectValue placeholder="--Select--" /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="0">--Select--</SelectItem>
+                      <SelectItem value="SAT">SAT</SelectItem>
+                      <SelectItem value="UNSAT">UNSAT</SelectItem>
+                      <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="md:col-span-2">
+                  <Label className="text-sm font-medium">Remarks:<span className="text-red-500">*</span></Label>
+                  <Textarea value={formData.remarks_cabin_structure} onChange={(e) => handleInputChange("remarks_cabin_structure", e.target.value)} rows={2} className="w-full" />
+                </div>
+              </div>
+            </div>
+
+            {/* 12.3 Counter Weight */}
+            <div className="mb-4">
+              <p className="text-sm text-gray-600 mb-2">12.3 Counter Weight</p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <Label className="text-sm font-medium">Observations:<span className="text-red-500">*</span></Label>
+                  <Select value={formData.observations_counter_weight} onValueChange={(value) => handleInputChange("observations_counter_weight", value)}>
+                    <SelectTrigger><SelectValue placeholder="--Select--" /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="0">--Select--</SelectItem>
+                      <SelectItem value="SAT">SAT</SelectItem>
+                      <SelectItem value="UNSAT">UNSAT</SelectItem>
+                      <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="md:col-span-2">
+                  <Label className="text-sm font-medium">Remarks:<span className="text-red-500">*</span></Label>
+                  <Textarea value={formData.remarks_counter_weight} onChange={(e) => handleInputChange("remarks_counter_weight", e.target.value)} rows={2} className="w-full" />
+                </div>
+              </div>
+            </div>
+
+            {/* 12.4 Cabin Door */}
+            <div className="mb-4">
+              <p className="text-sm text-gray-600 mb-2">12.4 Cabin Door</p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <Label className="text-sm font-medium">Observations:<span className="text-red-500">*</span></Label>
+                  <Select value={formData.observations_cabin_door} onValueChange={(value) => handleInputChange("observations_cabin_door", value)}>
+                    <SelectTrigger><SelectValue placeholder="--Select--" /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="0">--Select--</SelectItem>
+                      <SelectItem value="SAT">SAT</SelectItem>
+                      <SelectItem value="UNSAT">UNSAT</SelectItem>
+                      <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="md:col-span-2">
+                  <Label className="text-sm font-medium">Remarks:<span className="text-red-500">*</span></Label>
+                  <Textarea value={formData.remarks_cabin_door} onChange={(e) => handleInputChange("remarks_cabin_door", e.target.value)} rows={2} className="w-full" />
+                </div>
+              </div>
+            </div>
+
+            {/* 12.5 Machinery Foundation */}
+            <div className="mb-4">
+              <p className="text-sm text-gray-600 mb-2">12.5 Machinery Foundation</p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <Label className="text-sm font-medium">Observations:<span className="text-red-500">*</span></Label>
+                  <Select value={formData.observations_machinery_foundation} onValueChange={(value) => handleInputChange("observations_machinery_foundation", value)}>
+                    <SelectTrigger><SelectValue placeholder="--Select--" /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="0">--Select--</SelectItem>
+                      <SelectItem value="SAT">SAT</SelectItem>
+                      <SelectItem value="UNSAT">UNSAT</SelectItem>
+                      <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="md:col-span-2">
+                  <Label className="text-sm font-medium">Remarks:<span className="text-red-500">*</span></Label>
+                  <Textarea value={formData.remarks_machinery_foundation} onChange={(e) => handleInputChange("remarks_machinery_foundation", e.target.value)} rows={2} className="w-full" />
+                </div>
+              </div>
+            </div>
+
+            {/* 12.6 Structure & Mechanism */}
+            <div className="mb-4">
+              <p className="text-sm text-gray-600 mb-2">12.6 Structure & Mechanism</p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <Label className="text-sm font-medium">Observations:<span className="text-red-500">*</span></Label>
+                  <Select value={formData.observations_structure_mechanism} onValueChange={(value) => handleInputChange("observations_structure_mechanism", value)}>
+                    <SelectTrigger><SelectValue placeholder="--Select--" /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="0">--Select--</SelectItem>
+                      <SelectItem value="SAT">SAT</SelectItem>
+                      <SelectItem value="UNSAT">UNSAT</SelectItem>
+                      <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="md:col-span-2">
+                  <Label className="text-sm font-medium">Remarks:<span className="text-red-500">*</span></Label>
+                  <Textarea value={formData.remarks_structure_mechanism} onChange={(e) => handleInputChange("remarks_structure_mechanism", e.target.value)} rows={2} className="w-full" />
+                </div>
+              </div>
+            </div>
+
+            {/* 12.7 Dirt & Oil */}
+            <div className="mb-4">
+              <p className="text-sm text-gray-600 mb-2">12.7 Dirt & Oil</p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <Label className="text-sm font-medium">Observations:<span className="text-red-500">*</span></Label>
+                  <Select value={formData.observations_dirt_oil} onValueChange={(value) => handleInputChange("observations_dirt_oil", value)}>
+                    <SelectTrigger><SelectValue placeholder="--Select--" /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="0">--Select--</SelectItem>
+                      <SelectItem value="SAT">SAT</SelectItem>
+                      <SelectItem value="UNSAT">UNSAT</SelectItem>
+                      <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="md:col-span-2">
+                  <Label className="text-sm font-medium">Remarks:<span className="text-red-500">*</span></Label>
+                  <Textarea value={formData.remarks_dirt_oil} onChange={(e) => handleInputChange("remarks_dirt_oil", e.target.value)} rows={2} className="w-full" />
+                </div>
+              </div>
+            </div>
+
+            {/* 12.8 Dust & Debris */}
+            <div className="mb-4">
+              <p className="text-sm text-gray-600 mb-2">12.8 Dust & Debris</p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <Label className="text-sm font-medium">Observations:<span className="text-red-500">*</span></Label>
+                  <Select value={formData.observations_dust_debris} onValueChange={(value) => handleInputChange("observations_dust_debris", value)}>
+                    <SelectTrigger><SelectValue placeholder="--Select--" /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="0">--Select--</SelectItem>
+                      <SelectItem value="SAT">SAT</SelectItem>
+                      <SelectItem value="UNSAT">UNSAT</SelectItem>
+                      <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="md:col-span-2">
+                  <Label className="text-sm font-medium">Remarks:<span className="text-red-500">*</span></Label>
+                  <Textarea value={formData.remarks_dust_debris} onChange={(e) => handleInputChange("remarks_dust_debris", e.target.value)} rows={2} className="w-full" />
+                </div>
+              </div>
+            </div>
+
+            {/* 12.9 Brake Mechanism */}
+            <div className="mb-4">
+              <p className="text-sm text-gray-600 mb-2">12.9 Brake Mechanism</p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <Label className="text-sm font-medium">Observations:<span className="text-red-500">*</span></Label>
+                  <Select value={formData.observations_brake_mechanism} onValueChange={(value) => handleInputChange("observations_brake_mechanism", value)}>
+                    <SelectTrigger><SelectValue placeholder="--Select--" /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="0">--Select--</SelectItem>
+                      <SelectItem value="SAT">SAT</SelectItem>
+                      <SelectItem value="UNSAT">UNSAT</SelectItem>
+                      <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="md:col-span-2">
+                  <Label className="text-sm font-medium">Remarks:<span className="text-red-500">*</span></Label>
+                  <Textarea value={formData.remarks_brake_mechanism} onChange={(e) => handleInputChange("remarks_brake_mechanism", e.target.value)} rows={2} className="w-full" />
+                </div>
+              </div>
+            </div>
+
+            {/* 12.10 Traction Sheave */}
+            <div className="mb-4">
+              <p className="text-sm text-gray-600 mb-2">12.10 Traction Sheave</p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <Label className="text-sm font-medium">Observations:<span className="text-red-500">*</span></Label>
+                  <Select value={formData.observations_traction_sheave} onValueChange={(value) => handleInputChange("observations_traction_sheave", value)}>
+                    <SelectTrigger><SelectValue placeholder="--Select--" /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="0">--Select--</SelectItem>
+                      <SelectItem value="SAT">SAT</SelectItem>
+                      <SelectItem value="UNSAT">UNSAT</SelectItem>
+                      <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="md:col-span-2">
+                  <Label className="text-sm font-medium">Remarks:<span className="text-red-500">*</span></Label>
+                  <Textarea value={formData.remarks_traction_sheave} onChange={(e) => handleInputChange("remarks_traction_sheave", e.target.value)} rows={2} className="w-full" />
+                </div>
+              </div>
+            </div>
+
+            {/* 12.11 Equipment Fastening */}
+            <div className="mb-4">
+              <p className="text-sm text-gray-600 mb-2">12.11 Equipment Fastening</p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <Label className="text-sm font-medium">Observations:<span className="text-red-500">*</span></Label>
+                  <Select value={formData.observations_equipment_fastening} onValueChange={(value) => handleInputChange("observations_equipment_fastening", value)}>
+                    <SelectTrigger><SelectValue placeholder="--Select--" /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="0">--Select--</SelectItem>
+                      <SelectItem value="SAT">SAT</SelectItem>
+                      <SelectItem value="UNSAT">UNSAT</SelectItem>
+                      <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="md:col-span-2">
+                  <Label className="text-sm font-medium">Remarks:<span className="text-red-500">*</span></Label>
+                  <Textarea value={formData.remarks_equipment_fastening} onChange={(e) => handleInputChange("remarks_equipment_fastening", e.target.value)} rows={2} className="w-full" />
+                </div>
+              </div>
+            </div>
+
+            {/* 12.12 Circuit Breaker */}
+            <div className="mb-4">
+              <p className="text-sm text-gray-600 mb-2">12.12 Circuit Breaker</p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <Label className="text-sm font-medium">Observations:<span className="text-red-500">*</span></Label>
+                  <Select value={formData.observations_circuit_breaker} onValueChange={(value) => handleInputChange("observations_circuit_breaker", value)}>
+                    <SelectTrigger><SelectValue placeholder="--Select--" /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="0">--Select--</SelectItem>
+                      <SelectItem value="SAT">SAT</SelectItem>
+                      <SelectItem value="UNSAT">UNSAT</SelectItem>
+                      <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="md:col-span-2">
+                  <Label className="text-sm font-medium">Remarks:<span className="text-red-500">*</span></Label>
+                  <Textarea value={formData.remarks_circuit_breaker} onChange={(e) => handleInputChange("remarks_circuit_breaker", e.target.value)} rows={2} className="w-full" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Section 13: Wire Ropes */}
+          <div className="border border-gray-300 rounded-lg p-4">
+            <div className="flex items-center mb-4">
+              <span className="bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold mr-3">13</span>
+              <Label className="text-lg font-semibold">Wire Ropes</Label>
+            </div>
+            
+            {/* 13.1 Visual Inspection */}
+            <div className="mb-4">
+              <p className="text-sm text-gray-600 mb-2">13.1 Visual Inspection</p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <Label className="text-sm font-medium">Observations:<span className="text-red-500">*</span></Label>
+                  <Select value={formData.observations_wire_ropes} onValueChange={(value) => handleInputChange("observations_wire_ropes", value)}>
+                    <SelectTrigger><SelectValue placeholder="--Select--" /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="0">--Select--</SelectItem>
+                      <SelectItem value="SAT">SAT</SelectItem>
+                      <SelectItem value="UNSAT">UNSAT</SelectItem>
+                      <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="md:col-span-2">
+                  <Label className="text-sm font-medium">Remarks:<span className="text-red-500">*</span></Label>
+                  <Textarea value={formData.remarks_wire_ropes1} onChange={(e) => handleInputChange("remarks_wire_ropes1", e.target.value)} rows={2} className="w-full" />
+                </div>
+              </div>
+            </div>
+
+            {/* 13.2 Date of Last Change/Replacement */}
+            <div className="mb-4">
+              <p className="text-sm text-gray-600 mb-2">13.2 Date of Last Change/Replacement</p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <Label className="text-sm font-medium">Date:<span className="text-red-500">*</span></Label>
+                  <Input type="date" value={formData.date_last_changed_replaced} onChange={(e) => handleInputChange("date_last_changed_replaced", e.target.value)} className="w-full" />
+                </div>
+                <div className="md:col-span-2">
+                  <Label className="text-sm font-medium">Remarks:<span className="text-red-500">*</span></Label>
+                  <Textarea value={formData.remarks_last_changed} onChange={(e) => handleInputChange("remarks_last_changed", e.target.value)} rows={2} className="w-full" />
+                </div>
+              </div>
+            </div>
+
+            {/* 13.3 Date of Last Serviceability Check */}
+            <div className="mb-4">
+              <p className="text-sm text-gray-600 mb-2">13.3 Date of Last Serviceability Check</p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <Label className="text-sm font-medium">Date:<span className="text-red-500">*</span></Label>
+                  <Input type="date" value={formData.date_last_serviceability_check} onChange={(e) => handleInputChange("date_last_serviceability_check", e.target.value)} className="w-full" />
+                </div>
+                <div className="md:col-span-2">
+                  <Label className="text-sm font-medium">Remarks:<span className="text-red-500">*</span></Label>
+                  <Textarea value={formData.remarks_serviceability_check} onChange={(e) => handleInputChange("remarks_serviceability_check", e.target.value)} rows={2} className="w-full" />
+                </div>
+              </div>
+            </div>
+
+            {/* 13.4 Securing of Ropes End */}
+            <div className="mb-4">
+              <p className="text-sm text-gray-600 mb-2">13.4 Securing of Ropes End</p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <Label className="text-sm font-medium">Observations:<span className="text-red-500">*</span></Label>
+                  <Select value={formData.observations_securing_ropes_end} onValueChange={(value) => handleInputChange("observations_securing_ropes_end", value)}>
+                    <SelectTrigger><SelectValue placeholder="--Select--" /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="0">--Select--</SelectItem>
+                      <SelectItem value="SAT">SAT</SelectItem>
+                      <SelectItem value="UNSAT">UNSAT</SelectItem>
+                      <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="md:col-span-2">
+                  <Label className="text-sm font-medium">Remarks:<span className="text-red-500">*</span></Label>
+                  <Textarea value={formData.remarks_securing_ropes_end} onChange={(e) => handleInputChange("remarks_securing_ropes_end", e.target.value)} rows={2} className="w-full" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Section 14: Electric Checks */}
+          <div className="border border-gray-300 rounded-lg p-4">
+            <div className="flex items-center mb-4">
+              <span className="bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold mr-3">14</span>
+              <Label className="text-lg font-semibold">Electric Checks</Label>
+            </div>
+            
+            {/* 14.1 Insulation Measurement */}
+            <div className="mb-4">
+              <p className="text-sm text-gray-600 mb-2">14.1 Insulation Measurement</p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <Label className="text-sm font-medium">Observations:<span className="text-red-500">*</span></Label>
+                  <Select value={formData.observations_insulation_measurement} onValueChange={(value) => handleInputChange("observations_insulation_measurement", value)}>
+                    <SelectTrigger><SelectValue placeholder="--Select--" /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="0">--Select--</SelectItem>
+                      <SelectItem value="SAT">SAT</SelectItem>
+                      <SelectItem value="UNSAT">UNSAT</SelectItem>
+                      <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="md:col-span-2">
+                  <Label className="text-sm font-medium">Remarks:<span className="text-red-500">*</span></Label>
+                  <Textarea value={formData.remarks_insulation_measurement} onChange={(e) => handleInputChange("remarks_insulation_measurement", e.target.value)} rows={2} className="w-full" />
+                </div>
+              </div>
+            </div>
+
+            {/* 14.2 SPM Checks Motor */}
+            <div className="mb-4">
+              <p className="text-sm text-gray-600 mb-2">14.2 SPM Checks Motor</p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <Label className="text-sm font-medium">Observations:<span className="text-red-500">*</span></Label>
+                  <Select value={formData.observations_spm_checks_motor} onValueChange={(value) => handleInputChange("observations_spm_checks_motor", value)}>
+                    <SelectTrigger><SelectValue placeholder="--Select--" /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="0">--Select--</SelectItem>
+                      <SelectItem value="SAT">SAT</SelectItem>
+                      <SelectItem value="UNSAT">UNSAT</SelectItem>
+                      <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="md:col-span-2">
+                  <Label className="text-sm font-medium">Remarks:<span className="text-red-500">*</span></Label>
+                  <Textarea value={formData.remarks_spm_checks_motor} onChange={(e) => handleInputChange("remarks_spm_checks_motor", e.target.value)} rows={2} className="w-full" />
+                </div>
+              </div>
+            </div>
+
+            {/* 14.3 Cable Fasteners */}
+            <div className="mb-4">
+              <p className="text-sm text-gray-600 mb-2">14.3 Cable Fasteners</p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <Label className="text-sm font-medium">Observations:<span className="text-red-500">*</span></Label>
+                  <Select value={formData.observations_cable_fasteners} onValueChange={(value) => handleInputChange("observations_cable_fasteners", value)}>
+                    <SelectTrigger><SelectValue placeholder="--Select--" /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="0">--Select--</SelectItem>
+                      <SelectItem value="SAT">SAT</SelectItem>
+                      <SelectItem value="UNSAT">UNSAT</SelectItem>
+                      <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="md:col-span-2">
+                  <Label className="text-sm font-medium">Remarks:<span className="text-red-500">*</span></Label>
+                  <Textarea value={formData.remarks_cable_fasteners} onChange={(e) => handleInputChange("remarks_cable_fasteners", e.target.value)} rows={2} className="w-full" />
+                </div>
+              </div>
+            </div>
+
+            {/* 14.4 Grounding & Bonding */}
+            <div className="mb-4">
+              <p className="text-sm text-gray-600 mb-2">14.4 Grounding & Bonding</p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <Label className="text-sm font-medium">Observations:<span className="text-red-500">*</span></Label>
+                  <Select value={formData.observations_grounding_bonding} onValueChange={(value) => handleInputChange("observations_grounding_bonding", value)}>
+                    <SelectTrigger><SelectValue placeholder="--Select--" /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="0">--Select--</SelectItem>
+                      <SelectItem value="SAT">SAT</SelectItem>
+                      <SelectItem value="UNSAT">UNSAT</SelectItem>
+                      <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="md:col-span-2">
+                  <Label className="text-sm font-medium">Remarks:<span className="text-red-500">*</span></Label>
+                  <Textarea value={formData.remarks_grounding_bonding} onChange={(e) => handleInputChange("remarks_grounding_bonding", e.target.value)} rows={2} className="w-full" />
+                </div>
+              </div>
+            </div>
+
+            {/* 14.5 Condition of JB & Control Panel */}
+            <div className="mb-4">
+              <p className="text-sm text-gray-600 mb-2">14.5 Condition of JB & Control Panel</p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <Label className="text-sm font-medium">Observations:<span className="text-red-500">*</span></Label>
+                  <Select value={formData.observations_condition_jb_control_panel} onValueChange={(value) => handleInputChange("observations_condition_jb_control_panel", value)}>
+                    <SelectTrigger><SelectValue placeholder="--Select--" /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="0">--Select--</SelectItem>
+                      <SelectItem value="SAT">SAT</SelectItem>
+                      <SelectItem value="UNSAT">UNSAT</SelectItem>
+                      <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="md:col-span-2">
+                  <Label className="text-sm font-medium">Remarks:<span className="text-red-500">*</span></Label>
+                  <Textarea value={formData.remarks_condition_jb_control_panel} onChange={(e) => handleInputChange("remarks_condition_jb_control_panel", e.target.value)} rows={2} className="w-full" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Section 15: Electric Checks by ETMA */}
+          <div className="border border-gray-300 rounded-lg p-4">
+            <div className="flex items-center mb-4">
+              <span className="bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold mr-3">15</span>
+              <Label className="text-lg font-semibold">Electric Checks by ETMA</Label>
+            </div>
+            
+            {/* 15.1 Tests Completed */}
+            <div className="mb-4">
+              <p className="text-sm text-gray-600 mb-2">15.1 Tests Completed</p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <Label className="text-sm font-medium">Observations:<span className="text-red-500">*</span></Label>
+                  <Select value={formData.observations_completed} onValueChange={(value) => handleInputChange("observations_completed", value)}>
+                    <SelectTrigger><SelectValue placeholder="--Select--" /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="0">--Select--</SelectItem>
+                      <SelectItem value="SAT">SAT</SelectItem>
+                      <SelectItem value="UNSAT">UNSAT</SelectItem>
+                      <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="md:col-span-2">
+                  <Label className="text-sm font-medium">Remarks:<span className="text-red-500">*</span></Label>
+                  <Textarea value={formData.remarks_completed} onChange={(e) => handleInputChange("remarks_completed", e.target.value)} rows={2} className="w-full" />
+                </div>
+              </div>
+            </div>
+
+            {/* 15.2 Report Availability */}
+            <div className="mb-4">
+              <p className="text-sm text-gray-600 mb-2">15.2 Report Availability</p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <Label className="text-sm font-medium">Observations:<span className="text-red-500">*</span></Label>
+                  <Select value={formData.observations_report} onValueChange={(value) => handleInputChange("observations_report", value)}>
+                    <SelectTrigger><SelectValue placeholder="--Select--" /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="0">--Select--</SelectItem>
+                      <SelectItem value="SAT">SAT</SelectItem>
+                      <SelectItem value="UNSAT">UNSAT</SelectItem>
+                      <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="md:col-span-2">
+                  <Label className="text-sm font-medium">Remarks:<span className="text-red-500">*</span></Label>
+                  <Textarea value={formData.remarks_report} onChange={(e) => handleInputChange("remarks_report", e.target.value)} rows={2} className="w-full" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Section 16: Limit Switches */}
+          <div className="border border-gray-300 rounded-lg p-4">
+            <div className="flex items-center mb-4">
+              <span className="bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold mr-3">16</span>
+              <Label className="text-lg font-semibold">Limit Switches</Label>
+            </div>
+            
+            {/* 16.1 Safety Switches */}
+            <div className="mb-4">
+              <p className="text-sm text-gray-600 mb-2">16.1 Safety Switches</p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <Label className="text-sm font-medium">Observations:<span className="text-red-500">*</span></Label>
+                  <Select value={formData.observations_limit_switches_operational} onValueChange={(value) => handleInputChange("observations_limit_switches_operational", value)}>
+                    <SelectTrigger><SelectValue placeholder="--Select--" /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="0">--Select--</SelectItem>
+                      <SelectItem value="SAT">SAT</SelectItem>
+                      <SelectItem value="UNSAT">UNSAT</SelectItem>
+                      <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="md:col-span-2">
+                  <Label className="text-sm font-medium">Remarks:<span className="text-red-500">*</span></Label>
+                  <Textarea value={formData.remarks_limit_switches_operational} onChange={(e) => handleInputChange("remarks_limit_switches_operational", e.target.value)} rows={2} className="w-full" />
+                </div>
+              </div>
+            </div>
+
+            {/* 16.2 Limit Switches Operation */}
+            <div className="mb-4">
+              <p className="text-sm text-gray-600 mb-2">16.2 Limit Switches Operation</p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <Label className="text-sm font-medium">Observations:<span className="text-red-500">*</span></Label>
+                  <Select value={formData.observations_visual_checks_limit_switches} onValueChange={(value) => handleInputChange("observations_visual_checks_limit_switches", value)}>
+                    <SelectTrigger><SelectValue placeholder="--Select--" /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="0">--Select--</SelectItem>
+                      <SelectItem value="SAT">SAT</SelectItem>
+                      <SelectItem value="UNSAT">UNSAT</SelectItem>
+                      <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="md:col-span-2">
+                  <Label className="text-sm font-medium">Remarks:<span className="text-red-500">*</span></Label>
+                  <Textarea value={formData.remarks_visual_checks_limit_switches} onChange={(e) => handleInputChange("remarks_visual_checks_limit_switches", e.target.value)} rows={2} className="w-full" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Section 17: Load Testing */}
+          <div className="border border-gray-300 rounded-lg p-4">
+            <div className="flex items-center mb-4">
+              <span className="bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold mr-3">17</span>
+              <Label className="text-lg font-semibold">Load Testing</Label>
+            </div>
+            
+            {/* 17.1 Date of Last Load Testing */}
+            <div className="mb-4">
+              <p className="text-sm text-gray-600 mb-2">17.1 Date of Last Load Testing</p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <Label className="text-sm font-medium">Date:<span className="text-red-500">*</span></Label>
+                  <Input type="date" value={formData.date_of_last_load_testing} onChange={(e) => handleInputChange("date_of_last_load_testing", e.target.value)} className="w-full" />
+                </div>
+                <div className="md:col-span-2">
+                  <Label className="text-sm font-medium">Remarks:<span className="text-red-500">*</span></Label>
+                  <Textarea value={formData.remarks_last_load_testing} onChange={(e) => handleInputChange("remarks_last_load_testing", e.target.value)} rows={2} className="w-full" />
+                </div>
+              </div>
+            </div>
+
+            {/* 17.2 Check Certificates */}
+            <div className="mb-4">
+              <p className="text-sm text-gray-600 mb-2">17.2 Check Certificates</p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <Label className="text-sm font-medium">Observations:<span className="text-red-500">*</span></Label>
+                  <Select value={formData.observations_check_certificates} onValueChange={(value) => handleInputChange("observations_check_certificates", value)}>
+                    <SelectTrigger><SelectValue placeholder="--Select--" /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="0">--Select--</SelectItem>
+                      <SelectItem value="SAT">SAT</SelectItem>
+                      <SelectItem value="UNSAT">UNSAT</SelectItem>
+                      <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="md:col-span-2">
+                  <Label className="text-sm font-medium">Remarks:<span className="text-red-500">*</span></Label>
+                  <Textarea value={formData.remarks_check_certificates} onChange={(e) => handleInputChange("remarks_check_certificates", e.target.value)} rows={2} className="w-full" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Section 18: Operational/Functional Check */}
+          <div className="border border-gray-300 rounded-lg p-4">
+            <div className="flex items-center mb-4">
+              <span className="bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold mr-3">18</span>
+              <Label className="text-lg font-semibold">Operational/Functional Check</Label>
+            </div>
+            
+            {/* 18.1 No Oil Leakages */}
+            <div className="mb-4">
+              <p className="text-sm text-gray-600 mb-2">18.1 No Oil Leakages</p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <Label className="text-sm font-medium">Observations:<span className="text-red-500">*</span></Label>
+                  <Select value={formData.observations_no_oil_leakages} onValueChange={(value) => handleInputChange("observations_no_oil_leakages", value)}>
+                    <SelectTrigger><SelectValue placeholder="--Select--" /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="0">--Select--</SelectItem>
+                      <SelectItem value="SAT">SAT</SelectItem>
+                      <SelectItem value="UNSAT">UNSAT</SelectItem>
+                      <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="md:col-span-2">
+                  <Label className="text-sm font-medium">Remarks:<span className="text-red-500">*</span></Label>
+                  <Textarea value={formData.remarks_no_oil_leakages} onChange={(e) => handleInputChange("remarks_no_oil_leakages", e.target.value)} rows={2} className="w-full" />
+                </div>
+              </div>
+            </div>
+
+            {/* 18.2 Lifting Speed */}
+            <div className="mb-4">
+              <p className="text-sm text-gray-600 mb-2">18.2 Lifting Speed</p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <Label className="text-sm font-medium">Observations:<span className="text-red-500">*</span></Label>
+                  <Select value={formData.observations_lifting_speed} onValueChange={(value) => handleInputChange("observations_lifting_speed", value)}>
+                    <SelectTrigger><SelectValue placeholder="--Select--" /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="0">--Select--</SelectItem>
+                      <SelectItem value="SAT">SAT</SelectItem>
+                      <SelectItem value="UNSAT">UNSAT</SelectItem>
+                      <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="md:col-span-2">
+                  <Label className="text-sm font-medium">Remarks:<span className="text-red-500">*</span></Label>
+                  <Textarea value={formData.remarks_lifting_speed} onChange={(e) => handleInputChange("remarks_lifting_speed", e.target.value)} rows={2} className="w-full" />
+                </div>
+              </div>
+            </div>
+
+            {/* 18.3 Lowering Speed */}
+            <div className="mb-4">
+              <p className="text-sm text-gray-600 mb-2">18.3 Lowering Speed</p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <Label className="text-sm font-medium">Observations:<span className="text-red-500">*</span></Label>
+                  <Select value={formData.observations_lowering_speed} onValueChange={(value) => handleInputChange("observations_lowering_speed", value)}>
+                    <SelectTrigger><SelectValue placeholder="--Select--" /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="0">--Select--</SelectItem>
+                      <SelectItem value="SAT">SAT</SelectItem>
+                      <SelectItem value="UNSAT">UNSAT</SelectItem>
+                      <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="md:col-span-2">
+                  <Label className="text-sm font-medium">Remarks:<span className="text-red-500">*</span></Label>
+                  <Textarea value={formData.remarks_lowering_speed} onChange={(e) => handleInputChange("remarks_lowering_speed", e.target.value)} rows={2} className="w-full" />
+                </div>
+              </div>
+            </div>
+
+            {/* 18.4 Operation Within Limits */}
+            <div className="mb-4">
+              <p className="text-sm text-gray-600 mb-2">18.4 Operation Within Limits</p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <Label className="text-sm font-medium">Observations:<span className="text-red-500">*</span></Label>
+                  <Select value={formData.observations_limits_switches} onValueChange={(value) => handleInputChange("observations_limits_switches", value)}>
+                    <SelectTrigger><SelectValue placeholder="--Select--" /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="0">--Select--</SelectItem>
+                      <SelectItem value="SAT">SAT</SelectItem>
+                      <SelectItem value="UNSAT">UNSAT</SelectItem>
+                      <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="md:col-span-2">
+                  <Label className="text-sm font-medium">Remarks:<span className="text-red-500">*</span></Label>
+                  <Textarea value={formData.remarks_limits_switches} onChange={(e) => handleInputChange("remarks_limits_switches", e.target.value)} rows={2} className="w-full" />
+                </div>
+              </div>
+            </div>
+
+            {/* 18.5 Accurate Stopping */}
+            <div className="mb-4">
+              <p className="text-sm text-gray-600 mb-2">18.5 Accurate Stopping</p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <Label className="text-sm font-medium">Observations:<span className="text-red-500">*</span></Label>
+                  <Select value={formData.observations_accurate_stopping} onValueChange={(value) => handleInputChange("observations_accurate_stopping", value)}>
+                    <SelectTrigger><SelectValue placeholder="--Select--" /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="0">--Select--</SelectItem>
+                      <SelectItem value="SAT">SAT</SelectItem>
+                      <SelectItem value="UNSAT">UNSAT</SelectItem>
+                      <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="md:col-span-2">
+                  <Label className="text-sm font-medium">Remarks:<span className="text-red-500">*</span></Label>
+                  <Textarea value={formData.remarks_accurate_stopping} onChange={(e) => handleInputChange("remarks_accurate_stopping", e.target.value)} rows={2} className="w-full" />
+                </div>
+              </div>
+            </div>
+
+            {/* 18.6 Power Failure Simulation */}
+            <div className="mb-4">
+              <p className="text-sm text-gray-600 mb-2">18.6 Power Failure Simulation</p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <Label className="text-sm font-medium">Observations:<span className="text-red-500">*</span></Label>
+                  <Select value={formData.observations_power_failure} onValueChange={(value) => handleInputChange("observations_power_failure", value)}>
+                    <SelectTrigger><SelectValue placeholder="--Select--" /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="0">--Select--</SelectItem>
+                      <SelectItem value="SAT">SAT</SelectItem>
+                      <SelectItem value="UNSAT">UNSAT</SelectItem>
+                      <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="md:col-span-2">
+                  <Label className="text-sm font-medium">Remarks:<span className="text-red-500">*</span></Label>
+                  <Textarea value={formData.remarks_power_failure} onChange={(e) => handleInputChange("remarks_power_failure", e.target.value)} rows={2} className="w-full" />
+                </div>
+              </div>
+            </div>
+
+            {/* 18.7 Free Movement */}
+            <div className="mb-4">
+              <p className="text-sm text-gray-600 mb-2">18.7 Free Movement</p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <Label className="text-sm font-medium">Observations:<span className="text-red-500">*</span></Label>
+                  <Select value={formData.observations_free_movement} onValueChange={(value) => handleInputChange("observations_free_movement", value)}>
+                    <SelectTrigger><SelectValue placeholder="--Select--" /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="0">--Select--</SelectItem>
+                      <SelectItem value="SAT">SAT</SelectItem>
+                      <SelectItem value="UNSAT">UNSAT</SelectItem>
+                      <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="md:col-span-2">
+                  <Label className="text-sm font-medium">Remarks:<span className="text-red-500">*</span></Label>
+                  <Textarea value={formData.remarks_free_movement} onChange={(e) => handleInputChange("remarks_free_movement", e.target.value)} rows={2} className="w-full" />
+                </div>
+              </div>
+            </div>
+
+            {/* 18.8 Jerky Movement */}
+            <div className="mb-4">
+              <p className="text-sm text-gray-600 mb-2">18.8 Jerky Movement</p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <Label className="text-sm font-medium">Observations:<span className="text-red-500">*</span></Label>
+                  <Select value={formData.observations_jerky_movement} onValueChange={(value) => handleInputChange("observations_jerky_movement", value)}>
+                    <SelectTrigger><SelectValue placeholder="--Select--" /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="0">--Select--</SelectItem>
+                      <SelectItem value="SAT">SAT</SelectItem>
+                      <SelectItem value="UNSAT">UNSAT</SelectItem>
+                      <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="md:col-span-2">
+                  <Label className="text-sm font-medium">Remarks:<span className="text-red-500">*</span></Label>
+                  <Textarea value={formData.remarks_jerky_movement} onChange={(e) => handleInputChange("remarks_jerky_movement", e.target.value)} rows={2} className="w-full" />
+                </div>
+              </div>
+            </div>
+
+            {/* 18.9 Oil Leakage */}
+            <div className="mb-4">
+              <p className="text-sm text-gray-600 mb-2">18.9 Oil Leakage</p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <Label className="text-sm font-medium">Observations:<span className="text-red-500">*</span></Label>
+                  <Select value={formData.observations_oil_leakage} onValueChange={(value) => handleInputChange("observations_oil_leakage", value)}>
+                    <SelectTrigger><SelectValue placeholder="--Select--" /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="0">--Select--</SelectItem>
+                      <SelectItem value="SAT">SAT</SelectItem>
+                      <SelectItem value="UNSAT">UNSAT</SelectItem>
+                      <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="md:col-span-2">
+                  <Label className="text-sm font-medium">Remarks:<span className="text-red-500">*</span></Label>
+                  <Textarea value={formData.remarks_oil_leakage} onChange={(e) => handleInputChange("remarks_oil_leakage", e.target.value)} rows={2} className="w-full" />
+                </div>
+              </div>
+            </div>
+
+            {/* 18.10 Excessive Vibrations */}
+            <div className="mb-4">
+              <p className="text-sm text-gray-600 mb-2">18.10 Excessive Vibrations</p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <Label className="text-sm font-medium">Observations:<span className="text-red-500">*</span></Label>
+                  <Select value={formData.observations_excessive_vibrations} onValueChange={(value) => handleInputChange("observations_excessive_vibrations", value)}>
+                    <SelectTrigger><SelectValue placeholder="--Select--" /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="0">--Select--</SelectItem>
+                      <SelectItem value="SAT">SAT</SelectItem>
+                      <SelectItem value="UNSAT">UNSAT</SelectItem>
+                      <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="md:col-span-2">
+                  <Label className="text-sm font-medium">Remarks:<span className="text-red-500">*</span></Label>
+                  <Textarea value={formData.remarks_excessive_vibrations} onChange={(e) => handleInputChange("remarks_excessive_vibrations", e.target.value)} rows={2} className="w-full" />
+                </div>
+              </div>
+            </div>
+
+            {/* 18.11 Electro Magnetic Brake */}
+            <div className="mb-4">
+              <p className="text-sm text-gray-600 mb-2">18.11 Electro Magnetic Brake</p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <Label className="text-sm font-medium">Observations:<span className="text-red-500">*</span></Label>
+                  <Select value={formData.observations_electro_magnetic_brake} onValueChange={(value) => handleInputChange("observations_electro_magnetic_brake", value)}>
+                    <SelectTrigger><SelectValue placeholder="--Select--" /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="0">--Select--</SelectItem>
+                      <SelectItem value="SAT">SAT</SelectItem>
+                      <SelectItem value="UNSAT">UNSAT</SelectItem>
+                      <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="md:col-span-2">
+                  <Label className="text-sm font-medium">Remarks:<span className="text-red-500">*</span></Label>
+                  <Textarea value={formData.remarks_electro_magnetic_brake} onChange={(e) => handleInputChange("remarks_electro_magnetic_brake", e.target.value)} rows={2} className="w-full" />
+                </div>
+              </div>
+            </div>
+
+            {/* 18.12 Manual Brake */}
+            <div className="mb-4">
+              <p className="text-sm text-gray-600 mb-2">18.12 Manual Brake</p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <Label className="text-sm font-medium">Observations:<span className="text-red-500">*</span></Label>
+                  <Select value={formData.observations_manual_brake} onValueChange={(value) => handleInputChange("observations_manual_brake", value)}>
+                    <SelectTrigger><SelectValue placeholder="--Select--" /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="0">--Select--</SelectItem>
+                      <SelectItem value="SAT">SAT</SelectItem>
+                      <SelectItem value="UNSAT">UNSAT</SelectItem>
+                      <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="md:col-span-2">
+                  <Label className="text-sm font-medium">Remarks:<span className="text-red-500">*</span></Label>
+                  <Textarea value={formData.remarks_manual_brake} onChange={(e) => handleInputChange("remarks_manual_brake", e.target.value)} rows={2} className="w-full" />
+                </div>
+              </div>
+            </div>
+
+            {/* 18.13 Auto Catch Mechanism */}
+            <div className="mb-4">
+              <p className="text-sm text-gray-600 mb-2">18.13 Auto Catch Mechanism</p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <Label className="text-sm font-medium">Observations:<span className="text-red-500">*</span></Label>
+                  <Select value={formData.observations_auto_catch_mechanism} onValueChange={(value) => handleInputChange("observations_auto_catch_mechanism", value)}>
+                    <SelectTrigger><SelectValue placeholder="--Select--" /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="0">--Select--</SelectItem>
+                      <SelectItem value="SAT">SAT</SelectItem>
+                      <SelectItem value="UNSAT">UNSAT</SelectItem>
+                      <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="md:col-span-2">
+                  <Label className="text-sm font-medium">Remarks:<span className="text-red-500">*</span></Label>
+                  <Textarea value={formData.remarks_auto_catch_mechanism} onChange={(e) => handleInputChange("remarks_auto_catch_mechanism", e.target.value)} rows={2} className="w-full" />
+                </div>
+              </div>
+            </div>
+
+            {/* 18.14 Indicator Lamps */}
+            <div className="mb-4">
+              <p className="text-sm text-gray-600 mb-2">18.14 Indicator Lamps</p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <Label className="text-sm font-medium">Observations:<span className="text-red-500">*</span></Label>
+                  <Select value={formData.observations_indicator_lamps} onValueChange={(value) => handleInputChange("observations_indicator_lamps", value)}>
+                    <SelectTrigger><SelectValue placeholder="--Select--" /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="0">--Select--</SelectItem>
+                      <SelectItem value="SAT">SAT</SelectItem>
+                      <SelectItem value="UNSAT">UNSAT</SelectItem>
+                      <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="md:col-span-2">
+                  <Label className="text-sm font-medium">Remarks:<span className="text-red-500">*</span></Label>
+                  <Textarea value={formData.remarks_indicator_lamps} onChange={(e) => handleInputChange("remarks_indicator_lamps", e.target.value)} rows={2} className="w-full" />
+                </div>
+              </div>
+            </div>
+
+            {/* 18.15 Safety Check */}
+            <div className="mb-4">
+              <p className="text-sm text-gray-600 mb-2">18.15 Safety Check</p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <Label className="text-sm font-medium">Observations:<span className="text-red-500">*</span></Label>
+                  <Select value={formData.observations_safety_check} onValueChange={(value) => handleInputChange("observations_safety_check", value)}>
+                    <SelectTrigger><SelectValue placeholder="--Select--" /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="0">--Select--</SelectItem>
+                      <SelectItem value="SAT">SAT</SelectItem>
+                      <SelectItem value="UNSAT">UNSAT</SelectItem>
+                      <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="md:col-span-2">
+                  <Label className="text-sm font-medium">Remarks:<span className="text-red-500">*</span></Label>
+                  <Textarea value={formData.remarks_safety_check} onChange={(e) => handleInputChange("remarks_safety_check", e.target.value)} rows={2} className="w-full" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Section 19: Other Observation */}
+          <div className="border border-gray-300 rounded-lg p-4">
+            <div className="flex items-center mb-4">
+              <span className="bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold mr-3">19</span>
+              <Label className="text-lg font-semibold">Other Observation</Label>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="md:col-span-3">
+                <Label className="text-sm font-medium">Remarks:<span className="text-red-500">*</span></Label>
+                <Textarea value={formData.remarks_other_observ} onChange={(e) => handleInputChange("remarks_other_observ", e.target.value)} rows={4} className="w-full" />
+              </div>
+            </div>
+          </div>
+
+          {/* Section 20: Overall Remarks */}
+          <div className="border border-gray-300 rounded-lg p-4">
+            <div className="flex items-center mb-4">
+              <span className="bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold mr-3">20</span>
+              <Label className="text-lg font-semibold">Overall Remarks</Label>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="md:col-span-3">
+                <Label className="text-sm font-medium">Remarks:<span className="text-red-500">*</span></Label>
+                <Textarea value={formData.remarks_overall} onChange={(e) => handleInputChange("remarks_overall", e.target.value)} rows={4} className="w-full" />
+              </div>
+            </div>
+          </div>
+
           {/* Continue with remaining sections... */}
           {/* For brevity, I'll include a few more key sections and then the form actions */}
 
@@ -708,37 +2765,71 @@ const GalleyLiftsForm = () => {
             </div>
           </div>
 
+          {/* Note Section */}
+          <div className="border border-gray-300 rounded-lg p-4">
+            <div className="flex items-center mb-4">
+              <span className="bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold mr-3">N</span>
+              <Label className="text-lg font-semibold">Note<span className="text-red-500">*</span></Label>
+            </div>
+            <div className="mb-4">
+              <p className="text-sm text-gray-600 mb-2">
+                <strong>Note:</strong> This inspection report is prepared based on the visual inspection and operational trials conducted. 
+                All observations and recommendations are subject to further verification by the concerned authorities. 
+                Any discrepancies or additional findings should be reported immediately to the maintenance team.
+              </p>
+            </div>
+            <div className="grid grid-cols-1 gap-4">
+              <div>
+                <Label className="text-sm font-medium">Additional Notes:<span className="text-red-500">*</span></Label>
+                <Textarea
+                  value={formData.note}
+                  onChange={(e) => {
+                    if (e.target.value.length <= 500) {
+                      handleInputChange("note", e.target.value);
+                    }
+                  }}
+                  placeholder="Enter any additional notes or observations..."
+                  className="w-full"
+                  rows={4}
+                />
+                <p className="text-xs text-gray-500 mt-1">
+                  {formData.note.length}/500 characters
+                </p>
+              </div>
+            </div>
+          </div>
+
           {/* Form Actions */}
           <div className="flex flex-wrap gap-4 justify-center mt-8">
             <Button
               type="button"
-              variant="outline"
               onClick={handleFetchDrafts}
-              className="px-6 py-2"
+              className="px-6 py-2 bg-cyan-500 hover:bg-cyan-600 text-white rounded-lg"
             >
-              Fetch Drafts
+              <FileText className="h-4 w-4 mr-2" />
+              FETCH DRAFTS
             </Button>
             <Button
               type="button"
               onClick={handleSaveDraft}
-              className="px-6 py-2 bg-green-600 hover:bg-green-700"
+              className="px-6 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg"
             >
+              <Save className="h-4 w-4 mr-2" />
               SAVE DRAFT
             </Button>
             <Button
               type="button"
-              variant="destructive"
               onClick={handleClear}
-              className="px-6 py-2"
+              className="px-6 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg"
             >
-              Clear
+              CLEAR
             </Button>
             <Button
               type="button"
               onClick={handleSubmit}
-              className="px-6 py-2 bg-blue-600 hover:bg-blue-700"
+              className="px-6 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg"
             >
-              Save
+              SAVE
             </Button>
           </div>
         </div>

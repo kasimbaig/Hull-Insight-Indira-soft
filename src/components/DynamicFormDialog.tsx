@@ -17,11 +17,12 @@ import { get } from "@/lib/api";
 export interface FieldConfig {
   name: string;
   label: string;
-  type: "text" | "textarea" | "number" | "dropdown" | "date" | "checkbox";
+  type: "text" | "textarea" | "number" | "dropdown" | "date" | "checkbox" | "static-dropdown" | "comma-dropdown";
   placeholder?: string;
   apiEndpoint?: string; // optional: fetch options from API
   options?: { value: string | number; label: string }[]; // static options
   required?: boolean;
+  showWhen?: { field: string; value: string }; // conditional visibility
 }
 
 interface DynamicFormDialogProps {
@@ -76,6 +77,24 @@ export function DynamicFormDialog({
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  // Check if field should be visible based on conditional logic
+  const shouldShowField = (field: FieldConfig): boolean => {
+    if (!field.showWhen) return true;
+    return formData[field.showWhen.field] === field.showWhen.value;
+  };
+
+  // Get dropdown options (static or from API)
+  const getDropdownOptions = (field: FieldConfig): any[] => {
+    if (field.options) {
+      // Static options
+      return field.options;
+    } else if (field.apiEndpoint && dropdownData[field.name]) {
+      // API options
+      return dropdownData[field.name];
+    }
+    return [];
+  };
+
   const handleSubmit = async () => {
     setLoading(true);
     try {
@@ -105,7 +124,8 @@ export function DynamicFormDialog({
 
         {/* Form Body */}
         <div className="space-y-4 max-h-[60vh] overflow-y-auto p-4 custom-scrollbar">
-          {fields.map((field) => (
+          {fields.map((field) => 
+            shouldShowField(field) ? (
             <div key={field.name} className="space-y-2">
               <Label htmlFor={field.name} className="font-medium text-gray-700">
                 {field.label} {field.required && "*"}
@@ -155,7 +175,7 @@ export function DynamicFormDialog({
               )}
 
               {/* Dropdown */}
-              {field.type === "dropdown" && (
+              {(field.type === "dropdown" || field.type === "static-dropdown") && (
                 <select
                   id={field.name}
                   value={formData[field.name] || ""}
@@ -164,15 +184,47 @@ export function DynamicFormDialog({
                   className="w-full rounded-lg border-gray-300 focus:border-indigo-500 focus:ring focus:ring-indigo-200 p-2"
                 >
                   <option value="">Select {field.label}</option>
-                  {(field.options ?? dropdownData[field.name] ?? []).map((opt: any, idx: number) => (
-                    <option key={idx} value={opt.id}>
-                      {opt.name}
+                  {getDropdownOptions(field).map((opt: any, idx: number) => (
+                    <option key={idx} value={opt.value || opt.id}>
+                      {opt.label || opt.name}
                     </option>
                   ))}
                 </select>
               )}
+
+              {/* Comma Dropdown - Shows comma-separated values as dropdown options */}
+              {field.type === "comma-dropdown" && (
+                <div className="space-y-2">
+                  <textarea
+                    id={field.name}
+                    placeholder={field.placeholder}
+                    value={formData[field.name] || ""}
+                    required={field.required}
+                    onChange={(e) => handleChange(field.name, e.target.value)}
+                    className="w-full rounded-lg border-gray-300 focus:border-indigo-500 focus:ring focus:ring-indigo-200 p-2"
+                    rows={3}
+                  />
+                  {formData[field.name] && (
+                    <div className="mt-2">
+                      <Label className="text-sm text-gray-600">Preview:</Label>
+                      <select className="w-full rounded-lg border-gray-300 p-2 mt-1">
+                        <option value="">Select option</option>
+                        {formData[field.name].split(',').map((value: string, idx: number) => {
+                          const trimmedValue = value.trim();
+                          return trimmedValue ? (
+                            <option key={idx} value={trimmedValue}>
+                              {trimmedValue}
+                            </option>
+                          ) : null;
+                        })}
+                      </select>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
-          ))}
+            ) : null
+          )}
         </div>
 
         {/* Footer */}

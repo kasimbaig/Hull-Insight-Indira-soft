@@ -6,6 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 const AptTrialProtocolForm = () => {
   const [formData, setFormData] = useState({
@@ -51,6 +52,10 @@ const AptTrialProtocolForm = () => {
     other: 1,
     overall: 1,
   });
+
+  const [isDraftModalOpen, setIsDraftModalOpen] = useState(false);
+  const [drafts, setDrafts] = useState<any[]>([]);
+  const [hidDraftId, setHidDraftId] = useState<string | null>(null);
 
   const ships = [
     "SHIVALIK", "JAMUNA", "BANGARAM", "TARANGINI", "SARYU", "KUMBHIR", "T-83", "AIRAVAT",
@@ -105,13 +110,118 @@ const AptTrialProtocolForm = () => {
     setFormData(prev => ({ ...prev, [field]: file }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log("APT Trial Protocol Form submitted:", { formData, tableData, rowCounts });
-    // Handle form submission here
+  const handleSaveDraft = () => {
+    const draftData = {
+      id: Date.now().toString(),
+      timestamp: new Date().toISOString(),
+      formData: { ...formData },
+      tableData: { ...tableData },
+      rowCounts: { ...rowCounts }
+    };
+    
+    const existingDrafts = JSON.parse(localStorage.getItem('aptTrialProtocolDrafts') || '[]');
+    const updatedDrafts = [...existingDrafts, draftData];
+    localStorage.setItem('aptTrialProtocolDrafts', JSON.stringify(updatedDrafts));
+    
+    alert('Draft saved successfully!');
   };
 
-  const renderTable = (tableType: string, headers: string[], fields: string[]) => {
+  const handleFetchDrafts = () => {
+    const existingDrafts = JSON.parse(localStorage.getItem('aptTrialProtocolDrafts') || '[]');
+    setDrafts(existingDrafts);
+    setIsDraftModalOpen(true);
+  };
+
+  const handleEditDraft = (draft: any) => {
+    setFormData(draft.formData);
+    setTableData(draft.tableData);
+    setRowCounts(draft.rowCounts);
+    setHidDraftId(draft.id);
+    setIsDraftModalOpen(false);
+  };
+
+  const handleDeleteDraft = (draftId: string) => {
+    const existingDrafts = JSON.parse(localStorage.getItem('aptTrialProtocolDrafts') || '[]');
+    const updatedDrafts = existingDrafts.filter((draft: any) => draft.id !== draftId);
+    localStorage.setItem('aptTrialProtocolDrafts', JSON.stringify(updatedDrafts));
+    setDrafts(updatedDrafts);
+  };
+
+  const handleClear = () => {
+    setFormData({
+      ship: "",
+      dateOfInspection: "",
+      authorityInspection: "",
+      inspectionDate: "",
+      aptCycle: "",
+      totalCompartments: "",
+      aptProvedWithoutBlanking: "",
+      aptProvedWithBlanking: "",
+      balanceCompartments: "",
+      shipStaffName: "",
+      shipRankName: "",
+      shipDesignationName: "",
+      hituName: "",
+      hituRankName: "",
+      hituDesignationName: "",
+      authoritySignature: null,
+      authoritySignatureHitu: null,
+    });
+    
+    setTableData({
+      clusterData: [{ compartment: "", cluster: "", locationStart: "", locationEnd: "", lastAptCorrection: "", remarks: "" }],
+      compartmentData: [{ name: "", deckNo: "", frStnStart: "", frStnEnd: "" }],
+      borderingData: [{ compartment: "", frStnStart: "", frStnEnd: "", aptDate: "" }],
+      repsData: [{ rank: "", name: "", designation: "" }],
+      visualData: [{ compartment: "", observations: "" }],
+      approvedData: [{ compartment: "", location: "", frStnStart: "", frStnEnd: "", authorityBlanking: "" }],
+      aptDetailsData: [{ compartment: "", designPressure: "", achievedPressure: "", designDrop: "", actualDrop: "", remarks: "" }],
+      otherData: [{ compartment: "", observations: "", remarks: "" }],
+      overallData: [{ compartment: "", recommendation: "", remarks: "" }],
+    });
+    
+    setRowCounts({
+      cluster: 1,
+      compartment: 1,
+      bordering: 1,
+      reps: 1,
+      visual: 1,
+      approved: 1,
+      aptDetails: 1,
+      other: 1,
+      overall: 1,
+    });
+    
+    setHidDraftId(null);
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    // Validation
+    const requiredFields = [
+      'ship', 'dateOfInspection', 'authorityInspection', 'inspectionDate', 'aptCycle',
+      'totalCompartments', 'aptProvedWithoutBlanking', 'aptProvedWithBlanking', 'balanceCompartments',
+      'shipStaffName', 'shipRankName', 'shipDesignationName', 'hituName', 'hituRankName', 'hituDesignationName'
+    ];
+    
+    const missingFields = requiredFields.filter(field => !formData[field as keyof typeof formData]);
+    
+    if (missingFields.length > 0) {
+      alert(`Please fill in all required fields: ${missingFields.join(', ')}`);
+      return;
+    }
+    
+    if (!formData.authoritySignature || !formData.authoritySignatureHitu) {
+      alert('Please upload both authority signatures');
+      return;
+    }
+    
+    console.log("APT Trial Protocol Form submitted:", { formData, tableData, rowCounts });
+    alert('Form submitted successfully!');
+  };
+
+  const renderTable = (tableType: string, headers: any[], fields: string[]) => {
     const data = tableData[tableType as keyof typeof tableData];
     const count = rowCounts[tableType as keyof typeof rowCounts];
     
@@ -134,10 +244,72 @@ const AptTrialProtocolForm = () => {
             <TableHeader>
               <TableRow>
                 <TableHead>Sr No.</TableHead>
-                {headers.map((header, index) => (
-                  <TableHead key={index}>{header}</TableHead>
-                ))}
+                {headers.map((header, index) => {
+                  if (typeof header === 'object' && header.colspan) {
+                    return (
+                      <TableHead key={index} colSpan={header.colspan} className="text-center">
+                        {header.text}
+                      </TableHead>
+                    );
+                  }
+                  return (
+                    <TableHead key={index}>
+                      {header}
+                    </TableHead>
+                  );
+                })}
               </TableRow>
+              {/* Sub-header row for grouped columns */}
+              {tableType === 'clusterData' && (
+                <TableRow>
+                  <TableHead></TableHead>
+                  <TableHead></TableHead>
+                  <TableHead></TableHead>
+                  <TableHead>Start*</TableHead>
+                  <TableHead>End*</TableHead>
+                  <TableHead></TableHead>
+                  <TableHead></TableHead>
+                </TableRow>
+              )}
+              {tableType === 'compartmentData' && (
+                <TableRow>
+                  <TableHead></TableHead>
+                  <TableHead></TableHead>
+                  <TableHead></TableHead>
+                  <TableHead>Start*</TableHead>
+                  <TableHead>End*</TableHead>
+                </TableRow>
+              )}
+              {tableType === 'borderingData' && (
+                <TableRow>
+                  <TableHead></TableHead>
+                  <TableHead></TableHead>
+                  <TableHead>Start*</TableHead>
+                  <TableHead>End*</TableHead>
+                  <TableHead></TableHead>
+                </TableRow>
+              )}
+              {tableType === 'approvedData' && (
+                <TableRow>
+                  <TableHead></TableHead>
+                  <TableHead></TableHead>
+                  <TableHead></TableHead>
+                  <TableHead>Start*</TableHead>
+                  <TableHead>End*</TableHead>
+                  <TableHead></TableHead>
+                </TableRow>
+              )}
+              {tableType === 'aptDetailsData' && (
+                <TableRow>
+                  <TableHead></TableHead>
+                  <TableHead></TableHead>
+                  <TableHead></TableHead>
+                  <TableHead>(mm of water column)</TableHead>
+                  <TableHead></TableHead>
+                  <TableHead></TableHead>
+                  <TableHead></TableHead>
+                </TableRow>
+              )}
             </TableHeader>
             <TableBody>
               {Array.from({ length: count }, (_, index) => (
@@ -255,7 +427,7 @@ const AptTrialProtocolForm = () => {
                 <Label className="text-lg font-semibold">Cluster No./ Fr Stn offered for APT</Label>
               </div>
               {renderTable("clusterData", 
-                ["Compartment*", "Cluster No.*", "Location Start*", "Location End*", "Last APT Correction*", "Remarks*"],
+                ["Compartment*", "Cluster No.*", {text: "Location / Frame Station", colspan: 2}, "Last APT Correction*", "Remarks*"],
                 ["compartment", "cluster", "locationStart", "locationEnd", "lastAptCorrection", "remarks"]
               )}
             </div>
@@ -267,7 +439,7 @@ const AptTrialProtocolForm = () => {
                 <Label className="text-lg font-semibold">List of Compartments Within Cluster</Label>
               </div>
               {renderTable("compartmentData",
-                ["Name*", "Deck No.*", "Frame Station Start*", "Frame Station End*"],
+                ["Name*", "Deck No.*", {text: "Frame Station", colspan: 2}],
                 ["name", "deckNo", "frStnStart", "frStnEnd"]
               )}
             </div>
@@ -279,7 +451,7 @@ const AptTrialProtocolForm = () => {
                 <Label className="text-lg font-semibold">Bordering Compartments/ Clusters</Label>
               </div>
               {renderTable("borderingData",
-                ["Compartments / Cluster / BulkHead*", "Frame Station Start*", "Frame Station End*", "APT/AHT Last Correction Date*"],
+                ["Compartments / Cluster / BulkHead*", {text: "Frame Station", colspan: 2}, "APT/AHT Last Correction Date*"],
                 ["compartment", "frStnStart", "frStnEnd", "aptDate"]
               )}
             </div>
@@ -315,7 +487,7 @@ const AptTrialProtocolForm = () => {
                 <Label className="text-lg font-semibold">Approved/ Original / Additional Blanking List</Label>
               </div>
               {renderTable("approvedData",
-                ["Compartments / Cluster*", "Location*", "Frame Station Start*", "Frame Station End*", "Authority of Blanking*"],
+                ["Compartments / Cluster*", "Location*", {text: "Frame Station*", colspan: 2}, "Authority of Blanking*"],
                 ["compartment", "location", "frStnStart", "frStnEnd", "authorityBlanking"]
               )}
             </div>
@@ -327,7 +499,7 @@ const AptTrialProtocolForm = () => {
                 <Label className="text-lg font-semibold">Details of APT</Label>
               </div>
               {renderTable("aptDetailsData",
-                ["Compartment / Cluster*", "Design Pressure*", "Achieved Pressure*", "Design Drop*", "Actual Drop*", "Remarks*"],
+                ["Compartment / Cluster*", "Design Pressure*", "Achieved Pressure*", "Design Drop*", "Actual Drop*", "Remarks"],
                 ["compartment", "designPressure", "achievedPressure", "designDrop", "actualDrop", "remarks"]
               )}
             </div>
@@ -506,16 +678,107 @@ const AptTrialProtocolForm = () => {
               </div>
             </div>
 
-            {/* Submit Button */}
-            <div className="flex justify-center pt-6">
-              <Button type="submit" className="px-8 py-2">
-                Submit Form
+            {/* Action Buttons */}
+            <div className="flex flex-wrap gap-4 justify-center pt-6">
+              <Button 
+                type="button" 
+                onClick={handleFetchDrafts}
+                className="px-6 bg-cyan-500 hover:bg-cyan-600 text-white font-semibold uppercase"
+              >
+                FETCH DRAFTS
+              </Button>
+              <Button 
+                type="button" 
+                onClick={handleSaveDraft}
+                className="px-6 bg-green-500 hover:bg-green-600 text-white font-semibold uppercase"
+              >
+                SAVE DRAFT
+              </Button>
+              <Button 
+                type="button" 
+                onClick={handleClear}
+                className="px-6 bg-red-500 hover:bg-red-600 text-white font-semibold uppercase"
+              >
+                CLEAR
+              </Button>
+              <Button 
+                type="submit" 
+                className="px-6 bg-blue-600 hover:bg-blue-700 text-white font-semibold uppercase"
+              >
+                SAVE
               </Button>
             </div>
           </form>
           </div>
         </div>
       </div>
+
+      {/* Draft Modal */}
+      <Dialog open={isDraftModalOpen} onOpenChange={setIsDraftModalOpen}>
+        <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Draft Data</DialogTitle>
+          </DialogHeader>
+          <div className="mt-4">
+            {drafts.length === 0 ? (
+              <p className="text-center text-gray-500 py-8">No drafts available</p>
+            ) : (
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Sr No.</TableHead>
+                    <TableHead>Ship</TableHead>
+                    <TableHead>APT Cycle</TableHead>
+                    <TableHead>Created Date</TableHead>
+                    <TableHead>Action</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {drafts.map((draft, index) => (
+                    <TableRow key={draft.id}>
+                      <TableCell>{index + 1}</TableCell>
+                      <TableCell>{draft.formData.ship || "No Ship Data"}</TableCell>
+                      <TableCell>{draft.formData.aptCycle || "No APT Cycle Data"}</TableCell>
+                      <TableCell>
+                        {new Date(draft.timestamp).toLocaleDateString('en-GB', {
+                          day: '2-digit',
+                          month: '2-digit',
+                          year: 'numeric',
+                          hour: '2-digit',
+                          minute: '2-digit',
+                          second: '2-digit'
+                        })}
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex gap-2">
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => handleEditDraft(draft)}
+                          >
+                            Edit
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="destructive"
+                            onClick={() => {
+                              if (confirm('Are you sure you want to delete this draft?')) {
+                                handleDeleteDraft(draft.id);
+                              }
+                            }}
+                          >
+                            Delete
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

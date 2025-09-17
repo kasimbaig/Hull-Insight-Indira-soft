@@ -598,39 +598,36 @@ const HVACPhase1Form = () => {
                 </CardContent>
               </Card>
 
-              {/* Action Buttons */}
-              <div className="flex justify-center items-center pt-6 space-x-4">
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={handleFetchDrafts}
-                  className="bg-blue-500 text-white hover:bg-blue-600"
-                >
-                  Fetch Drafts
-                </Button>
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={handleSaveDraft}
-                  className="bg-green-500 text-white hover:bg-green-600"
-                >
-                  Save Draft
-                </Button>
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={handleClear}
-                  className="bg-red-500 text-white hover:bg-red-600"
-                >
-                  Clear
-                </Button>
-                <Button
-                  type="submit"
-                  className="bg-blue-600 text-white hover:bg-blue-700"
-                >
-                  Save
-                </Button>
-              </div>
+            {/* Action Buttons */}
+            <div className="flex flex-wrap gap-4 justify-center pt-6">
+              <Button
+                type="button"
+                onClick={handleFetchDrafts}
+                className="px-6 bg-cyan-500 hover:bg-cyan-600 text-white font-semibold uppercase"
+              >
+                FETCH DRAFTS
+              </Button>
+              <Button
+                type="button"
+                onClick={handleSaveDraft}
+                className="px-6 bg-green-500 hover:bg-green-600 text-white font-semibold uppercase"
+              >
+                SAVE DRAFT
+              </Button>
+              <Button
+                type="button"
+                onClick={handleClear}
+                className="px-6 bg-red-500 hover:bg-red-600 text-white font-semibold uppercase"
+              >
+                CLEAR
+              </Button>
+              <Button
+                type="submit"
+                className="px-6 bg-blue-600 hover:bg-blue-700 text-white font-semibold uppercase"
+              >
+                SAVE
+              </Button>
+            </div>
             </form>
           </CardContent>
         </Card>

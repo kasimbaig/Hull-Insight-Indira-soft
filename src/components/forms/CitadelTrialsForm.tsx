@@ -1,12 +1,18 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Save, FileText, Trash2, Edit } from "lucide-react";
 
 const CitadelTrialsForm: React.FC = () => {
+  const [isDraftModalOpen, setIsDraftModalOpen] = useState(false);
+  const [drafts, setDrafts] = useState<any[]>([]);
+  const [hidDraftId, setHidDraftId] = useState<string | null>(null);
+
   const [formData, setFormData] = useState({
     inspection_date: "",
     inspection_type: "",
@@ -73,6 +79,65 @@ const CitadelTrialsForm: React.FC = () => {
     e.preventDefault();
     console.log("Form submitted:", { formData, tableData });
     alert("Form submitted successfully!");
+  };
+
+  const handleSaveDraft = () => {
+    const draftData = {
+      id: Date.now().toString(),
+      timestamp: new Date().toLocaleString(),
+      data: { formData, tableData },
+    };
+    
+    const existingDrafts = JSON.parse(localStorage.getItem('citadelTrialsDrafts') || '[]');
+    const updatedDrafts = [...existingDrafts, draftData];
+    localStorage.setItem('citadelTrialsDrafts', JSON.stringify(updatedDrafts));
+    alert('Draft saved successfully!');
+  };
+
+  const handleFetchDrafts = () => {
+    const savedDrafts = JSON.parse(localStorage.getItem('citadelTrialsDrafts') || '[]');
+    setDrafts(savedDrafts);
+    setIsDraftModalOpen(true);
+  };
+
+  const handleEditDraft = (draftId: string) => {
+    const draft = drafts.find(d => d.id === draftId);
+    if (draft) {
+      setFormData(draft.data.formData);
+      setTableData(draft.data.tableData);
+      setIsDraftModalOpen(false);
+      alert('Draft loaded successfully!');
+    }
+  };
+
+  const handleDeleteDraft = (draftId: string) => {
+    const updatedDrafts = drafts.filter(d => d.id !== draftId);
+    setDrafts(updatedDrafts);
+    localStorage.setItem('citadelTrialsDrafts', JSON.stringify(updatedDrafts));
+    alert('Draft deleted successfully!');
+  };
+
+  const handleClear = () => {
+    setFormData({
+      inspection_date: "",
+      inspection_type: "",
+      ship: "",
+      nbc_category: "",
+      citadel_cluster: "",
+      nbc_filter: "",
+      filter_renewal_date: "",
+      filter_due_date: "",
+      total_rows: 1,
+    });
+    setTableData([{
+      citadel_zone: "",
+      pressure_design: "",
+      pressure_achieved: "",
+      bleed_valve: "",
+      manual_local_op: "",
+      remote_op: "",
+      observations: "",
+    }]);
   };
 
   const observationOptions = [
@@ -338,18 +403,84 @@ const CitadelTrialsForm: React.FC = () => {
               </div>
             </div>
 
-            {/* Form Actions */}
-            <div className="flex justify-end space-x-4 pt-6">
-              <Button type="button" variant="outline" onClick={() => window.location.reload()}>
-                Clear
+            {/* Action Buttons */}
+            <div className="flex flex-wrap gap-4 justify-center pt-6">
+              <Button
+                type="button"
+                onClick={handleFetchDrafts}
+                className="px-6 py-2 bg-cyan-500 hover:bg-cyan-600 text-white rounded-lg"
+              >
+                <FileText className="h-4 w-4 mr-2" />
+                FETCH DRAFTS
               </Button>
-              <Button type="submit" className="bg-blue-600 hover:bg-blue-700">
-                Save
+              <Button
+                type="button"
+                onClick={handleSaveDraft}
+                className="px-6 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg"
+              >
+                <Save className="h-4 w-4 mr-2" />
+                SAVE DRAFT
+              </Button>
+              <Button
+                type="button"
+                onClick={handleClear}
+                className="px-6 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg"
+              >
+                CLEAR
+              </Button>
+              <Button
+                type="submit"
+                className="px-6 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg"
+              >
+                SAVE
               </Button>
             </div>
           </form>
         </CardContent>
       </Card>
+
+      {/* Draft Modal */}
+      <Dialog open={isDraftModalOpen} onOpenChange={setIsDraftModalOpen}>
+        <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Saved Drafts</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            {drafts.length === 0 ? (
+              <p className="text-center text-gray-500">No drafts found.</p>
+            ) : (
+              drafts.map((draft) => (
+                <div key={draft.id} className="border rounded-lg p-4 space-y-2">
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <p className="font-medium">Draft saved on: {draft.timestamp}</p>
+                      <p className="text-sm text-gray-600">Ship: {draft.data.formData.ship || 'Not specified'}</p>
+                    </div>
+                    <div className="flex gap-2">
+                      <Button
+                        size="sm"
+                        onClick={() => handleEditDraft(draft.id)}
+                        className="bg-blue-500 hover:bg-blue-600 text-white"
+                      >
+                        <Edit className="h-4 w-4 mr-1" />
+                        Load
+                      </Button>
+                      <Button
+                        size="sm"
+                        onClick={() => handleDeleteDraft(draft.id)}
+                        className="bg-red-500 hover:bg-red-600 text-white"
+                      >
+                        <Trash2 className="h-4 w-4 mr-1" />
+                        Delete
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

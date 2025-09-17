@@ -308,6 +308,29 @@ const HeloDeckFrictionTestForm = () => {
           {/* Details of Paint Application Table */}
           <div className="mb-6">
             <h5 className="text-lg font-semibold mb-3">Details of paint application:-</h5>
+            <div className="mb-4">
+              <Label className="text-sm font-medium">Enter Total Number of Rows:</Label>
+              <Input
+                type="number"
+                min="1"
+                value={paintApplicationRows.length}
+                onChange={(e) => {
+                  const count = parseInt(e.target.value) || 1;
+                  if (count > paintApplicationRows.length) {
+                    // Add rows
+                    const newRows = [];
+                    for (let i = paintApplicationRows.length + 1; i <= count; i++) {
+                      newRows.push({ id: i, location: "", details: "", dft_readings: "" });
+                    }
+                    setPaintApplicationRows(prev => [...prev, ...newRows]);
+                  } else if (count < paintApplicationRows.length) {
+                    // Remove rows
+                    setPaintApplicationRows(prev => prev.slice(0, count));
+                  }
+                }}
+                className="w-20 mt-1"
+              />
+            </div>
             <div className="overflow-x-auto">
               <Table>
                 <TableHeader>
@@ -316,7 +339,6 @@ const HeloDeckFrictionTestForm = () => {
                     <TableHead>Location <span className="text-red-500">*</span></TableHead>
                     <TableHead>Details <span className="text-red-500">*</span></TableHead>
                     <TableHead>DFT Readings <span className="text-red-500">*</span></TableHead>
-                    <TableHead>Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -344,29 +366,10 @@ const HeloDeckFrictionTestForm = () => {
                           maxLength={4}
                         />
                       </TableCell>
-                      <TableCell>
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="sm"
-                          onClick={() => removeRow(setPaintApplicationRows, paintApplicationRows, row.id)}
-                          disabled={paintApplicationRows.length === 1}
-                        >
-                          Remove
-                        </Button>
-                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
               </Table>
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => addRow(setPaintApplicationRows, paintApplicationRows, { location: "", details: "", dft_readings: "" })}
-                className="mt-2"
-              >
-                Add Row
-              </Button>
             </div>
           </div>
         </div>
@@ -378,6 +381,29 @@ const HeloDeckFrictionTestForm = () => {
           {/* Rust Marks */}
           <div className="mb-6">
             <h5 className="text-lg font-semibold mb-3">(a) Rust marks (scattered/ localised) <span className="text-red-500">*</span></h5>
+            <div className="mb-4">
+              <Label className="text-sm font-medium">Enter Total Number of Rows:</Label>
+              <Input
+                type="number"
+                min="1"
+                value={rustRows.length}
+                onChange={(e) => {
+                  const count = parseInt(e.target.value) || 1;
+                  if (count > rustRows.length) {
+                    // Add rows
+                    const newRows = [];
+                    for (let i = rustRows.length + 1; i <= count; i++) {
+                      newRows.push({ id: i, affected_area: "", location: "", start: "", end: "" });
+                    }
+                    setRustRows(prev => [...prev, ...newRows]);
+                  } else if (count < rustRows.length) {
+                    // Remove rows
+                    setRustRows(prev => prev.slice(0, count));
+                  }
+                }}
+                className="w-20 mt-1"
+              />
+            </div>
             <div className="overflow-x-auto">
               <Table>
                 <TableHeader>
@@ -387,7 +413,6 @@ const HeloDeckFrictionTestForm = () => {
                     <TableHead>Location <span className="text-red-500">*</span></TableHead>
                     <TableHead>Start <span className="text-red-500">*</span></TableHead>
                     <TableHead>End <span className="text-red-500">*</span></TableHead>
-                    <TableHead>Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -422,29 +447,750 @@ const HeloDeckFrictionTestForm = () => {
                           maxLength={4}
                         />
                       </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          </div>
+
+          {/* Pitting */}
+          <div className="mb-6">
+            <h5 className="text-lg font-semibold mb-3">(b) Pitting (scattered/ localized) <span className="text-red-500">*</span></h5>
+            <div className="mb-4">
+              <Label className="text-sm font-medium">Enter Total Number of Rows:</Label>
+              <Input
+                type="number"
+                min="1"
+                value={pittingRows.length}
+                onChange={(e) => {
+                  const count = parseInt(e.target.value) || 1;
+                  if (count > pittingRows.length) {
+                    const newRows = [];
+                    for (let i = pittingRows.length + 1; i <= count; i++) {
+                      newRows.push({ id: i, affected_area: "", location: "", start: "", end: "" });
+                    }
+                    setPittingRows(prev => [...prev, ...newRows]);
+                  } else if (count < pittingRows.length) {
+                    setPittingRows(prev => prev.slice(0, count));
+                  }
+                }}
+                className="w-20 mt-1"
+              />
+            </div>
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Sr No.</TableHead>
+                    <TableHead>Affected Area <span className="text-red-500">*</span></TableHead>
+                    <TableHead>Location <span className="text-red-500">*</span></TableHead>
+                    <TableHead>Start <span className="text-red-500">*</span></TableHead>
+                    <TableHead>End <span className="text-red-500">*</span></TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {pittingRows.map((row) => (
+                    <TableRow key={row.id}>
+                      <TableCell>{row.id}</TableCell>
                       <TableCell>
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="sm"
-                          onClick={() => removeRow(setRustRows, rustRows, row.id)}
-                          disabled={rustRows.length === 1}
-                        >
-                          Remove
-                        </Button>
+                        <Input
+                          value={row.affected_area}
+                          onChange={(e) => updateRow(setPittingRows, pittingRows, row.id, 'affected_area', e.target.value)}
+                          maxLength={5}
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <Input
+                          value={row.location}
+                          onChange={(e) => updateRow(setPittingRows, pittingRows, row.id, 'location', e.target.value)}
+                          maxLength={20}
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <Input
+                          value={row.start}
+                          onChange={(e) => updateRow(setPittingRows, pittingRows, row.id, 'start', e.target.value)}
+                          maxLength={4}
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <Input
+                          value={row.end}
+                          onChange={(e) => updateRow(setPittingRows, pittingRows, row.id, 'end', e.target.value)}
+                          maxLength={4}
+                        />
                       </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
               </Table>
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => addRow(setRustRows, rustRows, { affected_area: "", location: "", start: "", end: "" })}
-                className="mt-2"
-              >
-                Add Row
-              </Button>
+            </div>
+          </div>
+
+          {/* Paint Blisters */}
+          <div className="mb-6">
+            <h5 className="text-lg font-semibold mb-3">(c) Paint blisters <span className="text-red-500">*</span></h5>
+            <div className="mb-4">
+              <Label className="text-sm font-medium">Enter Total Number of Rows:</Label>
+              <Input
+                type="number"
+                min="1"
+                value={paintBlistersRows.length}
+                onChange={(e) => {
+                  const count = parseInt(e.target.value) || 1;
+                  if (count > paintBlistersRows.length) {
+                    const newRows = [];
+                    for (let i = paintBlistersRows.length + 1; i <= count; i++) {
+                      newRows.push({ id: i, affected_area: "", location: "", start: "", end: "" });
+                    }
+                    setPaintBlistersRows(prev => [...prev, ...newRows]);
+                  } else if (count < paintBlistersRows.length) {
+                    setPaintBlistersRows(prev => prev.slice(0, count));
+                  }
+                }}
+                className="w-20 mt-1"
+              />
+            </div>
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Sr No.</TableHead>
+                    <TableHead>Affected Area <span className="text-red-500">*</span></TableHead>
+                    <TableHead>Location <span className="text-red-500">*</span></TableHead>
+                    <TableHead>Start <span className="text-red-500">*</span></TableHead>
+                    <TableHead>End <span className="text-red-500">*</span></TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {paintBlistersRows.map((row) => (
+                    <TableRow key={row.id}>
+                      <TableCell>{row.id}</TableCell>
+                      <TableCell>
+                        <Input
+                          value={row.affected_area}
+                          onChange={(e) => updateRow(setPaintBlistersRows, paintBlistersRows, row.id, 'affected_area', e.target.value)}
+                          maxLength={5}
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <Input
+                          value={row.location}
+                          onChange={(e) => updateRow(setPaintBlistersRows, paintBlistersRows, row.id, 'location', e.target.value)}
+                          maxLength={20}
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <Input
+                          value={row.start}
+                          onChange={(e) => updateRow(setPaintBlistersRows, paintBlistersRows, row.id, 'start', e.target.value)}
+                          maxLength={4}
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <Input
+                          value={row.end}
+                          onChange={(e) => updateRow(setPaintBlistersRows, paintBlistersRows, row.id, 'end', e.target.value)}
+                          maxLength={4}
+                        />
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          </div>
+
+          {/* Burn Spots */}
+          <div className="mb-6">
+            <h5 className="text-lg font-semibold mb-3">(d) Burn spots <span className="text-red-500">*</span></h5>
+            <div className="mb-4">
+              <Label className="text-sm font-medium">Enter Total Number of Rows:</Label>
+              <Input
+                type="number"
+                min="1"
+                value={burnSpotsRows.length}
+                onChange={(e) => {
+                  const count = parseInt(e.target.value) || 1;
+                  if (count > burnSpotsRows.length) {
+                    const newRows = [];
+                    for (let i = burnSpotsRows.length + 1; i <= count; i++) {
+                      newRows.push({ id: i, affected_area: "", location: "", start: "", end: "" });
+                    }
+                    setBurnSpotsRows(prev => [...prev, ...newRows]);
+                  } else if (count < burnSpotsRows.length) {
+                    setBurnSpotsRows(prev => prev.slice(0, count));
+                  }
+                }}
+                className="w-20 mt-1"
+              />
+            </div>
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Sr No.</TableHead>
+                    <TableHead>Affected Area <span className="text-red-500">*</span></TableHead>
+                    <TableHead>Location <span className="text-red-500">*</span></TableHead>
+                    <TableHead>Start <span className="text-red-500">*</span></TableHead>
+                    <TableHead>End <span className="text-red-500">*</span></TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {burnSpotsRows.map((row) => (
+                    <TableRow key={row.id}>
+                      <TableCell>{row.id}</TableCell>
+                      <TableCell>
+                        <Input
+                          value={row.affected_area}
+                          onChange={(e) => updateRow(setBurnSpotsRows, burnSpotsRows, row.id, 'affected_area', e.target.value)}
+                          maxLength={5}
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <Input
+                          value={row.location}
+                          onChange={(e) => updateRow(setBurnSpotsRows, burnSpotsRows, row.id, 'location', e.target.value)}
+                          maxLength={20}
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <Input
+                          value={row.start}
+                          onChange={(e) => updateRow(setBurnSpotsRows, burnSpotsRows, row.id, 'start', e.target.value)}
+                          maxLength={4}
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <Input
+                          value={row.end}
+                          onChange={(e) => updateRow(setBurnSpotsRows, burnSpotsRows, row.id, 'end', e.target.value)}
+                          maxLength={4}
+                        />
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          </div>
+
+          {/* Scratch Marks/Dents */}
+          <div className="mb-6">
+            <h5 className="text-lg font-semibold mb-3">(e) Scratch marks/dents <span className="text-red-500">*</span></h5>
+            <div className="mb-4">
+              <Label className="text-sm font-medium">Enter Total Number of Rows:</Label>
+              <Input
+                type="number"
+                min="1"
+                value={scratchMarksRows.length}
+                onChange={(e) => {
+                  const count = parseInt(e.target.value) || 1;
+                  if (count > scratchMarksRows.length) {
+                    const newRows = [];
+                    for (let i = scratchMarksRows.length + 1; i <= count; i++) {
+                      newRows.push({ id: i, affected_area: "", location: "", start: "", end: "" });
+                    }
+                    setScratchMarksRows(prev => [...prev, ...newRows]);
+                  } else if (count < scratchMarksRows.length) {
+                    setScratchMarksRows(prev => prev.slice(0, count));
+                  }
+                }}
+                className="w-20 mt-1"
+              />
+            </div>
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Sr No.</TableHead>
+                    <TableHead>Affected Area <span className="text-red-500">*</span></TableHead>
+                    <TableHead>Location <span className="text-red-500">*</span></TableHead>
+                    <TableHead>Start <span className="text-red-500">*</span></TableHead>
+                    <TableHead>End <span className="text-red-500">*</span></TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {scratchMarksRows.map((row) => (
+                    <TableRow key={row.id}>
+                      <TableCell>{row.id}</TableCell>
+                      <TableCell>
+                        <Input
+                          value={row.affected_area}
+                          onChange={(e) => updateRow(setScratchMarksRows, scratchMarksRows, row.id, 'affected_area', e.target.value)}
+                          maxLength={5}
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <Input
+                          value={row.location}
+                          onChange={(e) => updateRow(setScratchMarksRows, scratchMarksRows, row.id, 'location', e.target.value)}
+                          maxLength={20}
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <Input
+                          value={row.start}
+                          onChange={(e) => updateRow(setScratchMarksRows, scratchMarksRows, row.id, 'start', e.target.value)}
+                          maxLength={4}
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <Input
+                          value={row.end}
+                          onChange={(e) => updateRow(setScratchMarksRows, scratchMarksRows, row.id, 'end', e.target.value)}
+                          maxLength={4}
+                        />
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          </div>
+
+          {/* Paint Peeling-off/Flaking-off */}
+          <div className="mb-6">
+            <h5 className="text-lg font-semibold mb-3">(f) Paint peeling-off/flaking-off <span className="text-red-500">*</span></h5>
+            <div className="mb-4">
+              <Label className="text-sm font-medium">Enter Total Number of Rows:</Label>
+              <Input
+                type="number"
+                min="1"
+                value={paintPeelingRows.length}
+                onChange={(e) => {
+                  const count = parseInt(e.target.value) || 1;
+                  if (count > paintPeelingRows.length) {
+                    const newRows = [];
+                    for (let i = paintPeelingRows.length + 1; i <= count; i++) {
+                      newRows.push({ id: i, affected_area: "", location: "", start: "", end: "" });
+                    }
+                    setPaintPeelingRows(prev => [...prev, ...newRows]);
+                  } else if (count < paintPeelingRows.length) {
+                    setPaintPeelingRows(prev => prev.slice(0, count));
+                  }
+                }}
+                className="w-20 mt-1"
+              />
+            </div>
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Sr No.</TableHead>
+                    <TableHead>Affected Area <span className="text-red-500">*</span></TableHead>
+                    <TableHead>Location <span className="text-red-500">*</span></TableHead>
+                    <TableHead>Start <span className="text-red-500">*</span></TableHead>
+                    <TableHead>End <span className="text-red-500">*</span></TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {paintPeelingRows.map((row) => (
+                    <TableRow key={row.id}>
+                      <TableCell>{row.id}</TableCell>
+                      <TableCell>
+                        <Input
+                          value={row.affected_area}
+                          onChange={(e) => updateRow(setPaintPeelingRows, paintPeelingRows, row.id, 'affected_area', e.target.value)}
+                          maxLength={5}
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <Input
+                          value={row.location}
+                          onChange={(e) => updateRow(setPaintPeelingRows, paintPeelingRows, row.id, 'location', e.target.value)}
+                          maxLength={20}
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <Input
+                          value={row.start}
+                          onChange={(e) => updateRow(setPaintPeelingRows, paintPeelingRows, row.id, 'start', e.target.value)}
+                          maxLength={4}
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <Input
+                          value={row.end}
+                          onChange={(e) => updateRow(setPaintPeelingRows, paintPeelingRows, row.id, 'end', e.target.value)}
+                          maxLength={4}
+                        />
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          </div>
+
+          {/* Loose Adhesion of Paint Film */}
+          <div className="mb-6">
+            <h5 className="text-lg font-semibold mb-3">(g) Loose adhesion of paint film <span className="text-red-500">*</span></h5>
+            <div className="mb-4">
+              <Label className="text-sm font-medium">Enter Total Number of Rows:</Label>
+              <Input
+                type="number"
+                min="1"
+                value={looseAdhesionRows.length}
+                onChange={(e) => {
+                  const count = parseInt(e.target.value) || 1;
+                  if (count > looseAdhesionRows.length) {
+                    const newRows = [];
+                    for (let i = looseAdhesionRows.length + 1; i <= count; i++) {
+                      newRows.push({ id: i, affected_area: "", location: "", start: "", end: "" });
+                    }
+                    setLooseAdhesionRows(prev => [...prev, ...newRows]);
+                  } else if (count < looseAdhesionRows.length) {
+                    setLooseAdhesionRows(prev => prev.slice(0, count));
+                  }
+                }}
+                className="w-20 mt-1"
+              />
+            </div>
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Sr No.</TableHead>
+                    <TableHead>Affected Area <span className="text-red-500">*</span></TableHead>
+                    <TableHead>Location <span className="text-red-500">*</span></TableHead>
+                    <TableHead>Start <span className="text-red-500">*</span></TableHead>
+                    <TableHead>End <span className="text-red-500">*</span></TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {looseAdhesionRows.map((row) => (
+                    <TableRow key={row.id}>
+                      <TableCell>{row.id}</TableCell>
+                      <TableCell>
+                        <Input
+                          value={row.affected_area}
+                          onChange={(e) => updateRow(setLooseAdhesionRows, looseAdhesionRows, row.id, 'affected_area', e.target.value)}
+                          maxLength={5}
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <Input
+                          value={row.location}
+                          onChange={(e) => updateRow(setLooseAdhesionRows, looseAdhesionRows, row.id, 'location', e.target.value)}
+                          maxLength={20}
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <Input
+                          value={row.start}
+                          onChange={(e) => updateRow(setLooseAdhesionRows, looseAdhesionRows, row.id, 'start', e.target.value)}
+                          maxLength={4}
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <Input
+                          value={row.end}
+                          onChange={(e) => updateRow(setLooseAdhesionRows, looseAdhesionRows, row.id, 'end', e.target.value)}
+                          maxLength={4}
+                        />
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          </div>
+
+          {/* Paint Cracking */}
+          <div className="mb-6">
+            <h5 className="text-lg font-semibold mb-3">(h) Paint cracking <span className="text-red-500">*</span></h5>
+            <div className="mb-4">
+              <Label className="text-sm font-medium">Enter Total Number of Rows:</Label>
+              <Input
+                type="number"
+                min="1"
+                value={paintCrackingRows.length}
+                onChange={(e) => {
+                  const count = parseInt(e.target.value) || 1;
+                  if (count > paintCrackingRows.length) {
+                    const newRows = [];
+                    for (let i = paintCrackingRows.length + 1; i <= count; i++) {
+                      newRows.push({ id: i, affected_area: "", location: "", start: "", end: "" });
+                    }
+                    setPaintCrackingRows(prev => [...prev, ...newRows]);
+                  } else if (count < paintCrackingRows.length) {
+                    setPaintCrackingRows(prev => prev.slice(0, count));
+                  }
+                }}
+                className="w-20 mt-1"
+              />
+            </div>
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Sr No.</TableHead>
+                    <TableHead>Affected Area <span className="text-red-500">*</span></TableHead>
+                    <TableHead>Location <span className="text-red-500">*</span></TableHead>
+                    <TableHead>Start <span className="text-red-500">*</span></TableHead>
+                    <TableHead>End <span className="text-red-500">*</span></TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {paintCrackingRows.map((row) => (
+                    <TableRow key={row.id}>
+                      <TableCell>{row.id}</TableCell>
+                      <TableCell>
+                        <Input
+                          value={row.affected_area}
+                          onChange={(e) => updateRow(setPaintCrackingRows, paintCrackingRows, row.id, 'affected_area', e.target.value)}
+                          maxLength={5}
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <Input
+                          value={row.location}
+                          onChange={(e) => updateRow(setPaintCrackingRows, paintCrackingRows, row.id, 'location', e.target.value)}
+                          maxLength={20}
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <Input
+                          value={row.start}
+                          onChange={(e) => updateRow(setPaintCrackingRows, paintCrackingRows, row.id, 'start', e.target.value)}
+                          maxLength={4}
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <Input
+                          value={row.end}
+                          onChange={(e) => updateRow(setPaintCrackingRows, paintCrackingRows, row.id, 'end', e.target.value)}
+                          maxLength={4}
+                        />
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          </div>
+
+          {/* Paint Chipped-off */}
+          <div className="mb-6">
+            <h5 className="text-lg font-semibold mb-3">(j) Paint chipped-off <span className="text-red-500">*</span></h5>
+            <div className="mb-4">
+              <Label className="text-sm font-medium">Enter Total Number of Rows:</Label>
+              <Input
+                type="number"
+                min="1"
+                value={paintChippedRows.length}
+                onChange={(e) => {
+                  const count = parseInt(e.target.value) || 1;
+                  if (count > paintChippedRows.length) {
+                    const newRows = [];
+                    for (let i = paintChippedRows.length + 1; i <= count; i++) {
+                      newRows.push({ id: i, affected_area: "", location: "", start: "", end: "" });
+                    }
+                    setPaintChippedRows(prev => [...prev, ...newRows]);
+                  } else if (count < paintChippedRows.length) {
+                    setPaintChippedRows(prev => prev.slice(0, count));
+                  }
+                }}
+                className="w-20 mt-1"
+              />
+            </div>
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Sr No.</TableHead>
+                    <TableHead>Affected Area <span className="text-red-500">*</span></TableHead>
+                    <TableHead>Location <span className="text-red-500">*</span></TableHead>
+                    <TableHead>Start <span className="text-red-500">*</span></TableHead>
+                    <TableHead>End <span className="text-red-500">*</span></TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {paintChippedRows.map((row) => (
+                    <TableRow key={row.id}>
+                      <TableCell>{row.id}</TableCell>
+                      <TableCell>
+                        <Input
+                          value={row.affected_area}
+                          onChange={(e) => updateRow(setPaintChippedRows, paintChippedRows, row.id, 'affected_area', e.target.value)}
+                          maxLength={5}
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <Input
+                          value={row.location}
+                          onChange={(e) => updateRow(setPaintChippedRows, paintChippedRows, row.id, 'location', e.target.value)}
+                          maxLength={20}
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <Input
+                          value={row.start}
+                          onChange={(e) => updateRow(setPaintChippedRows, paintChippedRows, row.id, 'start', e.target.value)}
+                          maxLength={4}
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <Input
+                          value={row.end}
+                          onChange={(e) => updateRow(setPaintChippedRows, paintChippedRows, row.id, 'end', e.target.value)}
+                          maxLength={4}
+                        />
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          </div>
+
+          {/* Undulations */}
+          <div className="mb-6">
+            <h5 className="text-lg font-semibold mb-3">(k) Undulations <span className="text-red-500">*</span></h5>
+            <div className="mb-4">
+              <Label className="text-sm font-medium">Enter Total Number of Rows:</Label>
+              <Input
+                type="number"
+                min="1"
+                value={undulationsRows.length}
+                onChange={(e) => {
+                  const count = parseInt(e.target.value) || 1;
+                  if (count > undulationsRows.length) {
+                    const newRows = [];
+                    for (let i = undulationsRows.length + 1; i <= count; i++) {
+                      newRows.push({ id: i, affected_area: "", location: "", start: "", end: "" });
+                    }
+                    setUndulationsRows(prev => [...prev, ...newRows]);
+                  } else if (count < undulationsRows.length) {
+                    setUndulationsRows(prev => prev.slice(0, count));
+                  }
+                }}
+                className="w-20 mt-1"
+              />
+            </div>
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Sr No.</TableHead>
+                    <TableHead>Affected Area <span className="text-red-500">*</span></TableHead>
+                    <TableHead>Location <span className="text-red-500">*</span></TableHead>
+                    <TableHead>Start <span className="text-red-500">*</span></TableHead>
+                    <TableHead>End <span className="text-red-500">*</span></TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {undulationsRows.map((row) => (
+                    <TableRow key={row.id}>
+                      <TableCell>{row.id}</TableCell>
+                      <TableCell>
+                        <Input
+                          value={row.affected_area}
+                          onChange={(e) => updateRow(setUndulationsRows, undulationsRows, row.id, 'affected_area', e.target.value)}
+                          maxLength={5}
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <Input
+                          value={row.location}
+                          onChange={(e) => updateRow(setUndulationsRows, undulationsRows, row.id, 'location', e.target.value)}
+                          maxLength={20}
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <Input
+                          value={row.start}
+                          onChange={(e) => updateRow(setUndulationsRows, undulationsRows, row.id, 'start', e.target.value)}
+                          maxLength={4}
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <Input
+                          value={row.end}
+                          onChange={(e) => updateRow(setUndulationsRows, undulationsRows, row.id, 'end', e.target.value)}
+                          maxLength={4}
+                        />
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          </div>
+
+          {/* Patch Repairs Undertaken by SS */}
+          <div className="mb-6">
+            <h5 className="text-lg font-semibold mb-3">(l) Patch repairs undertaken by SS <span className="text-red-500">*</span></h5>
+            <div className="mb-4">
+              <Label className="text-sm font-medium">Enter Total Number of Rows:</Label>
+              <Input
+                type="number"
+                min="1"
+                value={patchRepairRows.length}
+                onChange={(e) => {
+                  const count = parseInt(e.target.value) || 1;
+                  if (count > patchRepairRows.length) {
+                    const newRows = [];
+                    for (let i = patchRepairRows.length + 1; i <= count; i++) {
+                      newRows.push({ id: i, affected_area: "", location: "", start: "", end: "" });
+                    }
+                    setPatchRepairRows(prev => [...prev, ...newRows]);
+                  } else if (count < patchRepairRows.length) {
+                    setPatchRepairRows(prev => prev.slice(0, count));
+                  }
+                }}
+                className="w-20 mt-1"
+              />
+            </div>
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Sr No.</TableHead>
+                    <TableHead>Affected Area <span className="text-red-500">*</span></TableHead>
+                    <TableHead>Location <span className="text-red-500">*</span></TableHead>
+                    <TableHead>Start <span className="text-red-500">*</span></TableHead>
+                    <TableHead>End <span className="text-red-500">*</span></TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {patchRepairRows.map((row) => (
+                    <TableRow key={row.id}>
+                      <TableCell>{row.id}</TableCell>
+                      <TableCell>
+                        <Input
+                          value={row.affected_area}
+                          onChange={(e) => updateRow(setPatchRepairRows, patchRepairRows, row.id, 'affected_area', e.target.value)}
+                          maxLength={5}
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <Input
+                          value={row.location}
+                          onChange={(e) => updateRow(setPatchRepairRows, patchRepairRows, row.id, 'location', e.target.value)}
+                          maxLength={20}
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <Input
+                          value={row.start}
+                          onChange={(e) => updateRow(setPatchRepairRows, patchRepairRows, row.id, 'start', e.target.value)}
+                          maxLength={4}
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <Input
+                          value={row.end}
+                          onChange={(e) => updateRow(setPatchRepairRows, patchRepairRows, row.id, 'end', e.target.value)}
+                          maxLength={4}
+                        />
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
             </div>
           </div>
 
@@ -460,6 +1206,136 @@ const HeloDeckFrictionTestForm = () => {
               maxLength={50}
               className="mt-1"
             />
+          </div>
+
+          {/* Additional Visual Inspection Fields */}
+          <div className="mb-6">
+            <h5 className="text-lg font-semibold mb-3">(n) Surface Contamination <span className="text-red-500">*</span></h5>
+            <div className="mb-4">
+              <Label className="text-sm font-medium">Enter Total Number of Rows:</Label>
+              <Input
+                type="number"
+                min="1"
+                value={1}
+                className="w-20 mt-1"
+              />
+            </div>
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Sr No.</TableHead>
+                    <TableHead>Affected Area <span className="text-red-500">*</span></TableHead>
+                    <TableHead>Location <span className="text-red-500">*</span></TableHead>
+                    <TableHead>Start <span className="text-red-500">*</span></TableHead>
+                    <TableHead>End <span className="text-red-500">*</span></TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  <TableRow>
+                    <TableCell>1</TableCell>
+                    <TableCell>
+                      <Input maxLength={5} />
+                    </TableCell>
+                    <TableCell>
+                      <Input maxLength={20} />
+                    </TableCell>
+                    <TableCell>
+                      <Input maxLength={4} />
+                    </TableCell>
+                    <TableCell>
+                      <Input maxLength={4} />
+                    </TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </div>
+          </div>
+
+          <div className="mb-6">
+            <h5 className="text-lg font-semibold mb-3">(o) Paint Adhesion <span className="text-red-500">*</span></h5>
+            <div className="mb-4">
+              <Label className="text-sm font-medium">Enter Total Number of Rows:</Label>
+              <Input
+                type="number"
+                min="1"
+                value={1}
+                className="w-20 mt-1"
+              />
+            </div>
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Sr No.</TableHead>
+                    <TableHead>Affected Area <span className="text-red-500">*</span></TableHead>
+                    <TableHead>Location <span className="text-red-500">*</span></TableHead>
+                    <TableHead>Start <span className="text-red-500">*</span></TableHead>
+                    <TableHead>End <span className="text-red-500">*</span></TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  <TableRow>
+                    <TableCell>1</TableCell>
+                    <TableCell>
+                      <Input maxLength={5} />
+                    </TableCell>
+                    <TableCell>
+                      <Input maxLength={20} />
+                    </TableCell>
+                    <TableCell>
+                      <Input maxLength={4} />
+                    </TableCell>
+                    <TableCell>
+                      <Input maxLength={4} />
+                    </TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </div>
+          </div>
+
+          <div className="mb-6">
+            <h5 className="text-lg font-semibold mb-3">(p) Surface Roughness <span className="text-red-500">*</span></h5>
+            <div className="mb-4">
+              <Label className="text-sm font-medium">Enter Total Number of Rows:</Label>
+              <Input
+                type="number"
+                min="1"
+                value={1}
+                className="w-20 mt-1"
+              />
+            </div>
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Sr No.</TableHead>
+                    <TableHead>Affected Area <span className="text-red-500">*</span></TableHead>
+                    <TableHead>Location <span className="text-red-500">*</span></TableHead>
+                    <TableHead>Start <span className="text-red-500">*</span></TableHead>
+                    <TableHead>End <span className="text-red-500">*</span></TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  <TableRow>
+                    <TableCell>1</TableCell>
+                    <TableCell>
+                      <Input maxLength={5} />
+                    </TableCell>
+                    <TableCell>
+                      <Input maxLength={20} />
+                    </TableCell>
+                    <TableCell>
+                      <Input maxLength={4} />
+                    </TableCell>
+                    <TableCell>
+                      <Input maxLength={4} />
+                    </TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </div>
           </div>
         </div>
 
@@ -483,6 +1359,27 @@ const HeloDeckFrictionTestForm = () => {
           </div>
 
           {/* Friction Test Table */}
+          <div className="mb-4">
+            <Label className="text-sm font-medium">Enter Total Number of Rows:</Label>
+            <Input
+              type="number"
+              min="1"
+              value={frictionTestRows.length}
+              onChange={(e) => {
+                const count = parseInt(e.target.value) || 1;
+                if (count > frictionTestRows.length) {
+                  const newRows = [];
+                  for (let i = frictionTestRows.length + 1; i <= count; i++) {
+                    newRows.push({ id: i, frame_station: "", pscl: "", wet: "", oily: "" });
+                  }
+                  setFrictionTestRows(prev => [...prev, ...newRows]);
+                } else if (count < frictionTestRows.length) {
+                  setFrictionTestRows(prev => prev.slice(0, count));
+                }
+              }}
+              className="w-20 mt-1"
+            />
+          </div>
           <div className="overflow-x-auto">
             <Table>
               <TableHeader>
@@ -492,7 +1389,6 @@ const HeloDeckFrictionTestForm = () => {
                   <TableHead>P/S/C/L <span className="text-red-500">*</span></TableHead>
                   <TableHead>Wet <span className="text-red-500">*</span></TableHead>
                   <TableHead>Oily <span className="text-red-500">*</span></TableHead>
-                  <TableHead>Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -527,42 +1423,43 @@ const HeloDeckFrictionTestForm = () => {
                         maxLength={10}
                       />
                     </TableCell>
-                    <TableCell>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        onClick={() => removeRow(setFrictionTestRows, frictionTestRows, row.id)}
-                        disabled={frictionTestRows.length === 1}
-                      >
-                        Remove
-                      </Button>
-                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
             </Table>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => addRow(setFrictionTestRows, frictionTestRows, { frame_station: "", pscl: "", wet: "", oily: "" })}
-              className="mt-2"
-            >
-              Add Row
-            </Button>
           </div>
         </div>
 
         {/* Recommendations */}
         <div className="mb-8">
           <h4 className="text-xl font-bold text-blue-600 mb-4 bg-blue-50 p-3 rounded">Recommendations</h4>
+          <div className="mb-4">
+            <Label className="text-sm font-medium">Enter Total Number of Rows:</Label>
+            <Input
+              type="number"
+              min="1"
+              value={recommendedRows.length}
+              onChange={(e) => {
+                const count = parseInt(e.target.value) || 1;
+                if (count > recommendedRows.length) {
+                  const newRows = [];
+                  for (let i = recommendedRows.length + 1; i <= count; i++) {
+                    newRows.push({ id: i, recommended: "" });
+                  }
+                  setRecommendedRows(prev => [...prev, ...newRows]);
+                } else if (count < recommendedRows.length) {
+                  setRecommendedRows(prev => prev.slice(0, count));
+                }
+              }}
+              className="w-20 mt-1"
+            />
+          </div>
           <div className="overflow-x-auto">
             <Table>
               <TableHeader>
                 <TableRow>
                   <TableHead>Sr No.</TableHead>
                   <TableHead>Recommended <span className="text-red-500">*</span></TableHead>
-                  <TableHead>Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -576,29 +1473,10 @@ const HeloDeckFrictionTestForm = () => {
                         maxLength={100}
                       />
                     </TableCell>
-                    <TableCell>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        onClick={() => removeRow(setRecommendedRows, recommendedRows, row.id)}
-                        disabled={recommendedRows.length === 1}
-                      >
-                        Remove
-                      </Button>
-                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
             </Table>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => addRow(setRecommendedRows, recommendedRows, { recommended: "" })}
-              className="mt-2"
-            >
-              Add Row
-            </Button>
           </div>
         </div>
 
@@ -658,17 +1536,17 @@ const HeloDeckFrictionTestForm = () => {
 
         {/* Action Buttons */}
         <div className="flex justify-end space-x-4 mt-6">
-          <Button type="button" onClick={handleFetchDrafts} className="bg-yellow-500 hover:bg-yellow-600 text-white">
-            Fetch Drafts
+          <Button type="button" onClick={handleFetchDrafts} className="bg-cyan-500 hover:bg-cyan-600 text-white px-6 py-2 rounded-lg font-semibold">
+            FETCH DRAFTS
           </Button>
-          <Button type="button" onClick={handleSaveDraft} className="bg-blue-500 hover:bg-blue-600 text-white">
+          <Button type="button" onClick={handleSaveDraft} className="bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded-lg font-semibold">
             SAVE DRAFT
           </Button>
-          <Button type="button" onClick={handleClear} className="bg-gray-300 hover:bg-gray-400 text-gray-800">
-            Clear
+          <Button type="button" onClick={handleClear} className="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-lg font-semibold">
+            CLEAR
           </Button>
-          <Button type="submit" onClick={handleSubmit} className="bg-green-500 hover:bg-green-600 text-white">
-            Save
+          <Button type="submit" onClick={handleSubmit} className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg font-semibold">
+            SAVE
           </Button>
         </div>
 
@@ -686,7 +1564,6 @@ const HeloDeckFrictionTestForm = () => {
                     <TableHead>INS</TableHead>
                     <TableHead>Occasion</TableHead>
                     <TableHead>Created Date</TableHead>
-                    <TableHead>Action</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -696,24 +1573,6 @@ const HeloDeckFrictionTestForm = () => {
                       <TableCell>{draft.ship}</TableCell>
                       <TableCell>{draft.occasion}</TableCell>
                       <TableCell>{draft.created_date}</TableCell>
-                      <TableCell>
-                        <div className="flex space-x-2">
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => handleEditDraft(draft.id)}
-                          >
-                            <Edit className="h-4 w-4" />
-                          </Button>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => handleDeleteDraft(draft.id)}
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>

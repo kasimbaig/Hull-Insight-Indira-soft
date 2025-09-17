@@ -664,50 +664,47 @@ const WTDoorForm: React.FC = () => {
               </div>
 
               {/* Action Buttons */}
-              <div className="flex flex-col sm:flex-row gap-4 pt-6 border-t">
+              <div className="flex flex-wrap gap-4 justify-center pt-6">
                 <Button
                   type="button"
                   onClick={loadDrafts}
-                  variant="outline"
-                  className="flex-1"
+                  className="px-6 bg-cyan-500 hover:bg-cyan-600 text-white font-semibold uppercase"
                 >
                   <FileText className="h-4 w-4 mr-2" />
-                  Fetch Drafts
+                  FETCH DRAFTS
                 </Button>
 
                 <Button
                   type="button"
                   onClick={saveDraft}
-                  variant="outline"
-                  className="flex-1"
+                  className="px-6 bg-green-500 hover:bg-green-600 text-white font-semibold uppercase"
                 >
                   <Save className="h-4 w-4 mr-2" />
-                  Save Draft
+                  SAVE DRAFT
                 </Button>
 
                 <Button
                   type="button"
                   onClick={clearForm}
-                  variant="destructive"
-                  className="flex-1"
+                  className="px-6 bg-red-500 hover:bg-red-600 text-white font-semibold uppercase"
                 >
-                  Clear
+                  CLEAR
                 </Button>
 
                 <Button
                   type="submit"
                   disabled={isSubmitting}
-                  className="flex-1 bg-blue-600 hover:bg-blue-700 text-white"
+                  className="px-6 bg-blue-600 hover:bg-blue-700 text-white font-semibold uppercase"
                 >
                   {isSubmitting ? (
                     <>
                       <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                      Submitting...
+                      SUBMITTING...
                     </>
                   ) : (
                     <>
                       <Save className="h-4 w-4 mr-2" />
-                      Save
+                      SAVE
                     </>
                   )}
                 </Button>

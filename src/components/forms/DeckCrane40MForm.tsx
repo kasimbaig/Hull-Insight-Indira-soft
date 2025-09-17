@@ -1,12 +1,18 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Save, FileText, Trash2, Edit } from "lucide-react";
 
 const DeckCrane40MForm: React.FC = () => {
+  const [isDraftModalOpen, setIsDraftModalOpen] = useState(false);
+  const [drafts, setDrafts] = useState<any[]>([]);
+  const [hidDraftId, setHidDraftId] = useState<string | null>(null);
+
   const [formData, setFormData] = useState({
     ship: "",
     date_of_inspection: "",
@@ -163,6 +169,79 @@ const DeckCrane40MForm: React.FC = () => {
     e.preventDefault();
     console.log("Form submitted:", formData);
     alert("Form submitted successfully!");
+  };
+
+  const handleSaveDraft = () => {
+    const draftData = {
+      id: Date.now().toString(),
+      timestamp: new Date().toLocaleString(),
+      data: formData,
+    };
+    
+    const existingDrafts = JSON.parse(localStorage.getItem('deckCrane40MDrafts') || '[]');
+    const updatedDrafts = [...existingDrafts, draftData];
+    localStorage.setItem('deckCrane40MDrafts', JSON.stringify(updatedDrafts));
+    alert('Draft saved successfully!');
+  };
+
+  const handleFetchDrafts = () => {
+    const savedDrafts = JSON.parse(localStorage.getItem('deckCrane40MDrafts') || '[]');
+    setDrafts(savedDrafts);
+    setIsDraftModalOpen(true);
+  };
+
+  const handleEditDraft = (draftId: string) => {
+    const draft = drafts.find(d => d.id === draftId);
+    if (draft) {
+      setFormData(draft.data);
+      setIsDraftModalOpen(false);
+      alert('Draft loaded successfully!');
+    }
+  };
+
+  const handleDeleteDraft = (draftId: string) => {
+    const updatedDrafts = drafts.filter(d => d.id !== draftId);
+    setDrafts(updatedDrafts);
+    localStorage.setItem('deckCrane40MDrafts', JSON.stringify(updatedDrafts));
+    alert('Draft deleted successfully!');
+  };
+
+  const handleClear = () => {
+    setFormData({
+      ship: "",
+      date_of_inspection: "",
+      make_model: "",
+      type: "",
+      year_of_manufacture: "",
+      ref_documents: "",
+      maintenance_observations: "",
+      maintenance_remarks: "",
+      lifting_capacity_observations: "",
+      lifting_capacity_remarks: "",
+      load_testing_observations: "",
+      load_testing_remarks: "",
+      structure_observations: "",
+      structure_remarks: "",
+      wire_ropes_observations: "",
+      wire_ropes_remarks: "",
+      oil_observations: "",
+      oil_remarks: "",
+      greasing_observations: "",
+      greasing_remarks: "",
+      oil_grease_levels_observations: "",
+      oil_grease_levels_remarks: "",
+      electrical_checks_observations: "",
+      electrical_checks_remarks: "",
+      electrical_checks_etma_observations: "",
+      electrical_checks_etma_remarks: "",
+      visual_inspection_observations: "",
+      visual_inspection_remarks: "",
+      operation_checks_observations: "",
+      operation_checks_remarks: "",
+      other_observations_remarks: "",
+      overall_remarks_textarea: "",
+      authority_signature: null,
+    });
   };
 
   const validateYear = (year: string) => {
@@ -887,19 +966,85 @@ const DeckCrane40MForm: React.FC = () => {
               </div>
             </div>
 
-            {/* Form Actions */}
-            <div className="flex justify-end space-x-4 pt-6">
-              <Button type="button" variant="outline" onClick={() => window.location.reload()}>
-                Clear
+            {/* Action Buttons */}
+            <div className="flex flex-wrap gap-4 justify-center pt-6">
+              <Button
+                type="button"
+                onClick={handleFetchDrafts}
+                className="px-6 py-2 bg-cyan-500 hover:bg-cyan-600 text-white rounded-lg"
+              >
+                <FileText className="h-4 w-4 mr-2" />
+                FETCH DRAFTS
               </Button>
-              <Button type="submit" className="bg-blue-600 hover:bg-blue-700">
-                Save
+              <Button
+                type="button"
+                onClick={handleSaveDraft}
+                className="px-6 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg"
+              >
+                <Save className="h-4 w-4 mr-2" />
+                SAVE DRAFT
+              </Button>
+              <Button
+                type="button"
+                onClick={handleClear}
+                className="px-6 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg"
+              >
+                CLEAR
+              </Button>
+              <Button
+                type="submit"
+                className="px-6 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg"
+              >
+                SAVE
               </Button>
             </div>
           </form>
           </div>
         </div>
       </div>
+
+      {/* Draft Modal */}
+      <Dialog open={isDraftModalOpen} onOpenChange={setIsDraftModalOpen}>
+        <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Saved Drafts</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            {drafts.length === 0 ? (
+              <p className="text-center text-gray-500">No drafts found.</p>
+            ) : (
+              drafts.map((draft) => (
+                <div key={draft.id} className="border rounded-lg p-4 space-y-2">
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <p className="font-medium">Draft saved on: {draft.timestamp}</p>
+                      <p className="text-sm text-gray-600">Ship: {draft.data.ship || 'Not specified'}</p>
+                    </div>
+                    <div className="flex gap-2">
+                      <Button
+                        size="sm"
+                        onClick={() => handleEditDraft(draft.id)}
+                        className="bg-blue-500 hover:bg-blue-600 text-white"
+                      >
+                        <Edit className="h-4 w-4 mr-1" />
+                        Load
+                      </Button>
+                      <Button
+                        size="sm"
+                        onClick={() => handleDeleteDraft(draft.id)}
+                        className="bg-red-500 hover:bg-red-600 text-white"
+                      >
+                        <Trash2 className="h-4 w-4 mr-1" />
+                        Delete
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

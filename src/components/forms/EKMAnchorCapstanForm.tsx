@@ -30,7 +30,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { CalendarIcon, Edit, Trash2 } from "lucide-react";
+import { CalendarIcon, Edit, Trash2, Save, FileText } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 
@@ -593,8 +593,391 @@ const EKMAnchorCapstanForm = () => {
                 )}
               </div>
 
-              {/* Continue with remaining sections... */}
-              {/* For brevity, I'll include a few more key sections */}
+              {/* Section 7: Oil Level */}
+              <div className="border border-gray-200 rounded-lg p-6">
+                <div className="flex items-center space-x-3 mb-4">
+                  <span className="bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">7</span>
+                  <Label className="text-lg font-semibold">Oil Level</Label>
+                </div>
+                
+                {renderObservationSection(
+                  "Oil Level",
+                  "a) Gear Box",
+                  "observations_gearbox_oil",
+                  "remarks_gearbox_oil"
+                )}
+              </div>
+
+              {/* Section 8: Conditions of Foundations */}
+              <div className="border border-gray-200 rounded-lg p-6">
+                <div className="flex items-center space-x-3 mb-4">
+                  <span className="bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">8</span>
+                  <Label className="text-lg font-semibold">Conditions of Foundations</Label>
+                </div>
+                
+                {renderObservationSection(
+                  "Conditions of Foundations",
+                  "a) Corrosion/ Pitting/ Unpainted",
+                  "observations_foundation_corrosion",
+                  "remarks_foundation_corrosion"
+                )}
+              </div>
+
+              {/* Section 9: Conditions of Brake Band */}
+              <div className="border border-gray-200 rounded-lg p-6">
+                <div className="flex items-center space-x-3 mb-4">
+                  <span className="bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">9</span>
+                  <Label className="text-lg font-semibold">Conditions of Brake Band</Label>
+                </div>
+                
+                {renderObservationSection(
+                  "Conditions of Brake Band",
+                  "a) Wear & Tear, Deep Scoring Marks",
+                  "observations_brake_band",
+                  "remarks_brake_band"
+                )}
+              </div>
+
+              {/* Section 10: Insulation & SPM of Motor and Cable */}
+              <div className="border border-gray-200 rounded-lg p-6">
+                <div className="flex items-center space-x-3 mb-4">
+                  <span className="bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">10</span>
+                  <Label className="text-lg font-semibold">Insulation & SPM of Motor and Cable</Label>
+                </div>
+                
+                {renderObservationSection(
+                  "Insulation & SPM",
+                  "a) To be undertaken by ETMA",
+                  "observations_insulation_spm",
+                  "remarks_insulation_spm"
+                )}
+              </div>
+
+              {/* Section 11: Greasing of Mechanical Parts */}
+              <div className="border border-gray-200 rounded-lg p-6">
+                <div className="flex items-center space-x-3 mb-4">
+                  <span className="bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">11</span>
+                  <Label className="text-lg font-semibold">Greasing of Mechanical Parts</Label>
+                </div>
+                
+                {renderObservationSection(
+                  "Greasing of Mechanical Parts",
+                  "a) Proper Greasing of Mechanical Parts",
+                  "observations_greasing_mechanical",
+                  "remarks_greasing_mechanical"
+                )}
+              </div>
+
+              {/* Section 12: Greasing Points */}
+              <div className="border border-gray-200 rounded-lg p-6">
+                <div className="flex items-center space-x-3 mb-4">
+                  <span className="bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">12</span>
+                  <Label className="text-lg font-semibold">Greasing Points</Label>
+                </div>
+                
+                {renderObservationSection(
+                  "Greasing Points",
+                  "a) Condition of Greasing Nipple-Clean/ Painted/ Choked",
+                  "observations_greasing_points",
+                  "remarks_greasing_points",
+                  greasingOptions
+                )}
+              </div>
+
+              {/* Section 13: Operation of Clutch Coupling */}
+              <div className="border border-gray-200 rounded-lg p-6">
+                <div className="flex items-center space-x-3 mb-4">
+                  <span className="bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">13</span>
+                  <Label className="text-lg font-semibold">Operation of Clutch Coupling</Label>
+                </div>
+                
+                {renderObservationSection(
+                  "Operation of Clutch Coupling",
+                  "a) Engage",
+                  "observations_engage",
+                  "remarks_engage"
+                )}
+                
+                {renderObservationSection(
+                  "Operation of Clutch Coupling",
+                  "b) Disengage",
+                  "observations_disengage",
+                  "remarks_disengage"
+                )}
+                
+                {renderObservationSection(
+                  "Operation of Clutch Coupling",
+                  "c) Indicators",
+                  "observations_indicators",
+                  "remarks_indicators"
+                )}
+              </div>
+
+              {/* Section 14: Operation of Band Brake */}
+              <div className="border border-gray-200 rounded-lg p-6">
+                <div className="flex items-center space-x-3 mb-4">
+                  <span className="bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">14</span>
+                  <Label className="text-lg font-semibold">Operation of Band Brake</Label>
+                </div>
+                
+                {renderObservationSection(
+                  "Operation of Band Brake",
+                  "a) Engage",
+                  "observations_engage_band_brake",
+                  "remarks_engage_band_brake"
+                )}
+                
+                {renderObservationSection(
+                  "Operation of Band Brake",
+                  "b) Disengage",
+                  "observations_disengage_band_brake",
+                  "remarks_disengage_band_brake"
+                )}
+                
+                {renderObservationSection(
+                  "Operation of Band Brake",
+                  "c) Indicators",
+                  "observations_indicators_band_brake",
+                  "remarks_indicators_band_brake"
+                )}
+              </div>
+
+              {/* Section 15: Operation of Anchor Chain Screw Stopper */}
+              <div className="border border-gray-200 rounded-lg p-6">
+                <div className="flex items-center space-x-3 mb-4">
+                  <span className="bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">15</span>
+                  <Label className="text-lg font-semibold">Operation of Anchor Chain Screw Stopper (Brake Band ON)</Label>
+                </div>
+                
+                {renderObservationSection(
+                  "Operation of Anchor Chain Screw Stopper",
+                  "a) Torpedo Deck",
+                  "observations_torpedo_deck",
+                  "remarks_torpedo_deck"
+                )}
+                
+                {renderObservationSection(
+                  "Operation of Anchor Chain Screw Stopper",
+                  "b) Casing",
+                  "observations_casing",
+                  "remarks_casing"
+                )}
+                
+                {renderObservationSection(
+                  "Operation of Anchor Chain Screw Stopper",
+                  "c) Indicators (Indicator Readings on Match with Actual Position of Screw Stopper.)",
+                  "observations_indicators1",
+                  "remarks_indicators1"
+                )}
+              </div>
+
+              {/* Section 16: Anchor Pulling */}
+              <div className="border border-gray-200 rounded-lg p-6">
+                <div className="flex items-center space-x-3 mb-4">
+                  <span className="bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">16</span>
+                  <Label className="text-lg font-semibold">Anchor Pulling in Hawse and Chain Holding on Screw Stopper (when Band Brake OFF)</Label>
+                </div>
+                
+                {renderObservationSection(
+                  "Anchor Pulling",
+                  "",
+                  "observations_anchor_pulling",
+                  "remarks_anchor_pulling"
+                )}
+              </div>
+
+              {/* Section 17: Operational Trails */}
+              <div className="border border-gray-200 rounded-lg p-6">
+                <div className="flex items-center space-x-3 mb-4">
+                  <span className="bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">17</span>
+                  <Label className="text-lg font-semibold">Operational Trails</Label>
+                </div>
+                
+                {renderObservationSection(
+                  "Operational Trails",
+                  "a) (Paying Out) Speed 1 - Speed 6",
+                  "observations_paying_out",
+                  "remarks_paying_out"
+                )}
+                
+                {renderObservationSection(
+                  "Operational Trails",
+                  "b) (Heaving in) Speed 1 - Speed 6",
+                  "observations_heaving_in",
+                  "remarks_heaving_in"
+                )}
+              </div>
+
+              {/* Section 18: Drive */}
+              <div className="border border-gray-200 rounded-lg p-6">
+                <div className="flex items-center space-x-3 mb-4">
+                  <span className="bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">18</span>
+                  <Label className="text-lg font-semibold">Drive</Label>
+                </div>
+                
+                {renderObservationSection(
+                  "Drive",
+                  "a) Check for Abnormal Sounds/Excessive Noise During Operation",
+                  "observations_drive_check",
+                  "remarks_drive_check"
+                )}
+              </div>
+
+              {/* Section 19: Check Zero Position of Counters */}
+              <div className="border border-gray-200 rounded-lg p-6">
+                <div className="flex items-center space-x-3 mb-4">
+                  <span className="bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">19</span>
+                  <Label className="text-lg font-semibold">Check Zero Position of Counters of Anchor Chain Easing</Label>
+                </div>
+                
+                {renderObservationSection(
+                  "Check Zero Position of Counters",
+                  "a) Torpedo Deck",
+                  "observations_speed1_torpedo",
+                  "remarks_speed1_torpedo"
+                )}
+                
+                {renderObservationSection(
+                  "Check Zero Position of Counters",
+                  "b) Casing",
+                  "observations_speed2_casing",
+                  "remarks_speed2_casing"
+                )}
+              </div>
+
+              {/* Section 20: Check for Free Indicators */}
+              <div className="border border-gray-200 rounded-lg p-6">
+                <div className="flex items-center space-x-3 mb-4">
+                  <span className="bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">20</span>
+                  <Label className="text-lg font-semibold">Check for Free Indicators of Counter Anchor Chain Easing Out</Label>
+                </div>
+                
+                {renderObservationSection(
+                  "Check for Free Indicators",
+                  "a) Torpedo Deck",
+                  "observations_speed1_torpedo_free",
+                  "remarks_speed1_torpedo_free"
+                )}
+                
+                {renderObservationSection(
+                  "Check for Free Indicators",
+                  "b) Casing",
+                  "observations_speed2_casing_free",
+                  "remarks_speed2_casing_free"
+                )}
+              </div>
+
+              {/* Section 21: Check for Free Movement */}
+              <div className="border border-gray-200 rounded-lg p-6">
+                <div className="flex items-center space-x-3 mb-4">
+                  <span className="bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">21</span>
+                  <Label className="text-lg font-semibold">Check for Free Movement of Chain Upon Guide Rollers, Sprockets, and Screw Stopper</Label>
+                </div>
+                
+                {renderObservationSection(
+                  "Check for Free Movement",
+                  "",
+                  "observations_drive_free_movement",
+                  "remarks_drive_free_movement"
+                )}
+              </div>
+
+              {/* Section 22: Checking of Anchor Chain Bitter end */}
+              <div className="border border-gray-200 rounded-lg p-6">
+                <div className="flex items-center space-x-3 mb-4">
+                  <span className="bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">22</span>
+                  <Label className="text-lg font-semibold">Checking of Anchor Chain Bitter end Paying out by Drive from Fore-End Under the Pressure of P = 2950kgf</Label>
+                </div>
+                
+                {renderObservationSection(
+                  "Checking of Anchor Chain Bitter end",
+                  "a) (Operate from Fore-end)",
+                  "observations_drive_fore_end",
+                  "remarks_drive_fore_end"
+                )}
+              </div>
+
+              {/* Section 23: Condition of Capstan Drum */}
+              <div className="border border-gray-200 rounded-lg p-6">
+                <div className="flex items-center space-x-3 mb-4">
+                  <span className="bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">23</span>
+                  <Label className="text-lg font-semibold">Condition of Capstan Drum</Label>
+                </div>
+                
+                {renderObservationSection(
+                  "Condition of Capstan Drum",
+                  "a) Rusted/ Corroded/ Pitted",
+                  "observations_capstan_drums",
+                  "remarks_capstan_drums"
+                )}
+              </div>
+
+              {/* Section 24: Any Other Observation */}
+              <div className="border border-gray-200 rounded-lg p-6">
+                <div className="flex items-center space-x-3 mb-4">
+                  <span className="bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">24</span>
+                  <Label className="text-lg font-semibold">Any Other Observation</Label>
+                </div>
+                <div className="space-y-4">
+                  <div className="grid grid-cols-1 gap-4">
+                    <div>
+                      <Label htmlFor="remarks_any_other_observ" className="text-sm font-medium">
+                        Remarks: <span className="text-red-500">*</span>
+                      </Label>
+                      <Textarea
+                        id="remarks_any_other_observ"
+                        value={formData.remarks_any_other_observ}
+                        onChange={(e) => {
+                          const validatedValue = handleSpecialCharValidation("remarks_any_other_observ", e.target.value);
+                          handleInputChange("remarks_any_other_observ", validatedValue);
+                        }}
+                        className={errors.remarks_any_other_observ ? "border-red-500" : ""}
+                        rows={2}
+                        maxLength={1000}
+                      />
+                      {errors.remarks_any_other_observ && (
+                        <p className="text-red-500 text-xs mt-1">{errors.remarks_any_other_observ}</p>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Section 25: Overall Remarks */}
+              <div className="border border-gray-200 rounded-lg p-6">
+                <div className="flex items-center space-x-3 mb-4">
+                  <span className="bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">25</span>
+                  <Label className="text-lg font-semibold">Overall Remarks</Label>
+                </div>
+                <div className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                      <Label htmlFor="observations_overall" className="text-sm font-medium">
+                        Observations: <span className="text-red-500">*</span>
+                      </Label>
+                      <Select
+                        value={formData.observations_overall}
+                        onValueChange={(value) => handleInputChange("observations_overall", value)}
+                      >
+                        <SelectTrigger className={errors.observations_overall ? "border-red-500" : ""}>
+                          <SelectValue placeholder="--Select--" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="0">--Select--</SelectItem>
+                          {observationOptions.map((option) => (
+                            <SelectItem key={option.value} value={option.value}>
+                              {option.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      {errors.observations_overall && (
+                        <p className="text-red-500 text-xs mt-1">{errors.observations_overall}</p>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
 
               {/* Section 26: Authority Signature */}
               <div className="border border-gray-200 rounded-lg p-6">
@@ -625,19 +1008,36 @@ const EKMAnchorCapstanForm = () => {
                 </div>
               </div>
 
-              {/* Form Actions */}
-              <div className="flex justify-end space-x-4 pt-6 border-t border-gray-200">
-                <Button type="button" variant="outline" onClick={handleFetchDrafts}>
-                  Fetch Drafts
+              {/* Action Buttons */}
+              <div className="flex flex-wrap gap-4 justify-center pt-6">
+                <Button
+                  type="button"
+                  onClick={handleFetchDrafts}
+                  className="px-6 bg-cyan-500 hover:bg-cyan-600 text-white font-semibold uppercase"
+                >
+                  <FileText className="h-4 w-4 mr-2" />
+                  FETCH DRAFTS
                 </Button>
-                <Button type="button" variant="outline" onClick={handleSaveDraft}>
-                  Save Draft
+                <Button
+                  type="button"
+                  onClick={handleSaveDraft}
+                  className="px-6 bg-green-500 hover:bg-green-600 text-white font-semibold uppercase"
+                >
+                  <Save className="h-4 w-4 mr-2" />
+                  SAVE DRAFT
                 </Button>
-                <Button type="button" variant="outline" onClick={handleClear}>
-                  Clear
+                <Button
+                  type="button"
+                  onClick={handleClear}
+                  className="px-6 bg-red-500 hover:bg-red-600 text-white font-semibold uppercase"
+                >
+                  CLEAR
                 </Button>
-                <Button type="submit" className="bg-blue-600 hover:bg-blue-700">
-                  Save
+                <Button
+                  type="submit"
+                  className="px-6 bg-blue-600 hover:bg-blue-700 text-white font-semibold uppercase"
+                >
+                  SAVE
                 </Button>
               </div>
             </form>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -6,6 +6,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Save, FileText, Trash2, Edit } from 'lucide-react';
 
 const AviationAircraftArmamentLiftsForm = () => {
   const [formData, setFormData] = useState({
@@ -142,6 +144,9 @@ const AviationAircraftArmamentLiftsForm = () => {
   });
 
   const [dynamicRows, setDynamicRows] = useState([]);
+  const [isDraftModalOpen, setIsDraftModalOpen] = useState(false);
+  const [drafts, setDrafts] = useState([]);
+  const [hidDraftId, setHidDraftId] = useState("");
 
   const handleInputChange = (field, value) => {
     setFormData(prev => ({
@@ -183,6 +188,177 @@ const AviationAircraftArmamentLiftsForm = () => {
     e.preventDefault();
     console.log("Form submitted:", formData);
     // Handle form submission logic here
+  };
+
+  // Draft functionality
+  const handleSaveDraft = () => {
+    const draftData = {
+      ...formData,
+      timestamp: new Date().toISOString(),
+      id: hidDraftId || Date.now().toString()
+    };
+    
+    const existingDrafts = JSON.parse(localStorage.getItem('aviation-aircraft-armament-lifts-drafts') || '[]');
+    const updatedDrafts = hidDraftId 
+      ? existingDrafts.map(draft => draft.id === hidDraftId ? draftData : draft)
+      : [...existingDrafts, draftData];
+    
+    localStorage.setItem('aviation-aircraft-armament-lifts-drafts', JSON.stringify(updatedDrafts));
+    alert('Draft saved successfully!');
+  };
+
+  const handleFetchDrafts = () => {
+    const savedDrafts = JSON.parse(localStorage.getItem('aviation-aircraft-armament-lifts-drafts') || '[]');
+    setDrafts(savedDrafts);
+    setIsDraftModalOpen(true);
+  };
+
+  const handleEditDraft = (draft) => {
+    setFormData(draft);
+    setHidDraftId(draft.id);
+    setIsDraftModalOpen(false);
+  };
+
+  const handleDeleteDraft = (draftId) => {
+    const updatedDrafts = drafts.filter(draft => draft.id !== draftId);
+    localStorage.setItem('aviation-aircraft-armament-lifts-drafts', JSON.stringify(updatedDrafts));
+    setDrafts(updatedDrafts);
+  };
+
+  const handleClear = () => {
+    setFormData({
+      ship: "",
+      dateOfInspection: "",
+      makeModel: "",
+      type: "",
+      yearOfManufacture: "",
+      refDocuments: "",
+      maintenanceRoutines: "",
+      dateOfLastStructuralSurvey: "",
+      structureRemarks: "",
+      totalRows: 1,
+      equipment1: "",
+      observation1: "",
+      remarks1: "",
+      greasingPointsObservations: "",
+      greasingPointsRemarks: "",
+      greaseLayerObservations: "",
+      greaseLayerRemarks: "",
+      bearingsObservations: "",
+      bearingsRemarks: "",
+      liftGuidesObservations: "",
+      liftGuidesRemarks: "",
+      chainHoldersObservations: "",
+      chainHoldersRemarks: "",
+      rollersObservations: "",
+      rollersRemarks: "",
+      rockersObservations: "",
+      rockersRemarks: "",
+      liftCoversLugJointObservations: "",
+      liftCoversLugJointRemarks: "",
+      ssToConfirmGreasingObservations: "",
+      ssToConfirmGreasingRemarks: "",
+      hydraulicDriveRemarks: "",
+      dateOfOilChange: "",
+      oilChangeRemarks: "",
+      dateOfLastOilAnalysis: "",
+      oilAnalysisRemarks: "",
+      oilLevelInTanksObservations: "",
+      oilLevelInTanksRemarks: "",
+      leakagesDetachableConnectionObservations: "",
+      leakagesDetachableConnectionRemarks: "",
+      ssToConfirmOilInMovableJointsObservations: "",
+      ssToConfirmOilInMovableJointsRemarks: "",
+      deckFoundationStructureObservations: "",
+      deckFoundationStructureRemarks: "",
+      rustingObservations: "",
+      rustingRemarks: "",
+      attachmentOfChainToHolderObservations: "",
+      attachmentOfChainToHolderRemarks: "",
+      checkStructureObservations: "",
+      checkStructureRemarks: "",
+      rubberDampersOnShockObservations: "",
+      rubberDampersOnShockRemarks: "",
+      coamingOfLiftObservations: "",
+      coamingOfLiftRemarks: "",
+      waterDischargeObservations: "",
+      waterDischargeObservationsRemarks: "",
+      clearanceBetweenGuidePlatesObservations: "",
+      clearanceBetweenGuidePlatesRemarks: "",
+      wireRopesObservations: "",
+      wireRopesObservationsRemarks: "",
+      dateOfLastChangeReplaced: "",
+      dateOfLastChangeReplacedRemarks: "",
+      dateOfLastServiceability: "",
+      lastServiceabilityRemarks: "",
+      electricChecksObservations: "",
+      electricChecksRemarks: "",
+      magneticStartersObservations: "",
+      magneticStartersRemarks: "",
+      electricDriveCircuitObservations: "",
+      electricDriveCircuitRemarks: "",
+      electricChecksByEtmaObservations: "",
+      electricChecksByEtmaRemarks: "",
+      availabilityOfReportObservations: "",
+      availabilityOfReportRemarks: "",
+      availabilityOfAllLimitSwitchesObservations: "",
+      availabilityOfAllLimitSwitchesRemarks: "",
+      redLinesOnFlagObservations: "",
+      redLinesOnFlagRemarks: "",
+      dateLastLoadTesting: "",
+      lastLoadTestingRemarks: "",
+      staticDynamicLoadtestingObservations: "",
+      staticDynamicLoadtestingRemarks: "",
+      emergencyStopObservations: "",
+      emergencyStopRemarks: "",
+      ssConfirmToNoOilLeakagesDuringLoadTestingObservations: "",
+      ssConfirmToNoOilLeakagesDuringLoadTestingRemarks: "",
+      operationalFunctionalCheckObservations: "",
+      operationalFunctionalCheckRemarks: "",
+      automaticSwitchingFormObservations: "",
+      automaticSwitchingFormRemarks: "",
+      loweringSpeedsObservations: "",
+      loweringSpeedsRemarks: "",
+      high11MMinObservations: "",
+      high11MMinObservationsRemarks: "",
+      operationOfLimitSwitchesObservations: "",
+      operationOfLimitSwitchesRemarks: "",
+      accurateStoppingObservations: "",
+      accurateStoppingRemarks: "",
+      activateStopObservations: "",
+      activateStopRemarks: "",
+      checkForOilLeakagesObservations: "",
+      checkForOilLeakagesRemarks: "",
+      checkForExcessiveObservations: "",
+      checkForExcessiveRemarks: "",
+      emergencyModeObservation: "",
+      emergencyModeRemarks: "",
+      electroMagneticObservations: "",
+      electroMagneticRemarks: "",
+      blockBrakeOperationObservations: "",
+      blockBrakeOperationRemarks: "",
+      automaticOperationOfUpperLiftCoversObservations: "",
+      automaticOperationOfUpperLiftCoversRemarks: "",
+      operationOfIndicatorObservations: "",
+      operationOfIndicatorRemarks: "",
+      rollerMechanismObservations: "",
+      rollerMechanismRemarks: "",
+      operationOfWarningObservations: "",
+      operationOfWarningRemarks: "",
+      switchOffPowerSupplyObservations: "",
+      switchOffPowerSupplyRemarks: "",
+      driveGearBoxObservations: "",
+      driveGearBoxRemarks: "",
+      freeMovementObservations: "",
+      freeMovementRemarks: "",
+      hinderedJerkyMovementObservations: "",
+      hinderedJerkyMovementRemarks: "",
+      otherObservations: "",
+      otherObservationsRemarks: "",
+      overAllRemarks: "",
+      authoritySignature: null,
+    });
+    setHidDraftId("");
   };
 
   const shipOptions = [
@@ -830,8 +1006,671 @@ const AviationAircraftArmamentLiftsForm = () => {
               </div>
             </div>
 
-            {/* Continue with remaining sections... */}
-            {/* For brevity, I'll include a few more key sections */}
+            {/* Section 11: Visual Condition */}
+            <div className="space-y-4">
+              <div className="flex items-center space-x-2">
+                <span className="bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">11</span>
+                <Label className="text-lg font-semibold">Visual Condition</Label>
+              </div>
+              
+              <div className="ml-6 space-y-4">
+                <div>
+                  <Label className="text-base font-medium">a) Deck Foundation Structure</Label>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+                    <div>
+                      <Label className="text-sm">Observations:</Label>
+                      <Select value={formData.deckFoundationStructureObservations} onValueChange={(value) => handleInputChange("deckFoundationStructureObservations", value)}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="--Select--" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="SAT">SAT</SelectItem>
+                          <SelectItem value="UNSAT">UNSAT</SelectItem>
+                          <SelectItem value="SAT WITH OBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label className="text-sm">Remarks:</Label>
+                      <Textarea
+                        value={formData.deckFoundationStructureRemarks}
+                        onChange={(e) => handleInputChange("deckFoundationStructureRemarks", e.target.value)}
+                        rows={2}
+                        required
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Section 12: Wire Ropes */}
+            <div className="space-y-4">
+              <div className="flex items-center space-x-2">
+                <span className="bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">12</span>
+                <Label className="text-lg font-semibold">Wire Ropes</Label>
+              </div>
+              
+              <div className="ml-6 space-y-4">
+                <div>
+                  <Label className="text-base font-medium">a) Visual Condition - ropes & end fitting</Label>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+                    <div>
+                      <Label className="text-sm">Observations:</Label>
+                      <Select value={formData.wireRopesObservations} onValueChange={(value) => handleInputChange("wireRopesObservations", value)}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="--Select--" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="SAT">SAT</SelectItem>
+                          <SelectItem value="UNSAT">UNSAT</SelectItem>
+                          <SelectItem value="SAT WITH OBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label className="text-sm">Remarks:</Label>
+                      <Textarea
+                        value={formData.wireRopesObservationsRemarks}
+                        onChange={(e) => handleInputChange("wireRopesObservationsRemarks", e.target.value)}
+                        rows={2}
+                        required
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <Label className="text-base font-medium">b) Date of Last Changed / Replaced (to be replaced every 5 years)</Label>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+                    <div>
+                      <Label className="text-sm">Date:</Label>
+                      <Input
+                        type="date"
+                        value={formData.dateOfLastChangeReplaced}
+                        onChange={(e) => handleInputChange("dateOfLastChangeReplaced", e.target.value)}
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label className="text-sm">Remarks:</Label>
+                      <Textarea
+                        value={formData.dateOfLastChangeReplacedRemarks}
+                        onChange={(e) => handleInputChange("dateOfLastChangeReplacedRemarks", e.target.value)}
+                        rows={2}
+                        required
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <Label className="text-base font-medium">c) Date of Last Serviceability Check</Label>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+                    <div>
+                      <Label className="text-sm">Date:</Label>
+                      <Input
+                        type="date"
+                        value={formData.dateOfLastServiceability}
+                        onChange={(e) => handleInputChange("dateOfLastServiceability", e.target.value)}
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label className="text-sm">Remarks:</Label>
+                      <Textarea
+                        value={formData.lastServiceabilityRemarks}
+                        onChange={(e) => handleInputChange("lastServiceabilityRemarks", e.target.value)}
+                        rows={2}
+                        required
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Section 13: Electric Checks */}
+            <div className="space-y-4">
+              <div className="flex items-center space-x-2">
+                <span className="bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">13</span>
+                <Label className="text-lg font-semibold">Electric Checks (in addition to standard check by ETMA)</Label>
+              </div>
+              
+              <div className="ml-6 space-y-4">
+                <div>
+                  <Label className="text-base font-medium">a) Insulation Measurement by ETMA/SS)</Label>
+                  <div className="ml-4 space-y-4">
+                    <div>
+                      <Label className="text-sm font-medium">i) Terminate of Control Board , Control Panel and Junction Box (&gt;0.5 M-Ohm)</Label>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+                        <div>
+                          <Label className="text-sm">Observations:</Label>
+                          <Select value={formData.electricChecksObservations} onValueChange={(value) => handleInputChange("electricChecksObservations", value)}>
+                            <SelectTrigger>
+                              <SelectValue placeholder="--Select--" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="SAT">SAT</SelectItem>
+                              <SelectItem value="UNSAT">UNSAT</SelectItem>
+                              <SelectItem value="SAT WITH OBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div>
+                          <Label className="text-sm">Remarks:</Label>
+                          <Textarea
+                            value={formData.electricChecksRemarks}
+                            onChange={(e) => handleInputChange("electricChecksRemarks", e.target.value)}
+                            rows={2}
+                            required
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    <div>
+                      <Label className="text-sm font-medium">ii) Magnetic Starters (&gt; 1.0 M-Ohm)</Label>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+                        <div>
+                          <Label className="text-sm">Observations:</Label>
+                          <Select value={formData.magneticStartersObservations} onValueChange={(value) => handleInputChange("magneticStartersObservations", value)}>
+                            <SelectTrigger>
+                              <SelectValue placeholder="--Select--" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="SAT">SAT</SelectItem>
+                              <SelectItem value="UNSAT">UNSAT</SelectItem>
+                              <SelectItem value="SAT WITH OBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div>
+                          <Label className="text-sm">Remarks:</Label>
+                          <Textarea
+                            value={formData.magneticStartersRemarks}
+                            onChange={(e) => handleInputChange("magneticStartersRemarks", e.target.value)}
+                            rows={2}
+                            required
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    <div>
+                      <Label className="text-sm font-medium">iii) Electric Drive Circuit (&gt; 1.0 M-Ohm)</Label>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+                        <div>
+                          <Label className="text-sm">Observations:</Label>
+                          <Select value={formData.electricDriveCircuitObservations} onValueChange={(value) => handleInputChange("electricDriveCircuitObservations", value)}>
+                            <SelectTrigger>
+                              <SelectValue placeholder="--Select--" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="SAT">SAT</SelectItem>
+                              <SelectItem value="UNSAT">UNSAT</SelectItem>
+                              <SelectItem value="SAT WITH OBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div>
+                          <Label className="text-sm">Remarks:</Label>
+                          <Textarea
+                            value={formData.electricDriveCircuitRemarks}
+                            onChange={(e) => handleInputChange("electricDriveCircuitRemarks", e.target.value)}
+                            rows={2}
+                            required
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Section 14: Electric Checks by ETMA */}
+            <div className="space-y-4">
+              <div className="flex items-center space-x-2">
+                <span className="bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">14</span>
+                <Label className="text-lg font-semibold">Electric Checks by ETMA</Label>
+              </div>
+              
+              <div className="ml-6 space-y-4">
+                <div>
+                  <Label className="text-base font-medium">a) Completed</Label>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+                    <div>
+                      <Label className="text-sm">Observations:</Label>
+                      <Select value={formData.electricChecksByEtmaObservations} onValueChange={(value) => handleInputChange("electricChecksByEtmaObservations", value)}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="--Select--" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="YES">YES</SelectItem>
+                          <SelectItem value="NO">NO</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label className="text-sm">Remarks:</Label>
+                      <Textarea
+                        value={formData.electricChecksByEtmaRemarks}
+                        onChange={(e) => handleInputChange("electricChecksByEtmaRemarks", e.target.value)}
+                        rows={2}
+                        required
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <Label className="text-base font-medium">b) Availability of Report</Label>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+                    <div>
+                      <Label className="text-sm">Observations:</Label>
+                      <Select value={formData.availabilityOfReportObservations} onValueChange={(value) => handleInputChange("availabilityOfReportObservations", value)}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="--Select--" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="YES">YES</SelectItem>
+                          <SelectItem value="NO">NO</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label className="text-sm">Remarks:</Label>
+                      <Textarea
+                        value={formData.availabilityOfReportRemarks}
+                        onChange={(e) => handleInputChange("availabilityOfReportRemarks", e.target.value)}
+                        rows={2}
+                        required
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Section 15: Limit Switches */}
+            <div className="space-y-4">
+              <div className="flex items-center space-x-2">
+                <span className="bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">15</span>
+                <Label className="text-lg font-semibold">Limit Switches</Label>
+              </div>
+              
+              <div className="ml-6 space-y-4">
+                <div>
+                  <Label className="text-base font-medium">a) Availability of All Limit Switches</Label>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+                    <div>
+                      <Label className="text-sm">Observations:</Label>
+                      <Select value={formData.availabilityOfAllLimitSwitchesObservations} onValueChange={(value) => handleInputChange("availabilityOfAllLimitSwitchesObservations", value)}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="--Select--" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="YES">YES</SelectItem>
+                          <SelectItem value="NO">NO</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label className="text-sm">Remarks:</Label>
+                      <Textarea
+                        value={formData.availabilityOfAllLimitSwitchesRemarks}
+                        onChange={(e) => handleInputChange("availabilityOfAllLimitSwitchesRemarks", e.target.value)}
+                        rows={2}
+                        required
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <Label className="text-base font-medium">b) Red Lines on Flag to be in Vertical Position When Lift Secured for Sea</Label>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+                    <div>
+                      <Label className="text-sm">Observations:</Label>
+                      <Select value={formData.redLinesOnFlagObservations} onValueChange={(value) => handleInputChange("redLinesOnFlagObservations", value)}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="--Select--" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="YES">YES</SelectItem>
+                          <SelectItem value="NO">NO</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label className="text-sm">Remarks:</Label>
+                      <Textarea
+                        value={formData.redLinesOnFlagRemarks}
+                        onChange={(e) => handleInputChange("redLinesOnFlagRemarks", e.target.value)}
+                        rows={2}
+                        required
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Section 16: Load Testing */}
+            <div className="space-y-4">
+              <div className="flex items-center space-x-2">
+                <span className="bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">16</span>
+                <Label className="text-lg font-semibold">Load Testing</Label>
+              </div>
+              
+              <div className="ml-6 space-y-4">
+                <div>
+                  <Label className="text-base font-medium">a) Date of Last Load Testing</Label>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+                    <div>
+                      <Label className="text-sm">Date:</Label>
+                      <Input
+                        type="date"
+                        value={formData.dateLastLoadTesting}
+                        onChange={(e) => handleInputChange("dateLastLoadTesting", e.target.value)}
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label className="text-sm">Remarks:</Label>
+                      <Textarea
+                        value={formData.lastLoadTestingRemarks}
+                        onChange={(e) => handleInputChange("lastLoadTestingRemarks", e.target.value)}
+                        rows={2}
+                        required
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <Label className="text-base font-medium">b) Check Certificates - Static and Dynamic Load Testing</Label>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+                    <div>
+                      <Label className="text-sm">Observations:</Label>
+                      <Select value={formData.staticDynamicLoadtestingObservations} onValueChange={(value) => handleInputChange("staticDynamicLoadtestingObservations", value)}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="--Select--" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="YES">YES</SelectItem>
+                          <SelectItem value="NO">NO</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label className="text-sm">Remarks:</Label>
+                      <Textarea
+                        value={formData.staticDynamicLoadtestingRemarks}
+                        onChange={(e) => handleInputChange("staticDynamicLoadtestingRemarks", e.target.value)}
+                        rows={2}
+                        required
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <Label className="text-base font-medium">c) 'Emergency STOP' Check Undertaken During Dynamic Load Test and Outcome</Label>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+                    <div>
+                      <Label className="text-sm">Observations:</Label>
+                      <Select value={formData.emergencyStopObservations} onValueChange={(value) => handleInputChange("emergencyStopObservations", value)}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="--Select--" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="SAT">SAT</SelectItem>
+                          <SelectItem value="UNSAT">UNSAT</SelectItem>
+                          <SelectItem value="SAT WITH OBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label className="text-sm">Remarks:</Label>
+                      <Textarea
+                        value={formData.emergencyStopRemarks}
+                        onChange={(e) => handleInputChange("emergencyStopRemarks", e.target.value)}
+                        rows={2}
+                        required
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <Label className="text-base font-medium">d) SS Confirm to no Oil Leakages During Load Testing</Label>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+                    <div>
+                      <Label className="text-sm">Observations:</Label>
+                      <Select value={formData.ssConfirmToNoOilLeakagesDuringLoadTestingObservations} onValueChange={(value) => handleInputChange("ssConfirmToNoOilLeakagesDuringLoadTestingObservations", value)}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="--Select--" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="SAT">SAT</SelectItem>
+                          <SelectItem value="UNSAT">UNSAT</SelectItem>
+                          <SelectItem value="SAT WITH OBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label className="text-sm">Remarks:</Label>
+                      <Textarea
+                        value={formData.ssConfirmToNoOilLeakagesDuringLoadTestingRemarks}
+                        onChange={(e) => handleInputChange("ssConfirmToNoOilLeakagesDuringLoadTestingRemarks", e.target.value)}
+                        rows={2}
+                        required
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Section 17: Operational / Functional Check */}
+            <div className="space-y-4">
+              <div className="flex items-center space-x-2">
+                <span className="bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">17</span>
+                <Label className="text-lg font-semibold">Operational / Functional Check</Label>
+              </div>
+              
+              <div className="ml-6 space-y-4">
+                <div>
+                  <Label className="text-base font-medium">a) Hoisting Speeds</Label>
+                  <div className="ml-4 space-y-4">
+                    <div>
+                      <Label className="text-sm font-medium">i) Slow - 03 m/min (Initial and Final Stages)</Label>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+                        <div>
+                          <Label className="text-sm">Observations:</Label>
+                          <Select value={formData.operationalFunctionalCheckObservations} onValueChange={(value) => handleInputChange("operationalFunctionalCheckObservations", value)}>
+                            <SelectTrigger>
+                              <SelectValue placeholder="--Select--" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="SAT">SAT</SelectItem>
+                              <SelectItem value="UNSAT">UNSAT</SelectItem>
+                              <SelectItem value="SAT WITH OBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div>
+                          <Label className="text-sm">Remarks:</Label>
+                          <Textarea
+                            value={formData.operationalFunctionalCheckRemarks}
+                            onChange={(e) => handleInputChange("operationalFunctionalCheckRemarks", e.target.value)}
+                            rows={2}
+                            required
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    <div>
+                      <Label className="text-sm font-medium">ii) High - 10 m/min (Check - Automatic Switching Form Slow to High Speed at Lower and Top Level After 2-3 Seconds of Operation)</Label>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+                        <div>
+                          <Label className="text-sm">Observations:</Label>
+                          <Select value={formData.automaticSwitchingFormObservations} onValueChange={(value) => handleInputChange("automaticSwitchingFormObservations", value)}>
+                            <SelectTrigger>
+                              <SelectValue placeholder="--Select--" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="SAT">SAT</SelectItem>
+                              <SelectItem value="UNSAT">UNSAT</SelectItem>
+                              <SelectItem value="SAT WITH OBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div>
+                          <Label className="text-sm">Remarks:</Label>
+                          <Textarea
+                            value={formData.automaticSwitchingFormRemarks}
+                            onChange={(e) => handleInputChange("automaticSwitchingFormRemarks", e.target.value)}
+                            rows={2}
+                            required
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <Label className="text-base font-medium">b) Lowering Speeds</Label>
+                  <div className="ml-4 space-y-4">
+                    <div>
+                      <Label className="text-sm font-medium">i) Slow - 3.6 m/min</Label>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+                        <div>
+                          <Label className="text-sm">Observations:</Label>
+                          <Select value={formData.loweringSpeedsObservations} onValueChange={(value) => handleInputChange("loweringSpeedsObservations", value)}>
+                            <SelectTrigger>
+                              <SelectValue placeholder="--Select--" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="SAT">SAT</SelectItem>
+                              <SelectItem value="UNSAT">UNSAT</SelectItem>
+                              <SelectItem value="SAT WITH OBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div>
+                          <Label className="text-sm">Remarks:</Label>
+                          <Textarea
+                            value={formData.loweringSpeedsRemarks}
+                            onChange={(e) => handleInputChange("loweringSpeedsRemarks", e.target.value)}
+                            rows={2}
+                            required
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    <div>
+                      <Label className="text-sm font-medium">ii) High - 11 m/min</Label>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+                        <div>
+                          <Label className="text-sm">Observations:</Label>
+                          <Select value={formData.high11MMinObservations} onValueChange={(value) => handleInputChange("high11MMinObservations", value)}>
+                            <SelectTrigger>
+                              <SelectValue placeholder="--Select--" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="SAT">SAT</SelectItem>
+                              <SelectItem value="UNSAT">UNSAT</SelectItem>
+                              <SelectItem value="SAT WITH OBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div>
+                          <Label className="text-sm">Remarks:</Label>
+                          <Textarea
+                            value={formData.high11MMinObservationsRemarks}
+                            onChange={(e) => handleInputChange("high11MMinObservationsRemarks", e.target.value)}
+                            rows={2}
+                            required
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Section 18: Other Observation */}
+            <div className="space-y-4">
+              <div className="flex items-center space-x-2">
+                <span className="bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">18</span>
+                <Label className="text-lg font-semibold">Other Observation</Label>
+              </div>
+              
+              <div className="ml-6 space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label className="text-sm">Observations:</Label>
+                    <Select value={formData.otherObservations} onValueChange={(value) => handleInputChange("otherObservations", value)}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="--Select--" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="SAT">SAT</SelectItem>
+                        <SelectItem value="UNSAT">UNSAT</SelectItem>
+                        <SelectItem value="SAT*">SAT*</SelectItem>
+                        <SelectItem value="SAT WITH OBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label className="text-sm">Remarks:</Label>
+                    <Textarea
+                      value={formData.otherObservationsRemarks}
+                      onChange={(e) => handleInputChange("otherObservationsRemarks", e.target.value)}
+                      rows={2}
+                      required
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Section 19: Overall Remarks */}
+            <div className="space-y-4">
+              <div className="flex items-center space-x-2">
+                <span className="bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">19</span>
+                <Label className="text-lg font-semibold">Overall Remarks</Label>
+              </div>
+              
+              <div className="ml-6">
+                <Label className="text-sm">Remarks:</Label>
+                <Textarea
+                  value={formData.overAllRemarks}
+                  onChange={(e) => handleInputChange("overAllRemarks", e.target.value)}
+                  rows={2}
+                  required
+                />
+              </div>
+            </div>
+
+            {/* Note Section */}
+            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+              <div className="flex items-start space-x-2">
+                <span className="text-red-500 font-bold">Note:</span>
+                <p className="text-sm text-gray-700">
+                  If lifts are going to be operated after long period of inactivity (after completion of trials), 
+                  maintenance to be undertaken i.a.w Section 8 of OEM manual and in-house trials to be undertaken 
+                  prior commencing operations.
+                </p>
+              </div>
+            </div>
 
             {/* Section 20: Authority Signature */}
             <div className="space-y-4">
@@ -850,19 +1689,98 @@ const AviationAircraftArmamentLiftsForm = () => {
               </div>
             </div>
 
-            {/* Submit Button */}
-            <div className="flex justify-center space-x-4 pt-6">
-              <Button type="submit" className="bg-blue-600 hover:bg-blue-700">
-                Save Form
+            {/* Action Buttons */}
+            <div className="flex flex-wrap gap-4 justify-center pt-6">
+              <Button 
+                type="button" 
+                onClick={handleFetchDrafts} 
+                className="px-6 bg-cyan-500 hover:bg-cyan-600 text-white font-semibold uppercase"
+              >
+                <FileText className="h-4 w-4 mr-2" />
+                FETCH DRAFTS
               </Button>
-              <Button type="button" variant="outline" onClick={() => window.location.reload()}>
-                Clear Form
+              <Button 
+                type="button" 
+                onClick={handleSaveDraft} 
+                className="px-6 bg-green-500 hover:bg-green-600 text-white font-semibold uppercase"
+              >
+                <Save className="h-4 w-4 mr-2" />
+                SAVE DRAFT
+              </Button>
+              <Button 
+                type="button" 
+                onClick={handleClear} 
+                className="px-6 bg-red-500 hover:bg-red-600 text-white font-semibold uppercase"
+              >
+                CLEAR
+              </Button>
+              <Button 
+                type="submit" 
+                className="px-6 bg-blue-600 hover:bg-blue-700 text-white font-semibold uppercase"
+              >
+                SAVE
               </Button>
             </div>
           </form>
           </div>
         </div>
       </div>
+
+      {/* Draft Modal */}
+      <Dialog open={isDraftModalOpen} onOpenChange={setIsDraftModalOpen}>
+        <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Draft Data</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            {drafts.length === 0 ? (
+              <p className="text-center text-gray-500 py-8">No drafts found</p>
+            ) : (
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Sr No.</TableHead>
+                    <TableHead>Make & Model</TableHead>
+                    <TableHead>Created Date</TableHead>
+                    <TableHead>Action</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {drafts.map((draft, index) => (
+                    <TableRow key={draft.id}>
+                      <TableCell>{index + 1}</TableCell>
+                      <TableCell>{draft.makeModel || "No Inspection Data"}</TableCell>
+                      <TableCell>
+                        {draft.timestamp ? new Date(draft.timestamp).toLocaleString() : "No Date"}
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex space-x-2">
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => handleEditDraft(draft)}
+                          >
+                            <Edit className="h-4 w-4 mr-1" />
+                            Edit
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="destructive"
+                            onClick={() => handleDeleteDraft(draft.id)}
+                          >
+                            <Trash2 className="h-4 w-4 mr-1" />
+                            Delete
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

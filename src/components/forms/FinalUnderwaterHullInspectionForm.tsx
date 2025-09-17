@@ -482,7 +482,6 @@ const FinalUnderwaterHullInspectionForm = () => {
               {headers.map((header, index) => (
                 <TableHead key={index}>{header}</TableHead>
               ))}
-              <TableHead>Action</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -502,17 +501,6 @@ const FinalUnderwaterHullInspectionForm = () => {
                     )}
                   </TableCell>
                 ))}
-                <TableCell>
-                  <Button
-                    type="button"
-                    size="sm"
-                    variant="outline"
-                    onClick={() => onRemove(index)}
-                    disabled={data.length === 1}
-                  >
-                    <Minus className="h-4 w-4" />
-                  </Button>
-                </TableCell>
               </TableRow>
             ))}
           </TableBody>
@@ -728,15 +716,6 @@ const FinalUnderwaterHullInspectionForm = () => {
                             className={errors[`fresh_defect_${index}`] ? "border-red-500" : ""}
                             maxLength={50}
                           />
-                          <Button
-                            type="button"
-                            size="sm"
-                            variant="outline"
-                            onClick={() => removeFreshDefect(index)}
-                            disabled={freshDefects.length === 1}
-                          >
-                            <Minus className="h-4 w-4" />
-                          </Button>
                         </div>
                       ))}
                     </div>

@@ -593,8 +593,601 @@ const FireScreenDriveForm = () => {
                 )}
               </div>
 
-              {/* Additional sections would continue here... */}
-              {/* For brevity, I'll include a few more key sections */}
+              {/* Section 8: Structure */}
+              <div className="border border-gray-200 rounded-lg p-6">
+                <div className="flex items-center mb-4">
+                  <span className="bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold mr-3">
+                    8
+                  </span>
+                  <h5 className="text-lg font-bold text-gray-900">Structure</h5>
+                </div>
+                
+                {/* 8a: Date of Last Structural Survey */}
+                <div className="mb-6">
+                  <h6 className="text-md font-semibold text-gray-800 mb-4">
+                    a) Date of Last Structural Survey of Surrounding Structure and Equipment Foundations
+                  </h6>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div>
+                      <Label className="text-sm font-medium">
+                        Date <span className="text-red-500">*</span>
+                      </Label>
+                      <Input
+                        type="date"
+                        value={formData.date_of_last_survey}
+                        onChange={(e) => handleInputChange("date_of_last_survey", e.target.value)}
+                        className={errors.date_of_last_survey ? "border-red-500" : ""}
+                      />
+                      {errors.date_of_last_survey && (
+                        <p className="text-red-500 text-xs mt-1">{errors.date_of_last_survey}</p>
+                      )}
+                    </div>
+                    <div className="md:col-span-2">
+                      <Label className="text-sm font-medium">
+                        Remarks <span className="text-red-500">*</span>
+                      </Label>
+                      <Textarea
+                        value={formData.structure_remarks}
+                        onChange={(e) => {
+                          const validatedValue = handleRemarksValidation(e.target.value);
+                          handleInputChange("structure_remarks", validatedValue);
+                        }}
+                        className={errors.structure_remarks ? "border-red-500" : ""}
+                        rows={2}
+                      />
+                      {errors.structure_remarks && (
+                        <p className="text-red-500 text-xs mt-1">{errors.structure_remarks}</p>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                {/* 8b: List of Pending Observations */}
+                <div>
+                  <h6 className="text-md font-semibold text-gray-800 mb-4">
+                    b) List of Pending Observations for Liquidation (if any)
+                  </h6>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div>
+                      <Label className="text-sm font-medium">
+                        Date <span className="text-red-500">*</span>
+                      </Label>
+                      <Input
+                        type="date"
+                        value={formData.date_list_of_pending_observation}
+                        onChange={(e) => handleInputChange("date_list_of_pending_observation", e.target.value)}
+                        className={errors.date_list_of_pending_observation ? "border-red-500" : ""}
+                      />
+                      {errors.date_list_of_pending_observation && (
+                        <p className="text-red-500 text-xs mt-1">{errors.date_list_of_pending_observation}</p>
+                      )}
+                    </div>
+                    <div className="md:col-span-2">
+                      <Label className="text-sm font-medium">
+                        Remarks <span className="text-red-500">*</span>
+                      </Label>
+                      <Textarea
+                        value={formData.list_of_pending_remarks}
+                        onChange={(e) => {
+                          const validatedValue = handleRemarksValidation(e.target.value);
+                          handleInputChange("list_of_pending_remarks", validatedValue);
+                        }}
+                        className={errors.list_of_pending_remarks ? "border-red-500" : ""}
+                        rows={2}
+                      />
+                      {errors.list_of_pending_remarks && (
+                        <p className="text-red-500 text-xs mt-1">{errors.list_of_pending_remarks}</p>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Section 9: Visual Inspection */}
+              <div className="border border-gray-200 rounded-lg p-6">
+                <div className="flex items-center mb-4">
+                  <span className="bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold mr-3">
+                    9
+                  </span>
+                  <h5 className="text-lg font-bold text-gray-900">Visual Inspection</h5>
+                </div>
+                
+                {/* 9a: Conditions of Deck Plate */}
+                <div className="mb-6">
+                  <h6 className="text-md font-semibold text-gray-800 mb-4">
+                    a) Conditions of Deck Plate Surrounding Structure and Fire Curtain
+                  </h6>
+                  {renderObservationSection(
+                    "",
+                    "conditions_of_deck_plate_observations",
+                    "conditions_of_deck_plate_remarks",
+                    9
+                  )}
+                </div>
+
+                {/* 9b: Conditions of Brake */}
+                <div className="mb-6">
+                  <h6 className="text-md font-semibold text-gray-800 mb-4">
+                    b) Conditions of Brake / Brake Band (wear & tear, deep scoring marks, etc)
+                  </h6>
+                  {renderObservationSection(
+                    "",
+                    "conditions_of_brake_brake_observations",
+                    "conditions_of_brake_brake_remarks",
+                    9
+                  )}
+                </div>
+
+                {/* 9c: Availability and Conditions of Limit Switch */}
+                <div>
+                  <h6 className="text-md font-semibold text-gray-800 mb-4">
+                    c) Availability and Conditions of Limit Switch
+                  </h6>
+                  {renderObservationSection(
+                    "",
+                    "availability_and_condition_observations",
+                    "availability_and_condition_remarks",
+                    9
+                  )}
+                </div>
+              </div>
+
+              {/* Section 10: Greasing */}
+              <div className="border border-gray-200 rounded-lg p-6">
+                <div className="flex items-center mb-4">
+                  <span className="bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold mr-3">
+                    10
+                  </span>
+                  <h5 className="text-lg font-bold text-gray-900">Greasing</h5>
+                </div>
+                
+                {/* 10a: Conditions of Greasing Points */}
+                <div className="mb-6">
+                  <h6 className="text-md font-semibold text-gray-800 mb-4">
+                    a) Conditions of Greasing Points
+                  </h6>
+                  {renderObservationSection(
+                    "",
+                    "conditions_of_greasing_points_observations",
+                    "conditions_of_greasing_points_remarks",
+                    10
+                  )}
+                </div>
+
+                {/* 10b: SS to Confirm Grease */}
+                <div className="mb-6">
+                  <h6 className="text-md font-semibold text-gray-800 mb-4">
+                    b) SS to Confirm Grease Used i.a.w.OEM Manual
+                  </h6>
+                  {renderObservationSection(
+                    "",
+                    "ss_to_confirm_grease_observations",
+                    "ss_to_confirm_grease_remarks",
+                    10
+                  )}
+                </div>
+
+                {/* 10c: Greasing of All Movable Parts */}
+                <div>
+                  <h6 className="text-md font-semibold text-gray-800 mb-4">
+                    c) Greasing of All Movable Parts
+                  </h6>
+                  {renderObservationSection(
+                    "",
+                    "greasing_of_all_movable_parts_observations",
+                    "greasing_of_all_movable_parts_remarks",
+                    10
+                  )}
+                </div>
+              </div>
+
+              {/* Section 11: Oil */}
+              <div className="border border-gray-200 rounded-lg p-6">
+                <div className="flex items-center mb-4">
+                  <span className="bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold mr-3">
+                    11
+                  </span>
+                  <h5 className="text-lg font-bold text-gray-900">Oil</h5>
+                </div>
+                
+                {/* 11a: SS to Confirm Last date of oil change */}
+                <div className="mb-6">
+                  <h6 className="text-md font-semibold text-gray-800 mb-4">
+                    a) SS to Confirm Last date of oil change (annual)
+                  </h6>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div>
+                      <Label className="text-sm font-medium">
+                        Date <span className="text-red-500">*</span>
+                      </Label>
+                      <Input
+                        type="date"
+                        value={formData.oil_confirm_date}
+                        onChange={(e) => handleInputChange("oil_confirm_date", e.target.value)}
+                        className={errors.oil_confirm_date ? "border-red-500" : ""}
+                      />
+                      {errors.oil_confirm_date && (
+                        <p className="text-red-500 text-xs mt-1">{errors.oil_confirm_date}</p>
+                      )}
+                    </div>
+                    <div className="md:col-span-2">
+                      <Label className="text-sm font-medium">
+                        Remarks <span className="text-red-500">*</span>
+                      </Label>
+                      <Textarea
+                        value={formData.oil_confirm_remarks}
+                        onChange={(e) => {
+                          const validatedValue = handleRemarksValidation(e.target.value);
+                          handleInputChange("oil_confirm_remarks", validatedValue);
+                        }}
+                        className={errors.oil_confirm_remarks ? "border-red-500" : ""}
+                        rows={2}
+                      />
+                      {errors.oil_confirm_remarks && (
+                        <p className="text-red-500 text-xs mt-1">{errors.oil_confirm_remarks}</p>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                {/* 11b: Oil Being Used in Gear Box */}
+                <div className="mb-6">
+                  <h6 className="text-md font-semibold text-gray-800 mb-4">
+                    b) Oil Being Used in Gear Box 80W 19 (Reduction gear box)
+                  </h6>
+                  {renderObservationSection(
+                    "",
+                    "oil_being_used_in_gear_box_observations",
+                    "oil_being_used_in_gear_box_remarks",
+                    11
+                  )}
+                </div>
+
+                {/* 11c: Oil Level in Gear Box */}
+                <div>
+                  <h6 className="text-md font-semibold text-gray-800 mb-4">
+                    c) Oil Level in Gear Box
+                  </h6>
+                  {renderObservationSection(
+                    "",
+                    "oil_level_in_gear_box_observations",
+                    "oil_level_in_gear_box_remarks",
+                    11
+                  )}
+                </div>
+              </div>
+
+              {/* Section 12: Electrical Checks */}
+              <div className="border border-gray-200 rounded-lg p-6">
+                <div className="flex items-center mb-4">
+                  <span className="bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold mr-3">
+                    12
+                  </span>
+                  <h5 className="text-lg font-bold text-gray-900">Electrical Checks</h5>
+                </div>
+                
+                {/* 12a: Check by ETMA/SS */}
+                <div className="mb-6">
+                  <h6 className="text-md font-semibold text-gray-800 mb-4">
+                    a) Check by ETMA/SS
+                  </h6>
+                  
+                  {/* 12ai: Insulation Checks */}
+                  <div className="mb-4">
+                    <h6 className="text-sm font-semibold text-gray-700 mb-3">
+                      i) Insulation Checks
+                    </h6>
+                    {renderObservationSection(
+                      "",
+                      "insulation_checks_observations",
+                      "insulation_checks_remarks",
+                      12
+                    )}
+                  </div>
+
+                  {/* 12aii: SPM Checks of Motor */}
+                  <div className="mb-4">
+                    <h6 className="text-sm font-semibold text-gray-700 mb-3">
+                      ii) SPM Checks of Motor
+                    </h6>
+                    {renderObservationSection(
+                      "",
+                      "spm_checks_of_motor_observations",
+                      "spm_checks_of_motor_remarks",
+                      12
+                    )}
+                  </div>
+
+                  {/* 12aiii: Conditions of Cable Connections */}
+                  <div className="mb-4">
+                    <h6 className="text-sm font-semibold text-gray-700 mb-3">
+                      iii) Conditions of Cable Connections
+                    </h6>
+                    {renderObservationSection(
+                      "",
+                      "conditions_of_cable_observations",
+                      "conditions_of_cable_remarks",
+                      12
+                    )}
+                  </div>
+
+                  {/* 12aiv: Conditions of Earthing Connections */}
+                  <div className="mb-4">
+                    <h6 className="text-sm font-semibold text-gray-700 mb-3">
+                      iv) Conditions of Earthing Connections
+                    </h6>
+                    {renderObservationSection(
+                      "",
+                      "conditions_of_earthing_observations",
+                      "conditions_of_earthing_remarks",
+                      12
+                    )}
+                  </div>
+                </div>
+
+                {/* 12b: Tightness of Electrical Cable Fasteners */}
+                <div className="mb-6">
+                  <h6 className="text-md font-semibold text-gray-800 mb-4">
+                    b) Tightness of Electrical Cable Fasteners
+                  </h6>
+                  {renderObservationSection(
+                    "",
+                    "tightness_of_electrical_observations",
+                    "tightness_of_electrical_remarks",
+                    12
+                  )}
+                </div>
+
+                {/* 12c: Condition of JB / Control Panel */}
+                <div>
+                  <h6 className="text-md font-semibold text-gray-800 mb-4">
+                    c) Condition of JB / Control Panel
+                  </h6>
+                  {renderObservationSection(
+                    "",
+                    "observations_jb",
+                    "remarks_jb",
+                    12
+                  )}
+                </div>
+              </div>
+
+              {/* Section 13: Electric Checks by ETMA */}
+              <div className="border border-gray-200 rounded-lg p-6">
+                <div className="flex items-center mb-4">
+                  <span className="bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold mr-3">
+                    13
+                  </span>
+                  <h5 className="text-lg font-bold text-gray-900">Electric Checks by ETMA</h5>
+                </div>
+                
+                {/* 13a: Completed */}
+                <div className="mb-6">
+                  <h6 className="text-md font-semibold text-gray-800 mb-4">
+                    a) Completed
+                  </h6>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div>
+                      <Label className="text-sm font-medium">
+                        Observations <span className="text-red-500">*</span>
+                      </Label>
+                      <Select
+                        value={formData.observations_completed}
+                        onValueChange={(value) => handleInputChange("observations_completed", value)}
+                      >
+                        <SelectTrigger className={errors.observations_completed ? "border-red-500" : ""}>
+                          <SelectValue placeholder="--Select--" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="0">--Select--</SelectItem>
+                          <SelectItem value="YES">YES</SelectItem>
+                          <SelectItem value="NO">NO</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      {errors.observations_completed && (
+                        <p className="text-red-500 text-xs mt-1">{errors.observations_completed}</p>
+                      )}
+                    </div>
+                    <div className="md:col-span-2">
+                      <Label className="text-sm font-medium">
+                        Remarks <span className="text-red-500">*</span>
+                      </Label>
+                      <Textarea
+                        value={formData.remarks_completed}
+                        onChange={(e) => {
+                          const validatedValue = handleRemarksValidation(e.target.value);
+                          handleInputChange("remarks_completed", validatedValue);
+                        }}
+                        className={errors.remarks_completed ? "border-red-500" : ""}
+                        rows={2}
+                      />
+                      {errors.remarks_completed && (
+                        <p className="text-red-500 text-xs mt-1">{errors.remarks_completed}</p>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                {/* 13b: Availability of Report */}
+                <div>
+                  <h6 className="text-md font-semibold text-gray-800 mb-4">
+                    b) Availability of Report
+                  </h6>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div>
+                      <Label className="text-sm font-medium">
+                        Observations <span className="text-red-500">*</span>
+                      </Label>
+                      <Select
+                        value={formData.availability_of_report_observations}
+                        onValueChange={(value) => handleInputChange("availability_of_report_observations", value)}
+                      >
+                        <SelectTrigger className={errors.availability_of_report_observations ? "border-red-500" : ""}>
+                          <SelectValue placeholder="--Select--" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="0">--Select--</SelectItem>
+                          <SelectItem value="YES">YES</SelectItem>
+                          <SelectItem value="NO">NO</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      {errors.availability_of_report_observations && (
+                        <p className="text-red-500 text-xs mt-1">{errors.availability_of_report_observations}</p>
+                      )}
+                    </div>
+                    <div className="md:col-span-2">
+                      <Label className="text-sm font-medium">
+                        Remarks <span className="text-red-500">*</span>
+                      </Label>
+                      <Textarea
+                        value={formData.availability_of_report_remarks}
+                        onChange={(e) => {
+                          const validatedValue = handleRemarksValidation(e.target.value);
+                          handleInputChange("availability_of_report_remarks", validatedValue);
+                        }}
+                        className={errors.availability_of_report_remarks ? "border-red-500" : ""}
+                        rows={2}
+                      />
+                      {errors.availability_of_report_remarks && (
+                        <p className="text-red-500 text-xs mt-1">{errors.availability_of_report_remarks}</p>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Section 14: Operational Trials */}
+              <div className="border border-gray-200 rounded-lg p-6">
+                <div className="flex items-center mb-4">
+                  <span className="bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold mr-3">
+                    14
+                  </span>
+                  <h5 className="text-lg font-bold text-gray-900">Operational Trials</h5>
+                </div>
+                
+                {/* 14a: Trials in 01 speed */}
+                <div className="mb-6">
+                  <h6 className="text-md font-semibold text-gray-800 mb-4">
+                    a) Trials in 01 speed
+                  </h6>
+                  {renderObservationSection(
+                    "",
+                    "trials_in_01_speed_observations",
+                    "trials_in_01_speed_remarks",
+                    14
+                  )}
+                </div>
+
+                {/* 14b: Drive / Gear Box Noise and Vibrations */}
+                <div className="mb-6">
+                  <h6 className="text-md font-semibold text-gray-800 mb-4">
+                    b) Drive / Gear Box Noise and Vibrations
+                  </h6>
+                  {renderObservationSection(
+                    "",
+                    "drive_in_gearbox_observations",
+                    "drive_in_gearbox_remarks",
+                    14
+                  )}
+                </div>
+
+                {/* 14c: Oil Leakage From Gear Box */}
+                <div className="mb-6">
+                  <h6 className="text-md font-semibold text-gray-800 mb-4">
+                    c) Oil Leakage From Gear Box
+                  </h6>
+                  {renderObservationSection(
+                    "",
+                    "oil_leackage_observations",
+                    "oil_leackage_remarks",
+                    14
+                  )}
+                </div>
+
+                {/* 14d: Functioning of Limit Switches */}
+                <div className="mb-6">
+                  <h6 className="text-md font-semibold text-gray-800 mb-4">
+                    d) Functioning of Limit Switches
+                  </h6>
+                  {renderObservationSection(
+                    "",
+                    "functioning_of_limit_observations",
+                    "functioning_of_limit_remarks",
+                    14
+                  )}
+                </div>
+
+                {/* 14e: Functioning of EMM Brake Mechanism */}
+                <div>
+                  <h6 className="text-md font-semibold text-gray-800 mb-4">
+                    e) Functioning of EMM Brake Mechanism
+                  </h6>
+                  {renderObservationSection(
+                    "",
+                    "functioning_of_emm_observations",
+                    "functioning_of_emm_remarks",
+                    14
+                  )}
+                </div>
+              </div>
+
+              {/* Section 15: Other Observation */}
+              <div className="border border-gray-200 rounded-lg p-6">
+                <div className="flex items-center mb-4">
+                  <span className="bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold mr-3">
+                    15
+                  </span>
+                  <h5 className="text-lg font-bold text-gray-900">Other Observation</h5>
+                </div>
+                <div className="grid grid-cols-1 gap-6">
+                  <div>
+                    <Label className="text-sm font-medium">
+                      Remarks <span className="text-red-500">*</span>
+                    </Label>
+                    <Textarea
+                      value={formData.other_remarks}
+                      onChange={(e) => {
+                        const validatedValue = handleRemarksValidation(e.target.value);
+                        handleInputChange("other_remarks", validatedValue);
+                      }}
+                      className={errors.other_remarks ? "border-red-500" : ""}
+                      rows={2}
+                    />
+                    {errors.other_remarks && (
+                      <p className="text-red-500 text-xs mt-1">{errors.other_remarks}</p>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* Section 16: Overall Remarks */}
+              <div className="border border-gray-200 rounded-lg p-6">
+                <div className="flex items-center mb-4">
+                  <span className="bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold mr-3">
+                    16
+                  </span>
+                  <h5 className="text-lg font-bold text-gray-900">Overall Remarks</h5>
+                </div>
+                <div className="grid grid-cols-1 gap-6">
+                  <div>
+                    <Label className="text-sm font-medium">
+                      Remarks <span className="text-red-500">*</span>
+                    </Label>
+                    <Textarea
+                      value={formData.overall_remarks}
+                      onChange={(e) => {
+                        const validatedValue = handleRemarksValidation(e.target.value);
+                        handleInputChange("overall_remarks", validatedValue);
+                      }}
+                      className={errors.overall_remarks ? "border-red-500" : ""}
+                      rows={2}
+                    />
+                    {errors.overall_remarks && (
+                      <p className="text-red-500 text-xs mt-1">{errors.overall_remarks}</p>
+                    )}
+                  </div>
+                </div>
+              </div>
 
               {/* Section 17: Authority Signature */}
               <div className="border border-gray-200 rounded-lg p-6">

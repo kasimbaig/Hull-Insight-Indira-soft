@@ -26,6 +26,7 @@ import RootConfigMaster from "@/pages/masters/RootConfigMaster";
 import RoleMaster from "@/pages/masters/RoleMaster";
 import RoleAccess from "./pages/masters/RoleAccess";
 import VesselClassMaster from "./pages/masters/VesselClassMaster";
+import DynamicFormFieldsMaster from "./pages/masters/DynamicFormFieldsMaster";
 import Landing from "./pages/Landing";
 import HvacReport from "./pages/HvacReport";
 import ReportsSelection from "./pages/ReportsSelection";
@@ -119,6 +120,7 @@ const App = () => (
           <Route path="masters/role" element={<RoleMaster />} />
           <Route path="masters/roleaccess" element={<RoleAccess />} />
           <Route path="masters/vesselclass" element={<VesselClassMaster />} />
+          <Route path="masters/dynamic-form-fields" element={<DynamicFormFieldsMaster />} />
           {/* Placeholder routes for other masters */}
           <Route path="masters/*" element={<div className="p-8 text-center text-muted-foreground">Master page coming soon...</div>} />
           

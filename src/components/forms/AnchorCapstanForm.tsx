@@ -5,6 +5,8 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 const AnchorCapstanForm = () => {
   const [formData, setFormData] = useState({
@@ -37,8 +39,31 @@ const AnchorCapstanForm = () => {
     remarksGreasing: "",
     remarksAnyOther: "",
     observationsOverall: "",
+    observationsEmergencyStop: "",
+    remarksEmergencyStop: "",
+    observationsOverloadProtection: "",
+    remarksOverloadProtection: "",
+    observationsCableCondition: "",
+    remarksCableCondition: "",
+    observationsControlPanel: "",
+    remarksControlPanel: "",
+    observationsWeatherProtection: "",
+    remarksWeatherProtection: "",
+    observationsDocumentation: "",
+    remarksDocumentation: "",
+    observationsLoadTesting: "",
+    remarksLoadTesting: "",
+    nextMaintenanceDate: "",
+    maintenanceType: "",
+    remarksMaintenanceSchedule: "",
+    overallSystemStatus: "",
+    remarksFinalAssessment: "",
     authoritySignature: null as File | null,
   });
+
+  const [isDraftModalOpen, setIsDraftModalOpen] = useState(false);
+  const [drafts, setDrafts] = useState<any[]>([]);
+  const [hidDraftId, setHidDraftId] = useState<string | null>(null);
 
   const ships = [
     "SHIVALIK", "JAMUNA", "BANGARAM", "TARANGINI", "SARYU", "KUMBHIR", "T-83", "AIRAVAT",
@@ -63,10 +88,123 @@ const AnchorCapstanForm = () => {
     setFormData(prev => ({ ...prev, authoritySignature: file }));
   };
 
+  const handleSaveDraft = () => {
+    const draftData = {
+      id: Date.now().toString(),
+      timestamp: new Date().toISOString(),
+      formData: { ...formData }
+    };
+    
+    const existingDrafts = JSON.parse(localStorage.getItem('anchorCapstanDrafts') || '[]');
+    const updatedDrafts = [...existingDrafts, draftData];
+    localStorage.setItem('anchorCapstanDrafts', JSON.stringify(updatedDrafts));
+    
+    alert('Draft saved successfully!');
+  };
+
+  const handleFetchDrafts = () => {
+    const existingDrafts = JSON.parse(localStorage.getItem('anchorCapstanDrafts') || '[]');
+    setDrafts(existingDrafts);
+    setIsDraftModalOpen(true);
+  };
+
+  const handleEditDraft = (draft: any) => {
+    setFormData(draft.formData);
+    setHidDraftId(draft.id);
+    setIsDraftModalOpen(false);
+  };
+
+  const handleDeleteDraft = (draftId: string) => {
+    const existingDrafts = JSON.parse(localStorage.getItem('anchorCapstanDrafts') || '[]');
+    const updatedDrafts = existingDrafts.filter((draft: any) => draft.id !== draftId);
+    localStorage.setItem('anchorCapstanDrafts', JSON.stringify(updatedDrafts));
+    setDrafts(updatedDrafts);
+  };
+
+  const handleClear = () => {
+    setFormData({
+      ship: "",
+      dateOfInspection: "",
+      make: "",
+      yearOfManufacture: "",
+      observationsLiningBrake: "",
+      remarksLiningBrake: "",
+      observationsGearbox: "",
+      remarksGearbox: "",
+      observationsCapstanMotor: "",
+      remarksCapstanMotor: "",
+      observationsCapstanFoundation: "",
+      remarksCapstanFoundation: "",
+      observationsSpeed1: "",
+      remarksSpeed1: "",
+      observationsSpeed2: "",
+      remarksSpeed2: "",
+      observationsSpeed3: "",
+      remarksSpeed3: "",
+      observationsOilLevel: "",
+      remarksOilLevel: "",
+      observationsOc300: "",
+      remarksOc300: "",
+      dateOfOilChange: "",
+      oilChangeDueDate: "",
+      remarksOilChange: "",
+      observationsGreasing: "",
+      remarksGreasing: "",
+      remarksAnyOther: "",
+      observationsOverall: "",
+      observationsEmergencyStop: "",
+      remarksEmergencyStop: "",
+      observationsOverloadProtection: "",
+      remarksOverloadProtection: "",
+      observationsCableCondition: "",
+      remarksCableCondition: "",
+      observationsControlPanel: "",
+      remarksControlPanel: "",
+      observationsWeatherProtection: "",
+      remarksWeatherProtection: "",
+      observationsDocumentation: "",
+      remarksDocumentation: "",
+      observationsLoadTesting: "",
+      remarksLoadTesting: "",
+      nextMaintenanceDate: "",
+      maintenanceType: "",
+      remarksMaintenanceSchedule: "",
+      overallSystemStatus: "",
+      remarksFinalAssessment: "",
+      authoritySignature: null,
+    });
+    setHidDraftId(null);
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validation
+    const requiredFields = [
+      'ship', 'dateOfInspection', 'make', 'yearOfManufacture', 'observationsLiningBrake', 
+      'remarksLiningBrake', 'observationsGearbox', 'remarksGearbox', 'observationsCapstanMotor',
+      'remarksCapstanMotor', 'observationsCapstanFoundation', 'remarksCapstanFoundation',
+      'observationsSpeed1', 'remarksSpeed1', 'observationsSpeed2', 'remarksSpeed2',
+      'observationsSpeed3', 'remarksSpeed3', 'observationsOilLevel', 'remarksOilLevel',
+      'observationsOc300', 'remarksOc300', 'dateOfOilChange', 'oilChangeDueDate',
+      'remarksOilChange', 'observationsGreasing', 'remarksGreasing', 'remarksAnyOther',
+      'observationsOverall'
+    ];
+    
+    const missingFields = requiredFields.filter(field => !formData[field as keyof typeof formData]);
+    
+    if (missingFields.length > 0) {
+      alert(`Please fill in all required fields: ${missingFields.join(', ')}`);
+      return;
+    }
+    
+    if (!formData.authoritySignature) {
+      alert('Please upload authority signature');
+      return;
+    }
+    
     console.log("Anchor Capstan Form submitted:", formData);
-    // Handle form submission here
+    alert('Form submitted successfully!');
   };
 
   return (
@@ -571,10 +709,339 @@ const AnchorCapstanForm = () => {
               </div>
             </div>
 
-            {/* Section 16: Authority Signature */}
+            {/* Section 16: Additional Operational Checks */}
             <div className="space-y-4">
               <div className="flex items-center space-x-2">
                 <span className="bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">16</span>
+                <Label className="text-lg font-semibold">Additional Operational Checks</Label>
+              </div>
+              <div className="ml-6">
+                <Label className="text-base font-medium">a) Emergency Stop Function</Label>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+                  <div>
+                    <Label className="text-sm font-medium">Observations: <span className="text-red-500">*</span></Label>
+                    <Select value={formData.observationsEmergencyStop || ""} onValueChange={(value) => handleInputChange("observationsEmergencyStop", value)}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="--Select--" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="SAT">SAT</SelectItem>
+                        <SelectItem value="UNSAT">UNSAT</SelectItem>
+                        <SelectItem value="SAT WITH OBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label className="text-sm font-medium">Remarks: <span className="text-red-500">*</span></Label>
+                    <Textarea
+                      value={formData.remarksEmergencyStop || ""}
+                      onChange={(e) => handleInputChange("remarksEmergencyStop", e.target.value)}
+                      rows={2}
+                      maxLength={1000}
+                      required
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Section 17: Safety Systems */}
+            <div className="space-y-4">
+              <div className="flex items-center space-x-2">
+                <span className="bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">17</span>
+                <Label className="text-lg font-semibold">Safety Systems</Label>
+              </div>
+              <div className="ml-6">
+                <Label className="text-base font-medium">a) Overload Protection</Label>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+                  <div>
+                    <Label className="text-sm font-medium">Observations: <span className="text-red-500">*</span></Label>
+                    <Select value={formData.observationsOverloadProtection || ""} onValueChange={(value) => handleInputChange("observationsOverloadProtection", value)}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="--Select--" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="SAT">SAT</SelectItem>
+                        <SelectItem value="UNSAT">UNSAT</SelectItem>
+                        <SelectItem value="SAT WITH OBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label className="text-sm font-medium">Remarks: <span className="text-red-500">*</span></Label>
+                    <Textarea
+                      value={formData.remarksOverloadProtection || ""}
+                      onChange={(e) => handleInputChange("remarksOverloadProtection", e.target.value)}
+                      rows={2}
+                      maxLength={1000}
+                      required
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Section 18: Electrical Connections */}
+            <div className="space-y-4">
+              <div className="flex items-center space-x-2">
+                <span className="bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">18</span>
+                <Label className="text-lg font-semibold">Electrical Connections</Label>
+              </div>
+              <div className="ml-6">
+                <Label className="text-base font-medium">a) Cable Condition and Connections</Label>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+                  <div>
+                    <Label className="text-sm font-medium">Observations: <span className="text-red-500">*</span></Label>
+                    <Select value={formData.observationsCableCondition || ""} onValueChange={(value) => handleInputChange("observationsCableCondition", value)}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="--Select--" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="SAT">SAT</SelectItem>
+                        <SelectItem value="UNSAT">UNSAT</SelectItem>
+                        <SelectItem value="SAT WITH OBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label className="text-sm font-medium">Remarks: <span className="text-red-500">*</span></Label>
+                    <Textarea
+                      value={formData.remarksCableCondition || ""}
+                      onChange={(e) => handleInputChange("remarksCableCondition", e.target.value)}
+                      rows={2}
+                      maxLength={1000}
+                      required
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Section 19: Control Panel */}
+            <div className="space-y-4">
+              <div className="flex items-center space-x-2">
+                <span className="bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">19</span>
+                <Label className="text-lg font-semibold">Control Panel</Label>
+              </div>
+              <div className="ml-6">
+                <Label className="text-base font-medium">a) Control Panel Functionality</Label>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+                  <div>
+                    <Label className="text-sm font-medium">Observations: <span className="text-red-500">*</span></Label>
+                    <Select value={formData.observationsControlPanel || ""} onValueChange={(value) => handleInputChange("observationsControlPanel", value)}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="--Select--" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="SAT">SAT</SelectItem>
+                        <SelectItem value="UNSAT">UNSAT</SelectItem>
+                        <SelectItem value="SAT WITH OBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label className="text-sm font-medium">Remarks: <span className="text-red-500">*</span></Label>
+                    <Textarea
+                      value={formData.remarksControlPanel || ""}
+                      onChange={(e) => handleInputChange("remarksControlPanel", e.target.value)}
+                      rows={2}
+                      maxLength={1000}
+                      required
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Section 20: Environmental Conditions */}
+            <div className="space-y-4">
+              <div className="flex items-center space-x-2">
+                <span className="bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">20</span>
+                <Label className="text-lg font-semibold">Environmental Conditions</Label>
+              </div>
+              <div className="ml-6">
+                <Label className="text-base font-medium">a) Weather Protection</Label>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+                  <div>
+                    <Label className="text-sm font-medium">Observations: <span className="text-red-500">*</span></Label>
+                    <Select value={formData.observationsWeatherProtection || ""} onValueChange={(value) => handleInputChange("observationsWeatherProtection", value)}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="--Select--" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="SAT">SAT</SelectItem>
+                        <SelectItem value="UNSAT">UNSAT</SelectItem>
+                        <SelectItem value="SAT WITH OBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label className="text-sm font-medium">Remarks: <span className="text-red-500">*</span></Label>
+                    <Textarea
+                      value={formData.remarksWeatherProtection || ""}
+                      onChange={(e) => handleInputChange("remarksWeatherProtection", e.target.value)}
+                      rows={2}
+                      maxLength={1000}
+                      required
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Section 21: Documentation */}
+            <div className="space-y-4">
+              <div className="flex items-center space-x-2">
+                <span className="bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">21</span>
+                <Label className="text-lg font-semibold">Documentation</Label>
+              </div>
+              <div className="ml-6">
+                <Label className="text-base font-medium">a) Manuals and Certificates</Label>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+                  <div>
+                    <Label className="text-sm font-medium">Observations: <span className="text-red-500">*</span></Label>
+                    <Select value={formData.observationsDocumentation || ""} onValueChange={(value) => handleInputChange("observationsDocumentation", value)}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="--Select--" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="SAT">SAT</SelectItem>
+                        <SelectItem value="UNSAT">UNSAT</SelectItem>
+                        <SelectItem value="SAT WITH OBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label className="text-sm font-medium">Remarks: <span className="text-red-500">*</span></Label>
+                    <Textarea
+                      value={formData.remarksDocumentation || ""}
+                      onChange={(e) => handleInputChange("remarksDocumentation", e.target.value)}
+                      rows={2}
+                      maxLength={1000}
+                      required
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Section 22: Performance Testing */}
+            <div className="space-y-4">
+              <div className="flex items-center space-x-2">
+                <span className="bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">22</span>
+                <Label className="text-lg font-semibold">Performance Testing</Label>
+              </div>
+              <div className="ml-6">
+                <Label className="text-base font-medium">a) Load Testing Results</Label>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+                  <div>
+                    <Label className="text-sm font-medium">Observations: <span className="text-red-500">*</span></Label>
+                    <Select value={formData.observationsLoadTesting || ""} onValueChange={(value) => handleInputChange("observationsLoadTesting", value)}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="--Select--" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="SAT">SAT</SelectItem>
+                        <SelectItem value="UNSAT">UNSAT</SelectItem>
+                        <SelectItem value="SAT WITH OBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label className="text-sm font-medium">Remarks: <span className="text-red-500">*</span></Label>
+                    <Textarea
+                      value={formData.remarksLoadTesting || ""}
+                      onChange={(e) => handleInputChange("remarksLoadTesting", e.target.value)}
+                      rows={2}
+                      maxLength={1000}
+                      required
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Section 23: Maintenance Schedule */}
+            <div className="space-y-4">
+              <div className="flex items-center space-x-2">
+                <span className="bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">23</span>
+                <Label className="text-lg font-semibold">Maintenance Schedule</Label>
+              </div>
+              <div className="ml-6">
+                <Label className="text-base font-medium">a) Next Scheduled Maintenance</Label>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-2">
+                  <div>
+                    <Label className="text-sm font-medium">Date: <span className="text-red-500">*</span></Label>
+                    <Input
+                      type="date"
+                      value={formData.nextMaintenanceDate || ""}
+                      onChange={(e) => handleInputChange("nextMaintenanceDate", e.target.value)}
+                      required
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-sm font-medium">Type: <span className="text-red-500">*</span></Label>
+                    <Input
+                      value={formData.maintenanceType || ""}
+                      onChange={(e) => handleInputChange("maintenanceType", e.target.value)}
+                      maxLength={50}
+                      required
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-sm font-medium">Remarks: <span className="text-red-500">*</span></Label>
+                    <Textarea
+                      value={formData.remarksMaintenanceSchedule || ""}
+                      onChange={(e) => handleInputChange("remarksMaintenanceSchedule", e.target.value)}
+                      rows={2}
+                      maxLength={1000}
+                      required
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Section 24: Final Assessment */}
+            <div className="space-y-4">
+              <div className="flex items-center space-x-2">
+                <span className="bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">24</span>
+                <Label className="text-lg font-semibold">Final Assessment</Label>
+              </div>
+              <div className="ml-6">
+                <Label className="text-base font-medium">a) Overall System Status</Label>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+                  <div>
+                    <Label className="text-sm font-medium">Status: <span className="text-red-500">*</span></Label>
+                    <Select value={formData.overallSystemStatus || ""} onValueChange={(value) => handleInputChange("overallSystemStatus", value)}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="--Select--" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="OPERATIONAL">OPERATIONAL</SelectItem>
+                        <SelectItem value="LIMITED OPERATION">LIMITED OPERATION</SelectItem>
+                        <SelectItem value="NON-OPERATIONAL">NON-OPERATIONAL</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label className="text-sm font-medium">Remarks: <span className="text-red-500">*</span></Label>
+                    <Textarea
+                      value={formData.remarksFinalAssessment || ""}
+                      onChange={(e) => handleInputChange("remarksFinalAssessment", e.target.value)}
+                      rows={2}
+                      maxLength={1000}
+                      required
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Section 25: Authority Signature */}
+            <div className="space-y-4">
+              <div className="flex items-center space-x-2">
+                <span className="bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">25</span>
                 <Label className="text-lg font-semibold">Authority Signature <span className="text-red-500">*</span></Label>
               </div>
               <div>
@@ -588,16 +1055,105 @@ const AnchorCapstanForm = () => {
               </div>
             </div>
 
-            {/* Submit Button */}
-            <div className="flex justify-center pt-6">
-              <Button type="submit" className="px-8 py-2">
-                Submit Form
+            {/* Action Buttons */}
+            <div className="flex flex-wrap gap-4 justify-center pt-6">
+              <Button 
+                type="button" 
+                onClick={handleFetchDrafts}
+                className="px-6 bg-cyan-500 hover:bg-cyan-600 text-white font-semibold uppercase"
+              >
+                FETCH DRAFTS
+              </Button>
+              <Button 
+                type="button" 
+                onClick={handleSaveDraft}
+                className="px-6 bg-green-500 hover:bg-green-600 text-white font-semibold uppercase"
+              >
+                SAVE DRAFT
+              </Button>
+              <Button 
+                type="button" 
+                onClick={handleClear}
+                className="px-6 bg-red-500 hover:bg-red-600 text-white font-semibold uppercase"
+              >
+                CLEAR
+              </Button>
+              <Button 
+                type="submit" 
+                className="px-6 bg-blue-600 hover:bg-blue-700 text-white font-semibold uppercase"
+              >
+                SAVE
               </Button>
             </div>
           </form>
           </div>
         </div>
       </div>
+
+      {/* Draft Modal */}
+      <Dialog open={isDraftModalOpen} onOpenChange={setIsDraftModalOpen}>
+        <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Draft Data</DialogTitle>
+          </DialogHeader>
+          <div className="mt-4">
+            {drafts.length === 0 ? (
+              <p className="text-center text-gray-500 py-8">No drafts available</p>
+            ) : (
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Sr No.</TableHead>
+                    <TableHead>Make</TableHead>
+                    <TableHead>Created Date</TableHead>
+                    <TableHead>Action</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {drafts.map((draft, index) => (
+                    <TableRow key={draft.id}>
+                      <TableCell>{index + 1}</TableCell>
+                      <TableCell>{draft.formData.make || "No Make Data"}</TableCell>
+                      <TableCell>
+                        {new Date(draft.timestamp).toLocaleDateString('en-GB', {
+                          day: '2-digit',
+                          month: '2-digit',
+                          year: 'numeric',
+                          hour: '2-digit',
+                          minute: '2-digit',
+                          second: '2-digit'
+                        })}
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex gap-2">
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => handleEditDraft(draft)}
+                          >
+                            Edit
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="destructive"
+                            onClick={() => {
+                              if (confirm('Are you sure you want to delete this draft?')) {
+                                handleDeleteDraft(draft.id);
+                              }
+                            }}
+                          >
+                            Delete
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

@@ -168,25 +168,6 @@ const HVACPhase2Form = () => {
   };
 
   // Dynamic table handlers
-  const handleAddAmbientCondition = () => {
-    const newId = (formData.ambientConditions.length + 1).toString();
-    setFormData(prev => ({
-      ...prev,
-      ambientConditions: [...prev.ambientConditions, {
-        id: newId, regime: "", swpTemp0900: "", swpTemp1200: "", atmTemp0900: "", 
-        atmTemp1200: "", atmRel0900: "", atmRel1200: "", remarks: ""
-      }]
-    }));
-  };
-
-  const handleRemoveAmbientCondition = (id: string) => {
-    if (formData.ambientConditions.length > 1) {
-      setFormData(prev => ({
-        ...prev,
-        ambientConditions: prev.ambientConditions.filter(item => item.id !== id)
-      }));
-    }
-  };
 
   const handleAmbientConditionChange = (id: string, field: keyof AmbientCondition, value: string) => {
     setFormData(prev => ({
@@ -197,8 +178,171 @@ const HVACPhase2Form = () => {
     }));
   };
 
-  // Similar handlers for other dynamic tables would go here...
-  // (AC Plant Data, Compartment Records, Machinery Records)
+  // AC Plant Data handlers
+  const handleACPlantDataChange = (id: string, field: keyof ACPlantData, value: string) => {
+    setFormData(prev => ({
+      ...prev,
+      acPlantData: prev.acPlantData.map(item =>
+        item.id === id ? { ...item, [field]: value } : item
+      )
+    }));
+  };
+
+  const updateACPlantDataRows = (count: number) => {
+    const currentCount = formData.acPlantData.length;
+    if (count > currentCount) {
+      // Add rows
+      const newRows = [];
+      for (let i = currentCount + 1; i <= count; i++) {
+        newRows.push({
+          id: i.toString(),
+          srNo: i,
+          acPlantNo: "",
+          evaTempIn: "",
+          evaTempOut: "",
+          tevTempIn: "",
+          tevTempOut: "",
+          condTempIn: "",
+          condTempOut: "",
+          remarks: ""
+        });
+      }
+      setFormData(prev => ({
+        ...prev,
+        acPlantData: [...prev.acPlantData, ...newRows]
+      }));
+    } else if (count < currentCount) {
+      // Remove rows
+      setFormData(prev => ({
+        ...prev,
+        acPlantData: prev.acPlantData.slice(0, count)
+      }));
+    }
+  };
+
+  // Compartment Records handlers
+  const handleCompartmentRecordChange = (id: string, field: keyof CompartmentRecord, value: string) => {
+    setFormData(prev => ({
+      ...prev,
+      compartmentRecords: prev.compartmentRecords.map(item =>
+        item.id === id ? { ...item, [field]: value } : item
+      )
+    }));
+  };
+
+  const updateCompartmentRecordRows = (count: number) => {
+    const currentCount = formData.compartmentRecords.length;
+    if (count > currentCount) {
+      // Add rows
+      const newRows = [];
+      for (let i = currentCount + 1; i <= count; i++) {
+        newRows.push({
+          id: i.toString(),
+          srNo: i,
+          compartmentName: "",
+          occupancyD: "",
+          occupancyA: "",
+          fedByATU: "",
+          fedByACPlant: "",
+          dryBulbD: "",
+          dryBulbA: "",
+          wetBulbD: "",
+          wetBulbA: "",
+          rhDesign: "",
+          rhMeasured: "",
+          remarks: ""
+        });
+      }
+      setFormData(prev => ({
+        ...prev,
+        compartmentRecords: [...prev.compartmentRecords, ...newRows]
+      }));
+    } else if (count < currentCount) {
+      // Remove rows
+      setFormData(prev => ({
+        ...prev,
+        compartmentRecords: prev.compartmentRecords.slice(0, count)
+      }));
+    }
+  };
+
+  // Machinery Records handlers
+  const handleMachineryRecordChange = (id: string, field: keyof MachineryRecord, value: string) => {
+    setFormData(prev => ({
+      ...prev,
+      machineryRecords: prev.machineryRecords.map(item =>
+        item.id === id ? { ...item, [field]: value } : item
+      )
+    }));
+  };
+
+  const updateMachineryRecordRows = (count: number) => {
+    const currentCount = formData.machineryRecords.length;
+    if (count > currentCount) {
+      // Add rows
+      const newRows = [];
+      for (let i = currentCount + 1; i <= count; i++) {
+        newRows.push({
+          id: i.toString(),
+          srNo: i,
+          compartmentName: "",
+          occupancyD: "",
+          occupancyA: "",
+          fedByATU: "",
+          fedBySupply: "",
+          dryBulbD: "",
+          dryBulbA: "",
+          wetBulbD: "",
+          wetBulbA: "",
+          rhDesign: "",
+          rhMeasured: "",
+          remarks: ""
+        });
+      }
+      setFormData(prev => ({
+        ...prev,
+        machineryRecords: [...prev.machineryRecords, ...newRows]
+      }));
+    } else if (count < currentCount) {
+      // Remove rows
+      setFormData(prev => ({
+        ...prev,
+        machineryRecords: prev.machineryRecords.slice(0, count)
+      }));
+    }
+  };
+
+  // Ambient Conditions row counter handler
+  const updateAmbientConditionRows = (count: number) => {
+    const currentCount = formData.ambientConditions.length;
+    if (count > currentCount) {
+      // Add rows
+      const newRows = [];
+      for (let i = currentCount + 1; i <= count; i++) {
+        newRows.push({
+          id: i.toString(),
+          regime: "",
+          swpTemp0900: "",
+          swpTemp1200: "",
+          atmTemp0900: "",
+          atmTemp1200: "",
+          atmRel0900: "",
+          atmRel1200: "",
+          remarks: ""
+        });
+      }
+      setFormData(prev => ({
+        ...prev,
+        ambientConditions: [...prev.ambientConditions, ...newRows]
+      }));
+    } else if (count < currentCount) {
+      // Remove rows
+      setFormData(prev => ({
+        ...prev,
+        ambientConditions: prev.ambientConditions.slice(0, count)
+      }));
+    }
+  };
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
@@ -320,6 +464,19 @@ const HVACPhase2Form = () => {
             <div className="head-box">
               <h4 className="text-lg font-semibold">Ambient Conditions</h4>
             </div>
+            <div className="mb-4">
+              <Label className="text-sm font-medium">Enter Total Number of Rows:</Label>
+              <Input
+                type="number"
+                min="1"
+                value={formData.ambientConditions.length}
+                onChange={(e) => {
+                  const count = parseInt(e.target.value) || 1;
+                  updateAmbientConditionRows(count);
+                }}
+                className="w-20 mt-1"
+              />
+            </div>
             <div className="overflow-x-auto">
               <Table className="table-auto border-collapse border border-gray-300">
                 <TableHeader>
@@ -329,7 +486,6 @@ const HVACPhase2Form = () => {
                     <TableHead colSpan={2} className="border border-gray-300 text-center">Atmosphere Temperature(C)<span className="text-red-500">*</span></TableHead>
                     <TableHead colSpan={2} className="border border-gray-300 text-center">Atmospheric Relativity<span className="text-red-500">*</span></TableHead>
                     <TableHead rowSpan={2} className="border border-gray-300 text-center">Remarks<span className="text-red-500">*</span></TableHead>
-                    <TableHead rowSpan={2} className="border border-gray-300 text-center">Action</TableHead>
                   </TableRow>
                   <TableRow>
                     <TableHead className="border border-gray-300 text-center">0900 HRS<span className="text-red-500">*</span></TableHead>
@@ -399,27 +555,392 @@ const HVACPhase2Form = () => {
                           maxLength={100}
                         />
                       </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          </div>
+
+          {/* AC Plant Data Section */}
+          <div className="space-y-4">
+            <div className="head-box">
+              <h4 className="text-lg font-semibold">AC Plant Data (SS-E to assist HITUs in record of these parameters)</h4>
+            </div>
+            <div className="mb-4">
+              <Label className="text-sm font-medium">Enter Total Number of Rows:</Label>
+              <Input
+                type="number"
+                min="1"
+                value={formData.acPlantData.length}
+                onChange={(e) => {
+                  const count = parseInt(e.target.value) || 1;
+                  updateACPlantDataRows(count);
+                }}
+                className="w-20 mt-1"
+              />
+            </div>
+            <div className="overflow-x-auto">
+              <Table className="table-auto border-collapse border border-gray-300">
+                <TableHeader>
+                  <TableRow>
+                    <TableHead rowSpan={2} className="border border-gray-300 text-center">Sr No.</TableHead>
+                    <TableHead rowSpan={2} className="border border-gray-300 text-center">AC Plant No.<span className="text-red-500">*</span></TableHead>
+                    <TableHead colSpan={2} className="border border-gray-300 text-center">Evaporator Temp.<span className="text-red-500">*</span></TableHead>
+                    <TableHead colSpan={2} className="border border-gray-300 text-center">TEV Temp.<span className="text-red-500">*</span></TableHead>
+                    <TableHead colSpan={2} className="border border-gray-300 text-center">Condenser Temp.<span className="text-red-500">*</span></TableHead>
+                    <TableHead rowSpan={2} className="border border-gray-300 text-center">Remarks<span className="text-red-500">*</span></TableHead>
+                  </TableRow>
+                  <TableRow>
+                    <TableHead className="border border-gray-300 text-center">In<span className="text-red-500">*</span></TableHead>
+                    <TableHead className="border border-gray-300 text-center">Out<span className="text-red-500">*</span></TableHead>
+                    <TableHead className="border border-gray-300 text-center">In<span className="text-red-500">*</span></TableHead>
+                    <TableHead className="border border-gray-300 text-center">Out<span className="text-red-500">*</span></TableHead>
+                    <TableHead className="border border-gray-300 text-center">In<span className="text-red-500">*</span></TableHead>
+                    <TableHead className="border border-gray-300 text-center">Out<span className="text-red-500">*</span></TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {formData.acPlantData.map((plant, index) => (
+                    <TableRow key={plant.id}>
+                      <TableCell className="border border-gray-300 text-center">{plant.srNo}</TableCell>
                       <TableCell className="border border-gray-300">
-                        <div className="flex space-x-2">
-                          <Button
-                            type="button"
-                            variant="outline"
-                            size="sm"
-                            onClick={handleAddAmbientCondition}
-                          >
-                            Add
-                          </Button>
-                          {formData.ambientConditions.length > 1 && (
-                            <Button
-                              type="button"
-                              variant="destructive"
-                              size="sm"
-                              onClick={() => handleRemoveAmbientCondition(condition.id)}
-                            >
-                              Remove
-                            </Button>
-                          )}
-                        </div>
+                        <Input
+                          value={plant.acPlantNo}
+                          onChange={(e) => handleACPlantDataChange(plant.id, "acPlantNo", e.target.value)}
+                          maxLength={20}
+                        />
+                      </TableCell>
+                      <TableCell className="border border-gray-300">
+                        <Input
+                          value={plant.evaTempIn}
+                          onChange={(e) => handleACPlantDataChange(plant.id, "evaTempIn", e.target.value)}
+                          maxLength={5}
+                        />
+                      </TableCell>
+                      <TableCell className="border border-gray-300">
+                        <Input
+                          value={plant.evaTempOut}
+                          onChange={(e) => handleACPlantDataChange(plant.id, "evaTempOut", e.target.value)}
+                          maxLength={5}
+                        />
+                      </TableCell>
+                      <TableCell className="border border-gray-300">
+                        <Input
+                          value={plant.tevTempIn}
+                          onChange={(e) => handleACPlantDataChange(plant.id, "tevTempIn", e.target.value)}
+                          maxLength={5}
+                        />
+                      </TableCell>
+                      <TableCell className="border border-gray-300">
+                        <Input
+                          value={plant.tevTempOut}
+                          onChange={(e) => handleACPlantDataChange(plant.id, "tevTempOut", e.target.value)}
+                          maxLength={5}
+                        />
+                      </TableCell>
+                      <TableCell className="border border-gray-300">
+                        <Input
+                          value={plant.condTempIn}
+                          onChange={(e) => handleACPlantDataChange(plant.id, "condTempIn", e.target.value)}
+                          maxLength={5}
+                        />
+                      </TableCell>
+                      <TableCell className="border border-gray-300">
+                        <Input
+                          value={plant.condTempOut}
+                          onChange={(e) => handleACPlantDataChange(plant.id, "condTempOut", e.target.value)}
+                          maxLength={5}
+                        />
+                      </TableCell>
+                      <TableCell className="border border-gray-300">
+                        <Input
+                          value={plant.remarks}
+                          onChange={(e) => handleACPlantDataChange(plant.id, "remarks", e.target.value)}
+                          maxLength={100}
+                        />
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          </div>
+
+          {/* Record of Values in Compartments Section */}
+          <div className="space-y-4">
+            <div className="head-box">
+              <h4 className="text-lg font-semibold">Record of Values in Compartments</h4>
+            </div>
+            <div className="mb-4">
+              <Label className="text-sm font-medium">Enter Total Number of Rows:</Label>
+              <Input
+                type="number"
+                min="1"
+                value={formData.compartmentRecords.length}
+                onChange={(e) => {
+                  const count = parseInt(e.target.value) || 1;
+                  updateCompartmentRecordRows(count);
+                }}
+                className="w-20 mt-1"
+              />
+            </div>
+            <div className="overflow-x-auto">
+              <Table className="table-auto border-collapse border border-gray-300">
+                <TableHeader>
+                  <TableRow>
+                    <TableHead rowSpan={3} className="border border-gray-300 text-center">Sr No.</TableHead>
+                    <TableHead rowSpan={3} className="border border-gray-300 text-center">Compartment Name<span className="text-red-500">*</span></TableHead>
+                    <TableHead colSpan={2} className="border border-gray-300 text-center">Occupancy<span className="text-red-500">*</span></TableHead>
+                    <TableHead rowSpan={3} className="border border-gray-300 text-center">Fed by ATU/HE<span className="text-red-500">*</span></TableHead>
+                    <TableHead rowSpan={3} className="border border-gray-300 text-center">Fed by AC plant<span className="text-red-500">*</span></TableHead>
+                    <TableHead colSpan={4} className="border border-gray-300 text-center">Temperature<span className="text-red-500">*</span></TableHead>
+                    <TableHead colSpan={2} className="border border-gray-300 text-center">RH(%)<span className="text-red-500">*</span></TableHead>
+                    <TableHead rowSpan={3} className="border border-gray-300 text-center">Remarks<span className="text-red-500">*</span></TableHead>
+                  </TableRow>
+                  <TableRow>
+                    <TableHead rowSpan={2} className="border border-gray-300 text-center">D<span className="text-red-500">*</span></TableHead>
+                    <TableHead rowSpan={2} className="border border-gray-300 text-center">A<span className="text-red-500">*</span></TableHead>
+                    <TableHead colSpan={2} className="border border-gray-300 text-center">Dry Bulb<span className="text-red-500">*</span></TableHead>
+                    <TableHead colSpan={2} className="border border-gray-300 text-center">Wet Bulb<span className="text-red-500">*</span></TableHead>
+                    <TableHead rowSpan={2} className="border border-gray-300 text-center">Design<span className="text-red-500">*</span></TableHead>
+                    <TableHead rowSpan={2} className="border border-gray-300 text-center">Measured<span className="text-red-500">*</span></TableHead>
+                  </TableRow>
+                  <TableRow>
+                    <TableHead className="border border-gray-300 text-center">D<span className="text-red-500">*</span></TableHead>
+                    <TableHead className="border border-gray-300 text-center">A<span className="text-red-500">*</span></TableHead>
+                    <TableHead className="border border-gray-300 text-center">D<span className="text-red-500">*</span></TableHead>
+                    <TableHead className="border border-gray-300 text-center">A<span className="text-red-500">*</span></TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {formData.compartmentRecords.map((record, index) => (
+                    <TableRow key={record.id}>
+                      <TableCell className="border border-gray-300 text-center">{record.srNo}</TableCell>
+                      <TableCell className="border border-gray-300">
+                        <Input
+                          value={record.compartmentName}
+                          onChange={(e) => handleCompartmentRecordChange(record.id, "compartmentName", e.target.value)}
+                          maxLength={20}
+                        />
+                      </TableCell>
+                      <TableCell className="border border-gray-300">
+                        <Input
+                          value={record.occupancyD}
+                          onChange={(e) => handleCompartmentRecordChange(record.id, "occupancyD", e.target.value)}
+                          maxLength={5}
+                        />
+                      </TableCell>
+                      <TableCell className="border border-gray-300">
+                        <Input
+                          value={record.occupancyA}
+                          onChange={(e) => handleCompartmentRecordChange(record.id, "occupancyA", e.target.value)}
+                          maxLength={5}
+                        />
+                      </TableCell>
+                      <TableCell className="border border-gray-300">
+                        <Input
+                          value={record.fedByATU}
+                          onChange={(e) => handleCompartmentRecordChange(record.id, "fedByATU", e.target.value)}
+                          maxLength={20}
+                        />
+                      </TableCell>
+                      <TableCell className="border border-gray-300">
+                        <Input
+                          value={record.fedByACPlant}
+                          onChange={(e) => handleCompartmentRecordChange(record.id, "fedByACPlant", e.target.value)}
+                          maxLength={20}
+                        />
+                      </TableCell>
+                      <TableCell className="border border-gray-300">
+                        <Input
+                          value={record.dryBulbD}
+                          onChange={(e) => handleCompartmentRecordChange(record.id, "dryBulbD", e.target.value)}
+                          maxLength={5}
+                        />
+                      </TableCell>
+                      <TableCell className="border border-gray-300">
+                        <Input
+                          value={record.dryBulbA}
+                          onChange={(e) => handleCompartmentRecordChange(record.id, "dryBulbA", e.target.value)}
+                          maxLength={5}
+                        />
+                      </TableCell>
+                      <TableCell className="border border-gray-300">
+                        <Input
+                          value={record.wetBulbD}
+                          onChange={(e) => handleCompartmentRecordChange(record.id, "wetBulbD", e.target.value)}
+                          maxLength={5}
+                        />
+                      </TableCell>
+                      <TableCell className="border border-gray-300">
+                        <Input
+                          value={record.wetBulbA}
+                          onChange={(e) => handleCompartmentRecordChange(record.id, "wetBulbA", e.target.value)}
+                          maxLength={5}
+                        />
+                      </TableCell>
+                      <TableCell className="border border-gray-300">
+                        <Input
+                          value={record.rhDesign}
+                          onChange={(e) => handleCompartmentRecordChange(record.id, "rhDesign", e.target.value)}
+                          maxLength={5}
+                        />
+                      </TableCell>
+                      <TableCell className="border border-gray-300">
+                        <Input
+                          value={record.rhMeasured}
+                          onChange={(e) => handleCompartmentRecordChange(record.id, "rhMeasured", e.target.value)}
+                          maxLength={5}
+                        />
+                      </TableCell>
+                      <TableCell className="border border-gray-300">
+                        <Input
+                          value={record.remarks}
+                          onChange={(e) => handleCompartmentRecordChange(record.id, "remarks", e.target.value)}
+                          maxLength={100}
+                        />
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          </div>
+
+          {/* Record of Values in Machinery/General Compartments Section */}
+          <div className="space-y-4">
+            <div className="head-box">
+              <h4 className="text-lg font-semibold">Record of Values in Machinery/General Compartments</h4>
+            </div>
+            <div className="mb-4">
+              <Label className="text-sm font-medium">Enter Total Number of Rows:</Label>
+              <Input
+                type="number"
+                min="1"
+                value={formData.machineryRecords.length}
+                onChange={(e) => {
+                  const count = parseInt(e.target.value) || 1;
+                  updateMachineryRecordRows(count);
+                }}
+                className="w-20 mt-1"
+              />
+            </div>
+            <div className="overflow-x-auto">
+              <Table className="table-auto border-collapse border border-gray-300">
+                <TableHeader>
+                  <TableRow>
+                    <TableHead rowSpan={3} className="border border-gray-300 text-center">Sr No.</TableHead>
+                    <TableHead rowSpan={3} className="border border-gray-300 text-center">Compartment Name<span className="text-red-500">*</span></TableHead>
+                    <TableHead colSpan={2} className="border border-gray-300 text-center">Occupancy<span className="text-red-500">*</span></TableHead>
+                    <TableHead rowSpan={3} className="border border-gray-300 text-center">Fed by ATU/HE<span className="text-red-500">*</span></TableHead>
+                    <TableHead rowSpan={3} className="border border-gray-300 text-center">Fed by Supply/Exhaust<span className="text-red-500">*</span></TableHead>
+                    <TableHead colSpan={4} className="border border-gray-300 text-center">Temperature<span className="text-red-500">*</span></TableHead>
+                    <TableHead colSpan={2} className="border border-gray-300 text-center">Relative Humidity(%)<span className="text-red-500">*</span></TableHead>
+                    <TableHead rowSpan={3} className="border border-gray-300 text-center">Remarks<span className="text-red-500">*</span></TableHead>
+                  </TableRow>
+                  <TableRow>
+                    <TableHead rowSpan={2} className="border border-gray-300 text-center">D<span className="text-red-500">*</span></TableHead>
+                    <TableHead rowSpan={2} className="border border-gray-300 text-center">A<span className="text-red-500">*</span></TableHead>
+                    <TableHead colSpan={2} className="border border-gray-300 text-center">Dry Bulb<span className="text-red-500">*</span></TableHead>
+                    <TableHead colSpan={2} className="border border-gray-300 text-center">Wet Bulb<span className="text-red-500">*</span></TableHead>
+                    <TableHead rowSpan={2} className="border border-gray-300 text-center">Design<span className="text-red-500">*</span></TableHead>
+                    <TableHead rowSpan={2} className="border border-gray-300 text-center">Measured<span className="text-red-500">*</span></TableHead>
+                  </TableRow>
+                  <TableRow>
+                    <TableHead className="border border-gray-300 text-center">D<span className="text-red-500">*</span></TableHead>
+                    <TableHead className="border border-gray-300 text-center">A<span className="text-red-500">*</span></TableHead>
+                    <TableHead className="border border-gray-300 text-center">D<span className="text-red-500">*</span></TableHead>
+                    <TableHead className="border border-gray-300 text-center">A<span className="text-red-500">*</span></TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {formData.machineryRecords.map((record, index) => (
+                    <TableRow key={record.id}>
+                      <TableCell className="border border-gray-300 text-center">{record.srNo}</TableCell>
+                      <TableCell className="border border-gray-300">
+                        <Input
+                          value={record.compartmentName}
+                          onChange={(e) => handleMachineryRecordChange(record.id, "compartmentName", e.target.value)}
+                          maxLength={20}
+                        />
+                      </TableCell>
+                      <TableCell className="border border-gray-300">
+                        <Input
+                          value={record.occupancyD}
+                          onChange={(e) => handleMachineryRecordChange(record.id, "occupancyD", e.target.value)}
+                          maxLength={5}
+                        />
+                      </TableCell>
+                      <TableCell className="border border-gray-300">
+                        <Input
+                          value={record.occupancyA}
+                          onChange={(e) => handleMachineryRecordChange(record.id, "occupancyA", e.target.value)}
+                          maxLength={5}
+                        />
+                      </TableCell>
+                      <TableCell className="border border-gray-300">
+                        <Input
+                          value={record.fedByATU}
+                          onChange={(e) => handleMachineryRecordChange(record.id, "fedByATU", e.target.value)}
+                          maxLength={20}
+                        />
+                      </TableCell>
+                      <TableCell className="border border-gray-300">
+                        <Input
+                          value={record.fedBySupply}
+                          onChange={(e) => handleMachineryRecordChange(record.id, "fedBySupply", e.target.value)}
+                          maxLength={20}
+                        />
+                      </TableCell>
+                      <TableCell className="border border-gray-300">
+                        <Input
+                          value={record.dryBulbD}
+                          onChange={(e) => handleMachineryRecordChange(record.id, "dryBulbD", e.target.value)}
+                          maxLength={5}
+                        />
+                      </TableCell>
+                      <TableCell className="border border-gray-300">
+                        <Input
+                          value={record.dryBulbA}
+                          onChange={(e) => handleMachineryRecordChange(record.id, "dryBulbA", e.target.value)}
+                          maxLength={5}
+                        />
+                      </TableCell>
+                      <TableCell className="border border-gray-300">
+                        <Input
+                          value={record.wetBulbD}
+                          onChange={(e) => handleMachineryRecordChange(record.id, "wetBulbD", e.target.value)}
+                          maxLength={5}
+                        />
+                      </TableCell>
+                      <TableCell className="border border-gray-300">
+                        <Input
+                          value={record.wetBulbA}
+                          onChange={(e) => handleMachineryRecordChange(record.id, "wetBulbA", e.target.value)}
+                          maxLength={5}
+                        />
+                      </TableCell>
+                      <TableCell className="border border-gray-300">
+                        <Input
+                          value={record.rhDesign}
+                          onChange={(e) => handleMachineryRecordChange(record.id, "rhDesign", e.target.value)}
+                          maxLength={5}
+                        />
+                      </TableCell>
+                      <TableCell className="border border-gray-300">
+                        <Input
+                          value={record.rhMeasured}
+                          onChange={(e) => handleMachineryRecordChange(record.id, "rhMeasured", e.target.value)}
+                          maxLength={5}
+                        />
+                      </TableCell>
+                      <TableCell className="border border-gray-300">
+                        <Input
+                          value={record.remarks}
+                          onChange={(e) => handleMachineryRecordChange(record.id, "remarks", e.target.value)}
+                          maxLength={100}
+                        />
                       </TableCell>
                     </TableRow>
                   ))}
@@ -440,38 +961,21 @@ const HVACPhase2Form = () => {
           </div>
         </CardContent>
 
-        {/* Action Buttons */}
-        <div className="card-footer flex justify-center space-x-4 p-4">
-          <Button
-            type="button"
-            variant="outline"
-            onClick={handleFetchDrafts}
-            className="bg-blue-500 text-white hover:bg-blue-600"
-          >
-            Fetch Drafts
-          </Button>
-          <Button
-            type="button"
-            variant="outline"
-            onClick={handleSaveDraft}
-            className="bg-green-500 text-white hover:bg-green-600"
-          >
-            Save Draft
-          </Button>
-          <Button
-            type="button"
-            variant="destructive"
-            onClick={handleClear}
-          >
-            Clear
-          </Button>
-          <Button
-            type="submit"
-            onClick={handleSubmit}
-          >
-            Save
-          </Button>
-        </div>
+            {/* Action Buttons */}
+            <div className="flex justify-end space-x-4 mt-6">
+              <Button type="button" onClick={handleFetchDrafts} className="bg-cyan-500 hover:bg-cyan-600 text-white px-6 py-2 rounded-lg font-semibold">
+                FETCH DRAFTS
+              </Button>
+              <Button type="button" onClick={handleSaveDraft} className="bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded-lg font-semibold">
+                SAVE DRAFT
+              </Button>
+              <Button type="button" onClick={handleClear} className="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-lg font-semibold">
+                CLEAR
+              </Button>
+              <Button type="submit" onClick={handleSubmit} className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg font-semibold">
+                SAVE
+              </Button>
+            </div>
       </Card>
 
       {/* Drafts Modal */}
