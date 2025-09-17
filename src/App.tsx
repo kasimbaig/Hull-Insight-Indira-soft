@@ -40,6 +40,7 @@ import BerCertificate from "./pages/BerCertificate";
 import RenderPart1 from "./pages/RenderPart1";
 import LoadTest from "./pages/LoadTest";
 import In305Form from "./pages/In305Form";
+import DockingApproval from "./pages/DockingApproval";
 import BoatHistorySheet from "./pages/BoatHistorySheet";
 import HullPotentialDataForm from "./pages/HullPotentialDataForm";
 import ICCPHullPotentialForm from "./pages/ICCPHullPotentialForm";
@@ -59,6 +60,7 @@ import IN379DockingReportSection2Report from "./pages/IN379DockingReportSection2
 import IN379DockingReportSection3Report from "./pages/IN379DockingReportSection3Report";
 import ShipStaffReportHullInspection from "./pages/ShipStaffReportHullInspection";
 import FormComments from "./pages/FormComments";
+import TTTest from "./pages/TTTest";
 // Module imports
 import YardModule from "./pages/yard/YardModule";
 import ShipModule from "./pages/ship/ShipModule";
@@ -105,6 +107,7 @@ const App = () => (
           
           {/* Yard Operations Module */}
           <Route path="yard/*" element={<YardModule />} />
+          <Route path="yard/docking-approval" element={<DockingApproval />} />
           
           {/* Ship Operations Module */}
           <Route path="ship/*" element={<ShipModule />} />
@@ -112,6 +115,7 @@ const App = () => (
           <Route path="drawing" element={<Drawing />} />
           <Route path="hvac-report" element={<HvacReport />} />
           <Route path="form-comments" element={<FormComments />} />
+          <Route path="tttest" element={<TTTest />} />
           <Route path="reports" element={<ReportsSelection />} />
           <Route path="returns/ship-weight-management" element={<ShipWeightManagement />} />
           <Route path="returns/ber-certificate" element={<BerCertificate />} />
