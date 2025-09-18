@@ -64,6 +64,46 @@ interface SSKRescueSphereData {
     observations: string;
     remarks: string;
   };
+  totalRenewed: {
+    observations: string;
+    remarks: string;
+  };
+  pressureTestRecorded: {
+    observations: string;
+    remarks: string;
+  };
+  pressureTestDate: {
+    date: Date | null;
+    remarks: string;
+  };
+  grpBodyDamage: {
+    observations: string;
+    remarks: string;
+  };
+  screwsTightness: {
+    observations: string;
+    remarks: string;
+  };
+  screwsTighteningDate: {
+    date: Date | null;
+    remarks: string;
+  };
+  screwsPresent: {
+    observations: string;
+    remarks: string;
+  };
+  lockTitePresence: {
+    observations: string;
+    remarks: string;
+  };
+  sikaflexPresence: {
+    observations: string;
+    remarks: string;
+  };
+  inspectionDate: {
+    date: Date | null;
+    remarks: string;
+  };
 }
 
 interface FormErrors {
@@ -85,11 +125,23 @@ const SSKRescueSphereForm: React.FC = () => {
     functionalTest: { observations: '', remarks: '' },
     visualInspection: { observations: '', remarks: '' },
     totalPresent: { observations: '', remarks: '' },
+    totalRenewed: { observations: '', remarks: '' },
+    pressureTestRecorded: { observations: '', remarks: '' },
+    pressureTestDate: { date: null, remarks: '' },
+    grpBodyDamage: { observations: '', remarks: '' },
+    screwsTightness: { observations: '', remarks: '' },
+    screwsTighteningDate: { date: null, remarks: '' },
+    screwsPresent: { observations: '', remarks: '' },
+    lockTitePresence: { observations: '', remarks: '' },
+    sikaflexPresence: { observations: '', remarks: '' },
+    inspectionDate: { date: null, remarks: '' },
   });
 
   const [errors, setErrors] = useState<FormErrors>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
+  const [isDraftModalOpen, setIsDraftModalOpen] = useState(false);
+  const [drafts, setDrafts] = useState<any[]>([]);
 
   const observationsOptions = [
     { value: 'SAT', label: 'SAT' },
@@ -117,6 +169,7 @@ const SSKRescueSphereForm: React.FC = () => {
     }, 500);
     return () => clearTimeout(timeoutId);
   }, [formData]);
+
 
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({
@@ -152,6 +205,25 @@ const SSKRescueSphereForm: React.FC = () => {
     }
   };
 
+  const handleDateChange = (parentField: string, field: 'date' | 'remarks', value: Date | string) => {
+    setFormData(prev => ({
+      ...prev,
+      [parentField]: {
+        ...prev[parentField as keyof SSKRescueSphereData],
+        [field]: value
+      }
+    }));
+    
+    // Clear error when user starts typing
+    const errorKey = `${parentField}_${field}`;
+    if (errors[errorKey]) {
+      setErrors(prev => ({
+        ...prev,
+        [errorKey]: ''
+      }));
+    }
+  };
+
   const validateForm = (): boolean => {
     const newErrors: FormErrors = {};
 
@@ -160,13 +232,27 @@ const SSKRescueSphereForm: React.FC = () => {
       'lockingClawsMovement', 'callotteClawCleaned', 'movingPartsGreased', 
       'clawFilledOtina', 'freeFloodedSpace', 'deckCovering', 'mastRaising',
       'fanDelivery', 'powerSupply', 'hatchWatering', 'functionalTest',
-      'visualInspection', 'totalPresent'
+      'visualInspection', 'totalPresent', 'totalRenewed', 'pressureTestRecorded',
+      'grpBodyDamage', 'screwsTightness', 'screwsPresent', 'lockTitePresence',
+      'sikaflexPresence'
     ];
 
     observationFields.forEach(field => {
-      const section = formData[field as keyof SSKRescueSphereData];
+      const section = formData[field as keyof SSKRescueSphereData] as { observations: string; remarks: string };
       if (!section.observations || section.observations === '0') {
         newErrors[`${field}_observations`] = 'Please select an observation';
+      }
+      if (!section.remarks.trim()) {
+        newErrors[`${field}_remarks`] = 'Remarks are required';
+      }
+    });
+
+    // Validate date sections
+    const dateFields = ['pressureTestDate', 'screwsTighteningDate', 'inspectionDate'];
+    dateFields.forEach(field => {
+      const section = formData[field as keyof SSKRescueSphereData] as { date: Date | null; remarks: string };
+      if (!section.date) {
+        newErrors[`${field}_date`] = 'Date is required';
       }
       if (!section.remarks.trim()) {
         newErrors[`${field}_remarks`] = 'Remarks are required';
@@ -208,6 +294,16 @@ const SSKRescueSphereForm: React.FC = () => {
         functionalTest: { observations: '', remarks: '' },
         visualInspection: { observations: '', remarks: '' },
         totalPresent: { observations: '', remarks: '' },
+        totalRenewed: { observations: '', remarks: '' },
+        pressureTestRecorded: { observations: '', remarks: '' },
+        pressureTestDate: { date: null, remarks: '' },
+        grpBodyDamage: { observations: '', remarks: '' },
+        screwsTightness: { observations: '', remarks: '' },
+        screwsTighteningDate: { date: null, remarks: '' },
+        screwsPresent: { observations: '', remarks: '' },
+        lockTitePresence: { observations: '', remarks: '' },
+        sikaflexPresence: { observations: '', remarks: '' },
+        inspectionDate: { date: null, remarks: '' },
       });
     } catch (error) {
       console.error('Error submitting form:', error);
@@ -233,7 +329,29 @@ const SSKRescueSphereForm: React.FC = () => {
       functionalTest: { observations: '', remarks: '' },
       visualInspection: { observations: '', remarks: '' },
       totalPresent: { observations: '', remarks: '' },
+      totalRenewed: { observations: '', remarks: '' },
+      pressureTestRecorded: { observations: '', remarks: '' },
+      pressureTestDate: { date: null, remarks: '' },
+      grpBodyDamage: { observations: '', remarks: '' },
+      screwsTightness: { observations: '', remarks: '' },
+      screwsTighteningDate: { date: null, remarks: '' },
+      screwsPresent: { observations: '', remarks: '' },
+      lockTitePresence: { observations: '', remarks: '' },
+      sikaflexPresence: { observations: '', remarks: '' },
+      inspectionDate: { date: null, remarks: '' },
     });
+  };
+
+  const saveDraft = () => {
+    const draft = {
+      id: Date.now().toString(),
+      data: formData,
+      timestamp: new Date().toISOString()
+    };
+    const updatedDrafts = [...drafts, draft];
+    setDrafts(updatedDrafts);
+    localStorage.setItem('sskRescueSphere_drafts', JSON.stringify(updatedDrafts));
+    alert('Draft saved successfully!');
   };
 
   const ObservationSection: React.FC<{
@@ -242,7 +360,7 @@ const SSKRescueSphereForm: React.FC = () => {
     observationsOptions: Array<{ value: string; label: string }>;
     testType?: string;
   }> = ({ title, parentField, observationsOptions, testType }) => {
-    const section = formData[parentField as keyof SSKRescueSphereData];
+    const section = formData[parentField as keyof SSKRescueSphereData] as { observations: string; remarks: string };
     
     return (
       <div className="border border-gray-200 rounded-lg p-6">
@@ -261,7 +379,7 @@ const SSKRescueSphereForm: React.FC = () => {
               Observations: <span className="text-red-500">*</span>
             </Label>
             <Select
-              value={section.observations}
+              value={section?.observations || ''}
               onValueChange={(value) => handleObservationChange(parentField, 'observations', value)}
             >
               <SelectTrigger>
@@ -285,8 +403,74 @@ const SSKRescueSphereForm: React.FC = () => {
               Remarks: <span className="text-red-500">*</span>
             </Label>
             <Textarea
-              value={section.remarks}
+              value={section?.remarks || ''}
               onChange={(e) => handleObservationChange(parentField, 'remarks', e.target.value)}
+              placeholder="Enter remarks"
+              rows={2}
+              className="resize-none"
+            />
+            {errors[`${parentField}_remarks`] && (
+              <p className="text-red-500 text-sm mt-1">{errors[`${parentField}_remarks`]}</p>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  const DateSection: React.FC<{
+    title: string;
+    parentField: string;
+    testType?: string;
+  }> = ({ title, parentField, testType }) => {
+    const section = formData[parentField as keyof SSKRescueSphereData] as { date: Date | null; remarks: string };
+    
+    return (
+      <div className="border border-gray-200 rounded-lg p-6">
+        <div className="flex items-center space-x-3 mb-4">
+          <span className="bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">
+            {title.split(' ')[0]}
+          </span>
+          <Label className="text-lg font-semibold">{title}</Label>
+        </div>
+        {testType && (
+          <div className="text-sm text-gray-600 italic mb-4">{testType}</div>
+        )}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <Label className="text-sm font-medium">
+              Date: <span className="text-red-500">*</span>
+            </Label>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  className="w-full justify-start text-left font-normal"
+                >
+                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  {section?.date ? format(section.date, 'dd-MM-yyyy') : 'DD-MM-YYYY'}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0">
+                <Calendar
+                  mode="single"
+                  selected={section?.date || undefined}
+                  onSelect={(date) => handleDateChange(parentField, 'date', date || null)}
+                  initialFocus
+                />
+              </PopoverContent>
+            </Popover>
+            {errors[`${parentField}_date`] && (
+              <p className="text-red-500 text-sm mt-1">{errors[`${parentField}_date`]}</p>
+            )}
+          </div>
+          <div>
+            <Label className="text-sm font-medium">
+              Remarks: <span className="text-red-500">*</span>
+            </Label>
+            <Textarea
+              value={section?.remarks || ''}
+              onChange={(e) => handleDateChange(parentField, 'remarks', e.target.value)}
               placeholder="Enter remarks"
               rows={2}
               className="resize-none"
@@ -402,31 +586,102 @@ const SSKRescueSphereForm: React.FC = () => {
                 observationsOptions={observationsOptions}
                 testType="a) Total Present"
               />
+
+              <ObservationSection
+                title="13. Renewal of All Zinc Anodes Undertaken for Spherical Segment (Continued)"
+                parentField="totalRenewed"
+                observationsOptions={observationsOptions}
+                testType="b) Total Renewed"
+              />
+
+              <ObservationSection
+                title="14. Pressure Test Completion"
+                parentField="pressureTestRecorded"
+                observationsOptions={observationsOptions}
+                testType="a) Recorded Value"
+              />
+
+              <DateSection
+                title="14. Pressure Test Completion (Continued)"
+                parentField="pressureTestDate"
+                testType="b) Date of Test"
+              />
+
+              <ObservationSection
+                title="15. GRP Body"
+                parentField="grpBodyDamage"
+                observationsOptions={observationsOptions}
+                testType="a) Physical Damage"
+              />
+
+              <ObservationSection
+                title="16. Check Screws Securing GRP Body with Rescue Sphere for Tightness"
+                parentField="screwsTightness"
+                observationsOptions={observationsOptions}
+                testType="a) Record Torque Value to which Tightened"
+              />
+
+              <DateSection
+                title="16. Check Screws Securing GRP Body with Rescue Sphere for Tightness (Continued)"
+                parentField="screwsTighteningDate"
+                testType="b) Last Date of Tightening Value to be Tightened as per TM"
+              />
+
+              <ObservationSection
+                title="17. Confirm All 38 Screws Present"
+                parentField="screwsPresent"
+                observationsOptions={observationsOptions}
+              />
+
+              <ObservationSection
+                title="18. Presence of Lock-Tite in The Screws"
+                parentField="lockTitePresence"
+                observationsOptions={observationsOptions}
+              />
+
+              <ObservationSection
+                title="19. Presence of Sikaflex-252 on All Screws"
+                parentField="sikaflexPresence"
+                observationsOptions={observationsOptions}
+              />
+
+              <DateSection
+                title="20. Inspection Undertaken within 8 Months by Removing and Placing on Cradle"
+                parentField="inspectionDate"
+                testType="a) Last Inspection Date"
+              />
             </div>
 
             {/* Action Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 pt-6 border-t">
+              <Button type="button" className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded" onClick={() => setIsDraftModalOpen(true)}>
+                Fetch Drafts
+              </Button>
+              
+              <Button type="button" className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded" onClick={saveDraft}>
+                SAVE DRAFT
+              </Button>
+              
+              <Button
+                type="button"
+                variant="outline"
+                onClick={clearDraft}
+                className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded"
+              >
+                Clear
+              </Button>
+              
               <Button
                 type="submit"
                 disabled={isSubmitting}
-                className="flex-1 bg-blue-600 hover:bg-blue-700 text-white"
+                className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded"
               >
-                {isSubmitting ? (
-                  <>
-                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                    Submitting...
-                  </>
-                ) : (
-                  <>
-                    <Save className="h-4 w-4 mr-2" />
-                    Submit Form
-                  </>
-                )}
+                {isSubmitting ? 'Saving...' : 'Save'}
               </Button>
 
               <Dialog open={showPreview} onOpenChange={setShowPreview}>
                 <DialogTrigger asChild>
-                  <Button type="button" variant="outline" className="flex-1">
+                  <Button type="button" variant="outline" className="hidden">
                     <FileText className="h-4 w-4 mr-2" />
                     Preview
                   </Button>
@@ -442,15 +697,6 @@ const SSKRescueSphereForm: React.FC = () => {
                   </div>
                 </DialogContent>
               </Dialog>
-
-              <Button
-                type="button"
-                variant="outline"
-                onClick={clearDraft}
-                className="flex-1"
-              >
-                Clear Draft
-              </Button>
             </div>
           </form>
           </div>

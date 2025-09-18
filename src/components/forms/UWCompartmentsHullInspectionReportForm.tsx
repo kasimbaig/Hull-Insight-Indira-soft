@@ -863,28 +863,23 @@ const UWCompartmentsHullInspectionReportForm: React.FC = () => {
                 <Button
                   type="button"
                   onClick={loadDrafts}
-                  variant="outline"
-                  className="flex-1"
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded"
                 >
-                  <FileText className="h-4 w-4 mr-2" />
                   Fetch Drafts
                 </Button>
 
                 <Button
                   type="button"
                   onClick={saveDraft}
-                  variant="outline"
-                  className="flex-1"
+                  className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded"
                 >
-                  <Save className="h-4 w-4 mr-2" />
-                  Save Draft
+                  SAVE DRAFT
                 </Button>
 
                 <Button
                   type="button"
                   onClick={clearForm}
-                  variant="destructive"
-                  className="flex-1"
+                  className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded"
                 >
                   Clear
                 </Button>
@@ -892,19 +887,9 @@ const UWCompartmentsHullInspectionReportForm: React.FC = () => {
                 <Button
                   type="submit"
                   disabled={isSubmitting}
-                  className="flex-1 bg-blue-600 hover:bg-blue-700 text-white"
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded"
                 >
-                  {isSubmitting ? (
-                    <>
-                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                      Submitting...
-                    </>
-                  ) : (
-                    <>
-                      <Save className="h-4 w-4 mr-2" />
-                      Save
-                    </>
-                  )}
+                  {isSubmitting ? 'Saving...' : 'Save'}
                 </Button>
               </div>
             </form>
@@ -947,12 +932,12 @@ const UWCompartmentsHullInspectionReportForm: React.FC = () => {
                             className="bg-blue-600 hover:bg-blue-700 text-white"
                           >
                             <Edit className="h-3 w-3 mr-1" />
-                            Fetch Data
+                            Edit
                           </Button>
                           <Button
                             size="sm"
-                            variant="destructive"
                             onClick={() => deleteDraft(draft.id)}
+                            className="bg-red-600 hover:bg-red-700 text-white"
                           >
                             <Trash2 className="h-3 w-3 mr-1" />
                             Delete
