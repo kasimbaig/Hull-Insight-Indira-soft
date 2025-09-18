@@ -27,7 +27,7 @@ interface RHIBHarbourChecksData {
   // Documentation
   loadTestCrane: string;
   testCertificateArh: string;
-  loadTestCrane2: string;
+  liftingSlingLoadTestReport: string;
   
   // General Inspection Post Hoisting
   conditionHullAppendages: string;
@@ -45,12 +45,16 @@ interface RHIBHarbourChecksData {
   harbourDate: Date | null;
   boatType: string;
   boatRegnNo: string;
-  ship: string;
-  trialTeams: string;
+  
+  // Representatives
+  shipRepresentative: string;
+  trialTeamsRepresentative: string;
+  
+  // General Inspection
   conditionHullAppendagesGeneralInspection: string;
   
   // Machinery Fitted
-  mainEnginesSerialNo: string;
+  mainEnginesPowerSerialNo: string;
   driveUnitsMake: string;
   driveUnitsSerialNo: string;
   transomShieldMake: string;
@@ -103,7 +107,7 @@ const RHIBHarbourChecksForm: React.FC = () => {
     representativesLowering: '',
     loadTestCrane: '',
     testCertificateArh: '',
-    loadTestCrane2: '',
+    liftingSlingLoadTestReport: '',
     conditionHullAppendages: '',
     conditionOfPaint: '',
     conditionHullFittings: '',
@@ -115,10 +119,10 @@ const RHIBHarbourChecksForm: React.FC = () => {
     harbourDate: null,
     boatType: '',
     boatRegnNo: '',
-    ship: '',
-    trialTeams: '',
+    shipRepresentative: '',
+    trialTeamsRepresentative: '',
     conditionHullAppendagesGeneralInspection: '',
-    mainEnginesSerialNo: '',
+    mainEnginesPowerSerialNo: '',
     driveUnitsMake: '',
     driveUnitsSerialNo: '',
     transomShieldMake: '',
@@ -177,7 +181,7 @@ const RHIBHarbourChecksForm: React.FC = () => {
       ...formData,
       id: Date.now().toString(),
       timestamp: new Date().toISOString(),
-      title: `Draft - ${formData.ship || 'Untitled'} - ${formData.boatType || 'No Type'}`
+      title: `Draft - ${formData.shipRepresentative || 'Untitled'} - ${formData.boatType || 'No Type'}`
     };
     
     const updatedDrafts = [...drafts, draftData];
@@ -202,8 +206,9 @@ const RHIBHarbourChecksForm: React.FC = () => {
     if (!formData.harbourDate) newErrors.harbourDate = 'Harbour Checks Date is required';
     if (!formData.boatType) newErrors.boatType = 'Boat Type is required';
     if (!formData.boatRegnNo) newErrors.boatRegnNo = 'Boat Registration Number is required';
-    if (!formData.ship) newErrors.ship = 'Ship is required';
-    if (!formData.trialTeams) newErrors.trialTeams = 'Trial Teams are required';
+    if (!formData.shipRepresentative) newErrors.shipRepresentative = 'Ship Representative is required';
+    if (!formData.trialTeamsRepresentative) newErrors.trialTeamsRepresentative = 'Trial Teams Representative is required';
+    if (!formData.conditionHullAppendagesGeneralInspection) newErrors.conditionHullAppendagesGeneralInspection = 'General Inspection is required';
     if (!formData.specificDefects) newErrors.specificDefects = 'Specific Defects are required';
     if (!formData.overallStatus) newErrors.overallStatus = 'Overall Status is required';
 
@@ -249,7 +254,7 @@ const RHIBHarbourChecksForm: React.FC = () => {
       representativesLowering: '',
       loadTestCrane: '',
       testCertificateArh: '',
-      loadTestCrane2: '',
+      liftingSlingLoadTestReport: '',
       conditionHullAppendages: '',
       conditionOfPaint: '',
       conditionHullFittings: '',
@@ -261,10 +266,10 @@ const RHIBHarbourChecksForm: React.FC = () => {
       harbourDate: null,
       boatType: '',
       boatRegnNo: '',
-      ship: '',
-      trialTeams: '',
+      shipRepresentative: '',
+      trialTeamsRepresentative: '',
       conditionHullAppendagesGeneralInspection: '',
-      mainEnginesSerialNo: '',
+      mainEnginesPowerSerialNo: '',
       driveUnitsMake: '',
       driveUnitsSerialNo: '',
       transomShieldMake: '',
@@ -427,7 +432,8 @@ const RHIBHarbourChecksForm: React.FC = () => {
           <CardHeader>
             <CardTitle>2. Lowering/Hoisting Test</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
+          <CardContent className="space-y-6">
+            {/* Basic Information */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <Label htmlFor="placeLowering">Place *</Label>
@@ -486,6 +492,134 @@ const RHIBHarbourChecksForm: React.FC = () => {
                 {errors.representativesLowering && <p className="text-red-500 text-sm mt-1">{errors.representativesLowering}</p>}
               </div>
             </div>
+
+            {/* Documentation */}
+            <div>
+              <h4 className="font-medium text-gray-900 mb-4">Documentation</h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="loadTestCrane">(a) Load Test Certificate for Crane *</Label>
+                  <Input
+                    id="loadTestCrane"
+                    value={formData.loadTestCrane}
+                    onChange={(e) => setFormData(prev => ({ ...prev, loadTestCrane: e.target.value }))}
+                    placeholder="Enter load test certificate details"
+                    maxLength={50}
+                  />
+                </div>
+
+                <div>
+                  <Label htmlFor="testCertificateArh">(b) Test Certificate for ARH *</Label>
+                  <Input
+                    id="testCertificateArh"
+                    value={formData.testCertificateArh}
+                    onChange={(e) => setFormData(prev => ({ ...prev, testCertificateArh: e.target.value }))}
+                    placeholder="Enter test certificate details"
+                    maxLength={50}
+                  />
+                </div>
+
+                <div>
+                  <Label htmlFor="liftingSlingLoadTestReport">(c) Lifting Sling Load Test Report and Visual Inspection of Lifting Eyes/Hooks *</Label>
+                  <Input
+                    id="liftingSlingLoadTestReport"
+                    value={formData.liftingSlingLoadTestReport}
+                    onChange={(e) => setFormData(prev => ({ ...prev, liftingSlingLoadTestReport: e.target.value }))}
+                    placeholder="Enter lifting sling load test report details"
+                    maxLength={50}
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* General Inspection Post Hoisting */}
+            <div>
+              <h4 className="font-medium text-gray-900 mb-4">General Inspection Post Hoisting of Boat</h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="conditionHullAppendages">(a) Condition of Hull Appendages and Rubber Collar *</Label>
+                  <Input
+                    id="conditionHullAppendages"
+                    value={formData.conditionHullAppendages}
+                    onChange={(e) => setFormData(prev => ({ ...prev, conditionHullAppendages: e.target.value }))}
+                    placeholder="Enter condition details"
+                    maxLength={50}
+                  />
+                </div>
+
+                <div>
+                  <Label htmlFor="conditionOfPaint">(b) Condition of Paint *</Label>
+                  <Input
+                    id="conditionOfPaint"
+                    value={formData.conditionOfPaint}
+                    onChange={(e) => setFormData(prev => ({ ...prev, conditionOfPaint: e.target.value }))}
+                    placeholder="Enter paint condition details"
+                    maxLength={50}
+                  />
+                </div>
+
+                <div>
+                  <Label htmlFor="conditionHullFittings">(c) Condition of Hull Fittings (Loose/Not Secured) *</Label>
+                  <Input
+                    id="conditionHullFittings"
+                    value={formData.conditionHullFittings}
+                    onChange={(e) => setFormData(prev => ({ ...prev, conditionHullFittings: e.target.value }))}
+                    placeholder="Enter hull fittings condition details"
+                    maxLength={50}
+                  />
+                </div>
+
+                <div>
+                  <Label htmlFor="conditionLiftingArrangement">(d) Condition of Lifting Arrangement Fitted on Boat (Inspect Records on Survey of Metallic Fitting for Lifting Arrangement) *</Label>
+                  <Input
+                    id="conditionLiftingArrangement"
+                    value={formData.conditionLiftingArrangement}
+                    onChange={(e) => setFormData(prev => ({ ...prev, conditionLiftingArrangement: e.target.value }))}
+                    placeholder="Enter lifting arrangement condition details"
+                    maxLength={50}
+                  />
+                </div>
+
+                <div>
+                  <Label htmlFor="inspectRecordSlings">(e) Inspect Record of Lifting Slings/FSWR *</Label>
+                  <Input
+                    id="inspectRecordSlings"
+                    value={formData.inspectRecordSlings}
+                    onChange={(e) => setFormData(prev => ({ ...prev, inspectRecordSlings: e.target.value }))}
+                    placeholder="Enter lifting slings inspection record details"
+                    maxLength={50}
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Inspection of Webbing Sling */}
+            <div>
+              <h4 className="font-medium text-gray-900 mb-4">Inspection of Webbing Sling</h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="visualSurveySling">(a) Visual Survey of Webbing Sling *</Label>
+                  <Input
+                    id="visualSurveySling"
+                    value={formData.visualSurveySling}
+                    onChange={(e) => setFormData(prev => ({ ...prev, visualSurveySling: e.target.value }))}
+                    placeholder="Enter visual survey details"
+                    maxLength={50}
+                  />
+                </div>
+
+                <div>
+                  <Label htmlFor="yearOfManufactureSling">(b) Year of Manufacture *</Label>
+                  <Input
+                    id="yearOfManufactureSling"
+                    value={formData.yearOfManufactureSling}
+                    onChange={(e) => setFormData(prev => ({ ...prev, yearOfManufactureSling: e.target.value }))}
+                    placeholder="Enter year of manufacture"
+                    maxLength={4}
+                  />
+                </div>
+              </div>
+            </div>
           </CardContent>
         </Card>
 
@@ -494,7 +628,8 @@ const RHIBHarbourChecksForm: React.FC = () => {
           <CardHeader>
             <CardTitle>3. Harbour Checks</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
+          <CardContent className="space-y-6">
+            {/* Basic Information */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <Label htmlFor="place">Place *</Label>
@@ -552,29 +687,202 @@ const RHIBHarbourChecksForm: React.FC = () => {
                 />
                 {errors.boatRegnNo && <p className="text-red-500 text-sm mt-1">{errors.boatRegnNo}</p>}
               </div>
+            </div>
 
-              <div>
-                <Label htmlFor="ship">Ship *</Label>
-                <Input
-                  id="ship"
-                  value={formData.ship}
-                  onChange={(e) => setFormData(prev => ({ ...prev, ship: e.target.value }))}
-                  placeholder="Enter ship"
-                  maxLength={20}
-                />
-                {errors.ship && <p className="text-red-500 text-sm mt-1">{errors.ship}</p>}
+            {/* Representatives */}
+            <div>
+              <h4 className="font-medium text-gray-900 mb-4">Representatives</h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="shipRepresentative">(a) Ship *</Label>
+                  <Input
+                    id="shipRepresentative"
+                    value={formData.shipRepresentative}
+                    onChange={(e) => setFormData(prev => ({ ...prev, shipRepresentative: e.target.value }))}
+                    placeholder="Enter ship representative"
+                    maxLength={20}
+                  />
+                  {errors.shipRepresentative && <p className="text-red-500 text-sm mt-1">{errors.shipRepresentative}</p>}
+                </div>
+
+                <div>
+                  <Label htmlFor="trialTeamsRepresentative">(b) Trial Teams *</Label>
+                  <Input
+                    id="trialTeamsRepresentative"
+                    value={formData.trialTeamsRepresentative}
+                    onChange={(e) => setFormData(prev => ({ ...prev, trialTeamsRepresentative: e.target.value }))}
+                    placeholder="Enter trial teams representative"
+                    maxLength={50}
+                  />
+                  {errors.trialTeamsRepresentative && <p className="text-red-500 text-sm mt-1">{errors.trialTeamsRepresentative}</p>}
+                </div>
               </div>
+            </div>
 
-              <div>
-                <Label htmlFor="trialTeams">Trial Teams *</Label>
-                <Input
-                  id="trialTeams"
-                  value={formData.trialTeams}
-                  onChange={(e) => setFormData(prev => ({ ...prev, trialTeams: e.target.value }))}
-                  placeholder="Enter trial teams"
-                  maxLength={50}
-                />
-                {errors.trialTeams && <p className="text-red-500 text-sm mt-1">{errors.trialTeams}</p>}
+            {/* General Inspection */}
+            <div>
+              <h4 className="font-medium text-gray-900 mb-4">General Inspection</h4>
+              <div className="grid grid-cols-1 gap-4">
+                <div>
+                  <Label htmlFor="conditionHullAppendagesGeneralInspection">Condition of Hull, Appendages and Rubber Collar-SAT *</Label>
+                  <Input
+                    id="conditionHullAppendagesGeneralInspection"
+                    value={formData.conditionHullAppendagesGeneralInspection}
+                    onChange={(e) => setFormData(prev => ({ ...prev, conditionHullAppendagesGeneralInspection: e.target.value }))}
+                    placeholder="Enter general inspection details"
+                    maxLength={50}
+                  />
+                  {errors.conditionHullAppendagesGeneralInspection && <p className="text-red-500 text-sm mt-1">{errors.conditionHullAppendagesGeneralInspection}</p>}
+                </div>
+              </div>
+            </div>
+
+            {/* Machinery Fitted */}
+            <div>
+              <h4 className="font-medium text-gray-900 mb-4">Machinery Fitted</h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="mainEnginesPowerSerialNo">(a) Main Engines - Power/Serial No. *</Label>
+                  <Input
+                    id="mainEnginesPowerSerialNo"
+                    value={formData.mainEnginesPowerSerialNo}
+                    onChange={(e) => setFormData(prev => ({ ...prev, mainEnginesPowerSerialNo: e.target.value }))}
+                    placeholder="Enter main engines power/serial number"
+                    maxLength={50}
+                  />
+                </div>
+
+                <div>
+                  <Label htmlFor="driveUnitsMake">(b) Drive Units - Make *</Label>
+                  <Input
+                    id="driveUnitsMake"
+                    value={formData.driveUnitsMake}
+                    onChange={(e) => setFormData(prev => ({ ...prev, driveUnitsMake: e.target.value }))}
+                    placeholder="Enter drive units make"
+                    maxLength={50}
+                  />
+                </div>
+
+                <div>
+                  <Label htmlFor="driveUnitsSerialNo">Drive Units - Serial No. *</Label>
+                  <Input
+                    id="driveUnitsSerialNo"
+                    value={formData.driveUnitsSerialNo}
+                    onChange={(e) => setFormData(prev => ({ ...prev, driveUnitsSerialNo: e.target.value }))}
+                    placeholder="Enter drive units serial number"
+                    maxLength={50}
+                  />
+                </div>
+
+                <div>
+                  <Label htmlFor="transomShieldMake">(c) Transom Shield - Make *</Label>
+                  <Input
+                    id="transomShieldMake"
+                    value={formData.transomShieldMake}
+                    onChange={(e) => setFormData(prev => ({ ...prev, transomShieldMake: e.target.value }))}
+                    placeholder="Enter transom shield make"
+                    maxLength={50}
+                  />
+                </div>
+
+                <div>
+                  <Label htmlFor="transomShieldSerialNo">Transom Shield - Serial No. *</Label>
+                  <Input
+                    id="transomShieldSerialNo"
+                    value={formData.transomShieldSerialNo}
+                    onChange={(e) => setFormData(prev => ({ ...prev, transomShieldSerialNo: e.target.value }))}
+                    placeholder="Enter transom shield serial number"
+                    maxLength={50}
+                  />
+                </div>
+
+                <div>
+                  <Label htmlFor="bilgePumpMotorMake">(d) Bilge Pump (Motor Driven) - Make *</Label>
+                  <Input
+                    id="bilgePumpMotorMake"
+                    value={formData.bilgePumpMotorMake}
+                    onChange={(e) => setFormData(prev => ({ ...prev, bilgePumpMotorMake: e.target.value }))}
+                    placeholder="Enter bilge pump motor make"
+                    maxLength={50}
+                  />
+                </div>
+
+                <div>
+                  <Label htmlFor="bilgePumpMotorCapacity">Bilge Pump (Motor Driven) - Capacity *</Label>
+                  <Input
+                    id="bilgePumpMotorCapacity"
+                    value={formData.bilgePumpMotorCapacity}
+                    onChange={(e) => setFormData(prev => ({ ...prev, bilgePumpMotorCapacity: e.target.value }))}
+                    placeholder="Enter bilge pump motor capacity"
+                    maxLength={50}
+                  />
+                </div>
+
+                <div>
+                  <Label htmlFor="bilgePumpHandMake">(e) Bilge Pump (Hand Operated) - Make *</Label>
+                  <Input
+                    id="bilgePumpHandMake"
+                    value={formData.bilgePumpHandMake}
+                    onChange={(e) => setFormData(prev => ({ ...prev, bilgePumpHandMake: e.target.value }))}
+                    placeholder="Enter bilge pump hand make"
+                    maxLength={50}
+                  />
+                </div>
+
+                <div>
+                  <Label htmlFor="bilgePumpHandCapacity">Bilge Pump (Hand Operated) - Capacity *</Label>
+                  <Input
+                    id="bilgePumpHandCapacity"
+                    value={formData.bilgePumpHandCapacity}
+                    onChange={(e) => setFormData(prev => ({ ...prev, bilgePumpHandCapacity: e.target.value }))}
+                    placeholder="Enter bilge pump hand capacity"
+                    maxLength={50}
+                  />
+                </div>
+
+                <div>
+                  <Label htmlFor="batteriesMake">(f) Batteries - Make *</Label>
+                  <Input
+                    id="batteriesMake"
+                    value={formData.batteriesMake}
+                    onChange={(e) => setFormData(prev => ({ ...prev, batteriesMake: e.target.value }))}
+                    placeholder="Enter batteries make"
+                    maxLength={50}
+                  />
+                </div>
+
+                <div>
+                  <Label htmlFor="batteriesModel">Batteries - Model *</Label>
+                  <Input
+                    id="batteriesModel"
+                    value={formData.batteriesModel}
+                    onChange={(e) => setFormData(prev => ({ ...prev, batteriesModel: e.target.value }))}
+                    placeholder="Enter batteries model"
+                    maxLength={50}
+                  />
+                </div>
+
+                <div>
+                  <Label htmlFor="dgSetMake">(g) DG Set - Make *</Label>
+                  <Input
+                    id="dgSetMake"
+                    value={formData.dgSetMake}
+                    onChange={(e) => setFormData(prev => ({ ...prev, dgSetMake: e.target.value }))}
+                    placeholder="Enter DG set make"
+                    maxLength={50}
+                  />
+                </div>
+
+                <div>
+                  <Label htmlFor="dgSetModel">DG Set - Model *</Label>
+                  <Input
+                    id="dgSetModel"
+                    value={formData.dgSetModel}
+                    onChange={(e) => setFormData(prev => ({ ...prev, dgSetModel: e.target.value }))}
+                    placeholder="Enter DG set model"
+                    maxLength={50}
+                  />
+                </div>
               </div>
             </div>
           </CardContent>
@@ -744,39 +1052,74 @@ const RHIBHarbourChecksForm: React.FC = () => {
 
         {/* Action Buttons */}
         <div className="flex justify-center space-x-4">
-          <Button type="submit" className="bg-blue-600 hover:bg-blue-700">
-            Submit Form
+          <Button type="button" className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded" onClick={() => setIsDraftModalOpen(true)}>
+            Fetch Drafts
           </Button>
           
-          <Dialog open={isDraftModalOpen} onOpenChange={setIsDraftModalOpen}>
-            <DialogTrigger asChild>
-              <Button type="button" variant="outline">
-                <Save className="h-4 w-4 mr-2" />
-                Save Draft
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="max-w-2xl">
-              <DialogHeader>
-                <DialogTitle>Save Draft</DialogTitle>
-              </DialogHeader>
-              <div className="space-y-4">
-                <p>Do you want to save this form as a draft?</p>
-                <div className="flex justify-end space-x-2">
-                  <Button variant="outline" onClick={() => setIsDraftModalOpen(false)}>
-                    Cancel
-                  </Button>
-                  <Button onClick={saveDraft}>
-                    Save Draft
-                  </Button>
-                </div>
-              </div>
-            </DialogContent>
-          </Dialog>
-
-          <Button type="button" variant="outline" onClick={resetForm}>
-            Reset Form
+          <Button type="button" className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded" onClick={saveDraft}>
+            SAVE DRAFT
+          </Button>
+          
+          <Button type="button" className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded" onClick={resetForm}>
+            Clear
+          </Button>
+          
+          <Button type="submit" className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded">
+            Save
           </Button>
         </div>
+
+        {/* Drafts Modal */}
+        <Dialog open={isDraftModalOpen} onOpenChange={setIsDraftModalOpen}>
+          <DialogContent className="max-w-4xl">
+            <DialogHeader>
+              <DialogTitle>Saved Drafts</DialogTitle>
+            </DialogHeader>
+            <div className="max-h-96 overflow-y-auto">
+              <div className="space-y-4">
+                {drafts.length === 0 ? (
+                  <p className="text-center text-gray-500">No drafts saved yet</p>
+                ) : (
+                  drafts.map((draft) => (
+                    <div key={draft.id} className="border rounded-lg p-4">
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <h3 className="font-medium">{draft.title}</h3>
+                          <p className="text-sm text-gray-500">
+                            {new Date(draft.timestamp).toLocaleString()}
+                          </p>
+                        </div>
+                        <div className="flex space-x-2">
+                          <Button
+                            size="sm"
+                            onClick={() => {
+                              setFormData(draft);
+                              setIsDraftModalOpen(false);
+                            }}
+                            className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded"
+                          >
+                            Edit
+                          </Button>
+                          <Button
+                            size="sm"
+                            onClick={() => {
+                              const updatedDrafts = drafts.filter(d => d.id !== draft.id);
+                              setDrafts(updatedDrafts);
+                              localStorage.setItem('rhibHarbourChecks_drafts', JSON.stringify(updatedDrafts));
+                            }}
+                            className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded"
+                          >
+                            Delete
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
       </form>
     </div>
   );

@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
 interface PreWettingSystemFormData {
@@ -404,27 +404,28 @@ const PreWettingSystemForm: React.FC = () => {
     remarksField: keyof PreWettingSystemFormData,
     subtitle?: string
   ) => (
-    <div className="section-box">
-      <div className="section-header">
-        <span className="label-number">{sectionNumber}</span>
-        <div className="section-header-inner">
-          <Label>{title}</Label>
+    <div className="border-b border-gray-200 pb-4">
+      <div className="flex items-center space-x-4 mb-4">
+        <div className="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold text-sm">
+          {sectionNumber}
+        </div>
+        <div className="flex-1">
+          <Label className="text-lg font-medium">{title}</Label>
         </div>
       </div>
-      {subtitle && (
-        <div className="section-header-inner">
-          <Label>{subtitle}</Label>
-        </div>
-      )}
-      <div className="section-content">
-        <div className="row">
-          <div className="col-md-4">
-            <Label className="observation-label">Observations:<strong className="text-red-500">*</strong></Label>
+      
+      <div className="ml-12 space-y-4">
+        {subtitle && (
+          <div className="text-sm font-medium mb-2">{subtitle}<span className="text-red-500">*</span></div>
+        )}
+        <div className="flex items-start space-x-4">
+          <div className="w-48">
+            <Label className="text-sm">Observations:<span className="text-red-500">*</span></Label>
             <Select 
               value={formData[observationField]} 
               onValueChange={(value) => setFormData(prev => ({ ...prev, [observationField]: value }))}
             >
-              <SelectTrigger>
+              <SelectTrigger className="mt-1">
                 <SelectValue placeholder="--Select--" />
               </SelectTrigger>
               <SelectContent>
@@ -435,10 +436,10 @@ const PreWettingSystemForm: React.FC = () => {
                 ))}
               </SelectContent>
             </Select>
-            {errors[observationField] && <p className="text-red-500 text-xs">{errors[observationField]}</p>}
+            {errors[observationField] && <p className="text-red-500 text-xs mt-1">{errors[observationField]}</p>}
           </div>
-          <div className="col-md-8">
-            <Label className="remarks-label">Remarks:<strong className="text-red-500">*</strong></Label>
+          <div className="flex-1">
+            <Label className="text-sm">Remarks:<span className="text-red-500">*</span></Label>
             <Textarea
               value={formData[remarksField]}
               onChange={(e) => {
@@ -446,9 +447,10 @@ const PreWettingSystemForm: React.FC = () => {
                 setFormData(prev => ({ ...prev, [remarksField]: value }));
               }}
               rows={2}
+              className="mt-1"
               placeholder="Enter remarks"
             />
-            {errors[remarksField] && <p className="text-red-500 text-xs">{errors[remarksField]}</p>}
+            {errors[remarksField] && <p className="text-red-500 text-xs mt-1">{errors[remarksField]}</p>}
           </div>
         </div>
       </div>
@@ -456,37 +458,35 @@ const PreWettingSystemForm: React.FC = () => {
   );
 
   return (
-    <div className="container mx-auto py-6">
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-center">
-            <div className="text-2xl font-bold">
-              <u>PRE WETTING SYSTEM</u>
+    <div className="w-full min-h-screen bg-gray-50">
+      <div className="container mx-auto p-6">
+        <div className="bg-white shadow-lg rounded-lg">
+          <div className="p-8">
+            {/* Form Header */}
+            <div className="text-center mb-8">
+              <h2 className="text-3xl font-bold text-gray-900 mb-4">PRE WETTING SYSTEM</h2>
             </div>
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Operational Status */}
-            <div className="mb-6">
-              <h5 className="font-bold text-lg mb-4">Operational Status</h5>
-              
-              {/* Ship Selection */}
-              <div className="section-box">
-                <div className="section-header">
-                  <span className="label-number">1</span>
-                  <div className="section-header-inner">
-                    <Label>Ship</Label>
+
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="space-y-6">
+                {/* Ship Selection */}
+                <div className="border-b border-gray-200 pb-4">
+                  <div className="flex items-center space-x-4 mb-4">
+                    <div className="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold text-sm">
+                      1
+                    </div>
+                    <div className="flex-1">
+                      <Label className="text-lg font-medium">Ship</Label>
+                    </div>
                   </div>
-                </div>
-                <div className="section-content">
-                  <div className="row">
-                    <div className="col-md-3">
+                  
+                  <div className="ml-12">
+                    <div className="w-64">
                       <Select 
                         value={formData.ship} 
                         onValueChange={(value) => setFormData(prev => ({ ...prev, ship: value }))}
                       >
-                        <SelectTrigger>
+                        <SelectTrigger className="mt-1">
                           <SelectValue placeholder="--Select--" />
                         </SelectTrigger>
                         <SelectContent>
@@ -497,162 +497,162 @@ const PreWettingSystemForm: React.FC = () => {
                           ))}
                         </SelectContent>
                       </Select>
-                      {errors.ship && <p className="text-red-500 text-xs">{errors.ship}</p>}
+                      {errors.ship && <p className="text-red-500 text-xs mt-1">{errors.ship}</p>}
                     </div>
                   </div>
                 </div>
-              </div>
 
-              {/* Date of Inspection */}
-              <div className="section-box">
-                <div className="col-md-2">
-                  <div className="section-header">
-                    <span className="label-number">2</span>
-                    <Label>Date of Inspection/Trials<strong className="text-red-500">*</strong></Label>
-                  </div>
-                  <div className="autocom_search_icon2 cal">
-                    <Input
-                      type="text"
-                      value={formData.dateOfInspection}
-                      onChange={(e) => setFormData(prev => ({ ...prev, dateOfInspection: e.target.value }))}
-                      placeholder="DD-MM-YYYY"
-                      maxLength={10}
-                    />
-                    {errors.dateOfInspection && <p className="text-red-500 text-xs">{errors.dateOfInspection}</p>}
-                  </div>
-                </div>
-              </div>
-
-              {/* Remote Mode */}
-              {renderObservationSection(
-                3,
-                "Remote Mode",
-                "observationsRemoteMode",
-                "remarksRemoteMode",
-                "Check If System Can be Operated Remotely From DCHQ/Ops Room"
-              )}
-
-              {/* Local Mode */}
-              {renderObservationSection(
-                4,
-                "Local Mode/Manual Mode",
-                "observationsLocalMode",
-                "remarksLocalMode",
-                "Check Operation of System Locally"
-              )}
-            </div>
-
-            {/* Machinery Status */}
-            <div className="mb-6">
-              <h5 className="font-bold text-lg mb-4">Machinery Status</h5>
-              
-              {/* Number of Fireman Running */}
-              {renderObservationSection(
-                5,
-                "Number of Fireman Running",
-                "observationsFiremanRunning",
-                "remarksFiremanRunning",
-                "Functioning of Fire Main"
-              )}
-
-              {/* Fire-Main Pressure */}
-              {renderObservationSection(
-                6,
-                "Fire-Main Pressure",
-                "observationsFireMainPressure",
-                "remarksFireMainPressure",
-                "Checks for Operating Pressure"
-              )}
-            </div>
-
-            {/* System Checks */}
-            <div className="mb-6">
-              <h5 className="font-bold text-lg mb-4">System Checks</h5>
-              
-              {/* Nozzle Checks */}
-              <div className="section-box">
-                <div className="section-header">
-                  <span className="label-number">7</span>
-                  <div className="section-header-inner">
-                    <Label>Nozzle Checks</Label>
-                  </div>
-                </div>
-                <div className="section-header-inner">
-                  <Label>Checks for Chokes Defects, No.of Nozzles in the Section</Label>
-                </div>
-                <div className="section-content">
-                  <div className="row">
-                    <div className="col-md-4">
-                      <Label className="remarks-label">Zone:<strong className="text-red-500">*</strong></Label>
-                      <Input
-                        type="text"
-                        value={formData.zoneNozzleChecks}
-                        onChange={(e) => {
-                          const value = handleZoneValidation(e.target.value);
-                          setFormData(prev => ({ ...prev, zoneNozzleChecks: value }));
-                        }}
-                        maxLength={20}
-                        placeholder="Enter zone"
-                      />
-                      {errors.zoneNozzleChecks && <p className="text-red-500 text-xs">{errors.zoneNozzleChecks}</p>}
+                {/* Date of Inspection */}
+                <div className="border-b border-gray-200 pb-4">
+                  <div className="flex items-center space-x-4 mb-4">
+                    <div className="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold text-sm">
+                      2
                     </div>
-                    <div className="col-md-4">
-                      <Label className="remarks-label">No. of Nozzles:<strong className="text-red-500">*</strong></Label>
+                    <div className="flex-1">
+                      <Label className="text-lg font-medium">Date of Inspection/Trials<span className="text-red-500">*</span></Label>
+                    </div>
+                  </div>
+                  
+                  <div className="ml-12">
+                    <div className="w-64">
                       <Input
                         type="text"
-                        value={formData.nozzlesCount}
-                        onChange={(e) => {
-                          const value = handleNumberValidation(e.target.value);
-                          setFormData(prev => ({ ...prev, nozzlesCount: value }));
-                        }}
+                        value={formData.dateOfInspection}
+                        onChange={(e) => setFormData(prev => ({ ...prev, dateOfInspection: e.target.value }))}
+                        placeholder="DD-MM-YYYY"
                         maxLength={10}
-                        placeholder="Enter count"
+                        className="mt-1"
                       />
-                      {errors.nozzlesCount && <p className="text-red-500 text-xs">{errors.nozzlesCount}</p>}
+                      {errors.dateOfInspection && <p className="text-red-500 text-xs mt-1">{errors.dateOfInspection}</p>}
                     </div>
                   </div>
                 </div>
-              </div>
 
-              {/* Spared Area Checks */}
-              {renderObservationSection(
-                8,
-                "Spared Area Checks",
-                "observationsSparedArea",
-                "remarksSparedArea",
-                "Checks for Proper Area Coverage"
-              )}
+                {/* Remote Mode */}
+                {renderObservationSection(
+                  3,
+                  "Remote Mode",
+                  "observationsRemoteMode",
+                  "remarksRemoteMode",
+                  "Check If System Can be Operated Remotely From DCHQ/Ops Room"
+                )}
 
-              {/* Leakages */}
-              {renderObservationSection(
-                9,
-                "Leakages",
-                "observationsLeakages",
-                "remarksLeakages",
-                "Checks for Leakage from Nozzles/Unions/Lines etc"
-              )}
+                {/* Local Mode */}
+                {renderObservationSection(
+                  4,
+                  "Local Mode/Manual Mode",
+                  "observationsLocalMode",
+                  "remarksLocalMode",
+                  "Check Operation of System Locally"
+                )}
 
-              {/* Mode of Operation Checks */}
-              {renderObservationSection(
-                10,
-                "Mode of Operation Checks",
-                "observationsModeOfOperation",
-                "remarksModeOfOperation",
-                "Checks for Operational State in Different Modes"
-              )}
+                {/* Number of Fireman Running */}
+                {renderObservationSection(
+                  5,
+                  "Number of Fireman Running",
+                  "observationsFiremanRunning",
+                  "remarksFiremanRunning",
+                  "Functioning of Fire Main"
+                )}
 
-              {/* Overall Remarks */}
-              <div className="section-box">
-                <div className="section-header">
-                  <span className="label-number">11</span>
-                  <div className="section-header-inner">
-                    <Label>Overall Remarks</Label>
+                {/* Fire-Main Pressure */}
+                {renderObservationSection(
+                  6,
+                  "Fire-Main Pressure",
+                  "observationsFireMainPressure",
+                  "remarksFireMainPressure",
+                  "Checks for Operating Pressure"
+                )}
+
+                {/* Nozzle Checks */}
+                <div className="border-b border-gray-200 pb-4">
+                  <div className="flex items-center space-x-4 mb-4">
+                    <div className="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold text-sm">
+                      7
+                    </div>
+                    <div className="flex-1">
+                      <Label className="text-lg font-medium">Nozzle Checks</Label>
+                    </div>
+                  </div>
+                  
+                  <div className="ml-12 space-y-4">
+                    <div className="text-sm font-medium mb-2">Checks for Chokes Defects, No.of Nozzles in the Section<span className="text-red-500">*</span></div>
+                    <div className="flex items-start space-x-4">
+                      <div className="w-48">
+                        <Label className="text-sm">Zone:<span className="text-red-500">*</span></Label>
+                        <Input
+                          type="text"
+                          value={formData.zoneNozzleChecks}
+                          onChange={(e) => {
+                            const value = handleZoneValidation(e.target.value);
+                            setFormData(prev => ({ ...prev, zoneNozzleChecks: value }));
+                          }}
+                          maxLength={20}
+                          placeholder="Enter zone"
+                          className="mt-1"
+                        />
+                        {errors.zoneNozzleChecks && <p className="text-red-500 text-xs mt-1">{errors.zoneNozzleChecks}</p>}
+                      </div>
+                      <div className="w-48">
+                        <Label className="text-sm">No. of Nozzles:<span className="text-red-500">*</span></Label>
+                        <Input
+                          type="text"
+                          value={formData.nozzlesCount}
+                          onChange={(e) => {
+                            const value = handleNumberValidation(e.target.value);
+                            setFormData(prev => ({ ...prev, nozzlesCount: value }));
+                          }}
+                          maxLength={10}
+                          placeholder="Enter count"
+                          className="mt-1"
+                        />
+                        {errors.nozzlesCount && <p className="text-red-500 text-xs mt-1">{errors.nozzlesCount}</p>}
+                      </div>
+                    </div>
                   </div>
                 </div>
-                <div className="section-content">
-                  <div className="row">
-                    <div className="col-md-12">
-                      <Label className="remarks-label">Overall Remarks<strong className="text-red-500">*</strong></Label>
+
+                {/* Spared Area Checks */}
+                {renderObservationSection(
+                  8,
+                  "Spared Area Checks",
+                  "observationsSparedArea",
+                  "remarksSparedArea",
+                  "Checks for Proper Area Coverage"
+                )}
+
+                {/* Leakages */}
+                {renderObservationSection(
+                  9,
+                  "Leakages",
+                  "observationsLeakages",
+                  "remarksLeakages",
+                  "Checks for Leakage from Nozzles/Unions/Lines etc"
+                )}
+
+                {/* Mode of Operation Checks */}
+                {renderObservationSection(
+                  10,
+                  "Mode of Operation Checks",
+                  "observationsModeOfOperation",
+                  "remarksModeOfOperation",
+                  "Checks for Operational State in Different Modes"
+                )}
+
+                {/* Overall Remarks */}
+                <div className="border-b border-gray-200 pb-4">
+                  <div className="flex items-center space-x-4 mb-4">
+                    <div className="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold text-sm">
+                      11
+                    </div>
+                    <div className="flex-1">
+                      <Label className="text-lg font-medium">Overall Remarks</Label>
+                    </div>
+                  </div>
+                  
+                  <div className="ml-12">
+                    <div className="flex-1">
+                      <Label className="text-sm">Overall Remarks<span className="text-red-500">*</span></Label>
                       <Textarea
                         value={formData.overallRemarks}
                         onChange={(e) => {
@@ -660,109 +660,119 @@ const PreWettingSystemForm: React.FC = () => {
                           setFormData(prev => ({ ...prev, overallRemarks: value }));
                         }}
                         rows={2}
+                        className="mt-1"
                         placeholder="Enter overall remarks"
                       />
-                      {errors.overallRemarks && <p className="text-red-500 text-xs">{errors.overallRemarks}</p>}
+                      {errors.overallRemarks && <p className="text-red-500 text-xs mt-1">{errors.overallRemarks}</p>}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Authority Signature */}
+                <div className="border-b border-gray-200 pb-4">
+                  <div className="flex items-center space-x-4 mb-4">
+                    <div className="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold text-sm">
+                      12
+                    </div>
+                    <div className="flex-1">
+                      <Label className="text-lg font-medium">Authority Signature<span className="text-red-500">*</span></Label>
+                    </div>
+                  </div>
+                  
+                  <div className="ml-12">
+                    <div className="w-64">
+                      <Input
+                        type="file"
+                        accept=".jpg,.jpeg,.png"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0] || null;
+                          setFormData(prev => ({ ...prev, authoritySignature: file }));
+                        }}
+                        className="mt-1"
+                      />
+                      {errors.authoritySignature && <p className="text-red-500 text-xs mt-1">{errors.authoritySignature}</p>}
                     </div>
                   </div>
                 </div>
               </div>
 
-              {/* Authority Signature */}
-              <div className="section-box">
-                <div className="section-header">
-                  <span className="label-number">12</span>
-                  <Label>Authority Signature<strong className="text-red-500">*</strong></Label>
-                </div>
-                <div className="section-content">
-                  <div className="row">
-                    <div className="col-xl-3 col-lg-4 col-md-6 col-sm-12 col-12 text-center">
-                      <div className="form-group">
-                        <Input
-                          type="file"
-                          accept=".jpg,.jpeg,.png"
-                          onChange={(e) => {
-                            const file = e.target.files?.[0] || null;
-                            setFormData(prev => ({ ...prev, authoritySignature: file }));
-                          }}
-                        />
-                        {errors.authoritySignature && <p className="text-red-500 text-xs">{errors.authoritySignature}</p>}
+              <div className="flex justify-end space-x-4 mt-8 pt-6 border-t border-gray-200">
+                <Dialog open={showDraftModal} onOpenChange={setShowDraftModal}>
+                  <DialogTrigger asChild>
+                    <Button type="button" className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded" onClick={loadDrafts}>
+                      Fetch Drafts
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="max-w-4xl">
+                    <DialogHeader>
+                      <DialogTitle>Draft Data</DialogTitle>
+                    </DialogHeader>
+                    <div className="card-body">
+                      <div className="row">
+                        <div className="col-lg-12 col-md-12 col-sm-12 col-12">
+                          <Table>
+                            <TableHeader>
+                              <TableRow>
+                                <TableHead>Sr No.</TableHead>
+                                <TableHead>Type</TableHead>
+                                <TableHead>Created Date</TableHead>
+                                <TableHead>Action</TableHead>
+                              </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                              {drafts.length === 0 ? (
+                                <TableRow>
+                                  <TableCell colSpan={4} className="text-center">
+                                    Data is not available
+                                  </TableCell>
+                                </TableRow>
+                              ) : (
+                                drafts.map((draft, index) => (
+                                  <TableRow key={draft.id}>
+                                    <TableCell>{index + 1}</TableCell>
+                                    <TableCell>{draft.data.observationsRemoteMode || 'No Inspection Data'}</TableCell>
+                                    <TableCell>{new Date(draft.timestamp).toLocaleString()}</TableCell>
+                                    <TableCell>
+                                      <Button
+                                        className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded mr-2"
+                                        size="sm"
+                                        onClick={() => loadDraft(draft)}
+                                      >
+                                        Edit
+                                      </Button>
+                                      <Button
+                                        className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded"
+                                        size="sm"
+                                        onClick={() => deleteDraft(draft.id)}
+                                      >
+                                        Delete
+                                      </Button>
+                                    </TableCell>
+                                  </TableRow>
+                                ))
+                              )}
+                            </TableBody>
+                          </Table>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </div>
+                  </DialogContent>
+                </Dialog>
+
+                <Button type="button" className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded" onClick={saveDraft}>
+                  SAVE DRAFT
+                </Button>
+                <Button type="button" className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded" onClick={clearForm}>
+                  Clear
+                </Button>
+                <Button type="submit" className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded" disabled={isSubmitting}>
+                  {isSubmitting ? 'Submitting...' : 'Save'}
+                </Button>
               </div>
-            </div>
-
-            {/* Action Buttons */}
-            <div className="flex justify-center space-x-4 mt-8">
-              <Button type="button" onClick={loadDrafts} variant="outline">
-                Fetch Drafts
-              </Button>
-              <Button type="button" onClick={saveDraft} variant="outline">
-                Save Draft
-              </Button>
-              <Button type="button" onClick={clearForm} variant="destructive">
-                Clear
-              </Button>
-              <Button type="submit" disabled={isSubmitting}>
-                {isSubmitting ? 'Submitting...' : 'Save'}
-              </Button>
-            </div>
           </form>
-        </CardContent>
-      </Card>
-
-      {/* Draft Modal */}
-      <Dialog open={showDraftModal} onOpenChange={setShowDraftModal}>
-        <DialogContent className="max-w-4xl">
-          <DialogHeader>
-            <DialogTitle>Draft Data</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4">
-            {drafts.length === 0 ? (
-              <p className="text-center text-gray-500">No drafts found</p>
-            ) : (
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Sr No.</TableHead>
-                    <TableHead>Remote Mode</TableHead>
-                    <TableHead>Created Date</TableHead>
-                    <TableHead>Action</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {drafts.map((draft, index) => (
-                    <TableRow key={draft.id}>
-                      <TableCell>{index + 1}</TableCell>
-                      <TableCell>{draft.data.observationsRemoteMode || 'No Inspection Data'}</TableCell>
-                      <TableCell>{new Date(draft.timestamp).toLocaleString()}</TableCell>
-                      <TableCell>
-                        <div className="flex space-x-2">
-                          <Button
-                            size="sm"
-                            onClick={() => loadDraft(draft)}
-                          >
-                            Fetch Data
-                          </Button>
-                          <Button
-                            size="sm"
-                            variant="destructive"
-                            onClick={() => deleteDraft(draft.id)}
-                          >
-                            Delete
-                          </Button>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            )}
           </div>
-        </DialogContent>
-      </Dialog>
+        </div>
+      </div>
     </div>
   );
 };

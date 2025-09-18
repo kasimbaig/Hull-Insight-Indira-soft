@@ -186,10 +186,11 @@ interface MushroomHead {
 
 interface LiftingAppliance {
   id: string;
-  name: string;
-  status: string;
-  checked: boolean;
-  date: string;
+  applianceName: string;
+  opsStatus: string;
+  lastLoadTestDate: string;
+  dueLoadTestDate: string;
+  remarks: string;
 }
 
 interface BerItem {
@@ -202,6 +203,51 @@ interface Recommendation {
   id: string;
   srNo: string;
   recommendationDetails: string;
+}
+
+interface VentilationDefect {
+  id: string;
+  srNo: string;
+  location: string;
+  frameStationFrom: string;
+  frameStationTo: string;
+  remarks: string;
+}
+
+interface VentilationChoking {
+  id: string;
+  srNo: string;
+  chokingDetails: string;
+}
+
+interface FreshWaterDefect {
+  id: string;
+  srNo: string;
+  defectDetails: string;
+}
+
+interface SewageEquipment {
+  id: string;
+  srNo: string;
+  equipment: string;
+  location: string;
+  frameStationFrom: string;
+  frameStationTo: string;
+  remarks: string;
+}
+
+interface HullEquipmentDefect {
+  id: string;
+  srNo: string;
+  defectDetails: string;
+}
+
+interface BoatDefect {
+  id: string;
+  srNo: string;
+  equipment: string;
+  location: string;
+  remarks: string;
 }
 
 interface HullMaintenanceInspectionforShipsFormData {
@@ -311,27 +357,93 @@ interface HullMaintenanceInspectionforShipsFormData {
   liftingAppliances: LiftingAppliance[];
   
   // Systems Section
-  systemsOperational: string;
-  systemsDateLastOperated: string;
-  systemsDefects: string;
+  // 6.1 ICCP system/ Cathodic protection
+  iccpOperational: string;
+  iccpSetPotential: string;
+  iccpReadingPanel: string;
+  iccpExternalReading: string;
+  iccpLastCalibrationDate: string;
+  iccpKnownDefects: string;
+  
+  // 6.2 Ventilation system
+  ventilationOperational: string;
+  ventilationDefects: VentilationDefect[];
+  ventilationAtuOps: string;
+  ventilationAtuNonOps: string;
+  ventilationAtuRoutines: string;
+  ventilationHes: string;
+  ventilationChoking: VentilationChoking[];
+  
+  // 6.3 Fresh water systems
+  freshWaterOperational: string;
+  freshWaterDefects: FreshWaterDefect[];
+  
+  // 6.4 Sewage treatment plant
+  sewageNameMakeType: string;
+  sewageOperational: string;
+  sewageEquipment: SewageEquipment[];
+  sewageRoutineManual: string;
+  sewageEffluentTest: string;
+  
+  // 6.5 Pre-wetting system
+  preWettingOperational: string;
+  preWettingLastOperated: string;
+  preWettingDefects: string;
+  
+  // 6.6 Sanitary system
   sanitaryDefects: string;
   sanitaryChokes: string;
   flushingValves: string;
   obdValves: string;
   
   // Hull Equipment Section
+  // 7.1 Anchor chain cable and associated fittings
   anchorSurveyDetails: string;
   anchorLoadTestDate: string;
   anchorStrop: string;
   blakeSlip: string;
   compressor: string;
   berItems: BerItem[];
+  anchorDeficiencies: HullEquipmentDefect[];
+  
+  // 7.2 Capstan and Cable Holders
+  capstanDefects: HullEquipmentDefect[];
+  
+  // 7.3 Winches
+  winchesDefects: HullEquipmentDefect[];
+  
+  // 7.4 Crane
+  craneDefects: HullEquipmentDefect[];
+  
+  // 7.5 Hangar Shutter
+  hangarShutterDefects: HullEquipmentDefect[];
+  
+  // 7.6 Boom
+  boomDefects: HullEquipmentDefect[];
+  
+  // 7.7 A's & A's / ABER
+  asAberDefects: HullEquipmentDefect[];
   
   // Life Saving Appliances Section
-  visualSurvey: string;
+  // 8.1 Boats
+  boatsAuthorization: string;
+  boatsHeldDeficiency: string;
+  boatsBer: string;
+  boatsLandedRepairs: string;
+  boatDefects: BoatDefect[];
+  boatsMaintenanceTwoPointLifting: string;
+  boatsVisualExaminationHooks: string;
+  boatsDpTestAdapter: string;
+  boatsPeriodicInspection: string;
+  boatsVisualSurveyStrongBack: string;
+  
+  // 8.2 Life Rafts
   lifeRaftsAuthorization: string;
-  lifeRaftsHeld: string;
+  lifeRaftsHeldDeficiency: string;
   lifeRaftsBer: string;
+  lifeRaftsLandedSurvey: string;
+  lifeRaftsStowageArrangements: string;
+  lifeRaftsHydrostaticReleasingGear: string;
   
   // Habitability Section
   livingConditions: string;
@@ -399,27 +511,104 @@ const HullMaintenanceInspectionforShipsForm = () => {
     compartmentsNotProved: [],
     planForRemaining: [],
     liftingAppliances: [
-      { id: "1", name: "Ships brow", status: "", checked: false, date: "" },
-      { id: "2", name: "Helo deck and Hangar deck rings / eyes", status: "", checked: false, date: "" },
-      { id: "3", name: "Helo Landing Grid", status: "", checked: false, date: "" }
+      { id: "1", applianceName: "Boat Davits / Derricks and associated fittings", opsStatus: "", lastLoadTestDate: "", dueLoadTestDate: "", remarks: "" },
+      { id: "2", applianceName: "Single arm Davit", opsStatus: "", lastLoadTestDate: "", dueLoadTestDate: "", remarks: "" },
+      { id: "3", applianceName: "Fixed radial Davit", opsStatus: "", lastLoadTestDate: "", dueLoadTestDate: "", remarks: "" },
+      { id: "4", applianceName: "Boat slings", opsStatus: "", lastLoadTestDate: "", dueLoadTestDate: "", remarks: "" },
+      { id: "5", applianceName: "RAS points including (portable fittings)", opsStatus: "", lastLoadTestDate: "", dueLoadTestDate: "", remarks: "" },
+      { id: "6", applianceName: "Accommodation Ladder", opsStatus: "", lastLoadTestDate: "", dueLoadTestDate: "", remarks: "" },
+      { id: "7", applianceName: "Booms", opsStatus: "", lastLoadTestDate: "", dueLoadTestDate: "", remarks: "" },
+      { id: "8", applianceName: "Ships brow", opsStatus: "", lastLoadTestDate: "", dueLoadTestDate: "", remarks: "" },
+      { id: "9", applianceName: "Helo deck and Hangar deck rings / eyes", opsStatus: "", lastLoadTestDate: "", dueLoadTestDate: "", remarks: "" },
+      { id: "10", applianceName: "Helo Landing Grid", opsStatus: "", lastLoadTestDate: "", dueLoadTestDate: "", remarks: "" },
+      { id: "11", applianceName: "Towing arrangements / towing rope(polypropylene)", opsStatus: "", lastLoadTestDate: "", dueLoadTestDate: "", remarks: "" },
+      { id: "12", applianceName: "Safety nets", opsStatus: "", lastLoadTestDate: "", dueLoadTestDate: "", remarks: "" },
+      { id: "13", applianceName: "HO-5 hoisting arrangement", opsStatus: "", lastLoadTestDate: "", dueLoadTestDate: "", remarks: "" },
+      { id: "14", applianceName: "Anchor Strop", opsStatus: "", lastLoadTestDate: "", dueLoadTestDate: "", remarks: "" }
     ],
-    systemsOperational: "",
-    systemsDateLastOperated: "",
-    systemsDefects: "",
+    // 6.1 ICCP system/ Cathodic protection
+    iccpOperational: "",
+    iccpSetPotential: "",
+    iccpReadingPanel: "",
+    iccpExternalReading: "",
+    iccpLastCalibrationDate: "",
+    iccpKnownDefects: "",
+    
+    // 6.2 Ventilation system
+    ventilationOperational: "",
+    ventilationDefects: [],
+    ventilationAtuOps: "",
+    ventilationAtuNonOps: "",
+    ventilationAtuRoutines: "",
+    ventilationHes: "",
+    ventilationChoking: [],
+    
+    // 6.3 Fresh water systems
+    freshWaterOperational: "",
+    freshWaterDefects: [],
+    
+    // 6.4 Sewage treatment plant
+    sewageNameMakeType: "",
+    sewageOperational: "",
+    sewageEquipment: [],
+    sewageRoutineManual: "",
+    sewageEffluentTest: "",
+    
+    // 6.5 Pre-wetting system
+    preWettingOperational: "",
+    preWettingLastOperated: "",
+    preWettingDefects: "",
+    
+    // 6.6 Sanitary system
     sanitaryDefects: "",
     sanitaryChokes: "",
     flushingValves: "",
     obdValves: "",
+    // 7.1 Anchor chain cable and associated fittings
     anchorSurveyDetails: "",
     anchorLoadTestDate: "",
     anchorStrop: "",
     blakeSlip: "",
     compressor: "",
     berItems: [],
-    visualSurvey: "",
+    anchorDeficiencies: [],
+    
+    // 7.2 Capstan and Cable Holders
+    capstanDefects: [],
+    
+    // 7.3 Winches
+    winchesDefects: [],
+    
+    // 7.4 Crane
+    craneDefects: [],
+    
+    // 7.5 Hangar Shutter
+    hangarShutterDefects: [],
+    
+    // 7.6 Boom
+    boomDefects: [],
+    
+    // 7.7 A's & A's / ABER
+    asAberDefects: [],
+    // 8.1 Boats
+    boatsAuthorization: "",
+    boatsHeldDeficiency: "",
+    boatsBer: "",
+    boatsLandedRepairs: "",
+    boatDefects: [],
+    boatsMaintenanceTwoPointLifting: "",
+    boatsVisualExaminationHooks: "",
+    boatsDpTestAdapter: "",
+    boatsPeriodicInspection: "",
+    boatsVisualSurveyStrongBack: "",
+    
+    // 8.2 Life Rafts
     lifeRaftsAuthorization: "",
-    lifeRaftsHeld: "",
+    lifeRaftsHeldDeficiency: "",
     lifeRaftsBer: "",
+    lifeRaftsLandedSurvey: "",
+    lifeRaftsStowageArrangements: "",
+    lifeRaftsHydrostaticReleasingGear: "",
     livingConditions: "",
     shipsHusbandry: "",
     acDiscipline: "",
@@ -1094,6 +1283,189 @@ const HullMaintenanceInspectionforShipsForm = () => {
     }));
   };
 
+  // Ventilation Defects Functions
+  const handleAddVentilationDefect = () => {
+    const newDefect: VentilationDefect = {
+      id: Date.now().toString(),
+      srNo: "",
+      location: "",
+      frameStationFrom: "",
+      frameStationTo: "",
+      remarks: ""
+    };
+    setFormData(prev => ({
+      ...prev,
+      ventilationDefects: [...prev.ventilationDefects, newDefect]
+    }));
+  };
+
+  const handleRemoveVentilationDefect = (id: string) => {
+    setFormData(prev => ({
+      ...prev,
+      ventilationDefects: prev.ventilationDefects.filter(defect => defect.id !== id)
+    }));
+  };
+
+  const handleUpdateVentilationDefect = (id: string, field: keyof VentilationDefect, value: string) => {
+    setFormData(prev => ({
+      ...prev,
+      ventilationDefects: prev.ventilationDefects.map(defect =>
+        defect.id === id ? { ...defect, [field]: value } : defect
+      )
+    }));
+  };
+
+  // Ventilation Choking Functions
+  const handleAddVentilationChoking = () => {
+    const newChoking: VentilationChoking = {
+      id: Date.now().toString(),
+      srNo: "",
+      chokingDetails: ""
+    };
+    setFormData(prev => ({
+      ...prev,
+      ventilationChoking: [...prev.ventilationChoking, newChoking]
+    }));
+  };
+
+  const handleRemoveVentilationChoking = (id: string) => {
+    setFormData(prev => ({
+      ...prev,
+      ventilationChoking: prev.ventilationChoking.filter(choking => choking.id !== id)
+    }));
+  };
+
+  const handleUpdateVentilationChoking = (id: string, field: keyof VentilationChoking, value: string) => {
+    setFormData(prev => ({
+      ...prev,
+      ventilationChoking: prev.ventilationChoking.map(choking =>
+        choking.id === id ? { ...choking, [field]: value } : choking
+      )
+    }));
+  };
+
+  // Fresh Water Defects Functions
+  const handleAddFreshWaterDefect = () => {
+    const newDefect: FreshWaterDefect = {
+      id: Date.now().toString(),
+      srNo: "",
+      defectDetails: ""
+    };
+    setFormData(prev => ({
+      ...prev,
+      freshWaterDefects: [...prev.freshWaterDefects, newDefect]
+    }));
+  };
+
+  const handleRemoveFreshWaterDefect = (id: string) => {
+    setFormData(prev => ({
+      ...prev,
+      freshWaterDefects: prev.freshWaterDefects.filter(defect => defect.id !== id)
+    }));
+  };
+
+  const handleUpdateFreshWaterDefect = (id: string, field: keyof FreshWaterDefect, value: string) => {
+    setFormData(prev => ({
+      ...prev,
+      freshWaterDefects: prev.freshWaterDefects.map(defect =>
+        defect.id === id ? { ...defect, [field]: value } : defect
+      )
+    }));
+  };
+
+  // Sewage Equipment Functions
+  const handleAddSewageEquipment = () => {
+    const newEquipment: SewageEquipment = {
+      id: Date.now().toString(),
+      srNo: "",
+      equipment: "",
+      location: "",
+      frameStationFrom: "",
+      frameStationTo: "",
+      remarks: ""
+    };
+    setFormData(prev => ({
+      ...prev,
+      sewageEquipment: [...prev.sewageEquipment, newEquipment]
+    }));
+  };
+
+  const handleRemoveSewageEquipment = (id: string) => {
+    setFormData(prev => ({
+      ...prev,
+      sewageEquipment: prev.sewageEquipment.filter(equipment => equipment.id !== id)
+    }));
+  };
+
+  const handleUpdateSewageEquipment = (id: string, field: keyof SewageEquipment, value: string) => {
+    setFormData(prev => ({
+      ...prev,
+      sewageEquipment: prev.sewageEquipment.map(equipment =>
+        equipment.id === id ? { ...equipment, [field]: value } : equipment
+      )
+    }));
+  };
+
+  // Hull Equipment Defects Functions
+  const handleAddHullEquipmentDefect = (type: 'anchorDeficiencies' | 'capstanDefects' | 'winchesDefects' | 'craneDefects' | 'hangarShutterDefects' | 'boomDefects' | 'asAberDefects') => {
+    const newDefect: HullEquipmentDefect = {
+      id: Date.now().toString(),
+      srNo: "",
+      defectDetails: ""
+    };
+    setFormData(prev => ({
+      ...prev,
+      [type]: [...(prev[type] || []), newDefect]
+    }));
+  };
+
+  const handleRemoveHullEquipmentDefect = (type: 'anchorDeficiencies' | 'capstanDefects' | 'winchesDefects' | 'craneDefects' | 'hangarShutterDefects' | 'boomDefects' | 'asAberDefects', id: string) => {
+    setFormData(prev => ({
+      ...prev,
+      [type]: (prev[type] || []).filter(defect => defect.id !== id)
+    }));
+  };
+
+  const handleUpdateHullEquipmentDefect = (type: 'anchorDeficiencies' | 'capstanDefects' | 'winchesDefects' | 'craneDefects' | 'hangarShutterDefects' | 'boomDefects' | 'asAberDefects', id: string, field: keyof HullEquipmentDefect, value: string) => {
+    setFormData(prev => ({
+      ...prev,
+      [type]: (prev[type] || []).map(defect =>
+        defect.id === id ? { ...defect, [field]: value } : defect
+      )
+    }));
+  };
+
+  // Boat Defects Functions
+  const handleAddBoatDefect = () => {
+    const newDefect: BoatDefect = {
+      id: Date.now().toString(),
+      srNo: "",
+      equipment: "",
+      location: "",
+      remarks: ""
+    };
+    setFormData(prev => ({
+      ...prev,
+      boatDefects: [...prev.boatDefects, newDefect]
+    }));
+  };
+
+  const handleRemoveBoatDefect = (id: string) => {
+    setFormData(prev => ({
+      ...prev,
+      boatDefects: prev.boatDefects.filter(defect => defect.id !== id)
+    }));
+  };
+
+  const handleUpdateBoatDefect = (id: string, field: keyof BoatDefect, value: string) => {
+    setFormData(prev => ({
+      ...prev,
+      boatDefects: prev.boatDefects.map(defect =>
+        defect.id === id ? { ...defect, [field]: value } : defect
+      )
+    }));
+  };
+
   const handleSaveDraft = () => {
     const draftData = {
       id: Date.now().toString(),
@@ -1222,27 +1594,104 @@ const HullMaintenanceInspectionforShipsForm = () => {
       // 4.4 Mushroom Heads
       mushroomHeads: [],
       liftingAppliances: [
-        { id: "1", name: "Ships brow", status: "", checked: false, date: "" },
-        { id: "2", name: "Helo deck and Hangar deck rings / eyes", status: "", checked: false, date: "" },
-        { id: "3", name: "Helo Landing Grid", status: "", checked: false, date: "" }
+        { id: "1", applianceName: "Boat Davits / Derricks and associated fittings", opsStatus: "", lastLoadTestDate: "", dueLoadTestDate: "", remarks: "" },
+        { id: "2", applianceName: "Single arm Davit", opsStatus: "", lastLoadTestDate: "", dueLoadTestDate: "", remarks: "" },
+        { id: "3", applianceName: "Fixed radial Davit", opsStatus: "", lastLoadTestDate: "", dueLoadTestDate: "", remarks: "" },
+        { id: "4", applianceName: "Boat slings", opsStatus: "", lastLoadTestDate: "", dueLoadTestDate: "", remarks: "" },
+        { id: "5", applianceName: "RAS points including (portable fittings)", opsStatus: "", lastLoadTestDate: "", dueLoadTestDate: "", remarks: "" },
+        { id: "6", applianceName: "Accommodation Ladder", opsStatus: "", lastLoadTestDate: "", dueLoadTestDate: "", remarks: "" },
+        { id: "7", applianceName: "Booms", opsStatus: "", lastLoadTestDate: "", dueLoadTestDate: "", remarks: "" },
+        { id: "8", applianceName: "Ships brow", opsStatus: "", lastLoadTestDate: "", dueLoadTestDate: "", remarks: "" },
+        { id: "9", applianceName: "Helo deck and Hangar deck rings / eyes", opsStatus: "", lastLoadTestDate: "", dueLoadTestDate: "", remarks: "" },
+        { id: "10", applianceName: "Helo Landing Grid", opsStatus: "", lastLoadTestDate: "", dueLoadTestDate: "", remarks: "" },
+        { id: "11", applianceName: "Towing arrangements / towing rope(polypropylene)", opsStatus: "", lastLoadTestDate: "", dueLoadTestDate: "", remarks: "" },
+        { id: "12", applianceName: "Safety nets", opsStatus: "", lastLoadTestDate: "", dueLoadTestDate: "", remarks: "" },
+        { id: "13", applianceName: "HO-5 hoisting arrangement", opsStatus: "", lastLoadTestDate: "", dueLoadTestDate: "", remarks: "" },
+        { id: "14", applianceName: "Anchor Strop", opsStatus: "", lastLoadTestDate: "", dueLoadTestDate: "", remarks: "" }
       ],
-      systemsOperational: "",
-      systemsDateLastOperated: "",
-      systemsDefects: "",
+      // 6.1 ICCP system/ Cathodic protection
+      iccpOperational: "",
+      iccpSetPotential: "",
+      iccpReadingPanel: "",
+      iccpExternalReading: "",
+      iccpLastCalibrationDate: "",
+      iccpKnownDefects: "",
+      
+      // 6.2 Ventilation system
+      ventilationOperational: "",
+      ventilationDefects: [],
+      ventilationAtuOps: "",
+      ventilationAtuNonOps: "",
+      ventilationAtuRoutines: "",
+      ventilationHes: "",
+      ventilationChoking: [],
+      
+      // 6.3 Fresh water systems
+      freshWaterOperational: "",
+      freshWaterDefects: [],
+      
+      // 6.4 Sewage treatment plant
+      sewageNameMakeType: "",
+      sewageOperational: "",
+      sewageEquipment: [],
+      sewageRoutineManual: "",
+      sewageEffluentTest: "",
+      
+      // 6.5 Pre-wetting system
+      preWettingOperational: "",
+      preWettingLastOperated: "",
+      preWettingDefects: "",
+      
+      // 6.6 Sanitary system
       sanitaryDefects: "",
       sanitaryChokes: "",
       flushingValves: "",
       obdValves: "",
+      // 7.1 Anchor chain cable and associated fittings
       anchorSurveyDetails: "",
       anchorLoadTestDate: "",
       anchorStrop: "",
       blakeSlip: "",
       compressor: "",
       berItems: [],
-      visualSurvey: "",
+      anchorDeficiencies: [],
+      
+      // 7.2 Capstan and Cable Holders
+      capstanDefects: [],
+      
+      // 7.3 Winches
+      winchesDefects: [],
+      
+      // 7.4 Crane
+      craneDefects: [],
+      
+      // 7.5 Hangar Shutter
+      hangarShutterDefects: [],
+      
+      // 7.6 Boom
+      boomDefects: [],
+      
+      // 7.7 A's & A's / ABER
+      asAberDefects: [],
+      // 8.1 Boats
+      boatsAuthorization: "",
+      boatsHeldDeficiency: "",
+      boatsBer: "",
+      boatsLandedRepairs: "",
+      boatDefects: [],
+      boatsMaintenanceTwoPointLifting: "",
+      boatsVisualExaminationHooks: "",
+      boatsDpTestAdapter: "",
+      boatsPeriodicInspection: "",
+      boatsVisualSurveyStrongBack: "",
+      
+      // 8.2 Life Rafts
       lifeRaftsAuthorization: "",
-      lifeRaftsHeld: "",
+      lifeRaftsHeldDeficiency: "",
       lifeRaftsBer: "",
+      lifeRaftsLandedSurvey: "",
+      lifeRaftsStowageArrangements: "",
+      lifeRaftsHydrostaticReleasingGear: "",
       livingConditions: "",
       shipsHusbandry: "",
       acDiscipline: "",
@@ -3111,47 +3560,74 @@ const HullMaintenanceInspectionforShipsForm = () => {
             </CardContent>
           </Card>
 
-          {/* Lifting Appliances Section */}
+          {/* 5.0 Operational state, last date of Load test details and known defects */}
           <Card className="border border-gray-300">
             <CardHeader className="bg-gray-100">
               <CardTitle className="text-lg font-semibold text-center underline">Lifting Appliances</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4 p-6">
-              {formData.liftingAppliances.map((appliance) => (
-                <div key={appliance.id} className="flex items-center gap-4">
-                  <div className="flex-1">
-                    <Label className="text-sm font-medium">{appliance.name}*</Label>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Select 
-                      value={appliance.status} 
-                      onValueChange={(value) => handleUpdateLiftingAppliance(appliance.id, 'status', value)}
-                    >
-                      <SelectTrigger className="w-32">
-                        <SelectValue placeholder="--Select--" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="operational">Operational</SelectItem>
-                        <SelectItem value="non-operational">Non-operational</SelectItem>
-                        <SelectItem value="defective">Defective</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <input
-                      type="checkbox"
-                      checked={appliance.checked}
-                      onChange={(e) => handleUpdateLiftingAppliance(appliance.id, 'checked', e.target.checked)}
-                      className="w-4 h-4"
-                    />
-                    <Input
-                      type="text"
-                      value={appliance.date}
-                      onChange={(e) => handleUpdateLiftingAppliance(appliance.id, 'date', e.target.value)}
-                      placeholder="DD-MM-YYYY"
-                      className="w-32"
-                    />
-                  </div>
-                </div>
-              ))}
+            <CardContent className="p-6 max-h-96 overflow-y-auto">
+              <div className="overflow-x-auto">
+                <Table className="border border-gray-300">
+                  <TableHeader>
+                    <TableRow className="bg-gray-50">
+                      <TableHead className="border border-gray-300 text-center font-medium">OPS/Non-OPS</TableHead>
+                      <TableHead className="border border-gray-300 text-center font-medium">Last Load Test Date</TableHead>
+                      <TableHead className="border border-gray-300 text-center font-medium">Due Load Test Date</TableHead>
+                      <TableHead className="border border-gray-300 text-center font-medium">Remarks</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {formData.liftingAppliances.map((appliance, index) => (
+                      <TableRow key={appliance.id}>
+                        <TableCell className="border border-gray-300 p-2">
+                          <div className="space-y-2">
+                            <Label className="text-sm font-medium">{appliance.applianceName}*</Label>
+                            <Select 
+                              value={appliance.opsStatus} 
+                              onValueChange={(value) => handleUpdateLiftingAppliance(appliance.id, 'opsStatus', value)}
+                            >
+                              <SelectTrigger className="w-full">
+                                <SelectValue placeholder="--Select--" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="OPS">OPS</SelectItem>
+                                <SelectItem value="Non-OPS">Non-OPS</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+                        </TableCell>
+                        <TableCell className="border border-gray-300 p-2">
+                          <Input
+                            type="text"
+                            value={appliance.lastLoadTestDate}
+                            onChange={(e) => handleUpdateLiftingAppliance(appliance.id, 'lastLoadTestDate', e.target.value)}
+                            placeholder="DD-MM-YYYY"
+                            className="w-full"
+                          />
+                        </TableCell>
+                        <TableCell className="border border-gray-300 p-2">
+                          <Input
+                            type="text"
+                            value={appliance.dueLoadTestDate}
+                            onChange={(e) => handleUpdateLiftingAppliance(appliance.id, 'dueLoadTestDate', e.target.value)}
+                            placeholder="DD-MM-YYYY"
+                            className="w-full"
+                          />
+                        </TableCell>
+                        <TableCell className="border border-gray-300 p-2">
+                          <Input
+                            type="text"
+                            value={appliance.remarks}
+                            onChange={(e) => handleUpdateLiftingAppliance(appliance.id, 'remarks', e.target.value)}
+                            placeholder="Enter remarks"
+                            className="w-full"
+                          />
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
             </CardContent>
           </Card>
 
@@ -3160,43 +3636,571 @@ const HullMaintenanceInspectionforShipsForm = () => {
             <CardHeader className="bg-gray-100">
               <CardTitle className="text-lg font-semibold text-center underline">Systems</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-6 p-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="systemsOperational" className="text-sm font-medium">(a) Operational / Non operational*</Label>
-                  <Select value={formData.systemsOperational} onValueChange={(value) => handleInputChange('systemsOperational', value)}>
-                    <SelectTrigger className="mt-1">
-                      <SelectValue placeholder="--Select--" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="operational">Operational</SelectItem>
-                      <SelectItem value="non-operational">Non-operational</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <Label htmlFor="systemsDateLastOperated" className="text-sm font-medium">(b) Date last operated*</Label>
-                  <Input
-                    id="systemsDateLastOperated"
-                    value={formData.systemsDateLastOperated}
-                    onChange={(e) => handleInputChange('systemsDateLastOperated', e.target.value)}
-                    placeholder="DD-MM-YYYY"
-                    className="mt-1"
-                  />
-                </div>
-              </div>
-              <div>
-                <Label htmlFor="systemsDefects" className="text-sm font-medium">(c) Details of defects if any*</Label>
-                <Textarea
-                  id="systemsDefects"
-                  value={formData.systemsDefects}
-                  onChange={(e) => handleInputChange('systemsDefects', e.target.value)}
-                  placeholder="Enter defect details..."
-                  className="mt-1 min-h-[80px]"
-                />
-              </div>
+            <CardContent className="space-y-6 p-6 max-h-96 overflow-y-auto">
               
-              <div>
+              {/* 6.1 ICCP system/ Cathodic protection */}
+              <div className="space-y-4">
+                <h4 className="text-md font-medium mb-4 text-gray-800">6.1 ICCP system/ Cathodic protection (NO 06/11 and NHQ Policy letter NC/ Policy/ H-77 dated 02 Mar 15)</h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="iccpOperational" className="text-sm font-medium">(a) Operational / Non operational*</Label>
+                    <Select value={formData.iccpOperational} onValueChange={(value) => handleInputChange('iccpOperational', value)}>
+                      <SelectTrigger className="mt-1">
+                        <SelectValue placeholder="--Select--" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Operational">Operational</SelectItem>
+                        <SelectItem value="Non-operational">Non-operational</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label htmlFor="iccpSetPotential" className="text-sm font-medium">(b) Set potential wrt Zinc RE*</Label>
+                    <Input
+                      id="iccpSetPotential"
+                      value={formData.iccpSetPotential}
+                      onChange={(e) => handleInputChange('iccpSetPotential', e.target.value)}
+                      placeholder="Enter set potential"
+                      className="mt-1"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="iccpReadingPanel" className="text-sm font-medium">(c) Reading in panel wrt Zinc RE*</Label>
+                    <Input
+                      id="iccpReadingPanel"
+                      value={formData.iccpReadingPanel}
+                      onChange={(e) => handleInputChange('iccpReadingPanel', e.target.value)}
+                      placeholder="Enter panel reading"
+                      className="mt-1"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="iccpExternalReading" className="text-sm font-medium">(d) External Reading wrt portable Zinc RE*</Label>
+                    <Input
+                      id="iccpExternalReading"
+                      value={formData.iccpExternalReading}
+                      onChange={(e) => handleInputChange('iccpExternalReading', e.target.value)}
+                      placeholder="Enter external reading"
+                      className="mt-1"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="iccpLastCalibrationDate" className="text-sm font-medium">(e) Last calibration date for Zinc RE*</Label>
+                    <Input
+                      id="iccpLastCalibrationDate"
+                      value={formData.iccpLastCalibrationDate}
+                      onChange={(e) => handleInputChange('iccpLastCalibrationDate', e.target.value)}
+                      placeholder="DD-MM-YYYY"
+                      className="mt-1"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="iccpKnownDefects" className="text-sm font-medium">(f) Known defects of ICCP system if any*</Label>
+                    <Textarea
+                      id="iccpKnownDefects"
+                      value={formData.iccpKnownDefects}
+                      onChange={(e) => handleInputChange('iccpKnownDefects', e.target.value)}
+                      placeholder="Enter known defects..."
+                      className="mt-1 min-h-[60px]"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* 6.2 Ventilation system */}
+              <div className="space-y-4">
+                <h4 className="text-md font-medium mb-4 text-gray-800">6.2 Ventilation system</h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="ventilationOperational" className="text-sm font-medium">(a) Operational / Non operational*</Label>
+                    <Select value={formData.ventilationOperational} onValueChange={(value) => handleInputChange('ventilationOperational', value)}>
+                      <SelectTrigger className="mt-1">
+                        <SelectValue placeholder="--Select--" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Operational">Operational</SelectItem>
+                        <SelectItem value="Non-operational">Non-operational</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label htmlFor="ventilationAtuOps" className="text-sm font-medium">(c) State of ATU Ops*</Label>
+                    <Input
+                      id="ventilationAtuOps"
+                      value={formData.ventilationAtuOps}
+                      onChange={(e) => handleInputChange('ventilationAtuOps', e.target.value)}
+                      placeholder="Enter ATU Ops state"
+                      className="mt-1"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="ventilationAtuNonOps" className="text-sm font-medium">(d) State of ATU Non ops*</Label>
+                    <Input
+                      id="ventilationAtuNonOps"
+                      value={formData.ventilationAtuNonOps}
+                      onChange={(e) => handleInputChange('ventilationAtuNonOps', e.target.value)}
+                      placeholder="Enter ATU Non ops state"
+                      className="mt-1"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="ventilationAtuRoutines" className="text-sm font-medium">(e) ATU Routines*</Label>
+                    <Input
+                      id="ventilationAtuRoutines"
+                      value={formData.ventilationAtuRoutines}
+                      onChange={(e) => handleInputChange('ventilationAtuRoutines', e.target.value)}
+                      placeholder="Enter ATU routines"
+                      className="mt-1"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="ventilationHes" className="text-sm font-medium">(f) State of HEs*</Label>
+                    <Input
+                      id="ventilationHes"
+                      value={formData.ventilationHes}
+                      onChange={(e) => handleInputChange('ventilationHes', e.target.value)}
+                      placeholder="Enter HEs state"
+                      className="mt-1"
+                    />
+                  </div>
+                </div>
+                
+                {/* Ventilation Defects Table */}
+                <div className="space-y-2">
+                  <h5 className="text-sm font-medium mb-2">(b) Details of defects*</h5>
+                  <div className="flex items-center gap-2 mb-2">
+                    <Label className="text-sm">Enter Total Number of Rows.</Label>
+                    <Input
+                      type="number"
+                      value={formData.ventilationDefects?.length || 0}
+                      onChange={(e) => {
+                        const count = parseInt(e.target.value) || 0;
+                        const currentLength = formData.ventilationDefects?.length || 0;
+                        if (count > currentLength) {
+                          for (let i = currentLength; i < count; i++) {
+                            handleAddVentilationDefect();
+                          }
+                        } else if (count < currentLength) {
+                          const toRemove = (formData.ventilationDefects || []).slice(count);
+                          toRemove.forEach(defect => handleRemoveVentilationDefect(defect.id));
+                        }
+                      }}
+                      className="w-20"
+                    />
+                  </div>
+                  <div className="overflow-x-auto">
+                    <Table className="border border-gray-300">
+                      <TableHeader>
+                        <TableRow className="bg-gray-50">
+                          <TableHead className="border border-gray-300 text-center font-medium">Sr No.</TableHead>
+                          <TableHead className="border border-gray-300 text-center font-medium">Location*</TableHead>
+                          <TableHead className="border border-gray-300 text-center font-medium">Frame Station*</TableHead>
+                          <TableHead className="border border-gray-300 text-center font-medium">Remarks*</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {(formData.ventilationDefects?.length || 0) > 0 ? (
+                          (formData.ventilationDefects || []).map((defect, index) => (
+                            <TableRow key={defect.id}>
+                              <TableCell className="border border-gray-300 p-2">
+                                <Input
+                                  value={defect.srNo}
+                                  onChange={(e) => handleUpdateVentilationDefect(defect.id, 'srNo', e.target.value)}
+                                  placeholder="Enter Sr No."
+                                  className="border-0 p-1"
+                                />
+                              </TableCell>
+                              <TableCell className="border border-gray-300 p-2">
+                                <Input
+                                  value={defect.location}
+                                  onChange={(e) => handleUpdateVentilationDefect(defect.id, 'location', e.target.value)}
+                                  placeholder="Enter location"
+                                  className="border-0 p-1"
+                                />
+                              </TableCell>
+                              <TableCell className="border border-gray-300 p-2">
+                                <div className="flex gap-1">
+                                  <Input
+                                    value={defect.frameStationFrom}
+                                    onChange={(e) => handleUpdateVentilationDefect(defect.id, 'frameStationFrom', e.target.value)}
+                                    placeholder="From"
+                                    className="border-0 p-1"
+                                  />
+                                  <Input
+                                    value={defect.frameStationTo}
+                                    onChange={(e) => handleUpdateVentilationDefect(defect.id, 'frameStationTo', e.target.value)}
+                                    placeholder="To"
+                                    className="border-0 p-1"
+                                  />
+                                </div>
+                              </TableCell>
+                              <TableCell className="border border-gray-300 p-2">
+                                <Input
+                                  value={defect.remarks}
+                                  onChange={(e) => handleUpdateVentilationDefect(defect.id, 'remarks', e.target.value)}
+                                  placeholder="Enter remarks"
+                                  className="border-0 p-1"
+                                />
+                              </TableCell>
+                            </TableRow>
+                          ))
+                        ) : (
+                          <TableRow>
+                            <TableCell colSpan={4} className="border border-gray-300 p-4 text-center text-gray-500">
+                              No rows added yet. Enter number of rows above to add data.
+                            </TableCell>
+                          </TableRow>
+                        )}
+                      </TableBody>
+                    </Table>
+                  </div>
+                </div>
+
+                {/* Ventilation Choking Table */}
+                <div className="space-y-2">
+                  <h5 className="text-sm font-medium mb-2">(g) Choking of trunkings if any*</h5>
+                  <div className="flex items-center gap-2 mb-2">
+                    <Label className="text-sm">Enter Total Number of Rows.</Label>
+                    <Input
+                      type="number"
+                      value={formData.ventilationChoking?.length || 0}
+                      onChange={(e) => {
+                        const count = parseInt(e.target.value) || 0;
+                        const currentLength = formData.ventilationChoking?.length || 0;
+                        if (count > currentLength) {
+                          for (let i = currentLength; i < count; i++) {
+                            handleAddVentilationChoking();
+                          }
+                        } else if (count < currentLength) {
+                          const toRemove = (formData.ventilationChoking || []).slice(count);
+                          toRemove.forEach(choking => handleRemoveVentilationChoking(choking.id));
+                        }
+                      }}
+                      className="w-20"
+                    />
+                  </div>
+                  <div className="overflow-x-auto">
+                    <Table className="border border-gray-300">
+                      <TableHeader>
+                        <TableRow className="bg-gray-50">
+                          <TableHead className="border border-gray-300 text-center font-medium">Sr No.</TableHead>
+                          <TableHead className="border border-gray-300 text-center font-medium">Choking Details*</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {(formData.ventilationChoking?.length || 0) > 0 ? (
+                          (formData.ventilationChoking || []).map((choking, index) => (
+                            <TableRow key={choking.id}>
+                              <TableCell className="border border-gray-300 p-2">
+                                <Input
+                                  value={choking.srNo}
+                                  onChange={(e) => handleUpdateVentilationChoking(choking.id, 'srNo', e.target.value)}
+                                  placeholder="Enter Sr No."
+                                  className="border-0 p-1"
+                                />
+                              </TableCell>
+                              <TableCell className="border border-gray-300 p-2">
+                                <Input
+                                  value={choking.chokingDetails}
+                                  onChange={(e) => handleUpdateVentilationChoking(choking.id, 'chokingDetails', e.target.value)}
+                                  placeholder="Enter choking details"
+                                  className="border-0 p-1"
+                                />
+                              </TableCell>
+                            </TableRow>
+                          ))
+                        ) : (
+                          <TableRow>
+                            <TableCell colSpan={2} className="border border-gray-300 p-4 text-center text-gray-500">
+                              No rows added yet. Enter number of rows above to add data.
+                            </TableCell>
+                          </TableRow>
+                        )}
+                      </TableBody>
+                    </Table>
+                  </div>
+                </div>
+              </div>
+
+              {/* 6.3 Fresh water systems */}
+              <div className="space-y-4">
+                <h4 className="text-md font-medium mb-4 text-gray-800">6.3 Fresh water systems</h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="freshWaterOperational" className="text-sm font-medium">(a) Operational / Non operational*</Label>
+                    <Select value={formData.freshWaterOperational} onValueChange={(value) => handleInputChange('freshWaterOperational', value)}>
+                      <SelectTrigger className="mt-1">
+                        <SelectValue placeholder="--Select--" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Operational">Operational</SelectItem>
+                        <SelectItem value="Non-operational">Non-operational</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+                
+                {/* Fresh Water Defects Table */}
+                <div className="space-y-2">
+                  <h5 className="text-sm font-medium mb-2">(b) Details of defects if any*</h5>
+                  <div className="flex items-center gap-2 mb-2">
+                    <Label className="text-sm">Enter Total Number of Rows.</Label>
+                    <Input
+                      type="number"
+                      value={formData.freshWaterDefects?.length || 0}
+                      onChange={(e) => {
+                        const count = parseInt(e.target.value) || 0;
+                        const currentLength = formData.freshWaterDefects?.length || 0;
+                        if (count > currentLength) {
+                          for (let i = currentLength; i < count; i++) {
+                            handleAddFreshWaterDefect();
+                          }
+                        } else if (count < currentLength) {
+                          const toRemove = (formData.freshWaterDefects || []).slice(count);
+                          toRemove.forEach(defect => handleRemoveFreshWaterDefect(defect.id));
+                        }
+                      }}
+                      className="w-20"
+                    />
+                  </div>
+                  <div className="overflow-x-auto">
+                    <Table className="border border-gray-300">
+                      <TableHeader>
+                        <TableRow className="bg-gray-50">
+                          <TableHead className="border border-gray-300 text-center font-medium">Sr No.</TableHead>
+                          <TableHead className="border border-gray-300 text-center font-medium">Defect Details*</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {(formData.freshWaterDefects?.length || 0) > 0 ? (
+                          (formData.freshWaterDefects || []).map((defect, index) => (
+                            <TableRow key={defect.id}>
+                              <TableCell className="border border-gray-300 p-2">
+                                <Input
+                                  value={defect.srNo}
+                                  onChange={(e) => handleUpdateFreshWaterDefect(defect.id, 'srNo', e.target.value)}
+                                  placeholder="Enter Sr No."
+                                  className="border-0 p-1"
+                                />
+                              </TableCell>
+                              <TableCell className="border border-gray-300 p-2">
+                                <Input
+                                  value={defect.defectDetails}
+                                  onChange={(e) => handleUpdateFreshWaterDefect(defect.id, 'defectDetails', e.target.value)}
+                                  placeholder="Enter defect details"
+                                  className="border-0 p-1"
+                                />
+                              </TableCell>
+                            </TableRow>
+                          ))
+                        ) : (
+                          <TableRow>
+                            <TableCell colSpan={2} className="border border-gray-300 p-4 text-center text-gray-500">
+                              No rows added yet. Enter number of rows above to add data.
+                            </TableCell>
+                          </TableRow>
+                        )}
+                      </TableBody>
+                    </Table>
+                  </div>
+                </div>
+              </div>
+
+              {/* 6.4 Sewage treatment plant */}
+              <div className="space-y-4">
+                <h4 className="text-md font-medium mb-4 text-gray-800">6.4 Sewage treatment plant</h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="sewageNameMakeType" className="text-sm font-medium">(a) Name / make / type*</Label>
+                    <Input
+                      id="sewageNameMakeType"
+                      value={formData.sewageNameMakeType}
+                      onChange={(e) => handleInputChange('sewageNameMakeType', e.target.value)}
+                      placeholder="Enter name/make/type"
+                      className="mt-1"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="sewageOperational" className="text-sm font-medium">(b) Operational / Non Operational*</Label>
+                    <Select value={formData.sewageOperational} onValueChange={(value) => handleInputChange('sewageOperational', value)}>
+                      <SelectTrigger className="mt-1">
+                        <SelectValue placeholder="--Select--" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Operational">Operational</SelectItem>
+                        <SelectItem value="Non-operational">Non-operational</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label htmlFor="sewageRoutineManual" className="text-sm font-medium">(d) Whether Routine undertaken IAW manual*</Label>
+                    <Select value={formData.sewageRoutineManual} onValueChange={(value) => handleInputChange('sewageRoutineManual', value)}>
+                      <SelectTrigger className="mt-1">
+                        <SelectValue placeholder="--Select--" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Yes">Yes</SelectItem>
+                        <SelectItem value="No">No</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label htmlFor="sewageEffluentTest" className="text-sm font-medium">(e) Details of last effluent test and result*</Label>
+                    <Select value={formData.sewageEffluentTest} onValueChange={(value) => handleInputChange('sewageEffluentTest', value)}>
+                      <SelectTrigger className="mt-1">
+                        <SelectValue placeholder="--Select--" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Pass">Pass</SelectItem>
+                        <SelectItem value="Fail">Fail</SelectItem>
+                        <SelectItem value="Pending">Pending</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+                
+                {/* Sewage Equipment Table */}
+                <div className="space-y-2">
+                  <h5 className="text-sm font-medium mb-2">(c) Details of defects if any*</h5>
+                  <div className="flex items-center gap-2 mb-2">
+                    <Label className="text-sm">Enter Total Number of Rows.</Label>
+                    <Input
+                      type="number"
+                      value={formData.sewageEquipment?.length || 0}
+                      onChange={(e) => {
+                        const count = parseInt(e.target.value) || 0;
+                        const currentLength = formData.sewageEquipment?.length || 0;
+                        if (count > currentLength) {
+                          for (let i = currentLength; i < count; i++) {
+                            handleAddSewageEquipment();
+                          }
+                        } else if (count < currentLength) {
+                          const toRemove = (formData.sewageEquipment || []).slice(count);
+                          toRemove.forEach(equipment => handleRemoveSewageEquipment(equipment.id));
+                        }
+                      }}
+                      className="w-20"
+                    />
+                  </div>
+                  <div className="overflow-x-auto">
+                    <Table className="border border-gray-300">
+                      <TableHeader>
+                        <TableRow className="bg-gray-50">
+                          <TableHead className="border border-gray-300 text-center font-medium">Sr No.</TableHead>
+                          <TableHead className="border border-gray-300 text-center font-medium">Equipment*</TableHead>
+                          <TableHead className="border border-gray-300 text-center font-medium">Location*</TableHead>
+                          <TableHead className="border border-gray-300 text-center font-medium">Frame Station*</TableHead>
+                          <TableHead className="border border-gray-300 text-center font-medium">Remarks*</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {(formData.sewageEquipment?.length || 0) > 0 ? (
+                          (formData.sewageEquipment || []).map((equipment, index) => (
+                            <TableRow key={equipment.id}>
+                              <TableCell className="border border-gray-300 p-2">
+                                <Input
+                                  value={equipment.srNo}
+                                  onChange={(e) => handleUpdateSewageEquipment(equipment.id, 'srNo', e.target.value)}
+                                  placeholder="Enter Sr No."
+                                  className="border-0 p-1"
+                                />
+                              </TableCell>
+                              <TableCell className="border border-gray-300 p-2">
+                                <Input
+                                  value={equipment.equipment}
+                                  onChange={(e) => handleUpdateSewageEquipment(equipment.id, 'equipment', e.target.value)}
+                                  placeholder="Enter equipment"
+                                  className="border-0 p-1"
+                                />
+                              </TableCell>
+                              <TableCell className="border border-gray-300 p-2">
+                                <Input
+                                  value={equipment.location}
+                                  onChange={(e) => handleUpdateSewageEquipment(equipment.id, 'location', e.target.value)}
+                                  placeholder="Enter location"
+                                  className="border-0 p-1"
+                                />
+                              </TableCell>
+                              <TableCell className="border border-gray-300 p-2">
+                                <div className="flex gap-1">
+                                  <Input
+                                    value={equipment.frameStationFrom}
+                                    onChange={(e) => handleUpdateSewageEquipment(equipment.id, 'frameStationFrom', e.target.value)}
+                                    placeholder="From"
+                                    className="border-0 p-1"
+                                  />
+                                  <Input
+                                    value={equipment.frameStationTo}
+                                    onChange={(e) => handleUpdateSewageEquipment(equipment.id, 'frameStationTo', e.target.value)}
+                                    placeholder="To"
+                                    className="border-0 p-1"
+                                  />
+                                </div>
+                              </TableCell>
+                              <TableCell className="border border-gray-300 p-2">
+                                <Input
+                                  value={equipment.remarks}
+                                  onChange={(e) => handleUpdateSewageEquipment(equipment.id, 'remarks', e.target.value)}
+                                  placeholder="Enter remarks"
+                                  className="border-0 p-1"
+                                />
+                              </TableCell>
+                            </TableRow>
+                          ))
+                        ) : (
+                          <TableRow>
+                            <TableCell colSpan={5} className="border border-gray-300 p-4 text-center text-gray-500">
+                              No rows added yet. Enter number of rows above to add data.
+                            </TableCell>
+                          </TableRow>
+                        )}
+                      </TableBody>
+                    </Table>
+                  </div>
+                </div>
+              </div>
+
+              {/* 6.5 Pre-wetting system */}
+              <div className="space-y-4">
+                <h4 className="text-md font-medium mb-4 text-gray-800">6.5 Pre-wetting system</h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="preWettingOperational" className="text-sm font-medium">(a) Operational / Non operational*</Label>
+                    <Select value={formData.preWettingOperational} onValueChange={(value) => handleInputChange('preWettingOperational', value)}>
+                      <SelectTrigger className="mt-1">
+                        <SelectValue placeholder="--Select--" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Operational">Operational</SelectItem>
+                        <SelectItem value="Non-operational">Non-operational</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label htmlFor="preWettingLastOperated" className="text-sm font-medium">(b) Date last operated*</Label>
+                    <Input
+                      id="preWettingLastOperated"
+                      value={formData.preWettingLastOperated}
+                      onChange={(e) => handleInputChange('preWettingLastOperated', e.target.value)}
+                      placeholder="DD-MM-YYYY"
+                      className="mt-1"
+                    />
+                  </div>
+                  <div className="md:col-span-2">
+                    <Label htmlFor="preWettingDefects" className="text-sm font-medium">(c) Details of defects if any*</Label>
+                    <Textarea
+                      id="preWettingDefects"
+                      value={formData.preWettingDefects}
+                      onChange={(e) => handleInputChange('preWettingDefects', e.target.value)}
+                      placeholder="Enter defects details..."
+                      className="mt-1 min-h-[60px]"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* 6.6 Sanitary system */}
+              <div className="space-y-4">
                 <h4 className="text-md font-medium mb-4 text-gray-800">6.6 Sanitary system</h4>
                 <div className="space-y-4">
                   <div>
@@ -3249,8 +4253,10 @@ const HullMaintenanceInspectionforShipsForm = () => {
             <CardHeader className="bg-gray-100">
               <CardTitle className="text-lg font-semibold text-center underline">Hull Equipment</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-6 p-6">
-              <div>
+            <CardContent className="space-y-6 p-6 max-h-96 overflow-y-auto">
+              
+              {/* 7.1 Anchor chain cable and associated fittings */}
+              <div className="space-y-4">
                 <h4 className="text-md font-medium mb-4 text-gray-800">7.1 Anchor chain cable and associated fittings</h4>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                   <div>
@@ -3282,9 +4288,9 @@ const HullMaintenanceInspectionforShipsForm = () => {
                         <SelectValue placeholder="--Select--" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="good">Good</SelectItem>
-                        <SelectItem value="fair">Fair</SelectItem>
-                        <SelectItem value="poor">Poor</SelectItem>
+                        <SelectItem value="Good">Good</SelectItem>
+                        <SelectItem value="Fair">Fair</SelectItem>
+                        <SelectItem value="Poor">Poor</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -3295,9 +4301,9 @@ const HullMaintenanceInspectionforShipsForm = () => {
                         <SelectValue placeholder="--Select--" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="good">Good</SelectItem>
-                        <SelectItem value="fair">Fair</SelectItem>
-                        <SelectItem value="poor">Poor</SelectItem>
+                        <SelectItem value="Good">Good</SelectItem>
+                        <SelectItem value="Fair">Fair</SelectItem>
+                        <SelectItem value="Poor">Poor</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -3308,27 +4314,30 @@ const HullMaintenanceInspectionforShipsForm = () => {
                         <SelectValue placeholder="--Select--" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="operational">Operational</SelectItem>
-                        <SelectItem value="non-operational">Non-operational</SelectItem>
+                        <SelectItem value="Operational">Operational</SelectItem>
+                        <SelectItem value="Non-operational">Non-operational</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
                 </div>
-                <div>
-                  <Label className="text-sm font-medium">(c) BER items if any</Label>
-                  <div className="flex items-center gap-2 mb-2 mt-1">
+                
+                {/* BER Items Table */}
+                <div className="space-y-2">
+                  <h5 className="text-sm font-medium mb-2">(c) BER items if any*</h5>
+                  <div className="flex items-center gap-2 mb-2">
                     <Label className="text-sm">Enter Total Number of Rows.</Label>
                     <Input
                       type="number"
-                      value={formData.berItems.length}
+                      value={formData.berItems?.length || 0}
                       onChange={(e) => {
                         const count = parseInt(e.target.value) || 0;
-                        if (count > formData.berItems.length) {
-                          for (let i = formData.berItems.length; i < count; i++) {
+                        const currentLength = formData.berItems?.length || 0;
+                        if (count > currentLength) {
+                          for (let i = currentLength; i < count; i++) {
                             handleAddBerItem();
                           }
-                        } else if (count < formData.berItems.length) {
-                          const toRemove = formData.berItems.slice(count);
+                        } else if (count < currentLength) {
+                          const toRemove = (formData.berItems || []).slice(count);
                           toRemove.forEach(item => handleRemoveBerItem(item.id));
                         }
                       }}
@@ -3340,12 +4349,12 @@ const HullMaintenanceInspectionforShipsForm = () => {
                       <TableHeader>
                         <TableRow className="bg-gray-50">
                           <TableHead className="border border-gray-300 text-center font-medium">Sr No.</TableHead>
-                          <TableHead className="border border-gray-300 text-center font-medium">BER Details</TableHead>
+                          <TableHead className="border border-gray-300 text-center font-medium">BER Details*</TableHead>
                         </TableRow>
                       </TableHeader>
                       <TableBody>
-                        {formData.berItems.length > 0 ? (
-                          formData.berItems.map((item, index) => (
+                        {(formData.berItems?.length || 0) > 0 ? (
+                          (formData.berItems || []).map((item, index) => (
                             <TableRow key={item.id}>
                               <TableCell className="border border-gray-300 p-2">
                                 <Input
@@ -3376,6 +4385,479 @@ const HullMaintenanceInspectionforShipsForm = () => {
                     </Table>
                   </div>
                 </div>
+
+                {/* Anchor Deficiencies Table */}
+                <div className="space-y-2">
+                  <h5 className="text-sm font-medium mb-2">(d) Deficiency if any*</h5>
+                  <div className="flex items-center gap-2 mb-2">
+                    <Label className="text-sm">Enter Total Number of Rows.</Label>
+                    <Input
+                      type="number"
+                      value={formData.anchorDeficiencies?.length || 0}
+                      onChange={(e) => {
+                        const count = parseInt(e.target.value) || 0;
+                        const currentLength = formData.anchorDeficiencies?.length || 0;
+                        if (count > currentLength) {
+                          for (let i = currentLength; i < count; i++) {
+                            handleAddHullEquipmentDefect('anchorDeficiencies');
+                          }
+                        } else if (count < currentLength) {
+                          const toRemove = (formData.anchorDeficiencies || []).slice(count);
+                          toRemove.forEach(defect => handleRemoveHullEquipmentDefect('anchorDeficiencies', defect.id));
+                        }
+                      }}
+                      className="w-20"
+                    />
+                  </div>
+                  <div className="overflow-x-auto">
+                    <Table className="border border-gray-300">
+                      <TableHeader>
+                        <TableRow className="bg-gray-50">
+                          <TableHead className="border border-gray-300 text-center font-medium">Sr No.</TableHead>
+                          <TableHead className="border border-gray-300 text-center font-medium">Deficiency Details*</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {(formData.anchorDeficiencies?.length || 0) > 0 ? (
+                          (formData.anchorDeficiencies || []).map((defect, index) => (
+                            <TableRow key={defect.id}>
+                              <TableCell className="border border-gray-300 p-2">
+                                <Input
+                                  value={defect.srNo}
+                                  onChange={(e) => handleUpdateHullEquipmentDefect('anchorDeficiencies', defect.id, 'srNo', e.target.value)}
+                                  placeholder={`(${String.fromCharCode(97 + index)})`}
+                                  className="border-0 p-1"
+                                />
+                              </TableCell>
+                              <TableCell className="border border-gray-300 p-2">
+                                <Input
+                                  value={defect.defectDetails}
+                                  onChange={(e) => handleUpdateHullEquipmentDefect('anchorDeficiencies', defect.id, 'defectDetails', e.target.value)}
+                                  placeholder="Enter deficiency details"
+                                  className="border-0 p-1"
+                                />
+                              </TableCell>
+                            </TableRow>
+                          ))
+                        ) : (
+                          <TableRow>
+                            <TableCell colSpan={2} className="border border-gray-300 p-4 text-center text-gray-500">
+                              No rows added yet. Enter number of rows above to add data.
+                            </TableCell>
+                          </TableRow>
+                        )}
+                      </TableBody>
+                    </Table>
+                  </div>
+                </div>
+              </div>
+
+              {/* 7.2 Capstan and Cable Holders */}
+              <div className="space-y-4">
+                <h4 className="text-md font-medium mb-4 text-gray-800">7.2 Capstan and Cable Holders</h4>
+                <div className="space-y-2">
+                  <h5 className="text-sm font-medium mb-2">Defects if any*</h5>
+                  <div className="flex items-center gap-2 mb-2">
+                    <Label className="text-sm">Enter Total Number of Rows.</Label>
+                    <Input
+                      type="number"
+                      value={formData.capstanDefects?.length || 0}
+                      onChange={(e) => {
+                        const count = parseInt(e.target.value) || 0;
+                        const currentLength = formData.capstanDefects?.length || 0;
+                        if (count > currentLength) {
+                          for (let i = currentLength; i < count; i++) {
+                            handleAddHullEquipmentDefect('capstanDefects');
+                          }
+                        } else if (count < currentLength) {
+                          const toRemove = (formData.capstanDefects || []).slice(count);
+                          toRemove.forEach(defect => handleRemoveHullEquipmentDefect('capstanDefects', defect.id));
+                        }
+                      }}
+                      className="w-20"
+                    />
+                  </div>
+                  <div className="overflow-x-auto">
+                    <Table className="border border-gray-300">
+                      <TableHeader>
+                        <TableRow className="bg-gray-50">
+                          <TableHead className="border border-gray-300 text-center font-medium">Sr No.</TableHead>
+                          <TableHead className="border border-gray-300 text-center font-medium">Defect Details*</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {(formData.capstanDefects?.length || 0) > 0 ? (
+                          (formData.capstanDefects || []).map((defect, index) => (
+                            <TableRow key={defect.id}>
+                              <TableCell className="border border-gray-300 p-2">
+                                <Input
+                                  value={defect.srNo}
+                                  onChange={(e) => handleUpdateHullEquipmentDefect('capstanDefects', defect.id, 'srNo', e.target.value)}
+                                  placeholder={`(${String.fromCharCode(97 + index)})`}
+                                  className="border-0 p-1"
+                                />
+                              </TableCell>
+                              <TableCell className="border border-gray-300 p-2">
+                                <Input
+                                  value={defect.defectDetails}
+                                  onChange={(e) => handleUpdateHullEquipmentDefect('capstanDefects', defect.id, 'defectDetails', e.target.value)}
+                                  placeholder="Enter defect details"
+                                  className="border-0 p-1"
+                                />
+                              </TableCell>
+                            </TableRow>
+                          ))
+                        ) : (
+                          <TableRow>
+                            <TableCell colSpan={2} className="border border-gray-300 p-4 text-center text-gray-500">
+                              No rows added yet. Enter number of rows above to add data.
+                            </TableCell>
+                          </TableRow>
+                        )}
+                      </TableBody>
+                    </Table>
+                  </div>
+                </div>
+              </div>
+
+              {/* 7.3 Winches */}
+              <div className="space-y-4">
+                <h4 className="text-md font-medium mb-4 text-gray-800">7.3 Winches</h4>
+                <div className="space-y-2">
+                  <h5 className="text-sm font-medium mb-2">Defects if any*</h5>
+                  <div className="flex items-center gap-2 mb-2">
+                    <Label className="text-sm">Enter Total Number of Rows.</Label>
+                    <Input
+                      type="number"
+                      value={formData.winchesDefects?.length || 0}
+                      onChange={(e) => {
+                        const count = parseInt(e.target.value) || 0;
+                        const currentLength = formData.winchesDefects?.length || 0;
+                        if (count > currentLength) {
+                          for (let i = currentLength; i < count; i++) {
+                            handleAddHullEquipmentDefect('winchesDefects');
+                          }
+                        } else if (count < currentLength) {
+                          const toRemove = (formData.winchesDefects || []).slice(count);
+                          toRemove.forEach(defect => handleRemoveHullEquipmentDefect('winchesDefects', defect.id));
+                        }
+                      }}
+                      className="w-20"
+                    />
+                  </div>
+                  <div className="overflow-x-auto">
+                    <Table className="border border-gray-300">
+                      <TableHeader>
+                        <TableRow className="bg-gray-50">
+                          <TableHead className="border border-gray-300 text-center font-medium">Sr No.</TableHead>
+                          <TableHead className="border border-gray-300 text-center font-medium">Defect Details*</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {(formData.winchesDefects?.length || 0) > 0 ? (
+                          (formData.winchesDefects || []).map((defect, index) => (
+                            <TableRow key={defect.id}>
+                              <TableCell className="border border-gray-300 p-2">
+                                <Input
+                                  value={defect.srNo}
+                                  onChange={(e) => handleUpdateHullEquipmentDefect('winchesDefects', defect.id, 'srNo', e.target.value)}
+                                  placeholder={`(${String.fromCharCode(97 + index)})`}
+                                  className="border-0 p-1"
+                                />
+                              </TableCell>
+                              <TableCell className="border border-gray-300 p-2">
+                                <Input
+                                  value={defect.defectDetails}
+                                  onChange={(e) => handleUpdateHullEquipmentDefect('winchesDefects', defect.id, 'defectDetails', e.target.value)}
+                                  placeholder="Enter defect details"
+                                  className="border-0 p-1"
+                                />
+                              </TableCell>
+                            </TableRow>
+                          ))
+                        ) : (
+                          <TableRow>
+                            <TableCell colSpan={2} className="border border-gray-300 p-4 text-center text-gray-500">
+                              No rows added yet. Enter number of rows above to add data.
+                            </TableCell>
+                          </TableRow>
+                        )}
+                      </TableBody>
+                    </Table>
+                  </div>
+                </div>
+              </div>
+
+              {/* 7.4 Crane */}
+              <div className="space-y-4">
+                <h4 className="text-md font-medium mb-4 text-gray-800">7.4 Crane</h4>
+                <div className="space-y-2">
+                  <h5 className="text-sm font-medium mb-2">Defects if any*</h5>
+                  <div className="flex items-center gap-2 mb-2">
+                    <Label className="text-sm">Enter Total Number of Rows.</Label>
+                    <Input
+                      type="number"
+                      value={formData.craneDefects?.length || 0}
+                      onChange={(e) => {
+                        const count = parseInt(e.target.value) || 0;
+                        const currentLength = formData.craneDefects?.length || 0;
+                        if (count > currentLength) {
+                          for (let i = currentLength; i < count; i++) {
+                            handleAddHullEquipmentDefect('craneDefects');
+                          }
+                        } else if (count < currentLength) {
+                          const toRemove = (formData.craneDefects || []).slice(count);
+                          toRemove.forEach(defect => handleRemoveHullEquipmentDefect('craneDefects', defect.id));
+                        }
+                      }}
+                      className="w-20"
+                    />
+                  </div>
+                  <div className="overflow-x-auto">
+                    <Table className="border border-gray-300">
+                      <TableHeader>
+                        <TableRow className="bg-gray-50">
+                          <TableHead className="border border-gray-300 text-center font-medium">Sr No.</TableHead>
+                          <TableHead className="border border-gray-300 text-center font-medium">Defect Details*</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {(formData.craneDefects?.length || 0) > 0 ? (
+                          (formData.craneDefects || []).map((defect, index) => (
+                            <TableRow key={defect.id}>
+                              <TableCell className="border border-gray-300 p-2">
+                                <Input
+                                  value={defect.srNo}
+                                  onChange={(e) => handleUpdateHullEquipmentDefect('craneDefects', defect.id, 'srNo', e.target.value)}
+                                  placeholder={`(${String.fromCharCode(97 + index)})`}
+                                  className="border-0 p-1"
+                                />
+                              </TableCell>
+                              <TableCell className="border border-gray-300 p-2">
+                                <Input
+                                  value={defect.defectDetails}
+                                  onChange={(e) => handleUpdateHullEquipmentDefect('craneDefects', defect.id, 'defectDetails', e.target.value)}
+                                  placeholder="Enter defect details"
+                                  className="border-0 p-1"
+                                />
+                              </TableCell>
+                            </TableRow>
+                          ))
+                        ) : (
+                          <TableRow>
+                            <TableCell colSpan={2} className="border border-gray-300 p-4 text-center text-gray-500">
+                              No rows added yet. Enter number of rows above to add data.
+                            </TableCell>
+                          </TableRow>
+                        )}
+                      </TableBody>
+                    </Table>
+                  </div>
+                </div>
+              </div>
+
+              {/* 7.5 Hangar Shutter */}
+              <div className="space-y-4">
+                <h4 className="text-md font-medium mb-4 text-gray-800">7.5 Hangar Shutter</h4>
+                <div className="space-y-2">
+                  <h5 className="text-sm font-medium mb-2">Defects if any*</h5>
+                  <div className="flex items-center gap-2 mb-2">
+                    <Label className="text-sm">Enter Total Number of Rows.</Label>
+                    <Input
+                      type="number"
+                      value={formData.hangarShutterDefects?.length || 0}
+                      onChange={(e) => {
+                        const count = parseInt(e.target.value) || 0;
+                        const currentLength = formData.hangarShutterDefects?.length || 0;
+                        if (count > currentLength) {
+                          for (let i = currentLength; i < count; i++) {
+                            handleAddHullEquipmentDefect('hangarShutterDefects');
+                          }
+                        } else if (count < currentLength) {
+                          const toRemove = (formData.hangarShutterDefects || []).slice(count);
+                          toRemove.forEach(defect => handleRemoveHullEquipmentDefect('hangarShutterDefects', defect.id));
+                        }
+                      }}
+                      className="w-20"
+                    />
+                  </div>
+                  <div className="overflow-x-auto">
+                    <Table className="border border-gray-300">
+                      <TableHeader>
+                        <TableRow className="bg-gray-50">
+                          <TableHead className="border border-gray-300 text-center font-medium">Sr No.</TableHead>
+                          <TableHead className="border border-gray-300 text-center font-medium">Defect Details*</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {(formData.hangarShutterDefects?.length || 0) > 0 ? (
+                          (formData.hangarShutterDefects || []).map((defect, index) => (
+                            <TableRow key={defect.id}>
+                              <TableCell className="border border-gray-300 p-2">
+                                <Input
+                                  value={defect.srNo}
+                                  onChange={(e) => handleUpdateHullEquipmentDefect('hangarShutterDefects', defect.id, 'srNo', e.target.value)}
+                                  placeholder={`(${String.fromCharCode(97 + index)})`}
+                                  className="border-0 p-1"
+                                />
+                              </TableCell>
+                              <TableCell className="border border-gray-300 p-2">
+                                <Input
+                                  value={defect.defectDetails}
+                                  onChange={(e) => handleUpdateHullEquipmentDefect('hangarShutterDefects', defect.id, 'defectDetails', e.target.value)}
+                                  placeholder="Enter defect details"
+                                  className="border-0 p-1"
+                                />
+                              </TableCell>
+                            </TableRow>
+                          ))
+                        ) : (
+                          <TableRow>
+                            <TableCell colSpan={2} className="border border-gray-300 p-4 text-center text-gray-500">
+                              No rows added yet. Enter number of rows above to add data.
+                            </TableCell>
+                          </TableRow>
+                        )}
+                      </TableBody>
+                    </Table>
+                  </div>
+                </div>
+              </div>
+
+              {/* 7.6 Boom */}
+              <div className="space-y-4">
+                <h4 className="text-md font-medium mb-4 text-gray-800">7.6 Boom</h4>
+                <div className="space-y-2">
+                  <h5 className="text-sm font-medium mb-2">Defects if any*</h5>
+                  <div className="flex items-center gap-2 mb-2">
+                    <Label className="text-sm">Enter Total Number of Rows.</Label>
+                    <Input
+                      type="number"
+                      value={formData.boomDefects?.length || 0}
+                      onChange={(e) => {
+                        const count = parseInt(e.target.value) || 0;
+                        const currentLength = formData.boomDefects?.length || 0;
+                        if (count > currentLength) {
+                          for (let i = currentLength; i < count; i++) {
+                            handleAddHullEquipmentDefect('boomDefects');
+                          }
+                        } else if (count < currentLength) {
+                          const toRemove = (formData.boomDefects || []).slice(count);
+                          toRemove.forEach(defect => handleRemoveHullEquipmentDefect('boomDefects', defect.id));
+                        }
+                      }}
+                      className="w-20"
+                    />
+                  </div>
+                  <div className="overflow-x-auto">
+                    <Table className="border border-gray-300">
+                      <TableHeader>
+                        <TableRow className="bg-gray-50">
+                          <TableHead className="border border-gray-300 text-center font-medium">Sr No.</TableHead>
+                          <TableHead className="border border-gray-300 text-center font-medium">Defect Details*</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {(formData.boomDefects?.length || 0) > 0 ? (
+                          (formData.boomDefects || []).map((defect, index) => (
+                            <TableRow key={defect.id}>
+                              <TableCell className="border border-gray-300 p-2">
+                                <Input
+                                  value={defect.srNo}
+                                  onChange={(e) => handleUpdateHullEquipmentDefect('boomDefects', defect.id, 'srNo', e.target.value)}
+                                  placeholder={`(${String.fromCharCode(97 + index)})`}
+                                  className="border-0 p-1"
+                                />
+                              </TableCell>
+                              <TableCell className="border border-gray-300 p-2">
+                                <Input
+                                  value={defect.defectDetails}
+                                  onChange={(e) => handleUpdateHullEquipmentDefect('boomDefects', defect.id, 'defectDetails', e.target.value)}
+                                  placeholder="Enter defect details"
+                                  className="border-0 p-1"
+                                />
+                              </TableCell>
+                            </TableRow>
+                          ))
+                        ) : (
+                          <TableRow>
+                            <TableCell colSpan={2} className="border border-gray-300 p-4 text-center text-gray-500">
+                              No rows added yet. Enter number of rows above to add data.
+                            </TableCell>
+                          </TableRow>
+                        )}
+                      </TableBody>
+                    </Table>
+                  </div>
+                </div>
+              </div>
+
+              {/* 7.7 A's & A's / ABER */}
+              <div className="space-y-4">
+                <h4 className="text-md font-medium mb-4 text-gray-800">7.7 A's & A's / ABER</h4>
+                <div className="space-y-2">
+                  <h5 className="text-sm font-medium mb-2">Defects if any*</h5>
+                  <div className="flex items-center gap-2 mb-2">
+                    <Label className="text-sm">Enter Total Number of Rows.</Label>
+                    <Input
+                      type="number"
+                      value={formData.asAberDefects?.length || 0}
+                      onChange={(e) => {
+                        const count = parseInt(e.target.value) || 0;
+                        const currentLength = formData.asAberDefects?.length || 0;
+                        if (count > currentLength) {
+                          for (let i = currentLength; i < count; i++) {
+                            handleAddHullEquipmentDefect('asAberDefects');
+                          }
+                        } else if (count < currentLength) {
+                          const toRemove = (formData.asAberDefects || []).slice(count);
+                          toRemove.forEach(defect => handleRemoveHullEquipmentDefect('asAberDefects', defect.id));
+                        }
+                      }}
+                      className="w-20"
+                    />
+                  </div>
+                  <div className="overflow-x-auto">
+                    <Table className="border border-gray-300">
+                      <TableHeader>
+                        <TableRow className="bg-gray-50">
+                          <TableHead className="border border-gray-300 text-center font-medium">Sr No.</TableHead>
+                          <TableHead className="border border-gray-300 text-center font-medium">Defect Details*</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {(formData.asAberDefects?.length || 0) > 0 ? (
+                          (formData.asAberDefects || []).map((defect, index) => (
+                            <TableRow key={defect.id}>
+                              <TableCell className="border border-gray-300 p-2">
+                                <Input
+                                  value={defect.srNo}
+                                  onChange={(e) => handleUpdateHullEquipmentDefect('asAberDefects', defect.id, 'srNo', e.target.value)}
+                                  placeholder={`(${String.fromCharCode(97 + index)})`}
+                                  className="border-0 p-1"
+                                />
+                              </TableCell>
+                              <TableCell className="border border-gray-300 p-2">
+                                <Input
+                                  value={defect.defectDetails}
+                                  onChange={(e) => handleUpdateHullEquipmentDefect('asAberDefects', defect.id, 'defectDetails', e.target.value)}
+                                  placeholder="Enter defect details"
+                                  className="border-0 p-1"
+                                />
+                              </TableCell>
+                            </TableRow>
+                          ))
+                        ) : (
+                          <TableRow>
+                            <TableCell colSpan={2} className="border border-gray-300 p-4 text-center text-gray-500">
+                              No rows added yet. Enter number of rows above to add data.
+                            </TableCell>
+                          </TableRow>
+                        )}
+                      </TableBody>
+                    </Table>
+                  </div>
+                </div>
               </div>
             </CardContent>
           </Card>
@@ -3385,52 +4867,272 @@ const HullMaintenanceInspectionforShipsForm = () => {
             <CardHeader className="bg-gray-100">
               <CardTitle className="text-lg font-semibold text-center underline">Life Saving Appliances</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-6 p-6">
-              <div>
-                <Label htmlFor="visualSurvey" className="text-sm font-medium">(iv) Visual survey of strong back area of hooks, connecting rods, adapter plate, securing bolts, weld joints and GRP Laminate around it.*</Label>
-                <Select value={formData.visualSurvey} onValueChange={(value) => handleInputChange('visualSurvey', value)}>
-                  <SelectTrigger className="mt-1">
-                    <SelectValue placeholder="--Select--" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="satisfactory">Satisfactory</SelectItem>
-                    <SelectItem value="unsatisfactory">Unsatisfactory</SelectItem>
-                    <SelectItem value="needs-attention">Needs Attention</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+            <CardContent className="space-y-6 p-6 max-h-96 overflow-y-auto">
               
-              <div>
-                <h4 className="text-md font-medium mb-4 text-gray-800">8.2 Life Rafts</h4>
+              {/* 8.1 Boats */}
+              <div className="space-y-4">
+                <h4 className="text-md font-medium mb-4 text-gray-800">8.1 Boats</h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="boatsAuthorization" className="text-sm font-medium">(a) Authorisation*</Label>
+                    <Input
+                      id="boatsAuthorization"
+                      value={formData.boatsAuthorization}
+                      onChange={(e) => handleInputChange('boatsAuthorization', e.target.value)}
+                      placeholder="Enter authorization"
+                      className="mt-1"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="boatsHeldDeficiency" className="text-sm font-medium">(b) Held / Deficiency on board*</Label>
+                    <Input
+                      id="boatsHeldDeficiency"
+                      value={formData.boatsHeldDeficiency}
+                      onChange={(e) => handleInputChange('boatsHeldDeficiency', e.target.value)}
+                      placeholder="Enter held/deficiency"
+                      className="mt-1"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="boatsBer" className="text-sm font-medium">(c) BER*</Label>
+                    <Input
+                      id="boatsBer"
+                      value={formData.boatsBer}
+                      onChange={(e) => handleInputChange('boatsBer', e.target.value)}
+                      placeholder="Enter BER"
+                      className="mt-1"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="boatsLandedRepairs" className="text-sm font-medium">(d) Landed for repairs*</Label>
+                    <Input
+                      id="boatsLandedRepairs"
+                      value={formData.boatsLandedRepairs}
+                      onChange={(e) => handleInputChange('boatsLandedRepairs', e.target.value)}
+                      placeholder="Enter landed for repairs"
+                      className="mt-1"
+                    />
+                  </div>
+                </div>
+                
+                {/* Boat Defects Table */}
+                <div className="space-y-2">
+                  <h5 className="text-sm font-medium mb-2">(e) Defects if any*</h5>
+                  <div className="flex items-center gap-2 mb-2">
+                    <Label className="text-sm">Enter Total Number of Rows.</Label>
+                    <Input
+                      type="number"
+                      value={formData.boatDefects?.length || 0}
+                      onChange={(e) => {
+                        const count = parseInt(e.target.value) || 0;
+                        const currentLength = formData.boatDefects?.length || 0;
+                        if (count > currentLength) {
+                          for (let i = currentLength; i < count; i++) {
+                            handleAddBoatDefect();
+                          }
+                        } else if (count < currentLength) {
+                          const toRemove = (formData.boatDefects || []).slice(count);
+                          toRemove.forEach(defect => handleRemoveBoatDefect(defect.id));
+                        }
+                      }}
+                      className="w-20"
+                    />
+                  </div>
+                  <div className="overflow-x-auto">
+                    <Table className="border border-gray-300">
+                      <TableHeader>
+                        <TableRow className="bg-gray-50">
+                          <TableHead className="border border-gray-300 text-center font-medium">Sr No.</TableHead>
+                          <TableHead className="border border-gray-300 text-center font-medium">Equipment*</TableHead>
+                          <TableHead className="border border-gray-300 text-center font-medium">Location*</TableHead>
+                          <TableHead className="border border-gray-300 text-center font-medium">Remarks*</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {(formData.boatDefects?.length || 0) > 0 ? (
+                          (formData.boatDefects || []).map((defect, index) => (
+                            <TableRow key={defect.id}>
+                              <TableCell className="border border-gray-300 p-2">
+                                <Input
+                                  value={defect.srNo}
+                                  onChange={(e) => handleUpdateBoatDefect(defect.id, 'srNo', e.target.value)}
+                                  placeholder={`(${String.fromCharCode(97 + index)})`}
+                                  className="border-0 p-1"
+                                />
+                              </TableCell>
+                              <TableCell className="border border-gray-300 p-2">
+                                <Input
+                                  value={defect.equipment}
+                                  onChange={(e) => handleUpdateBoatDefect(defect.id, 'equipment', e.target.value)}
+                                  placeholder="Enter equipment"
+                                  className="border-0 p-1"
+                                />
+                              </TableCell>
+                              <TableCell className="border border-gray-300 p-2">
+                                <Input
+                                  value={defect.location}
+                                  onChange={(e) => handleUpdateBoatDefect(defect.id, 'location', e.target.value)}
+                                  placeholder="Enter location"
+                                  className="border-0 p-1"
+                                />
+                              </TableCell>
+                              <TableCell className="border border-gray-300 p-2">
+                                <Input
+                                  value={defect.remarks}
+                                  onChange={(e) => handleUpdateBoatDefect(defect.id, 'remarks', e.target.value)}
+                                  placeholder="Enter remarks"
+                                  className="border-0 p-1"
+                                />
+                              </TableCell>
+                            </TableRow>
+                          ))
+                        ) : (
+                          <TableRow>
+                            <TableCell colSpan={4} className="border border-gray-300 p-4 text-center text-gray-500">
+                              No rows added yet. Enter number of rows above to add data.
+                            </TableCell>
+                          </TableRow>
+                        )}
+                      </TableBody>
+                    </Table>
+                  </div>
+                </div>
+
+                {/* Maintenance of two point lifting hooks */}
                 <div className="space-y-4">
+                  <h5 className="text-sm font-medium mb-2">(f) Maintenance of two point lifting hooks of Survey Motor Boats. (NO 03/18 refers) (Only For Survey Motor Boats)*</h5>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="boatsMaintenanceTwoPointLifting" className="text-sm font-medium">Maintenance Status*</Label>
+                      <Select value={formData.boatsMaintenanceTwoPointLifting} onValueChange={(value) => handleInputChange('boatsMaintenanceTwoPointLifting', value)}>
+                        <SelectTrigger className="mt-1">
+                          <SelectValue placeholder="--Select--" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="Satisfactory">Satisfactory</SelectItem>
+                          <SelectItem value="Unsatisfactory">Unsatisfactory</SelectItem>
+                          <SelectItem value="Needs Attention">Needs Attention</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label htmlFor="boatsVisualExaminationHooks" className="text-sm font-medium">(i) Visual examination of Forward and aft lifting hooks arrangement*</Label>
+                      <Select value={formData.boatsVisualExaminationHooks} onValueChange={(value) => handleInputChange('boatsVisualExaminationHooks', value)}>
+                        <SelectTrigger className="mt-1">
+                          <SelectValue placeholder="--Select--" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="Satisfactory">Satisfactory</SelectItem>
+                          <SelectItem value="Unsatisfactory">Unsatisfactory</SelectItem>
+                          <SelectItem value="Needs Attention">Needs Attention</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label htmlFor="boatsDpTestAdapter" className="text-sm font-medium">(ii) DP test of adapter piece between the hook and the base plate being carried out annually by refitting authority.*</Label>
+                      <Select value={formData.boatsDpTestAdapter} onValueChange={(value) => handleInputChange('boatsDpTestAdapter', value)}>
+                        <SelectTrigger className="mt-1">
+                          <SelectValue placeholder="--Select--" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="Completed">Completed</SelectItem>
+                          <SelectItem value="Pending">Pending</SelectItem>
+                          <SelectItem value="Not Applicable">Not Applicable</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label htmlFor="boatsPeriodicInspection" className="text-sm font-medium">(iii) Periodic Inspection and maintenance / testing of lifting hook arrangement as stipulated MAINTOP MT- 17023 is carried out by SS.*</Label>
+                      <Select value={formData.boatsPeriodicInspection} onValueChange={(value) => handleInputChange('boatsPeriodicInspection', value)}>
+                        <SelectTrigger className="mt-1">
+                          <SelectValue placeholder="--Select--" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="Completed">Completed</SelectItem>
+                          <SelectItem value="Pending">Pending</SelectItem>
+                          <SelectItem value="Not Applicable">Not Applicable</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="md:col-span-2">
+                      <Label htmlFor="boatsVisualSurveyStrongBack" className="text-sm font-medium">(iv) Visual survey of strong back area of hooks, connecting rods, adapter plate, securing bolts, weld joints and GRP Laminate around it.*</Label>
+                      <Select value={formData.boatsVisualSurveyStrongBack} onValueChange={(value) => handleInputChange('boatsVisualSurveyStrongBack', value)}>
+                        <SelectTrigger className="mt-1">
+                          <SelectValue placeholder="--Select--" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="Satisfactory">Satisfactory</SelectItem>
+                          <SelectItem value="Unsatisfactory">Unsatisfactory</SelectItem>
+                          <SelectItem value="Needs Attention">Needs Attention</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* 8.2 Life Rafts */}
+              <div className="space-y-4">
+                <h4 className="text-md font-medium mb-4 text-gray-800">8.2 Life Rafts</h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <Label htmlFor="lifeRaftsAuthorization" className="text-sm font-medium">(a) Authorisation*</Label>
-                    <Textarea
+                    <Input
                       id="lifeRaftsAuthorization"
                       value={formData.lifeRaftsAuthorization}
                       onChange={(e) => handleInputChange('lifeRaftsAuthorization', e.target.value)}
-                      placeholder="Enter authorization details..."
-                      className="mt-1 min-h-[60px]"
+                      placeholder="Enter authorization"
+                      className="mt-1"
                     />
                   </div>
                   <div>
-                    <Label htmlFor="lifeRaftsHeld" className="text-sm font-medium">(b) Held / deficiency*</Label>
-                    <Textarea
-                      id="lifeRaftsHeld"
-                      value={formData.lifeRaftsHeld}
-                      onChange={(e) => handleInputChange('lifeRaftsHeld', e.target.value)}
-                      placeholder="Enter held/deficiency details..."
-                      className="mt-1 min-h-[60px]"
+                    <Label htmlFor="lifeRaftsHeldDeficiency" className="text-sm font-medium">(b) Held / deficiency*</Label>
+                    <Input
+                      id="lifeRaftsHeldDeficiency"
+                      value={formData.lifeRaftsHeldDeficiency}
+                      onChange={(e) => handleInputChange('lifeRaftsHeldDeficiency', e.target.value)}
+                      placeholder="Enter held/deficiency"
+                      className="mt-1"
                     />
                   </div>
                   <div>
-                    <Label htmlFor="lifeRaftsBer" className="text-sm font-medium">(c) BER</Label>
-                    <Textarea
+                    <Label htmlFor="lifeRaftsBer" className="text-sm font-medium">(c) BER*</Label>
+                    <Input
                       id="lifeRaftsBer"
                       value={formData.lifeRaftsBer}
                       onChange={(e) => handleInputChange('lifeRaftsBer', e.target.value)}
-                      placeholder="Enter BER details..."
-                      className="mt-1 min-h-[60px]"
+                      placeholder="Enter BER"
+                      className="mt-1"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="lifeRaftsLandedSurvey" className="text-sm font-medium">(d) Landed for survey*</Label>
+                    <Input
+                      id="lifeRaftsLandedSurvey"
+                      value={formData.lifeRaftsLandedSurvey}
+                      onChange={(e) => handleInputChange('lifeRaftsLandedSurvey', e.target.value)}
+                      placeholder="Enter landed for survey"
+                      className="mt-1"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="lifeRaftsStowageArrangements" className="text-sm font-medium">(e) Stowage arrangements*</Label>
+                    <Input
+                      id="lifeRaftsStowageArrangements"
+                      value={formData.lifeRaftsStowageArrangements}
+                      onChange={(e) => handleInputChange('lifeRaftsStowageArrangements', e.target.value)}
+                      placeholder="Enter stowage arrangements"
+                      className="mt-1"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="lifeRaftsHydrostaticReleasingGear" className="text-sm font-medium">(f) Hydrostatic releasing gear*</Label>
+                    <Input
+                      id="lifeRaftsHydrostaticReleasingGear"
+                      value={formData.lifeRaftsHydrostaticReleasingGear}
+                      onChange={(e) => handleInputChange('lifeRaftsHydrostaticReleasingGear', e.target.value)}
+                      placeholder="Enter hydrostatic releasing gear"
+                      className="mt-1"
                     />
                   </div>
                 </div>
@@ -3633,7 +5335,7 @@ const HullMaintenanceInspectionforShipsForm = () => {
 
           {/* Form Actions */}
           <div className="flex flex-wrap gap-4 justify-center mt-8">
-          image.png            <Button
+              <Button
               type="button"
               onClick={handleFetchDrafts}
               className="px-6 bg-cyan-500 hover:bg-cyan-600 text-white font-semibold uppercase"

@@ -457,119 +457,127 @@ const ImpressedCurrentCathodicProtectionForm: React.FC = () => {
             </div>
           <form onSubmit={handleSubmit}>
 
-            <ul className="form-list">
+            <div className="space-y-6">
               {/* Section 1 - Ship */}
-              <li className="section-box">
-                <div className="section-header">
-                  <span className="label-number">1</span>
-                  <div className="section-header-inner">
-                    <Label htmlFor="ship">Ship</Label>
+              <div className="flex items-center space-x-4 border-b border-gray-200 pb-4">
+                <div className="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold text-sm">
+                  1
+                </div>
+                <div className="flex-1">
+                  <Label htmlFor="ship" className="text-lg font-medium">Ship</Label>
+                  <div className="mt-2">
+                    <Select value={formData.ship} onValueChange={(value) => handleInputChange('ship', value)}>
+                      <SelectTrigger className="w-64">
+                        <SelectValue placeholder="--Select--" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {ships.map((ship) => (
+                          <SelectItem key={ship.value} value={ship.value}>
+                            {ship.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </div>
                 </div>
-                <div className="section-content">
-                  <div className="row">
-                    <div className="col-md-3">
-                      <Select value={formData.ship} onValueChange={(value) => handleInputChange('ship', value)}>
-                        <SelectTrigger>
-                          <SelectValue placeholder="--Select--" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {ships.map((ship) => (
-                            <SelectItem key={ship.value} value={ship.value}>
-                              {ship.label}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  </div>
-                </div>
-              </li>
+              </div>
 
               {/* Section 2 - Date of Inspection/Trials */}
-              <li className="section-box">
-                <div className="col-md-2">
-                  <div className="section-header">
-                    <span className="label-number">2</span>
-                    <Label htmlFor="dateOfInspection">
-                      Date of Inspection/Trials<strong className="red">*</strong>
-                    </Label>
-                  </div>
-                  <div className="autocom_search_icon2 cal">
+              <div className="flex items-center space-x-4 border-b border-gray-200 pb-4">
+                <div className="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold text-sm">
+                  2
+                </div>
+                <div className="flex-1">
+                  <Label htmlFor="dateOfInspection" className="text-lg font-medium">
+                    Date of Inspection/Trials<span className="text-red-500">*</span>
+                  </Label>
+                  <div className="mt-2">
                     <Input
                       type="date"
                       id="dateOfInspection"
                       value={formData.dateOfInspection}
                       onChange={(e) => handleInputChange('dateOfInspection', e.target.value)}
+                      className="w-64"
                       required
                     />
                   </div>
                 </div>
-              </li>
+              </div>
 
               {/* Section 3 - Make */}
-              <li className="section-box">
-                <div className="section-header">
-                  <span className="label-number">3</span>
-                  <Label htmlFor="make">
-                    Make<strong className="red">*</strong>
-                  </Label>
-                  <Input
-                    type="text"
-                    id="make"
-                    value={formData.make}
-                    onChange={(e) => {
-                      if (validateSpecialCharacters(e.target.value)) {
-                        handleInputChange('make', e.target.value);
-                      }
-                    }}
-                    maxLength={20}
-                    required
-                  />
+              <div className="flex items-center space-x-4 border-b border-gray-200 pb-4">
+                <div className="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold text-sm">
+                  3
                 </div>
-              </li>
-
-              {/* Section 4 - Year of Manufacture */}
-              <li className="section-box">
-                <div className="section-header custom-yearpicker">
-                  <span className="label-number">4</span>
-                  <Label htmlFor="yearOfManufacture">
-                    Year of Manufacture<strong className="red">*</strong>
+                <div className="flex-1">
+                  <Label htmlFor="make" className="text-lg font-medium">
+                    Make<span className="text-red-500">*</span>
                   </Label>
-                  <Input
-                    type="text"
-                    id="yearOfManufacture"
-                    value={formData.yearOfManufacture}
-                    onChange={(e) => {
-                      const value = e.target.value.replace(/[^0-9]/g, '');
-                      handleInputChange('yearOfManufacture', value);
-                    }}
-                    onBlur={(e) => {
-                      if (e.target.value && !validateYear(e.target.value)) {
-                        handleInputChange('yearOfManufacture', '');
-                      }
-                    }}
-                    maxLength={4}
-                    required
-                  />
-                </div>
-              </li>
-
-              {/* Section 5 - Check of Hull Potential */}
-              <li className="section-box">
-                <div className="section-header">
-                  <span className="label-number">5</span>
-                  <div className="section-header-inner">
-                    <Label htmlFor="hullPotential">Check of Hull Potential</Label>
+                  <div className="mt-2">
+                    <Input
+                      type="text"
+                      id="make"
+                      value={formData.make}
+                      onChange={(e) => {
+                        if (validateSpecialCharacters(e.target.value)) {
+                          handleInputChange('make', e.target.value);
+                        }
+                      }}
+                      maxLength={20}
+                      className="w-64"
+                      required
+                    />
                   </div>
                 </div>
-                <div className="section-header-inner">i) &lt; 170, Over-Protected</div>
-                <div className="section-content">
-                  <div className="row">
-                    <div className="col-md-12">
-                      <Label className="remarks-label">
-                        Remarks:<strong className="red">*</strong>
-                      </Label>
+              </div>
+
+              {/* Section 4 - Year of Manufacture */}
+              <div className="flex items-center space-x-4 border-b border-gray-200 pb-4">
+                <div className="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold text-sm">
+                  4
+                </div>
+                <div className="flex-1">
+                  <Label htmlFor="yearOfManufacture" className="text-lg font-medium">
+                    Year of Manufacture<span className="text-red-500">*</span>
+                  </Label>
+                  <div className="mt-2">
+                    <Input
+                      type="text"
+                      id="yearOfManufacture"
+                      value={formData.yearOfManufacture}
+                      onChange={(e) => {
+                        const value = e.target.value.replace(/[^0-9]/g, '');
+                        handleInputChange('yearOfManufacture', value);
+                      }}
+                      onBlur={(e) => {
+                        if (e.target.value && !validateYear(e.target.value)) {
+                          handleInputChange('yearOfManufacture', '');
+                        }
+                      }}
+                      maxLength={4}
+                      className="w-64"
+                      required
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Section 5 - Check of Hull Potential */}
+              <div className="border-b border-gray-200 pb-4">
+                <div className="flex items-center space-x-4 mb-4">
+                  <div className="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold text-sm">
+                    5
+                  </div>
+                  <div className="flex-1">
+                    <Label htmlFor="hullPotential" className="text-lg font-medium">Check of Hull Potential</Label>
+                  </div>
+                </div>
+                
+                <div className="ml-12 space-y-4">
+                  <div>
+                    <div className="text-sm font-medium mb-2">i) &lt; 170, Over-Protected</div>
+                    <div className="flex items-center space-x-2">
+                      <Label className="text-sm">Remarks:<span className="text-red-500">*</span></Label>
                       <Textarea
                         value={formData.remarksOverprotected}
                         onChange={(e) => {
@@ -578,19 +586,16 @@ const ImpressedCurrentCathodicProtectionForm: React.FC = () => {
                           }
                         }}
                         rows={2}
+                        className="flex-1"
                         required
                       />
                     </div>
                   </div>
-                </div>
-                <br />
-                <div className="section-header-inner">ii) 170-270</div>
-                <div className="section-content">
-                  <div className="row">
-                    <div className="col-md-12">
-                      <Label className="remarks-label">
-                        Remarks:<strong className="red">*</strong>
-                      </Label>
+                  
+                  <div>
+                    <div className="text-sm font-medium mb-2">ii) 170-270</div>
+                    <div className="flex items-center space-x-2">
+                      <Label className="text-sm">Remarks:<span className="text-red-500">*</span></Label>
                       <Textarea
                         value={formData.remarks170_270}
                         onChange={(e) => {
@@ -599,19 +604,16 @@ const ImpressedCurrentCathodicProtectionForm: React.FC = () => {
                           }
                         }}
                         rows={2}
+                        className="flex-1"
                         required
                       />
                     </div>
                   </div>
-                </div>
-                <br />
-                <div className="section-header-inner">iii) &gt; 450, Under-Protected</div>
-                <div className="section-content">
-                  <div className="row">
-                    <div className="col-md-12">
-                      <Label className="remarks-label">
-                        Remarks:<strong className="red">*</strong>
-                      </Label>
+                  
+                  <div>
+                    <div className="text-sm font-medium mb-2">iii) &gt; 450, Under-Protected</div>
+                    <div className="flex items-center space-x-2">
+                      <Label className="text-sm">Remarks:<span className="text-red-500">*</span></Label>
                       <Textarea
                         value={formData.remarksUnderProtected}
                         onChange={(e) => {
@@ -620,32 +622,35 @@ const ImpressedCurrentCathodicProtectionForm: React.FC = () => {
                           }
                         }}
                         rows={2}
+                        className="flex-1"
                         required
                       />
                     </div>
                   </div>
                 </div>
-              </li>
+              </div>
 
               {/* Section 6 - Condition of Cables and Connectors of Control Panel */}
-              <li className="section-box">
-                <div className="section-header">
-                  <span className="label-number">6</span>
-                  <div className="section-header-inner">
-                    <Label htmlFor="controlPanel">Condition of Cables and Connectors of Control Panel</Label>
+              <div className="border-b border-gray-200 pb-4">
+                <div className="flex items-center space-x-4 mb-4">
+                  <div className="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold text-sm">
+                    6
+                  </div>
+                  <div className="flex-1">
+                    <Label htmlFor="controlPanel" className="text-lg font-medium">Condition of Cables and Connectors of Control Panel</Label>
                   </div>
                 </div>
-                <div className="section-header-inner">
-                  a) Carbon Deposit on Connectors, Pitted Lugs. Check Tightness of Electrical Cable, Connectors and Fasteners.
-                </div>
-                <div className="section-content">
-                  <div className="row">
-                    <div className="col-md-4">
-                      <Label className="observation-label">
-                        Observations:<strong className="red">*</strong>
-                      </Label>
+                
+                <div className="ml-12 space-y-4">
+                  <div className="text-sm font-medium mb-2">
+                    a) Carbon Deposit on Connectors, Pitted Lugs. Check Tightness of Electrical Cable, Connectors and Fasteners.
+                  </div>
+                  
+                  <div className="flex items-start space-x-4">
+                    <div className="w-48">
+                      <Label className="text-sm">Observations:<span className="text-red-500">*</span></Label>
                       <Select value={formData.observationsControlPanel} onValueChange={(value) => handleInputChange('observationsControlPanel', value)}>
-                        <SelectTrigger>
+                        <SelectTrigger className="mt-1">
                           <SelectValue placeholder="--Select--" />
                         </SelectTrigger>
                         <SelectContent>
@@ -657,10 +662,8 @@ const ImpressedCurrentCathodicProtectionForm: React.FC = () => {
                         </SelectContent>
                       </Select>
                     </div>
-                    <div className="col-md-8">
-                      <Label className="remarks-label">
-                        Remarks:<strong className="red">*</strong>
-                      </Label>
+                    <div className="flex-1">
+                      <Label className="text-sm">Remarks:<span className="text-red-500">*</span></Label>
                       <Textarea
                         value={formData.remarksControlPanel}
                         onChange={(e) => {
@@ -669,30 +672,33 @@ const ImpressedCurrentCathodicProtectionForm: React.FC = () => {
                           }
                         }}
                         rows={2}
+                        className="mt-1"
                         required
                       />
                     </div>
                   </div>
                 </div>
-              </li>
+              </div>
 
               {/* Section 7 - Check Anode Fuse Terminal Resistance Limits */}
-              <li className="section-box">
-                <div className="section-header">
-                  <span className="label-number">7</span>
-                  <div className="section-header-inner">
-                    <Label htmlFor="terminalResistance">Check Anode Fuse Terminal Resistance Limits (Unit)</Label>
+              <div className="border-b border-gray-200 pb-4">
+                <div className="flex items-center space-x-4 mb-4">
+                  <div className="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold text-sm">
+                    7
+                  </div>
+                  <div className="flex-1">
+                    <Label htmlFor="terminalResistance" className="text-lg font-medium">Check Anode Fuse Terminal Resistance Limits (Unit)</Label>
                   </div>
                 </div>
-                <div className="section-header-inner">a) 0.5-1 K ohm</div>
-                <div className="section-content">
-                  <div className="row">
-                    <div className="col-md-4">
-                      <Label className="observation-label">
-                        Observations:<strong className="red">*</strong>
-                      </Label>
+                
+                <div className="ml-12 space-y-4">
+                  <div className="text-sm font-medium mb-2">a) 0.5-1 K ohm</div>
+                  
+                  <div className="flex items-start space-x-4">
+                    <div className="w-48">
+                      <Label className="text-sm">Observations:<span className="text-red-500">*</span></Label>
                       <Select value={formData.observationsTerminal} onValueChange={(value) => handleInputChange('observationsTerminal', value)}>
-                        <SelectTrigger>
+                        <SelectTrigger className="mt-1">
                           <SelectValue placeholder="--Select--" />
                         </SelectTrigger>
                         <SelectContent>
@@ -704,10 +710,8 @@ const ImpressedCurrentCathodicProtectionForm: React.FC = () => {
                         </SelectContent>
                       </Select>
                     </div>
-                    <div className="col-md-8">
-                      <Label className="remarks-label">
-                        Remarks:<strong className="red">*</strong>
-                      </Label>
+                    <div className="flex-1">
+                      <Label className="text-sm">Remarks:<span className="text-red-500">*</span></Label>
                       <Textarea
                         value={formData.remarksTerminal}
                         onChange={(e) => {
@@ -716,29 +720,31 @@ const ImpressedCurrentCathodicProtectionForm: React.FC = () => {
                           }
                         }}
                         rows={2}
+                        className="mt-1"
                         required
                       />
                     </div>
                   </div>
                 </div>
-              </li>
+              </div>
 
               {/* Section 8 - Check For Readings from ICCP Records */}
-              <li className="section-box">
-                <div className="section-header">
-                  <span className="label-number">8</span>
-                  <div className="section-header-inner">
-                    <Label htmlFor="iccpReadings">Check For Readings from (ICCP Records Maintained by SS)</Label>
+              <div className="border-b border-gray-200 pb-4">
+                <div className="flex items-center space-x-4 mb-4">
+                  <div className="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold text-sm">
+                    8
+                  </div>
+                  <div className="flex-1">
+                    <Label htmlFor="iccpReadings" className="text-lg font-medium">Check For Readings from (ICCP Records Maintained by SS)</Label>
                   </div>
                 </div>
-                <div className="section-content">
-                  <div className="row">
-                    <div className="col-md-4">
-                      <Label className="observation-label">
-                        Observations:<strong className="red">*</strong>
-                      </Label>
+                
+                <div className="ml-12">
+                  <div className="flex items-start space-x-4">
+                    <div className="w-48">
+                      <Label className="text-sm">Observations:<span className="text-red-500">*</span></Label>
                       <Select value={formData.observationsReading} onValueChange={(value) => handleInputChange('observationsReading', value)}>
-                        <SelectTrigger>
+                        <SelectTrigger className="mt-1">
                           <SelectValue placeholder="--Select--" />
                         </SelectTrigger>
                         <SelectContent>
@@ -750,10 +756,8 @@ const ImpressedCurrentCathodicProtectionForm: React.FC = () => {
                         </SelectContent>
                       </Select>
                     </div>
-                    <div className="col-md-8">
-                      <Label className="remarks-label">
-                        Remarks:<strong className="red">*</strong>
-                      </Label>
+                    <div className="flex-1">
+                      <Label className="text-sm">Remarks:<span className="text-red-500">*</span></Label>
                       <Textarea
                         value={formData.remarksReading}
                         onChange={(e) => {
@@ -762,29 +766,31 @@ const ImpressedCurrentCathodicProtectionForm: React.FC = () => {
                           }
                         }}
                         rows={2}
+                        className="mt-1"
                         required
                       />
                     </div>
                   </div>
                 </div>
-              </li>
+              </div>
 
               {/* Section 9 - Last QC Inspection Report */}
-              <li className="section-box">
-                <div className="section-header">
-                  <span className="label-number">9</span>
-                  <div className="section-header-inner">
-                    <Label htmlFor="qcInspection">Last QC Inspection Report (d.y dock)</Label>
+              <div className="border-b border-gray-200 pb-4">
+                <div className="flex items-center space-x-4 mb-4">
+                  <div className="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold text-sm">
+                    9
+                  </div>
+                  <div className="flex-1">
+                    <Label htmlFor="qcInspection" className="text-lg font-medium">Last QC Inspection Report (d.y dock)</Label>
                   </div>
                 </div>
-                <div className="section-content">
-                  <div className="row">
-                    <div className="col-md-4">
-                      <Label className="observation-label">
-                        Observations:<strong className="red">*</strong>
-                      </Label>
+                
+                <div className="ml-12">
+                  <div className="flex items-start space-x-4">
+                    <div className="w-48">
+                      <Label className="text-sm">Observations:<span className="text-red-500">*</span></Label>
                       <Select value={formData.observationsInspection} onValueChange={(value) => handleInputChange('observationsInspection', value)}>
-                        <SelectTrigger>
+                        <SelectTrigger className="mt-1">
                           <SelectValue placeholder="--Select--" />
                         </SelectTrigger>
                         <SelectContent>
@@ -796,10 +802,8 @@ const ImpressedCurrentCathodicProtectionForm: React.FC = () => {
                         </SelectContent>
                       </Select>
                     </div>
-                    <div className="col-md-8">
-                      <Label className="remarks-label">
-                        Remarks:<strong className="red">*</strong>
-                      </Label>
+                    <div className="flex-1">
+                      <Label className="text-sm">Remarks:<span className="text-red-500">*</span></Label>
                       <Textarea
                         value={formData.remarksInspection}
                         onChange={(e) => {
@@ -808,39 +812,40 @@ const ImpressedCurrentCathodicProtectionForm: React.FC = () => {
                           }
                         }}
                         rows={2}
+                        className="mt-1"
                         required
                       />
                     </div>
                   </div>
                 </div>
-              </li>
+              </div>
 
               {/* Section 10 - Last Dummy Load Test */}
-              <li className="section-box">
-                <div className="section-header">
-                  <span className="label-number">10</span>
-                  <Label htmlFor="dummyLoadTest">Last Dummy Load Test</Label>
+              <div className="border-b border-gray-200 pb-4">
+                <div className="flex items-center space-x-4 mb-4">
+                  <div className="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold text-sm">
+                    10
+                  </div>
+                  <div className="flex-1">
+                    <Label htmlFor="dummyLoadTest" className="text-lg font-medium">Last Dummy Load Test</Label>
+                  </div>
                 </div>
-                <div className="section-content">
-                  <div className="row">
-                    <div className="col-md-2">
-                      <Label className="observation-label">
-                        Date:<strong className="red">*</strong>
-                      </Label>
-                      <div className="autocom_search_icon2 cal">
-                        <Input
-                          type="date"
-                          id="dateLastDummyLoadTest"
-                          value={formData.dateLastDummyLoadTest}
-                          onChange={(e) => handleInputChange('dateLastDummyLoadTest', e.target.value)}
-                          required
-                        />
-                      </div>
+                
+                <div className="ml-12">
+                  <div className="flex items-start space-x-4">
+                    <div className="w-48">
+                      <Label className="text-sm">Date:<span className="text-red-500">*</span></Label>
+                      <Input
+                        type="date"
+                        id="dateLastDummyLoadTest"
+                        value={formData.dateLastDummyLoadTest}
+                        onChange={(e) => handleInputChange('dateLastDummyLoadTest', e.target.value)}
+                        className="mt-1"
+                        required
+                      />
                     </div>
-                    <div className="col-md-10">
-                      <Label className="remarks-label">
-                        Remarks:<strong className="red">*</strong>
-                      </Label>
+                    <div className="flex-1">
+                      <Label className="text-sm">Remarks:<span className="text-red-500">*</span></Label>
                       <Textarea
                         value={formData.remarksDummy}
                         onChange={(e) => {
@@ -849,56 +854,55 @@ const ImpressedCurrentCathodicProtectionForm: React.FC = () => {
                           }
                         }}
                         rows={2}
+                        className="mt-1"
                         required
                       />
                     </div>
                   </div>
                 </div>
-              </li>
+              </div>
 
               {/* Section 11 - Recording of Hull Potential with Portable RE */}
-              <li className="section-box">
-                <div className="section-header">
-                  <span className="label-number">11</span>
-                  <Label htmlFor="hullPotentialRecording">Recording of Hull Potential with Portable RE</Label>
+              <div className="border-b border-gray-200 pb-4">
+                <div className="flex items-center space-x-4 mb-4">
+                  <div className="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold text-sm">
+                    11
+                  </div>
+                  <div className="flex-1">
+                    <Label htmlFor="hullPotentialRecording" className="text-lg font-medium">Recording of Hull Potential with Portable RE</Label>
+                  </div>
                 </div>
-                <div className="section-header-inner">
-                  a) To be Recorded Fortnightly, Last Date of Recording Hull Potential Reading Date
-                </div>
-                <div className="section-content">
-                  <div className="row">
-                    <div className="col-md-2">
-                      <Label className="observation-label">
-                        Date of Last Reading:<strong className="red">*</strong>
-                      </Label>
-                      <div className="autocom_search_icon2 cal">
-                        <Input
-                          type="date"
-                          id="dateLastReading"
-                          value={formData.dateLastReading}
-                          onChange={(e) => handleInputChange('dateLastReading', e.target.value)}
-                          required
-                        />
-                      </div>
+                
+                <div className="ml-12 space-y-4">
+                  <div className="text-sm font-medium mb-2">
+                    a) To be Recorded Fortnightly, Last Date of Recording Hull Potential Reading Date
+                  </div>
+                  
+                  <div className="flex items-start space-x-4">
+                    <div className="w-48">
+                      <Label className="text-sm">Date of Last Reading:<span className="text-red-500">*</span></Label>
+                      <Input
+                        type="date"
+                        id="dateLastReading"
+                        value={formData.dateLastReading}
+                        onChange={(e) => handleInputChange('dateLastReading', e.target.value)}
+                        className="mt-1"
+                        required
+                      />
                     </div>
-                    <div className="col-md-2">
-                      <Label className="remarks-label">
-                        Next Due on:<strong className="red">*</strong>
-                      </Label>
-                      <div className="autocom_search_icon2 cal">
-                        <Input
-                          type="date"
-                          id="lastReadingDueOn"
-                          value={formData.lastReadingDueOn}
-                          onChange={(e) => handleInputChange('lastReadingDueOn', e.target.value)}
-                          required
-                        />
-                      </div>
+                    <div className="w-48">
+                      <Label className="text-sm">Next Due on:<span className="text-red-500">*</span></Label>
+                      <Input
+                        type="date"
+                        id="lastReadingDueOn"
+                        value={formData.lastReadingDueOn}
+                        onChange={(e) => handleInputChange('lastReadingDueOn', e.target.value)}
+                        className="mt-1"
+                        required
+                      />
                     </div>
-                    <div className="col-md-8">
-                      <Label className="remarks-label">
-                        Remarks:<strong className="red">*</strong>
-                      </Label>
+                    <div className="flex-1">
+                      <Label className="text-sm">Remarks:<span className="text-red-500">*</span></Label>
                       <Textarea
                         value={formData.remarksLastReading}
                         onChange={(e) => {
@@ -907,53 +911,51 @@ const ImpressedCurrentCathodicProtectionForm: React.FC = () => {
                           }
                         }}
                         rows={2}
+                        className="mt-1"
                         required
                       />
                     </div>
                   </div>
                 </div>
-              </li>
+              </div>
 
               {/* Section 12 - Calibration of Portable RE */}
-              <li className="section-box">
-                <div className="section-header">
-                  <span className="label-number">12</span>
-                  <Label htmlFor="portableRECalibration">Calibration of Portable RE</Label>
+              <div className="border-b border-gray-200 pb-4">
+                <div className="flex items-center space-x-4 mb-4">
+                  <div className="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold text-sm">
+                    12
+                  </div>
+                  <div className="flex-1">
+                    <Label htmlFor="portableRECalibration" className="text-lg font-medium">Calibration of Portable RE</Label>
+                  </div>
                 </div>
-                <div className="section-content">
-                  <div className="row">
-                    <div className="col-md-2">
-                      <Label className="observation-label">
-                        Date of Last Calibration:<strong className="red">*</strong>
-                      </Label>
-                      <div className="autocom_search_icon2 cal">
-                        <Input
-                          type="date"
-                          id="dateLastCalibration"
-                          value={formData.dateLastCalibration}
-                          onChange={(e) => handleInputChange('dateLastCalibration', e.target.value)}
-                          required
-                        />
-                      </div>
+                
+                <div className="ml-12">
+                  <div className="flex items-start space-x-4">
+                    <div className="w-48">
+                      <Label className="text-sm">Date of Last Calibration:<span className="text-red-500">*</span></Label>
+                      <Input
+                        type="date"
+                        id="dateLastCalibration"
+                        value={formData.dateLastCalibration}
+                        onChange={(e) => handleInputChange('dateLastCalibration', e.target.value)}
+                        className="mt-1"
+                        required
+                      />
                     </div>
-                    <div className="col-md-2">
-                      <Label className="remarks-label">
-                        Next Due on:<strong className="red">*</strong>
-                      </Label>
-                      <div className="autocom_search_icon2 cal">
-                        <Input
-                          type="date"
-                          id="lastCalibrationDueOn"
-                          value={formData.lastCalibrationDueOn}
-                          onChange={(e) => handleInputChange('lastCalibrationDueOn', e.target.value)}
-                          required
-                        />
-                      </div>
+                    <div className="w-48">
+                      <Label className="text-sm">Next Due on:<span className="text-red-500">*</span></Label>
+                      <Input
+                        type="date"
+                        id="lastCalibrationDueOn"
+                        value={formData.lastCalibrationDueOn}
+                        onChange={(e) => handleInputChange('lastCalibrationDueOn', e.target.value)}
+                        className="mt-1"
+                        required
+                      />
                     </div>
-                    <div className="col-md-8">
-                      <Label className="remarks-label">
-                        Remarks:<strong className="red">*</strong>
-                      </Label>
+                    <div className="flex-1">
+                      <Label className="text-sm">Remarks:<span className="text-red-500">*</span></Label>
                       <Textarea
                         value={formData.remarksCalibration}
                         onChange={(e) => {
@@ -962,25 +964,29 @@ const ImpressedCurrentCathodicProtectionForm: React.FC = () => {
                           }
                         }}
                         rows={2}
+                        className="mt-1"
                         required
                       />
                     </div>
                   </div>
                 </div>
-              </li>
+              </div>
 
               {/* Section 13 - Any Other Observation */}
-              <li className="section-box">
-                <div className="section-header">
-                  <span className="label-number">13</span>
-                  <Label htmlFor="anyOtherObservation">Any Other Observation</Label>
+              <div className="border-b border-gray-200 pb-4">
+                <div className="flex items-center space-x-4 mb-4">
+                  <div className="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold text-sm">
+                    13
+                  </div>
+                  <div className="flex-1">
+                    <Label htmlFor="anyOtherObservation" className="text-lg font-medium">Any Other Observation</Label>
+                  </div>
                 </div>
-                <div className="section-content">
-                  <div className="row">
-                    <div className="col-md-12">
-                      <Label className="remarks-label">
-                        Remarks:<strong className="red">*</strong>
-                      </Label>
+                
+                <div className="ml-12">
+                  <div className="flex items-start space-x-4">
+                    <div className="flex-1">
+                      <Label className="text-sm">Remarks:<span className="text-red-500">*</span></Label>
                       <Textarea
                         value={formData.remarksAnyOtherObserv}
                         onChange={(e) => {
@@ -989,27 +995,31 @@ const ImpressedCurrentCathodicProtectionForm: React.FC = () => {
                           }
                         }}
                         rows={2}
+                        className="mt-1"
                         required
                       />
                     </div>
                   </div>
                 </div>
-              </li>
+              </div>
 
               {/* Section 14 - Overall Remarks */}
-              <li className="section-box">
-                <div className="section-header">
-                  <span className="label-number">14</span>
-                  <Label htmlFor="overallRemarks">Overall Remarks</Label>
+              <div className="border-b border-gray-200 pb-4">
+                <div className="flex items-center space-x-4 mb-4">
+                  <div className="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold text-sm">
+                    14
+                  </div>
+                  <div className="flex-1">
+                    <Label htmlFor="overallRemarks" className="text-lg font-medium">Overall Remarks</Label>
+                  </div>
                 </div>
-                <div className="section-content">
-                  <div className="row">
-                    <div className="col-md-4">
-                      <Label className="observation-label">
-                        Observations:<strong className="red">*</strong>
-                      </Label>
+                
+                <div className="ml-12">
+                  <div className="flex items-start space-x-4">
+                    <div className="w-48">
+                      <Label className="text-sm">Observations:<span className="text-red-500">*</span></Label>
                       <Select value={formData.observationsOverall} onValueChange={(value) => handleInputChange('observationsOverall', value)}>
-                        <SelectTrigger>
+                        <SelectTrigger className="mt-1">
                           <SelectValue placeholder="--Select--" />
                         </SelectTrigger>
                         <SelectContent>
@@ -1023,41 +1033,45 @@ const ImpressedCurrentCathodicProtectionForm: React.FC = () => {
                     </div>
                   </div>
                 </div>
-              </li>
+              </div>
 
               {/* Section 15 - Authority Signature */}
-              <li className="section-box">
-                <div className="section-header">
-                  <span className="label-number">15</span>
-                  <Label htmlFor="authoritySignature">
-                    Authority Signature<strong className="red">*</strong>
-                  </Label>
+              <div className="border-b border-gray-200 pb-4">
+                <div className="flex items-center space-x-4 mb-4">
+                  <div className="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold text-sm">
+                    15
+                  </div>
+                  <div className="flex-1">
+                    <Label htmlFor="authoritySignature" className="text-lg font-medium">
+                      Authority Signature<span className="text-red-500">*</span>
+                    </Label>
+                  </div>
                 </div>
-                <div className="section-content">
-                  <div className="row">
-                    <div className="col-xl-3 col-lg-4 col-md-6 col-sm-12 col-12 text-center">
-                      <div className="form-group">
-                        <Input
-                          type="file"
-                          id="authoritySignature"
-                          accept=".jpg,.jpeg,.png"
-                          onChange={(e) => {
-                            const file = e.target.files?.[0] || null;
-                            handleInputChange('authoritySignature', file);
-                          }}
-                          required
-                        />
-                      </div>
+                
+                <div className="ml-12">
+                  <div className="flex items-start space-x-4">
+                    <div className="w-64">
+                      <Input
+                        type="file"
+                        id="authoritySignature"
+                        accept=".jpg,.jpeg,.png"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0] || null;
+                          handleInputChange('authoritySignature', file);
+                        }}
+                        className="mt-1"
+                        required
+                      />
                     </div>
                   </div>
                 </div>
-              </li>
-            </ul>
+              </div>
+            </div>
 
-            <div className="card-footer">
+            <div className="flex justify-end space-x-4 mt-8 pt-6 border-t border-gray-200">
               <Dialog open={showDraftModal} onOpenChange={setShowDraftModal}>
                 <DialogTrigger asChild>
-                  <Button type="button" variant="outline" onClick={loadDrafts}>
+                  <Button type="button" className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded" onClick={loadDrafts}>
                     Fetch Drafts
                   </Button>
                 </DialogTrigger>
@@ -1092,15 +1106,14 @@ const ImpressedCurrentCathodicProtectionForm: React.FC = () => {
                                   <TableCell>{formatDate(draft.createdDate)}</TableCell>
                                   <TableCell>
                                     <Button
-                                      variant="outline"
+                                      className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded mr-2"
                                       size="sm"
                                       onClick={() => loadDraft(draft)}
-                                      className="mr-2"
                                     >
                                       Edit
                                     </Button>
                                     <Button
-                                      variant="destructive"
+                                      className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded"
                                       size="sm"
                                       onClick={() => deleteDraft(draft.id)}
                                     >
@@ -1118,13 +1131,13 @@ const ImpressedCurrentCathodicProtectionForm: React.FC = () => {
                 </DialogContent>
               </Dialog>
 
-              <Button type="button" variant="default" onClick={handleSaveDraft} className="ml-2">
+              <Button type="button" className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded" onClick={handleSaveDraft}>
                 SAVE DRAFT
               </Button>
-              <Button type="button" variant="destructive" onClick={handleClear} className="ml-2">
+              <Button type="button" className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded" onClick={handleClear}>
                 Clear
               </Button>
-              <Button type="submit" variant="default" className="ml-2">
+              <Button type="submit" className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded">
                 Save
               </Button>
             </div>

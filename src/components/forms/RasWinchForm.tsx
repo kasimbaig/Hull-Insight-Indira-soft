@@ -537,40 +537,75 @@ const RasWinchForm: React.FC = () => {
 
         {/* Action Buttons */}
         <div className="flex justify-center space-x-4">
-          <Button type="submit" className="bg-blue-600 hover:bg-blue-700">
-            Submit Form
+          <Button type="button" onClick={() => setIsDraftModalOpen(true)} className="px-6 bg-blue-600 hover:bg-blue-700 text-white font-semibold uppercase">
+            Fetch Drafts
           </Button>
           
-          <Dialog open={isDraftModalOpen} onOpenChange={setIsDraftModalOpen}>
-            <DialogTrigger asChild>
-              <Button type="button" variant="outline">
-                <Save className="h-4 w-4 mr-2" />
-                Save Draft
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="max-w-2xl">
-              <DialogHeader>
-                <DialogTitle>Save Draft</DialogTitle>
-              </DialogHeader>
-              <div className="space-y-4">
-                <p>Do you want to save this form as a draft?</p>
-                <div className="flex justify-end space-x-2">
-                  <Button variant="outline" onClick={() => setIsDraftModalOpen(false)}>
-                    Cancel
-                  </Button>
-                  <Button onClick={saveDraft}>
-                    Save Draft
-                  </Button>
-                </div>
-              </div>
-            </DialogContent>
-          </Dialog>
-
-          <Button type="button" variant="outline" onClick={resetForm}>
-            Reset Form
+          <Button type="button" onClick={saveDraft} className="px-6 bg-green-600 hover:bg-green-700 text-white font-semibold uppercase">
+            Save Draft
+          </Button>
+          
+          <Button type="button" onClick={resetForm} className="px-6 bg-red-600 hover:bg-red-700 text-white font-semibold uppercase">
+            Clear
+          </Button>
+          
+          <Button type="submit" className="px-6 bg-blue-600 hover:bg-blue-700 text-white font-semibold uppercase">
+            Save
           </Button>
         </div>
       </form>
+
+      {/* Drafts Modal */}
+      <Dialog open={isDraftModalOpen} onOpenChange={setIsDraftModalOpen}>
+        <DialogContent className="max-w-4xl">
+          <DialogHeader>
+            <DialogTitle>Saved Drafts</DialogTitle>
+          </DialogHeader>
+          <div className="max-h-96 overflow-y-auto">
+            <div className="space-y-4">
+              {drafts.length === 0 ? (
+                <p className="text-center text-gray-500">No drafts saved yet</p>
+              ) : (
+                drafts.map((draft) => (
+                  <div key={draft.id} className="border rounded-lg p-4">
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <h3 className="font-medium">{draft.title}</h3>
+                        <p className="text-sm text-gray-500">
+                          {new Date(draft.timestamp).toLocaleString()}
+                        </p>
+                      </div>
+                      <div className="flex space-x-2">
+                        <Button
+                          size="sm"
+                          onClick={() => {
+                            setFormData(draft);
+                            setIsDraftModalOpen(false);
+                          }}
+                          className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded"
+                        >
+                          Edit
+                        </Button>
+                        <Button
+                          size="sm"
+                          onClick={() => {
+                            const updatedDrafts = drafts.filter(d => d.id !== draft.id);
+                            setDrafts(updatedDrafts);
+                            localStorage.setItem('rasWinch_drafts', JSON.stringify(updatedDrafts));
+                          }}
+                          className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded"
+                        >
+                          Delete
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

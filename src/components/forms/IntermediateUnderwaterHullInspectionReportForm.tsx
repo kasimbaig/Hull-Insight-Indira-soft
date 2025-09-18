@@ -561,7 +561,6 @@ const IntermediateUnderwaterHullInspectionReportForm: React.FC = () => {
                     <TableHead>Name <span className="text-red-500">*</span></TableHead>
                     <TableHead>Rank <span className="text-red-500">*</span></TableHead>
                     <TableHead>Designation <span className="text-red-500">*</span></TableHead>
-                    <TableHead>Action</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -589,25 +588,10 @@ const IntermediateUnderwaterHullInspectionReportForm: React.FC = () => {
                           maxLength={10}
                         />
                       </TableCell>
-                      <TableCell>
-                        {formData.inspectors.length > 1 && (
-                          <Button
-                            type="button"
-                            variant="destructive"
-                            size="sm"
-                            onClick={() => removeInspectorRow(index)}
-                          >
-                            Remove
-                          </Button>
-                        )}
-                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
               </Table>
-              <Button type="button" onClick={addInspectorRow} variant="outline">
-                Add Inspector Row
-              </Button>
             </div>
 
             {/* Hull Survey & Repairs */}
@@ -640,7 +624,6 @@ const IntermediateUnderwaterHullInspectionReportForm: React.FC = () => {
                     <TableHead>Sr No</TableHead>
                     <TableHead>Type</TableHead>
                     <TableHead>Input</TableHead>
-                    <TableHead>Action</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -668,25 +651,10 @@ const IntermediateUnderwaterHullInspectionReportForm: React.FC = () => {
                           maxLength={100}
                         />
                       </TableCell>
-                      <TableCell>
-                        {formData.surveyAndRepairs.length > 1 && (
-                          <Button
-                            type="button"
-                            variant="destructive"
-                            size="sm"
-                            onClick={() => removeSurveyRepairRow(index)}
-                          >
-                            Remove
-                          </Button>
-                        )}
-                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
               </Table>
-              <Button type="button" onClick={addSurveyRepairRow} variant="outline">
-                Add Survey/Repair Row
-              </Button>
             </div>
 
             {/* Tests Undertaken */}
@@ -749,7 +717,6 @@ const IntermediateUnderwaterHullInspectionReportForm: React.FC = () => {
                     <TableHead colSpan={2}>Frame Station <span className="text-red-500">*</span></TableHead>
                     <TableHead rowSpan={2}>Observation <span className="text-red-500">*</span></TableHead>
                     <TableHead rowSpan={2}>Remarks <span className="text-red-500">*</span></TableHead>
-                    <TableHead rowSpan={2}>Action</TableHead>
                   </TableRow>
                   <TableRow>
                     <TableHead>From <span className="text-red-500">*</span></TableHead>
@@ -795,25 +762,10 @@ const IntermediateUnderwaterHullInspectionReportForm: React.FC = () => {
                           maxLength={50}
                         />
                       </TableCell>
-                      <TableCell>
-                        {formData.defectRectification.length > 1 && (
-                          <Button
-                            type="button"
-                            variant="destructive"
-                            size="sm"
-                            onClick={() => removeDefectRectificationRow(index)}
-                          >
-                            Remove
-                          </Button>
-                        )}
-                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
               </Table>
-              <Button type="button" onClick={addDefectRectificationRow} variant="outline">
-                Add Defect Rectification Row
-              </Button>
             </div>
 
             {/* New Observations */}
@@ -837,7 +789,6 @@ const IntermediateUnderwaterHullInspectionReportForm: React.FC = () => {
                     <TableHead colSpan={2}>Frame Station <span className="text-red-500">*</span></TableHead>
                     <TableHead rowSpan={2}>Observation <span className="text-red-500">*</span></TableHead>
                     <TableHead rowSpan={2}>Remarks <span className="text-red-500">*</span></TableHead>
-                    <TableHead rowSpan={2}>Action</TableHead>
                   </TableRow>
                   <TableRow>
                     <TableHead>From <span className="text-red-500">*</span></TableHead>
@@ -883,25 +834,10 @@ const IntermediateUnderwaterHullInspectionReportForm: React.FC = () => {
                           maxLength={50}
                         />
                       </TableCell>
-                      <TableCell>
-                        {formData.newObservations.length > 1 && (
-                          <Button
-                            type="button"
-                            variant="destructive"
-                            size="sm"
-                            onClick={() => removeNewObservationRow(index)}
-                          >
-                            Remove
-                          </Button>
-                        )}
-                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
               </Table>
-              <Button type="button" onClick={addNewObservationRow} variant="outline">
-                Add New Observation Row
-              </Button>
             </div>
 
             {/* Signatures */}
@@ -1032,16 +968,16 @@ const IntermediateUnderwaterHullInspectionReportForm: React.FC = () => {
 
             {/* Form Actions */}
             <div className="flex justify-center space-x-4">
-              <Button type="button" variant="outline" onClick={handleFetchDrafts}>
+              <Button type="button" className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded" onClick={handleFetchDrafts}>
                 Fetch Drafts
               </Button>
-              <Button type="button" variant="secondary" onClick={handleSaveDraft}>
+              <Button type="button" className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded" onClick={handleSaveDraft}>
                 SAVE DRAFT
               </Button>
-              <Button type="button" variant="destructive" onClick={handleClearForm}>
+              <Button type="button" className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded" onClick={handleClearForm}>
                 Clear
               </Button>
-              <Button type="submit" variant="default">
+              <Button type="submit" className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded">
                 Save
               </Button>
             </div>

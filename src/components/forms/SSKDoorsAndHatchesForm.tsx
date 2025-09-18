@@ -84,6 +84,8 @@ const SSKDoorsAndHatchesForm: React.FC = () => {
 
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isDraftModalOpen, setIsDraftModalOpen] = useState(false);
+  const [drafts, setDrafts] = useState<any[]>([]);
 
   const observationOptions = [
     { value: '0', label: '--Select--' },
@@ -211,6 +213,18 @@ const SSKDoorsAndHatchesForm: React.FC = () => {
       observations_overall: ''
     });
     setErrors({});
+  };
+
+  const saveDraft = () => {
+    const draft = {
+      id: Date.now().toString(),
+      data: formData,
+      timestamp: new Date().toISOString()
+    };
+    const updatedDrafts = [...drafts, draft];
+    setDrafts(updatedDrafts);
+    localStorage.setItem('sskDoorsAndHatches_drafts', JSON.stringify(updatedDrafts));
+    alert('Draft saved successfully!');
   };
 
   const handleRemarksValidation = (value: string) => {
@@ -524,9 +538,9 @@ const SSKDoorsAndHatchesForm: React.FC = () => {
               <div className="flex justify-end space-x-4 pt-6">
                 <Dialog>
                   <DialogTrigger asChild>
-                    <Button type="button" variant="outline" className="flex-1">
+                    {/* <Button type="button" variant="outline" className="flex-1">
                       <FileText className="h-4 w-4 mr-2" /> Preview
-                    </Button>
+                    </Button> */}
                   </DialogTrigger>
                   <DialogContent className="max-w-4xl overflow-y-auto max-h-[90vh]">
                     <DialogHeader>
@@ -537,16 +551,23 @@ const SSKDoorsAndHatchesForm: React.FC = () => {
                     </pre>
                   </DialogContent>
                 </Dialog>
+                <Button type="button" className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded" onClick={() => setIsDraftModalOpen(true)}>
+                  Fetch Drafts
+                </Button>
+                
+                <Button type="button" className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded" onClick={saveDraft}>
+                  SAVE DRAFT
+                </Button>
+                
                 <Button
                   type="button"
                   variant="destructive"
                   onClick={clearDraft}
-                  className="flex-1"
+                  className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded"
                 >
-                  Clear Draft
+                  Clear
                 </Button>
-                <Button type="submit" disabled={isSubmitting} className="flex-1">
-                  <Save className="h-4 w-4 mr-2" />
+                <Button type="submit" disabled={isSubmitting} className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded">
                   {isSubmitting ? 'Saving...' : 'Save'}
                 </Button>
               </div>

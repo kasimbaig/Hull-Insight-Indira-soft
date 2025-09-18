@@ -1231,13 +1231,25 @@ const SewageTreatmentPlantForm: React.FC = () => {
 
         {/* Action Buttons */}
         <div className="flex justify-center space-x-4">
-          <Button type="submit" className="bg-blue-600 hover:bg-blue-700">
-            Submit Form
+          <Button type="button" className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded" onClick={() => setIsDraftModalOpen(true)}>
+            Fetch Drafts
+          </Button>
+          
+          <Button type="button" className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded" onClick={saveDraft}>
+            SAVE DRAFT
+          </Button>
+          
+          <Button type="button" className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded" onClick={resetForm}>
+            Clear
+          </Button>
+          
+          <Button type="submit" className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded">
+            Save
           </Button>
           
           <Dialog open={isDraftModalOpen} onOpenChange={setIsDraftModalOpen}>
             <DialogTrigger asChild>
-              <Button type="button" variant="outline">
+              <Button type="button" variant="outline" className="hidden">
                 <Save className="h-4 w-4 mr-2" />
                 Save Draft
               </Button>
@@ -1249,10 +1261,10 @@ const SewageTreatmentPlantForm: React.FC = () => {
               <div className="space-y-4">
                 <p>Do you want to save this form as a draft?</p>
                 <div className="flex justify-end space-x-2">
-                  <Button variant="outline" onClick={() => setIsDraftModalOpen(false)}>
+                  <Button variant="outline" onClick={() => setIsDraftModalOpen(false)} className="bg-red-50 border-red-200 text-red-700 hover:bg-red-100">
                     Cancel
                   </Button>
-                  <Button onClick={saveDraft}>
+                  <Button onClick={saveDraft} className="bg-green-600 hover:bg-green-700 text-white">
                     Save Draft
                   </Button>
                 </div>

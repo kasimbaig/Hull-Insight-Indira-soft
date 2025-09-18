@@ -49,43 +49,123 @@ interface PreliminaryUnderwaterHullInspectionReportFormData {
   durationOfDocking: string;
   
   // UNDERWATER CLEANING Section
-  underwaterCleaningObservations: Observation[];
-  underwaterCleaningRemarks: Remark[];
+  marineGrowthObservations: Observation[];
+  marineGrowthRemarks: Remark[];
+  cleaningPropellersObservations: Observation[];
+  cleaningPropellersRemarks: Remark[];
+  remnantsObservations: Observation[];
+  remnantsRemarks: Remark[];
   
   // PAINTING Section
-  paintingObservations: Observation[];
-  paintingRemarks: Remark[];
+  conditionAFObservations: Observation[];
+  conditionAFRemarks: Remark[];
+  outerBottomObservations: Observation[];
+  outerBottomRemarks: Remark[];
+  sternAftObservations: Observation[];
+  sternAftRemarks: Remark[];
+  bootTopObservations: Observation[];
+  bootTopRemarks: Remark[];
+  ruddersObservations: Observation[];
+  ruddersRemarks: Remark[];
+  stabilizersObservations: Observation[];
+  stabilizersRemarks: Remark[];
+  oldDockBlockObservations: Observation[];
+  oldDockBlockRemarks: Remark[];
+  otherPaintObservations: Observation[];
+  otherPaintRemarks: Remark[];
+  paintSchemeObservations: Observation[];
+  paintSchemeRemarks: Remark[];
   
   // RUSTING & CORROSION Section
-  rustingCorrosionObservations: Observation[];
-  rustingCorrosionRemarks: Remark[];
+  areasRustCorrosionObservations: Observation[];
+  areasRustCorrosionRemarks: Remark[];
+  generalOuterBottomObservations: Observation[];
+  generalOuterBottomRemarks: Remark[];
+  bootTopRustObservations: Observation[];
+  bootTopRustRemarks: Remark[];
+  sternAftRustObservations: Observation[];
+  sternAftRustRemarks: Remark[];
+  ruddersRustObservations: Observation[];
+  ruddersRustRemarks: Remark[];
+  bilgeKeelObservations: Observation[];
+  bilgeKeelRemarks: Remark[];
+  oldDockBlockRustObservations: Observation[];
+  oldDockBlockRustRemarks: Remark[];
+  otherRustObservations: Observation[];
+  otherRustRemarks: Remark[];
   
   // STRUCTURE Section
-  structureObservations: Observation[];
-  structureRemarks: Remark[];
+  extentHullSurveyObservations: Observation[];
+  extentHullSurveyRemarks: Remark[];
+  dentsObservations: Observation[];
+  dentsRemarks: Remark[];
+  suspectCracksObservations: Observation[];
+  suspectCracksRemarks: Remark[];
+  deepScratchObservations: Observation[];
+  deepScratchRemarks: Remark[];
+  holesDoublersObservations: Observation[];
+  holesDoublersRemarks: Remark[];
+  otherStructureObservations: Observation[];
+  otherStructureRemarks: Remark[];
+  ssConfirmObservations: Observation[];
+  ssConfirmRemarks: Remark[];
+  surveyPreservationObservations: Observation[];
+  surveyPreservationRemarks: Remark[];
   
   // SONAR DOME Section
-  sonarDomeObservations: Observation[];
-  sonarDomeRemarks: Remark[];
+  cleanShip: string;
+  cleanShipRemarks: string;
+  cracksDentsFouling: string;
+  cracksDentsFoulingRemarks: string;
+  grpDome: string;
+  grpDomeRemarks: string;
+  fairingSkirt: string;
+  fairingSkirtRemarks: string;
   
   // RUDDER Section
-  rudderObservations: Observation[];
-  rudderRemarks: Remark[];
+  cracksDentsFoulingRudderObservations: Observation[];
+  cracksDentsFoulingRudderRemarks: Remark[];
+  misAlignmentObservations: Observation[];
+  misAlignmentRemarks: Remark[];
   
   // CATHODIC PROTECTION SYSTEM Section
-  cathodicProtectionObservations: Observation[];
-  cathodicProtectionRemarks: Remark[];
+  iccpServiceability: string;
+  sacrificialAnodes: string;
+  iccpAnodes: string;
+  iccpReferenceElectrode: string;
+  dielectricShields: string;
+  ssConfirmIccp: string;
   
   // PROPELLERS Section
-  propellersObservations: Observation[];
-  propellersRemarks: Remark[];
+  cleaningPropellersObservations: Observation[];
+  cleaningPropellersRemarks: Remark[];
+  edgesBladesObservations: Observation[];
+  edgesBladesRemarks: Remark[];
+  propellerHubsObservations: Observation[];
+  propellerHubsRemarks: Remark[];
+  pittingErosionObservations: Observation[];
+  pittingErosionRemarks: Remark[];
+  epoxyCoatingObservations: Observation[];
+  epoxyCoatingRemarks: Remark[];
   
   // MISCELLANEOUS Section
-  miscellaneousObservations: Observation[];
-  miscellaneousRemarks: Remark[];
+  eddyConeObservations: Observation[];
+  eddyConeRemarks: Remark[];
+  waterSeepageObservations: Observation[];
+  waterSeepageRemarks: Remark[];
+  missingPartsObservations: Observation[];
+  missingPartsRemarks: Remark[];
+  blankingObservations: Observation[];
+  blankingRemarks: Remark[];
+  scupperLipsObservations: Observation[];
+  scupperLipsRemarks: Remark[];
+  aralditeFairingObservations: Observation[];
+  aralditeFairingRemarks: Remark[];
+  angleOfList: string;
   
   // Other observations
-  otherObservations: string;
+  otherObservations: Observation[];
+  otherObservationsRemarks: Remark[];
   
   // Signatures
   signShipStaff: File | null;
@@ -116,25 +196,103 @@ const PreliminaryUnderwaterHullInspectionReportForm = () => {
     noDockBlocksExcessCrush: "",
     uwOpeningClear: "",
     durationOfDocking: "",
-    underwaterCleaningObservations: [],
-    underwaterCleaningRemarks: [],
-    paintingObservations: [],
-    paintingRemarks: [],
-    rustingCorrosionObservations: [],
-    rustingCorrosionRemarks: [],
-    structureObservations: [],
-    structureRemarks: [],
-    sonarDomeObservations: [],
-    sonarDomeRemarks: [],
-    rudderObservations: [],
-    rudderRemarks: [],
-    cathodicProtectionObservations: [],
-    cathodicProtectionRemarks: [],
-    propellersObservations: [],
-    propellersRemarks: [],
-    miscellaneousObservations: [],
-    miscellaneousRemarks: [],
-    otherObservations: "",
+    marineGrowthObservations: [],
+    marineGrowthRemarks: [],
+    cleaningPropellersObservations: [],
+    cleaningPropellersRemarks: [],
+    remnantsObservations: [],
+    remnantsRemarks: [],
+    conditionAFObservations: [],
+    conditionAFRemarks: [],
+    outerBottomObservations: [],
+    outerBottomRemarks: [],
+    sternAftObservations: [],
+    sternAftRemarks: [],
+    bootTopObservations: [],
+    bootTopRemarks: [],
+    ruddersObservations: [],
+    ruddersRemarks: [],
+    stabilizersObservations: [],
+    stabilizersRemarks: [],
+    oldDockBlockObservations: [],
+    oldDockBlockRemarks: [],
+    otherPaintObservations: [],
+    otherPaintRemarks: [],
+    paintSchemeObservations: [],
+    paintSchemeRemarks: [],
+    areasRustCorrosionObservations: [],
+    areasRustCorrosionRemarks: [],
+    generalOuterBottomObservations: [],
+    generalOuterBottomRemarks: [],
+    bootTopRustObservations: [],
+    bootTopRustRemarks: [],
+    sternAftRustObservations: [],
+    sternAftRustRemarks: [],
+    ruddersRustObservations: [],
+    ruddersRustRemarks: [],
+    bilgeKeelObservations: [],
+    bilgeKeelRemarks: [],
+    oldDockBlockRustObservations: [],
+    oldDockBlockRustRemarks: [],
+    otherRustObservations: [],
+    otherRustRemarks: [],
+    extentHullSurveyObservations: [],
+    extentHullSurveyRemarks: [],
+    dentsObservations: [],
+    dentsRemarks: [],
+    suspectCracksObservations: [],
+    suspectCracksRemarks: [],
+    deepScratchObservations: [],
+    deepScratchRemarks: [],
+    holesDoublersObservations: [],
+    holesDoublersRemarks: [],
+    otherStructureObservations: [],
+    otherStructureRemarks: [],
+    ssConfirmObservations: [],
+    ssConfirmRemarks: [],
+    surveyPreservationObservations: [],
+    surveyPreservationRemarks: [],
+    cleanShip: "",
+    cleanShipRemarks: "",
+    cracksDentsFouling: "",
+    cracksDentsFoulingRemarks: "",
+    grpDome: "",
+    grpDomeRemarks: "",
+    fairingSkirt: "",
+    fairingSkirtRemarks: "",
+    cracksDentsFoulingRudderObservations: [],
+    cracksDentsFoulingRudderRemarks: [],
+    misAlignmentObservations: [],
+    misAlignmentRemarks: [],
+    iccpServiceability: "",
+    sacrificialAnodes: "",
+    iccpAnodes: "",
+    iccpReferenceElectrode: "",
+    dielectricShields: "",
+    ssConfirmIccp: "",
+    edgesBladesObservations: [],
+    edgesBladesRemarks: [],
+    propellerHubsObservations: [],
+    propellerHubsRemarks: [],
+    pittingErosionObservations: [],
+    pittingErosionRemarks: [],
+    epoxyCoatingObservations: [],
+    epoxyCoatingRemarks: [],
+    eddyConeObservations: [],
+    eddyConeRemarks: [],
+    waterSeepageObservations: [],
+    waterSeepageRemarks: [],
+    missingPartsObservations: [],
+    missingPartsRemarks: [],
+    blankingObservations: [],
+    blankingRemarks: [],
+    scupperLipsObservations: [],
+    scupperLipsRemarks: [],
+    aralditeFairingObservations: [],
+    aralditeFairingRemarks: [],
+    angleOfList: "",
+    otherObservations: [],
+    otherObservationsRemarks: [],
     signShipStaff: null,
     signRefittingAuth: null,
     signHituInspector: null,
@@ -382,7 +540,12 @@ const PreliminaryUnderwaterHullInspectionReportForm = () => {
     remarks: Remark[],
     sectionName: string,
     handlers: any
-  ) => (
+  ) => {
+    // Defensive programming - ensure arrays are defined
+    const safeObservations = observations || [];
+    const safeRemarks = remarks || [];
+    
+    return (
     <div className="space-y-4">
       <div>
         <h4 className="text-md font-medium mb-4 text-gray-800">Observation*</h4>
@@ -390,22 +553,22 @@ const PreliminaryUnderwaterHullInspectionReportForm = () => {
           <Label className="text-sm">Enter Total Number of Rows.</Label>
           <Input
             type="number"
-            value={observations.length}
+            value={safeObservations.length}
             onChange={(e) => {
               const count = parseInt(e.target.value) || 0;
-              if (count > observations.length) {
-                for (let i = observations.length; i < count; i++) {
+              if (count > safeObservations.length) {
+                for (let i = safeObservations.length; i < count; i++) {
                   handlers.handleAddObservation();
                 }
-              } else if (count < observations.length) {
-                const toRemove = observations.slice(count);
+              } else if (count < safeObservations.length) {
+                const toRemove = safeObservations.slice(count);
                 toRemove.forEach(obs => handlers.handleRemoveObservation(obs.id));
               }
             }}
             className="w-20"
           />
         </div>
-        {observations.length > 0 && (
+        {safeObservations.length > 0 && (
           <div className="overflow-x-auto">
             <Table className="border border-gray-300">
               <TableHeader>
@@ -415,7 +578,7 @@ const PreliminaryUnderwaterHullInspectionReportForm = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {observations.map((obs, index) => (
+                {safeObservations.map((obs, index) => (
                   <TableRow key={obs.id}>
                     <TableCell className="border border-gray-300 p-2">
                       <Input
@@ -447,22 +610,22 @@ const PreliminaryUnderwaterHullInspectionReportForm = () => {
           <Label className="text-sm">Enter Total Number of Rows.</Label>
           <Input
             type="number"
-            value={remarks.length}
+            value={safeRemarks.length}
             onChange={(e) => {
               const count = parseInt(e.target.value) || 0;
-              if (count > remarks.length) {
-                for (let i = remarks.length; i < count; i++) {
+              if (count > safeRemarks.length) {
+                for (let i = safeRemarks.length; i < count; i++) {
                   handlers.handleAddRemark();
                 }
-              } else if (count < remarks.length) {
-                const toRemove = remarks.slice(count);
+              } else if (count < safeRemarks.length) {
+                const toRemove = safeRemarks.slice(count);
                 toRemove.forEach(remark => handlers.handleRemoveRemark(remark.id));
               }
             }}
             className="w-20"
           />
         </div>
-        {remarks.length > 0 && (
+        {safeRemarks.length > 0 && (
           <div className="overflow-x-auto">
             <Table className="border border-gray-300">
               <TableHeader>
@@ -472,7 +635,7 @@ const PreliminaryUnderwaterHullInspectionReportForm = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {remarks.map((remark, index) => (
+                {safeRemarks.map((remark, index) => (
                   <TableRow key={remark.id}>
                     <TableCell className="border border-gray-300 p-2">
                       <Input
@@ -498,7 +661,8 @@ const PreliminaryUnderwaterHullInspectionReportForm = () => {
         )}
       </div>
     </div>
-  );
+    );
+  };
 
   return (
     <div className="w-full min-h-screen bg-gray-50">
@@ -511,10 +675,10 @@ const PreliminaryUnderwaterHullInspectionReportForm = () => {
               alt="Hull Insight Logo" 
               className="h-16 w-16"
             />
-          </div>
+        </div>
           <h4 className="text-sm font-medium text-gray-500 mb-2">HULL INSIGHT</h4>
           <h2 className="text-2xl font-bold text-gray-900">PRELIMINARY UNDERWATER HULL INSPECTION REPORT</h2>
-        </div>
+      </div>
 
         <form onSubmit={handleSubmit} className="space-y-8">
           {/* Header Fields */}
@@ -523,16 +687,16 @@ const PreliminaryUnderwaterHullInspectionReportForm = () => {
               <Label htmlFor="preInspection" className="text-sm font-medium">INS name: *</Label>
               <Select value={formData.preInspection} onValueChange={(value) => handleInputChange('preInspection', value)}>
                 <SelectTrigger className="mt-1">
-                  <SelectValue placeholder="--Select--" />
-                </SelectTrigger>
-                <SelectContent>
+                <SelectValue placeholder="--Select--" />
+              </SelectTrigger>
+              <SelectContent>
                   <SelectItem value="annual">Annual</SelectItem>
                   <SelectItem value="intermediate">Intermediate</SelectItem>
                   <SelectItem value="special">Special</SelectItem>
                   <SelectItem value="pre-docking">Pre-docking</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+              </SelectContent>
+            </Select>
+          </div>
             <div>
               <Label htmlFor="dtInspection" className="text-sm font-medium">Date of Inspection: *</Label>
               <Input
@@ -543,7 +707,7 @@ const PreliminaryUnderwaterHullInspectionReportForm = () => {
                 className="mt-1"
                 required
               />
-            </div>
+          </div>
             <div>
               <Label htmlFor="authInspection" className="text-sm font-medium">Authority for Inspection: *</Label>
               <Input
@@ -554,8 +718,8 @@ const PreliminaryUnderwaterHullInspectionReportForm = () => {
                 className="mt-1"
                 required
               />
-            </div>
-          </div>
+        </div>
+      </div>
 
           {/* HITU's Inspectors */}
           <Card className="border border-gray-300">
@@ -581,20 +745,24 @@ const PreliminaryUnderwaterHullInspectionReportForm = () => {
                   }}
                   className="w-20"
                 />
-              </div>
+        </div>
               {formData.inspectors.length > 0 && (
                 <div className="overflow-x-auto">
                   <Table className="border border-gray-300">
                     <TableHeader>
                       <TableRow className="bg-gray-50">
-                        <TableHead className="border border-gray-300 text-center font-medium">Inspector Name</TableHead>
-                        <TableHead className="border border-gray-300 text-center font-medium">Inspector Rank</TableHead>
-                        <TableHead className="border border-gray-300 text-center font-medium">Inspector Designation</TableHead>
+                        <TableHead className="border border-gray-300 text-center font-medium">Sr No.</TableHead>
+                        <TableHead className="border border-gray-300 text-center font-medium">Name*</TableHead>
+                        <TableHead className="border border-gray-300 text-center font-medium">Rank*</TableHead>
+                        <TableHead className="border border-gray-300 text-center font-medium">Designation*</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {formData.inspectors.map((inspector) => (
+                      {formData.inspectors.map((inspector, index) => (
                         <TableRow key={inspector.id}>
+                          <TableCell className="border border-gray-300 p-2 text-center">
+                            {index + 1}
+                          </TableCell>
                           <TableCell className="border border-gray-300 p-2">
                             <Input
                               value={inspector.inspectorName}
@@ -623,7 +791,7 @@ const PreliminaryUnderwaterHullInspectionReportForm = () => {
                       ))}
                     </TableBody>
                   </Table>
-                </div>
+      </div>
               )}
             </CardContent>
           </Card>
@@ -639,17 +807,17 @@ const PreliminaryUnderwaterHullInspectionReportForm = () => {
                   <Label htmlFor="dockingVersion" className="text-sm font-medium">Docking Version: *</Label>
                   <Select value={formData.dockingVersion} onValueChange={(value) => handleInputChange('dockingVersion', value)}>
                     <SelectTrigger className="mt-1">
-                      <SelectValue placeholder="--Select--" />
-                    </SelectTrigger>
-                    <SelectContent>
+                <SelectValue placeholder="--Select--" />
+              </SelectTrigger>
+              <SelectContent>
                       <SelectItem value="dry-dock">Dry Dock</SelectItem>
                       <SelectItem value="floating-dock">Floating Dock</SelectItem>
                       <SelectItem value="other">Other</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
+              </SelectContent>
+            </Select>
+          </div>
                 <div>
-                  <Label htmlFor="natureDocking" className="text-sm font-medium">Nature of Docking: *</Label>
+                  <Label htmlFor="natureDocking" className="text-sm font-medium">Nature of docking*</Label>
                   <Input
                     id="natureDocking"
                     value={formData.natureDocking}
@@ -657,11 +825,11 @@ const PreliminaryUnderwaterHullInspectionReportForm = () => {
                     placeholder="Enter nature of docking"
                     className="mt-1"
                   />
-                </div>
-              </div>
+          </div>
+        </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="noDockBlocksWedged" className="text-sm font-medium">No. of Dock Blocks Wedged: *</Label>
+                  <Label htmlFor="noDockBlocksWedged" className="text-sm font-medium">No of Dock Blocks Wedged*</Label>
                   <Input
                     id="noDockBlocksWedged"
                     value={formData.noDockBlocksWedged}
@@ -669,9 +837,9 @@ const PreliminaryUnderwaterHullInspectionReportForm = () => {
                     placeholder="Enter number"
                     className="mt-1"
                   />
-                </div>
+      </div>
                 <div>
-                  <Label htmlFor="noDockBlocksExcessCrush" className="text-sm font-medium">No. of Dock Blocks Excess Crush: *</Label>
+                  <Label htmlFor="noDockBlocksExcessCrush" className="text-sm font-medium">No of Dock Blocks excessively crushed*</Label>
                   <Input
                     id="noDockBlocksExcessCrush"
                     value={formData.noDockBlocksExcessCrush}
@@ -679,23 +847,23 @@ const PreliminaryUnderwaterHullInspectionReportForm = () => {
                     placeholder="Enter number"
                     className="mt-1"
                   />
-                </div>
+      </div>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="uwOpeningClear" className="text-sm font-medium">U/W Opening Clear: *</Label>
+                  <Label htmlFor="uwOpeningClear" className="text-sm font-medium">Are all UW openings clear of Dock blocks*</Label>
                   <Select value={formData.uwOpeningClear} onValueChange={(value) => handleInputChange('uwOpeningClear', value)}>
                     <SelectTrigger className="mt-1">
-                      <SelectValue placeholder="--Select--" />
-                    </SelectTrigger>
-                    <SelectContent>
+                <SelectValue placeholder="--Select--" />
+              </SelectTrigger>
+              <SelectContent>
                       <SelectItem value="yes">Yes</SelectItem>
                       <SelectItem value="no">No</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
+              </SelectContent>
+            </Select>
+          </div>
                 <div>
-                  <Label htmlFor="durationOfDocking" className="text-sm font-medium">Duration of Docking: *</Label>
+                  <Label htmlFor="durationOfDocking" className="text-sm font-medium">Duration of docking*</Label>
                   <Input
                     id="durationOfDocking"
                     value={formData.durationOfDocking}
@@ -703,8 +871,8 @@ const PreliminaryUnderwaterHullInspectionReportForm = () => {
                     placeholder="Enter duration"
                     className="mt-1"
                   />
-                </div>
-              </div>
+          </div>
+        </div>
             </CardContent>
           </Card>
 
@@ -713,13 +881,39 @@ const PreliminaryUnderwaterHullInspectionReportForm = () => {
             <CardHeader className="bg-gray-100">
               <CardTitle className="text-lg font-semibold text-center underline">UNDERWATER CLEANING</CardTitle>
             </CardHeader>
-            <CardContent className="p-6">
-              {renderObservationTable(
-                formData.underwaterCleaningObservations,
-                formData.underwaterCleaningRemarks,
-                'underwaterCleaning',
-                underwaterCleaningHandlers
-              )}
+            <CardContent className="p-6 space-y-6">
+              {/* (a) Presence of marine growth at */}
+              <div>
+                <h4 className="text-md font-medium mb-4 text-gray-800">(a) Presence of marine growth at*</h4>
+                {renderObservationTable(
+                  formData.marineGrowthObservations,
+                  formData.marineGrowthRemarks,
+                  'marineGrowth',
+                  createObservationHandlers('marineGrowth')
+                )}
+      </div>
+
+              {/* (b) Cleaning of Propellers */}
+              <div>
+                <h4 className="text-md font-medium mb-4 text-gray-800">(b) Cleaning of Propellers*</h4>
+                {renderObservationTable(
+                  formData.cleaningPropellersObservations,
+                  formData.cleaningPropellersRemarks,
+                  'cleaningPropellers',
+                  createObservationHandlers('cleaningPropellers')
+                )}
+    </div>
+
+              {/* (c) Remnants of ropes, fishing nets or any other foreign objects */}
+              <div>
+                <h4 className="text-md font-medium mb-4 text-gray-800">(c) Remnants of ropes, fishing nets or any other foreign objects*</h4>
+                {renderObservationTable(
+                  formData.remnantsObservations,
+                  formData.remnantsRemarks,
+                  'remnants',
+                  createObservationHandlers('remnants')
+                )}
+            </div>
             </CardContent>
           </Card>
 
@@ -727,29 +921,202 @@ const PreliminaryUnderwaterHullInspectionReportForm = () => {
           <Card className="border border-gray-300">
             <CardHeader className="bg-gray-100">
               <CardTitle className="text-lg font-semibold text-center underline">PAINTING</CardTitle>
-            </CardHeader>
-            <CardContent className="p-6">
-              {renderObservationTable(
-                formData.paintingObservations,
-                formData.paintingRemarks,
-                'painting',
-                paintingHandlers
-              )}
+        </CardHeader>
+            <CardContent className="p-6 space-y-6">
+              {/* Condition of A/F */}
+              <div>
+                <h4 className="text-md font-medium mb-4 text-gray-800">Condition of A/F*</h4>
+                {renderObservationTable(
+                  formData.conditionAFObservations,
+                  formData.conditionAFRemarks,
+                  'conditionAF',
+                  createObservationHandlers('conditionAF')
+                )}
+              </div>
+
+              {/* (a) Outer bottom between bilge keel */}
+              <div>
+                <h4 className="text-md font-medium mb-4 text-gray-800">(a) Outer bottom between bilge keel*</h4>
+                {renderObservationTable(
+                  formData.outerBottomObservations,
+                  formData.outerBottomRemarks,
+                  'outerBottom',
+                  createObservationHandlers('outerBottom')
+                )}
+            </div>
+
+              {/* (b) Stern /Aft cut up */}
+              <div>
+                <h4 className="text-md font-medium mb-4 text-gray-800">(b) Stern /Aft cut up*</h4>
+                {renderObservationTable(
+                  formData.sternAftObservations,
+                  formData.sternAftRemarks,
+                  'sternAft',
+                  createObservationHandlers('sternAft')
+                )}
+              </div>
+
+              {/* (c) Boot top */}
+              <div>
+                <h4 className="text-md font-medium mb-4 text-gray-800">(c) Boot top*</h4>
+                {renderObservationTable(
+                  formData.bootTopObservations,
+                  formData.bootTopRemarks,
+                  'bootTop',
+                  createObservationHandlers('bootTop')
+                )}
+            </div>
+
+              {/* (d) Rudders */}
+              <div>
+                <h4 className="text-md font-medium mb-4 text-gray-800">(d) Rudders*</h4>
+                {renderObservationTable(
+                  formData.ruddersObservations,
+                  formData.ruddersRemarks,
+                  'rudders',
+                  createObservationHandlers('rudders')
+                )}
+              </div>
+
+              {/* (e) Stabilizers */}
+              <div>
+                <h4 className="text-md font-medium mb-4 text-gray-800">(e) Stabilizers*</h4>
+                {renderObservationTable(
+                  formData.stabilizersObservations,
+                  formData.stabilizersRemarks,
+                  'stabilizers',
+                  createObservationHandlers('stabilizers')
+                )}
+            </div>
+
+              {/* (f) Old dock block areas */}
+              <div>
+                <h4 className="text-md font-medium mb-4 text-gray-800">(f) Old dock block areas*</h4>
+                {renderObservationTable(
+                  formData.oldDockBlockObservations,
+                  formData.oldDockBlockRemarks,
+                  'oldDockBlock',
+                  createObservationHandlers('oldDockBlock')
+                )}
+              </div>
+
+              {/* (g) Other observations */}
+              <div>
+                <h4 className="text-md font-medium mb-4 text-gray-800">(g) Other observations*</h4>
+                {renderObservationTable(
+                  formData.otherPaintObservations,
+                  formData.otherPaintRemarks,
+                  'otherPaint',
+                  createObservationHandlers('otherPaint')
+                )}
+              </div>
+
+              {/* (h) Paint scheme being applied */}
+              <div>
+                <h4 className="text-md font-medium mb-4 text-gray-800">(h) Paint scheme being applied*</h4>
+                {renderObservationTable(
+                  formData.paintSchemeObservations,
+                  formData.paintSchemeRemarks,
+                  'paintScheme',
+                  createObservationHandlers('paintScheme')
+                )}
+              </div>
             </CardContent>
           </Card>
 
           {/* RUSTING & CORROSION Section */}
           <Card className="border border-gray-300">
             <CardHeader className="bg-gray-100">
-              <CardTitle className="text-lg font-semibold text-center underline">RUSTING & CORROSION</CardTitle>
+              <CardTitle className="text-lg font-semibold text-center underline">RUSTING & CORROSION*</CardTitle>
             </CardHeader>
-            <CardContent className="p-6">
-              {renderObservationTable(
-                formData.rustingCorrosionObservations,
-                formData.rustingCorrosionRemarks,
-                'rustingCorrosion',
-                rustingCorrosionHandlers
-              )}
+            <CardContent className="p-6 space-y-6">
+              {/* Areas having rust & corrosion */}
+              <div>
+                <h4 className="text-md font-medium mb-4 text-gray-800">Areas having rust & corrosion*</h4>
+                {renderObservationTable(
+                  formData.areasRustCorrosionObservations,
+                  formData.areasRustCorrosionRemarks,
+                  'areasRustCorrosion',
+                  createObservationHandlers('areasRustCorrosion')
+                )}
+              </div>
+
+              {/* (a) General Outer bottom */}
+              <div>
+                <h4 className="text-md font-medium mb-4 text-gray-800">(a) General Outer bottom*</h4>
+                {renderObservationTable(
+                  formData.generalOuterBottomObservations,
+                  formData.generalOuterBottomRemarks,
+                  'generalOuterBottom',
+                  createObservationHandlers('generalOuterBottom')
+                )}
+              </div>
+
+              {/* (b) Boot top */}
+              <div>
+                <h4 className="text-md font-medium mb-4 text-gray-800">(b) Boot top*</h4>
+                {renderObservationTable(
+                  formData.bootTopRustObservations,
+                  formData.bootTopRustRemarks,
+                  'bootTopRust',
+                  createObservationHandlers('bootTopRust')
+                )}
+              </div>
+
+              {/* (c) Stern / Aft cut up */}
+              <div>
+                <h4 className="text-md font-medium mb-4 text-gray-800">(c) Stern / Aft cut up*</h4>
+                {renderObservationTable(
+                  formData.sternAftRustObservations,
+                  formData.sternAftRustRemarks,
+                  'sternAftRust',
+                  createObservationHandlers('sternAftRust')
+                )}
+              </div>
+
+              {/* (d) Rudders */}
+              <div>
+                <h4 className="text-md font-medium mb-4 text-gray-800">(d) Rudders*</h4>
+                {renderObservationTable(
+                  formData.ruddersRustObservations,
+                  formData.ruddersRustRemarks,
+                  'ruddersRust',
+                  createObservationHandlers('ruddersRust')
+                )}
+                </div>
+
+              {/* (e) Bilge keel, stem, stabilizers, weld seams */}
+              <div>
+                <h4 className="text-md font-medium mb-4 text-gray-800">(e) Bilge keel, stem, stabilizers, weld seams*</h4>
+                {renderObservationTable(
+                  formData.bilgeKeelObservations,
+                  formData.bilgeKeelRemarks,
+                  'bilgeKeel',
+                  createObservationHandlers('bilgeKeel')
+                )}
+              </div>
+
+              {/* (f) Old dock block areas */}
+              <div>
+                <h4 className="text-md font-medium mb-4 text-gray-800">(f) Old dock block areas*</h4>
+                {renderObservationTable(
+                  formData.oldDockBlockRustObservations,
+                  formData.oldDockBlockRustRemarks,
+                  'oldDockBlockRust',
+                  createObservationHandlers('oldDockBlockRust')
+                )}
+              </div>
+
+              {/* (g) Other Observations */}
+              <div>
+                <h4 className="text-md font-medium mb-4 text-gray-800">(g) Other Observations*</h4>
+                {renderObservationTable(
+                  formData.otherRustObservations,
+                  formData.otherRustRemarks,
+                  'otherRust',
+                  createObservationHandlers('otherRust')
+                )}
+              </div>
             </CardContent>
           </Card>
 
@@ -758,13 +1125,97 @@ const PreliminaryUnderwaterHullInspectionReportForm = () => {
             <CardHeader className="bg-gray-100">
               <CardTitle className="text-lg font-semibold text-center underline">STRUCTURE</CardTitle>
             </CardHeader>
-            <CardContent className="p-6">
-              {renderObservationTable(
-                formData.structureObservations,
-                formData.structureRemarks,
-                'structure',
-                structureHandlers
-              )}
+            <CardContent className="p-6 space-y-6">
+              {/* Extent of Hull Survey */}
+              <div>
+                <h4 className="text-md font-medium mb-4 text-gray-800">Extent of Hull Survey*</h4>
+                <div>
+                  <h4 className="text-md font-medium mb-4 text-gray-800">(a) Extent of hull survey*</h4>
+                  {renderObservationTable(
+                    formData.extentHullSurveyObservations,
+                    formData.extentHullSurveyRemarks,
+                    'extentHullSurvey',
+                    createObservationHandlers('extentHullSurvey')
+                  )}
+                </div>
+              </div>
+
+              {/* Dents */}
+              <div>
+                <h4 className="text-md font-medium mb-4 text-gray-800">(b) Dents at*</h4>
+                {renderObservationTable(
+                  formData.dentsObservations,
+                  formData.dentsRemarks,
+                  'dents',
+                  createObservationHandlers('dents')
+                )}
+              </div>
+
+              {/* Suspect cracks */}
+              <div>
+                <h4 className="text-md font-medium mb-4 text-gray-800">(c) Suspect cracks at*</h4>
+                {renderObservationTable(
+                  formData.suspectCracksObservations,
+                  formData.suspectCracksRemarks,
+                  'suspectCracks',
+                  createObservationHandlers('suspectCracks')
+                )}
+              </div>
+
+              {/* Deep scratch/Notch */}
+              <div>
+                <h4 className="text-md font-medium mb-4 text-gray-800">(d) Deep scratch/Notch at*</h4>
+                {renderObservationTable(
+                  formData.deepScratchObservations,
+                  formData.deepScratchRemarks,
+                  'deepScratch',
+                  createObservationHandlers('deepScratch')
+                )}
+              </div>
+
+              {/* Holes/doublers */}
+              <div>
+                <h4 className="text-md font-medium mb-4 text-gray-800">(e) Holes/doublers at*</h4>
+                {renderObservationTable(
+                  formData.holesDoublersObservations,
+                  formData.holesDoublersRemarks,
+                  'holesDoublers',
+                  createObservationHandlers('holesDoublers')
+                )}
+              </div>
+
+              {/* Other Observations */}
+              <div>
+                <h4 className="text-md font-medium mb-4 text-gray-800">(f) Other Observations, if any*</h4>
+                {renderObservationTable(
+                  formData.otherStructureObservations,
+                  formData.otherStructureRemarks,
+                  'otherStructure',
+                  createObservationHandlers('otherStructure')
+                )}
+              </div>
+
+              {/* SS to confirm */}
+              <div>
+                <h4 className="text-md font-medium mb-4 text-gray-800">(g) SS to confirm known structural defects required to be undertaken during DD*</h4>
+                {renderObservationTable(
+                  formData.ssConfirmObservations,
+                  formData.ssConfirmRemarks,
+                  'ssConfirm',
+                  createObservationHandlers('ssConfirm')
+                )}
+              </div>
+
+              {/* Survey / Preservation */}
+              <div>
+                <h4 className="text-md font-medium mb-4 text-gray-800">(h) Survey / Preservation underneath stabilizers*</h4>
+                {renderObservationTable(
+                  formData.surveyPreservationObservations,
+                  formData.surveyPreservationRemarks,
+                  'surveyPreservation',
+                  createObservationHandlers('surveyPreservation')
+                )}
+              </div>
             </CardContent>
           </Card>
 
@@ -774,12 +1225,70 @@ const PreliminaryUnderwaterHullInspectionReportForm = () => {
               <CardTitle className="text-lg font-semibold text-center underline">SONAR DOME</CardTitle>
             </CardHeader>
             <CardContent className="p-6">
-              {renderObservationTable(
-                formData.sonarDomeObservations,
-                formData.sonarDomeRemarks,
-                'sonarDome',
-                sonarDomeHandlers
-              )}
+              <div className="overflow-x-auto">
+                <Table className="border border-gray-300">
+                  <TableHeader>
+                    <TableRow className="bg-gray-50">
+                      <TableHead className="border border-gray-300 text-center font-medium">Observation</TableHead>
+                      <TableHead className="border border-gray-300 text-center font-medium">Remarks</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    <TableRow>
+                      <TableCell className="border border-gray-300 p-2">
+                        <div className="text-sm font-medium">(a) Clean ship*</div>
+                      </TableCell>
+                      <TableCell className="border border-gray-300 p-2">
+                        <Input
+                          value={formData.cleanShip}
+                          onChange={(e) => setFormData(prev => ({ ...prev, cleanShip: e.target.value }))}
+                          placeholder="Enter remarks"
+                          className="border-0 p-1"
+                        />
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell className="border border-gray-300 p-2">
+                        <div className="text-sm font-medium">(b) Cracks/dents/fouling*</div>
+                      </TableCell>
+                      <TableCell className="border border-gray-300 p-2">
+                        <Input
+                          value={formData.cracksDentsFouling}
+                          onChange={(e) => setFormData(prev => ({ ...prev, cracksDentsFouling: e.target.value }))}
+                          placeholder="Enter remarks"
+                          className="border-0 p-1"
+                        />
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell className="border border-gray-300 p-2">
+                        <div className="text-sm font-medium">(c) If GRP dome, Delamination, blistering, cracking of Gel / GRP coat*</div>
+                      </TableCell>
+                      <TableCell className="border border-gray-300 p-2">
+                        <Input
+                          value={formData.grpDome}
+                          onChange={(e) => setFormData(prev => ({ ...prev, grpDome: e.target.value }))}
+                          placeholder="Enter remarks"
+                          className="border-0 p-1"
+                        />
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell className="border border-gray-300 p-2">
+                        <div className="text-sm font-medium">(d) Condition of fairing skirt*</div>
+                      </TableCell>
+                      <TableCell className="border border-gray-300 p-2">
+                        <Input
+                          value={formData.fairingSkirt}
+                          onChange={(e) => setFormData(prev => ({ ...prev, fairingSkirt: e.target.value }))}
+                          placeholder="Enter remarks"
+                          className="border-0 p-1"
+                        />
+                      </TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
+              </div>
             </CardContent>
           </Card>
 
@@ -788,13 +1297,28 @@ const PreliminaryUnderwaterHullInspectionReportForm = () => {
             <CardHeader className="bg-gray-100">
               <CardTitle className="text-lg font-semibold text-center underline">RUDDER</CardTitle>
             </CardHeader>
-            <CardContent className="p-6">
-              {renderObservationTable(
-                formData.rudderObservations,
-                formData.rudderRemarks,
-                'rudder',
-                rudderHandlers
-              )}
+            <CardContent className="p-6 space-y-6">
+              {/* (a) Cracks/dents/fouling */}
+              <div>
+                <h4 className="text-md font-medium mb-4 text-gray-800">(a) Cracks/dents/fouling*</h4>
+                {renderObservationTable(
+                  formData.cracksDentsFoulingRudderObservations,
+                  formData.cracksDentsFoulingRudderRemarks,
+                  'cracksDentsFoulingRudder',
+                  createObservationHandlers('cracksDentsFoulingRudder')
+                )}
+              </div>
+
+              {/* (b) Mis-alignment */}
+              <div>
+                <h4 className="text-md font-medium mb-4 text-gray-800">(b) Mis-alignment if any*</h4>
+                {renderObservationTable(
+                  formData.misAlignmentObservations,
+                  formData.misAlignmentRemarks,
+                  'misAlignment',
+                  createObservationHandlers('misAlignment')
+                )}
+              </div>
             </CardContent>
           </Card>
 
@@ -851,14 +1375,14 @@ const PreliminaryUnderwaterHullInspectionReportForm = () => {
             <CardContent className="p-6">
               <div>
                 <Label htmlFor="otherObservations" className="text-sm font-medium">Other observations*</Label>
-                <Textarea
+                    <Textarea
                   id="otherObservations"
                   value={formData.otherObservations}
                   onChange={(e) => handleInputChange('otherObservations', e.target.value)}
                   placeholder="Enter other observations..."
                   className="mt-1 min-h-[100px]"
                 />
-              </div>
+                  </div>
             </CardContent>
           </Card>
 
@@ -880,7 +1404,7 @@ const PreliminaryUnderwaterHullInspectionReportForm = () => {
                       onChange={(e) => handleInputChange('signShipStaff', e.target.files?.[0] || null)}
                       className="mt-1"
                     />
-                  </div>
+                </div>
                   <div>
                     <Label htmlFor="shipStaffName" className="text-sm font-medium">Name*</Label>
                     <Input
@@ -910,8 +1434,8 @@ const PreliminaryUnderwaterHullInspectionReportForm = () => {
                       placeholder="Enter designation"
                       className="mt-1"
                     />
-                  </div>
-                </div>
+              </div>
+            </div>
 
                 {/* Refitting Authority Signature */}
                 <div className="space-y-4">
@@ -924,7 +1448,7 @@ const PreliminaryUnderwaterHullInspectionReportForm = () => {
                       onChange={(e) => handleInputChange('signRefittingAuth', e.target.files?.[0] || null)}
                       className="mt-1"
                     />
-                  </div>
+                </div>
                   <div>
                     <Label htmlFor="refittingAuthName" className="text-sm font-medium">Name*</Label>
                     <Input
@@ -934,7 +1458,7 @@ const PreliminaryUnderwaterHullInspectionReportForm = () => {
                       placeholder="Enter name"
                       className="mt-1"
                     />
-                  </div>
+              </div>
                   <div>
                     <Label htmlFor="refittingAuthRank" className="text-sm font-medium">Rank*</Label>
                     <Input
@@ -954,8 +1478,8 @@ const PreliminaryUnderwaterHullInspectionReportForm = () => {
                       placeholder="Enter designation"
                       className="mt-1"
                     />
-                  </div>
                 </div>
+              </div>
 
                 {/* HITU Inspector Signature */}
                 <div className="space-y-4">
@@ -968,7 +1492,7 @@ const PreliminaryUnderwaterHullInspectionReportForm = () => {
                       onChange={(e) => handleInputChange('signHituInspector', e.target.files?.[0] || null)}
                       className="mt-1"
                     />
-                  </div>
+            </div>
                   <div>
                     <Label htmlFor="hituInspectorName" className="text-sm font-medium">Name*</Label>
                     <Input
@@ -1006,27 +1530,27 @@ const PreliminaryUnderwaterHullInspectionReportForm = () => {
 
           {/* Form Actions */}
           <div className="flex flex-wrap gap-4 justify-center mt-8">
-            <Button type="button" onClick={handleFetchDrafts} className="px-6 bg-cyan-500 hover:bg-cyan-600 text-white font-semibold uppercase">
+            <Button type="button" onClick={handleFetchDrafts} className="px-6 bg-blue-600 hover:bg-blue-700 text-white font-semibold uppercase">
               FETCH DRAFTS
-            </Button>
-            <Button type="button" onClick={handleSaveDraft} className="px-6 bg-green-500 hover:bg-green-600 text-white font-semibold uppercase">
+              </Button>
+            <Button type="button" onClick={handleSaveDraft} className="px-6 bg-green-600 hover:bg-green-700 text-white font-semibold uppercase">
               SAVE DRAFT
-            </Button>
-            <Button type="button" onClick={handleClear} className="px-6 bg-red-500 hover:bg-red-600 text-white font-semibold uppercase">
+              </Button>
+            <Button type="button" onClick={handleClear} className="px-6 bg-red-600 hover:bg-red-700 text-white font-semibold uppercase">
               CLEAR
-            </Button>
+              </Button>
             <Button type="submit" className="px-6 bg-blue-600 hover:bg-blue-700 text-white font-semibold uppercase">
               SAVE
-            </Button>
-          </div>
-        </form>
+              </Button>
+            </div>
+          </form>
 
         {/* Drafts Modal */}
         <Dialog open={isDraftModalOpen} onOpenChange={setIsDraftModalOpen}>
-          <DialogContent className="max-w-4xl">
-            <DialogHeader>
+        <DialogContent className="max-w-4xl">
+          <DialogHeader>
               <DialogTitle>Saved Drafts</DialogTitle>
-            </DialogHeader>
+          </DialogHeader>
             <div className="max-h-96 overflow-y-auto">
               <Table>
                 <TableHeader>
@@ -1048,14 +1572,14 @@ const PreliminaryUnderwaterHullInspectionReportForm = () => {
                           <Button
                             size="sm"
                             onClick={() => handleEditDraft(draft)}
-                            variant="outline"
+                            className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded"
                           >
                             Edit
                           </Button>
                           <Button
                             size="sm"
                             onClick={() => handleDeleteDraft(draft.id)}
-                            variant="destructive"
+                            className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded"
                           >
                             Delete
                           </Button>
@@ -1065,9 +1589,9 @@ const PreliminaryUnderwaterHullInspectionReportForm = () => {
                   ))}
                 </TableBody>
               </Table>
-            </div>
-          </DialogContent>
-        </Dialog>
+          </div>
+        </DialogContent>
+      </Dialog>
       </div>
     </div>
   );

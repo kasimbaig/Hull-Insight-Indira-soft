@@ -35,6 +35,8 @@ const SSKBollardsCleatBullRingForm: React.FC = () => {
 
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isDraftModalOpen, setIsDraftModalOpen] = useState(false);
+  const [drafts, setDrafts] = useState<any[]>([]);
 
   // Options for observation types
   const satObservations = [
@@ -141,7 +143,18 @@ const SSKBollardsCleatBullRingForm: React.FC = () => {
       cleatsOnRescueSphere: { observations: '', remarks: '' }
     });
     setErrors({});
-    localStorage.removeItem('sskBollardsCleatBullRing_draft');
+  };
+
+  const saveDraft = () => {
+    const draft = {
+      id: Date.now().toString(),
+      data: formData,
+      timestamp: new Date().toISOString()
+    };
+    const updatedDrafts = [...drafts, draft];
+    setDrafts(updatedDrafts);
+    localStorage.setItem('sskBollardsCleatBullRing_drafts', JSON.stringify(updatedDrafts));
+    alert('Draft saved successfully!');
   };
 
   const ObservationSection: React.FC<{
@@ -258,21 +271,27 @@ const SSKBollardsCleatBullRingForm: React.FC = () => {
 
             {/* Form Actions */}
             <div className="flex flex-wrap gap-4 pt-6">
+              <Button type="button" className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded" onClick={() => setIsDraftModalOpen(true)}>
+                Fetch Drafts
+              </Button>
+              
+              <Button type="button" className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded" onClick={saveDraft}>
+                SAVE DRAFT
+              </Button>
+              
               <Button
                 type="button"
                 variant="outline"
                 onClick={resetForm}
-                className="flex items-center gap-2"
+                className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded"
               >
-                <FileText className="h-4 w-4" />
                 Clear
               </Button>
               <Button
                 type="submit"
                 disabled={isSubmitting}
-                className="flex items-center gap-2"
+                className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded"
               >
-                <Save className="h-4 w-4" />
                 {isSubmitting ? 'Saving...' : 'Save'}
               </Button>
             </div>

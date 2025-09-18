@@ -5,7 +5,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
 interface P75AnchorWindlassFormData {
@@ -276,23 +276,26 @@ const P75AnchorWindlassForm: React.FC = () => {
     remarksField: keyof P75AnchorWindlassFormData,
     options = observationOptions
   ) => (
-    <div className="section-box">
-      <div className="section-header">
-        <span className="label-number">{sectionNumber}</span>
-        <div className="section-header-inner">
-          <Label>{title}</Label>
+    <div className="border-b border-gray-200 pb-4">
+      <div className="flex items-center space-x-4 mb-4">
+        <div className="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold text-sm">
+          {sectionNumber}
+        </div>
+        <div className="flex-1">
+          <Label className="text-lg font-medium">{title}</Label>
         </div>
       </div>
-      <div className="section-header-inner">{subtitle}</div>
-      <div className="section-content">
-        <div className="row">
-          <div className="col-md-4">
-            <Label className="observation-label">Observations:<strong className="text-red-500">*</strong></Label>
+      
+      <div className="ml-12 space-y-4">
+        <div className="text-sm font-medium mb-2">{subtitle}<span className="text-red-500">*</span></div>
+        <div className="flex items-start space-x-4">
+          <div className="w-48">
+            <Label className="text-sm">Observations:<span className="text-red-500">*</span></Label>
             <Select 
               value={formData[observationField]} 
               onValueChange={(value) => setFormData(prev => ({ ...prev, [observationField]: value }))}
             >
-              <SelectTrigger>
+              <SelectTrigger className="mt-1">
                 <SelectValue placeholder="--Select--" />
               </SelectTrigger>
               <SelectContent>
@@ -303,10 +306,10 @@ const P75AnchorWindlassForm: React.FC = () => {
                 ))}
               </SelectContent>
             </Select>
-            {errors[observationField] && <p className="text-red-500 text-xs">{errors[observationField]}</p>}
+            {errors[observationField] && <p className="text-red-500 text-xs mt-1">{errors[observationField]}</p>}
           </div>
-          <div className="col-md-8">
-            <Label className="remarks-label">Remarks:<strong className="text-red-500">*</strong></Label>
+          <div className="flex-1">
+            <Label className="text-sm">Remarks:<span className="text-red-500">*</span></Label>
             <Textarea
               value={formData[remarksField]}
               onChange={(e) => {
@@ -314,9 +317,10 @@ const P75AnchorWindlassForm: React.FC = () => {
                 setFormData(prev => ({ ...prev, [remarksField]: value }));
               }}
               rows={2}
+              className="mt-1"
               placeholder="Enter remarks"
             />
-            {errors[remarksField] && <p className="text-red-500 text-xs">{errors[remarksField]}</p>}
+            {errors[remarksField] && <p className="text-red-500 text-xs mt-1">{errors[remarksField]}</p>}
           </div>
         </div>
       </div>
@@ -333,85 +337,92 @@ const P75AnchorWindlassForm: React.FC = () => {
     observationFieldB: keyof P75AnchorWindlassFormData,
     remarksFieldB: keyof P75AnchorWindlassFormData
   ) => (
-    <div className="section-box">
-      <div className="section-header">
-        <span className="label-number">{sectionNumber}</span>
-        <div className="section-header-inner">
-          <Label>{title}</Label>
+    <div className="border-b border-gray-200 pb-4">
+      <div className="flex items-center space-x-4 mb-4">
+        <div className="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold text-sm">
+          {sectionNumber}
+        </div>
+        <div className="flex-1">
+          <Label className="text-lg font-medium">{title}</Label>
         </div>
       </div>
-      <div className="section-header-inner">{subtitleA}</div>
-      <div className="section-content">
-        <div className="row">
-          <div className="col-md-4">
-            <Label className="observation-label">Observations:<strong className="text-red-500">*</strong></Label>
-            <Select 
-              value={formData[observationFieldA]} 
-              onValueChange={(value) => setFormData(prev => ({ ...prev, [observationFieldA]: value }))}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="--Select--" />
-              </SelectTrigger>
-              <SelectContent>
-                {observationOptions.map(option => (
-                  <SelectItem key={option.value} value={option.value}>
-                    {option.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            {errors[observationFieldA] && <p className="text-red-500 text-xs">{errors[observationFieldA]}</p>}
-          </div>
-          <div className="col-md-8">
-            <Label className="remarks-label">Remarks:<strong className="text-red-500">*</strong></Label>
-            <Textarea
-              value={formData[remarksFieldA]}
-              onChange={(e) => {
-                const value = handleRemarksValidation(e.target.value);
-                setFormData(prev => ({ ...prev, [remarksFieldA]: value }));
-              }}
-              rows={2}
-              placeholder="Enter remarks"
-            />
-            {errors[remarksFieldA] && <p className="text-red-500 text-xs">{errors[remarksFieldA]}</p>}
+      
+      <div className="ml-12 space-y-4">
+        <div>
+          <div className="text-sm font-medium mb-2">{subtitleA}<span className="text-red-500">*</span></div>
+          <div className="flex items-start space-x-4">
+            <div className="w-48">
+              <Label className="text-sm">Observations:<span className="text-red-500">*</span></Label>
+              <Select 
+                value={formData[observationFieldA]} 
+                onValueChange={(value) => setFormData(prev => ({ ...prev, [observationFieldA]: value }))}
+              >
+                <SelectTrigger className="mt-1">
+                  <SelectValue placeholder="--Select--" />
+                </SelectTrigger>
+                <SelectContent>
+                  {observationOptions.map(option => (
+                    <SelectItem key={option.value} value={option.value}>
+                      {option.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              {errors[observationFieldA] && <p className="text-red-500 text-xs mt-1">{errors[observationFieldA]}</p>}
+            </div>
+            <div className="flex-1">
+              <Label className="text-sm">Remarks:<span className="text-red-500">*</span></Label>
+              <Textarea
+                value={formData[remarksFieldA]}
+                onChange={(e) => {
+                  const value = handleRemarksValidation(e.target.value);
+                  setFormData(prev => ({ ...prev, [remarksFieldA]: value }));
+                }}
+                rows={2}
+                className="mt-1"
+                placeholder="Enter remarks"
+              />
+              {errors[remarksFieldA] && <p className="text-red-500 text-xs mt-1">{errors[remarksFieldA]}</p>}
+            </div>
           </div>
         </div>
-      </div>
-      <br />
-      <div className="section-header-inner">{subtitleB}</div>
-      <div className="section-content">
-        <div className="row">
-          <div className="col-md-4">
-            <Label className="observation-label">Observations:<strong className="text-red-500">*</strong></Label>
-            <Select 
-              value={formData[observationFieldB]} 
-              onValueChange={(value) => setFormData(prev => ({ ...prev, [observationFieldB]: value }))}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="--Select--" />
-              </SelectTrigger>
-              <SelectContent>
-                {observationOptions.map(option => (
-                  <SelectItem key={option.value} value={option.value}>
-                    {option.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            {errors[observationFieldB] && <p className="text-red-500 text-xs">{errors[observationFieldB]}</p>}
-          </div>
-          <div className="col-md-8">
-            <Label className="remarks-label">Remarks:<strong className="text-red-500">*</strong></Label>
-            <Textarea
-              value={formData[remarksFieldB]}
-              onChange={(e) => {
-                const value = handleRemarksValidation(e.target.value);
-                setFormData(prev => ({ ...prev, [remarksFieldB]: value }));
-              }}
-              rows={2}
-              placeholder="Enter remarks"
-            />
-            {errors[remarksFieldB] && <p className="text-red-500 text-xs">{errors[remarksFieldB]}</p>}
+        
+        <div>
+          <div className="text-sm font-medium mb-2">{subtitleB}<span className="text-red-500">*</span></div>
+          <div className="flex items-start space-x-4">
+            <div className="w-48">
+              <Label className="text-sm">Observations:<span className="text-red-500">*</span></Label>
+              <Select 
+                value={formData[observationFieldB]} 
+                onValueChange={(value) => setFormData(prev => ({ ...prev, [observationFieldB]: value }))}
+              >
+                <SelectTrigger className="mt-1">
+                  <SelectValue placeholder="--Select--" />
+                </SelectTrigger>
+                <SelectContent>
+                  {observationOptions.map(option => (
+                    <SelectItem key={option.value} value={option.value}>
+                      {option.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              {errors[observationFieldB] && <p className="text-red-500 text-xs mt-1">{errors[observationFieldB]}</p>}
+            </div>
+            <div className="flex-1">
+              <Label className="text-sm">Remarks:<span className="text-red-500">*</span></Label>
+              <Textarea
+                value={formData[remarksFieldB]}
+                onChange={(e) => {
+                  const value = handleRemarksValidation(e.target.value);
+                  setFormData(prev => ({ ...prev, [remarksFieldB]: value }));
+                }}
+                rows={2}
+                className="mt-1"
+                placeholder="Enter remarks"
+              />
+              {errors[remarksFieldB] && <p className="text-red-500 text-xs mt-1">{errors[remarksFieldB]}</p>}
+            </div>
           </div>
         </div>
       </div>
@@ -419,77 +430,95 @@ const P75AnchorWindlassForm: React.FC = () => {
   );
 
   return (
-    <div className="container mx-auto py-6">
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-center">
-            <div className="text-orange-500 text-lg font-bold">P-75 CLASS</div>
-            <div className="text-2xl font-bold">
-              <u>ANCHOR WINDLASS</u>
+    <div className="w-full min-h-screen bg-gray-50">
+      <div className="container mx-auto p-6">
+        <div className="bg-white shadow-lg rounded-lg">
+          <div className="p-8">
+            {/* Form Header */}
+            <div className="text-center mb-8">
+              <h4 className="text-xl font-bold text-blue-600 mb-2">P-75 CLASS</h4>
+              <h2 className="text-3xl font-bold text-gray-900 mb-4">ANCHOR WINDLASS</h2>
             </div>
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Section 1: Make */}
-            <div className="section-box">
-              <div className="section-header">
-                <span className="label-number">1</span>
-                <Label htmlFor="make">Make<strong className="text-red-500">*</strong></Label>
-              </div>
-              <div className="section-content">
-                <Input
-                  id="make"
-                  value={formData.make}
-                  onChange={(e) => {
-                    const value = handleSpecialCharValidation(e.target.value);
-                    setFormData(prev => ({ ...prev, make: value }));
-                  }}
-                  maxLength={20}
-                  placeholder="Enter make"
-                />
-                {errors.make && <p className="text-red-500 text-sm mt-1">{errors.make}</p>}
-              </div>
-            </div>
 
-            {/* Section 2: Type */}
-            <div className="section-box">
-              <div className="section-header">
-                <span className="label-number">2</span>
-                <Label htmlFor="type">Type<strong className="text-red-500">*</strong></Label>
+            <div className="space-y-6">
+              {/* Section 1 - Make */}
+              <div className="flex items-center space-x-4 border-b border-gray-200 pb-4">
+                <div className="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold text-sm">
+                  1
+                </div>
+                <div className="flex-1">
+                  <Label htmlFor="make" className="text-lg font-medium">
+                    Make<span className="text-red-500">*</span>
+                  </Label>
+                  <div className="mt-2">
+                    <Input
+                      id="make"
+                      value={formData.make}
+                      onChange={(e) => {
+                        const value = handleSpecialCharValidation(e.target.value);
+                        setFormData(prev => ({ ...prev, make: value }));
+                      }}
+                      maxLength={20}
+                      placeholder="Enter make"
+                      className="w-64"
+                      required
+                    />
+                    {errors.make && <p className="text-red-500 text-sm mt-1">{errors.make}</p>}
+                  </div>
+                </div>
               </div>
-              <div className="section-content">
-                <Input
-                  id="type"
-                  value={formData.type}
-                  onChange={(e) => {
-                    const value = handleSpecialCharValidation(e.target.value);
-                    setFormData(prev => ({ ...prev, type: value }));
-                  }}
-                  maxLength={20}
-                  placeholder="Enter type"
-                />
-                {errors.type && <p className="text-red-500 text-sm mt-1">{errors.type}</p>}
-              </div>
-            </div>
 
-            {/* Section 3: Year of Manufacture */}
-            <div className="section-box">
-              <div className="section-header">
-                <span className="label-number">3</span>
-                <Label htmlFor="yearManufacture">Year of Manufacture<strong className="text-red-500">*</strong></Label>
+              {/* Section 2 - Type */}
+              <div className="flex items-center space-x-4 border-b border-gray-200 pb-4">
+                <div className="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold text-sm">
+                  2
+                </div>
+                <div className="flex-1">
+                  <Label htmlFor="type" className="text-lg font-medium">
+                    Type<span className="text-red-500">*</span>
+                  </Label>
+                  <div className="mt-2">
+                    <Input
+                      id="type"
+                      value={formData.type}
+                      onChange={(e) => {
+                        const value = handleSpecialCharValidation(e.target.value);
+                        setFormData(prev => ({ ...prev, type: value }));
+                      }}
+                      maxLength={20}
+                      placeholder="Enter type"
+                      className="w-64"
+                      required
+                    />
+                    {errors.type && <p className="text-red-500 text-sm mt-1">{errors.type}</p>}
+                  </div>
+                </div>
               </div>
-              <div className="section-content">
-                <Input
-                  id="yearManufacture"
-                  value={formData.yearManufacture}
-                  onChange={(e) => handleYearChange(e.target.value)}
-                  maxLength={4}
-                  placeholder="Enter year"
-                />
-                {errors.yearManufacture && <p className="text-red-500 text-sm mt-1">{errors.yearManufacture}</p>}
+
+              {/* Section 3 - Year of Manufacture */}
+              <div className="flex items-center space-x-4 border-b border-gray-200 pb-4">
+                <div className="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold text-sm">
+                  3
+                </div>
+                <div className="flex-1">
+                  <Label htmlFor="yearManufacture" className="text-lg font-medium">
+                    Year of Manufacture<span className="text-red-500">*</span>
+                  </Label>
+                  <div className="mt-2">
+                    <Input
+                      id="yearManufacture"
+                      value={formData.yearManufacture}
+                      onChange={(e) => handleYearChange(e.target.value)}
+                      maxLength={4}
+                      placeholder="Enter year"
+                      className="w-64"
+                      required
+                    />
+                    {errors.yearManufacture && <p className="text-red-500 text-sm mt-1">{errors.yearManufacture}</p>}
+                  </div>
+                </div>
               </div>
-            </div>
 
             {/* Sections 4-17: Various inspection sections */}
             {renderObservationSection(4, "Control Panel (Torpedo Room)", "a) Hydraulic Actuators", "observationsHydraulic", "remarksHydraulic")}
@@ -507,131 +536,151 @@ const P75AnchorWindlassForm: React.FC = () => {
             
             {renderObservationSection(15, "Drive", "a) Check for Abnormal Sounds/Excessive Noise During Operation", "observationsDriveSounds", "remarksDriveSounds")}
 
-            {/* Section 16: Any Other Observation */}
-            <div className="section-box">
-              <div className="section-header">
-                <span className="label-number">16</span>
-                <Label>Any Other Observation</Label>
+              {/* Section 16: Any Other Observation */}
+              <div className="border-b border-gray-200 pb-4">
+                <div className="flex items-center space-x-4 mb-4">
+                  <div className="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold text-sm">
+                    16
+                  </div>
+                  <div className="flex-1">
+                    <Label className="text-lg font-medium">Any Other Observation</Label>
+                  </div>
+                </div>
+                
+                <div className="ml-12">
+                  <div className="flex items-start space-x-4">
+                    <div className="flex-1">
+                      <Label className="text-sm">Remarks:<span className="text-red-500">*</span></Label>
+                      <Textarea
+                        value={formData.remarksAnyOtherObserv}
+                        onChange={(e) => {
+                          const value = handleRemarksValidation(e.target.value);
+                          setFormData(prev => ({ ...prev, remarksAnyOtherObserv: value }));
+                        }}
+                        rows={2}
+                        className="mt-1"
+                        placeholder="Enter remarks"
+                      />
+                      {errors.remarksAnyOtherObserv && <p className="text-red-500 text-xs mt-1">{errors.remarksAnyOtherObserv}</p>}
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div className="section-content">
-                <div className="row">
-                  <div className="col-md-12">
-                    <Label className="remarks-label">Remarks:<strong className="text-red-500">*</strong></Label>
-                    <Textarea
-                      value={formData.remarksAnyOtherObserv}
-                      onChange={(e) => {
-                        const value = handleRemarksValidation(e.target.value);
-                        setFormData(prev => ({ ...prev, remarksAnyOtherObserv: value }));
-                      }}
-                      rows={2}
-                      placeholder="Enter remarks"
-                    />
-                    {errors.remarksAnyOtherObserv && <p className="text-red-500 text-sm mt-1">{errors.remarksAnyOtherObserv}</p>}
+
+              {/* Section 17: Overall Remarks */}
+              <div className="border-b border-gray-200 pb-4">
+                <div className="flex items-center space-x-4 mb-4">
+                  <div className="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold text-sm">
+                    17
+                  </div>
+                  <div className="flex-1">
+                    <Label className="text-lg font-medium">Overall Remarks</Label>
+                  </div>
+                </div>
+                
+                <div className="ml-12">
+                  <div className="flex items-start space-x-4">
+                    <div className="w-48">
+                      <Label className="text-sm">Observations:<span className="text-red-500">*</span></Label>
+                      <Select 
+                        value={formData.observationsOverall} 
+                        onValueChange={(value) => setFormData(prev => ({ ...prev, observationsOverall: value }))}
+                      >
+                        <SelectTrigger className="mt-1">
+                          <SelectValue placeholder="--Select--" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {observationOptions.map(option => (
+                            <SelectItem key={option.value} value={option.value}>
+                              {option.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      {errors.observationsOverall && <p className="text-red-500 text-xs mt-1">{errors.observationsOverall}</p>}
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* Section 17: Overall Remarks */}
-            <div className="section-box">
-              <div className="section-header">
-                <span className="label-number">17</span>
-                <Label>Overall Remarks</Label>
-              </div>
-              <div className="section-content">
-                <div className="row">
-                  <div className="col-md-4">
-                    <Label className="observation-label">Observations:<strong className="text-red-500">*</strong></Label>
-                    <Select 
-                      value={formData.observationsOverall} 
-                      onValueChange={(value) => setFormData(prev => ({ ...prev, observationsOverall: value }))}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="--Select--" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {observationOptions.map(option => (
-                          <SelectItem key={option.value} value={option.value}>
-                            {option.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    {errors.observationsOverall && <p className="text-red-500 text-sm mt-1">{errors.observationsOverall}</p>}
+            <div className="flex justify-end space-x-4 mt-8 pt-6 border-t border-gray-200">
+              <Dialog open={showDraftModal} onOpenChange={setShowDraftModal}>
+                <DialogTrigger asChild>
+                  <Button type="button" className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded" onClick={loadDrafts}>
+                    Fetch Drafts
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="max-w-4xl">
+                  <DialogHeader>
+                    <DialogTitle>Draft Data</DialogTitle>
+                  </DialogHeader>
+                  <div className="card-body">
+                    <div className="row">
+                      <div className="col-lg-12 col-md-12 col-sm-12 col-12">
+                        <Table>
+                          <TableHeader>
+                            <TableRow>
+                              <TableHead>Sr No.</TableHead>
+                              <TableHead>Make</TableHead>
+                              <TableHead>Created Date</TableHead>
+                              <TableHead>Action</TableHead>
+                            </TableRow>
+                          </TableHeader>
+                          <TableBody>
+                            {drafts.length === 0 ? (
+                              <TableRow>
+                                <TableCell colSpan={4} className="text-center">
+                                  Data is not available
+                                </TableCell>
+                              </TableRow>
+                            ) : (
+                              drafts.map((draft, index) => (
+                                <TableRow key={draft.id}>
+                                  <TableCell>{index + 1}</TableCell>
+                                  <TableCell>{draft.data.make || 'No Inspection Data'}</TableCell>
+                                  <TableCell>{new Date(draft.timestamp).toLocaleString()}</TableCell>
+                                  <TableCell>
+                                    <Button
+                                      className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded mr-2"
+                                      size="sm"
+                                      onClick={() => loadDraft(draft)}
+                                    >
+                                      Edit
+                                    </Button>
+                                    <Button
+                                      className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded"
+                                      size="sm"
+                                      onClick={() => deleteDraft(draft.id)}
+                                    >
+                                      Delete
+                                    </Button>
+                                  </TableCell>
+                                </TableRow>
+                              ))
+                            )}
+                          </TableBody>
+                        </Table>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
-            </div>
+                </DialogContent>
+              </Dialog>
 
-            {/* Action Buttons */}
-            <div className="flex justify-center space-x-4 mt-8">
-              <Button type="button" onClick={loadDrafts} variant="outline">
-                Fetch Drafts
+              <Button type="button" className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded" onClick={saveDraft}>
+                SAVE DRAFT
               </Button>
-              <Button type="button" onClick={saveDraft} variant="outline">
-                Save Draft
-              </Button>
-              <Button type="button" onClick={clearForm} variant="destructive">
+              <Button type="button" className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded" onClick={clearForm}>
                 Clear
               </Button>
-              <Button type="submit" disabled={isSubmitting}>
+              <Button type="submit" className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded" disabled={isSubmitting}>
                 {isSubmitting ? 'Submitting...' : 'Save'}
               </Button>
             </div>
           </form>
-        </CardContent>
-      </Card>
-
-      {/* Draft Modal */}
-      <Dialog open={showDraftModal} onOpenChange={setShowDraftModal}>
-        <DialogContent className="max-w-4xl">
-          <DialogHeader>
-            <DialogTitle>Draft Data</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4">
-            {drafts.length === 0 ? (
-              <p className="text-center text-gray-500">No drafts found</p>
-            ) : (
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Sr No.</TableHead>
-                    <TableHead>Make</TableHead>
-                    <TableHead>Created Date</TableHead>
-                    <TableHead>Action</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {drafts.map((draft, index) => (
-                    <TableRow key={draft.id}>
-                      <TableCell>{index + 1}</TableCell>
-                      <TableCell>{draft.data.make || 'No Inspection Data'}</TableCell>
-                      <TableCell>{new Date(draft.timestamp).toLocaleString()}</TableCell>
-                      <TableCell>
-                        <div className="flex space-x-2">
-                          <Button
-                            size="sm"
-                            onClick={() => loadDraft(draft)}
-                          >
-                            Fetch Data
-                          </Button>
-                          <Button
-                            size="sm"
-                            variant="destructive"
-                            onClick={() => deleteDraft(draft.id)}
-                          >
-                            Delete
-                          </Button>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            )}
           </div>
-        </DialogContent>
-      </Dialog>
+        </div>
+      </div>
     </div>
   );
 };

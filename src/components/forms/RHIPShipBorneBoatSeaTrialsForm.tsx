@@ -1,144 +1,114 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { CalendarIcon, Save } from 'lucide-react';
+import { CalendarIcon } from 'lucide-react';
 import { format } from 'date-fns';
+
+interface PowerRegimeData {
+  id: string;
+  srNo: string;
+  run: string;
+  engineSpeedRPM: string;
+  speedByGPS: string;
+  coolantTemp: string;
+  loPressure: string;
+}
 
 interface RHIPShipBorneBoatSeaTrialsData {
   // Basic Information
-  ship: string;
-  dateOfTrials: Date | null;
   place: string;
+  date: Date | null;
+  wind: string;
+  seaState: string;
   boatType: string;
   boatRegnNo: string;
-  trialTeams: string;
+  distance: string;
   
-  // Sea Trials Information
-  seaState: string;
-  windSpeed: string;
-  visibility: string;
-  temperature: string;
-  humidity: string;
+  // Representatives
+  shipRepresentative: string;
+  trialTeamsRepresentative: string;
   
-  // Performance Tests
-  maxSpeed: string;
-  cruisingSpeed: string;
-  fuelConsumption: string;
-  range: string;
-  endurance: string;
+  // Light Load Condition Power Regimes
+  lightLoad50Power: PowerRegimeData[];
+  lightLoad85Power: PowerRegimeData[];
+  lightLoad100Power: PowerRegimeData[];
+  lightLoadRemarks: string;
   
-  // Maneuvering Tests
-  turningCircle: string;
-  stoppingDistance: string;
-  acceleration: string;
-  deceleration: string;
-  
-  // Safety Equipment
-  lifeJackets: string;
-  lifeRaft: string;
-  distressSignals: string;
-  firstAidKit: string;
-  fireExtinguisher: string;
-  
-  // Navigation Equipment
-  compass: string;
-  gps: string;
-  radar: string;
-  depthSound: string;
-  radio: string;
-  
-  // Engine Performance
-  engineStart: string;
-  engineIdle: string;
-  engineFullPower: string;
-  engineTemperature: string;
-  oilPressure: string;
-  
-  // Hull and Structure
-  hullCondition: string;
-  deckCondition: string;
-  fittingsCondition: string;
-  corrosionLevel: string;
-  
-  // Observations and Remarks
-  generalObservations: string;
-  recommendations: string;
-  overallAssessment: string;
+  // Full Load Condition Power Regimes
+  fullLoad50Power: PowerRegimeData[];
+  fullLoad85Power: PowerRegimeData[];
+  fullLoad100Power: PowerRegimeData[];
+  fullLoadRemarks: string;
 }
 
 const RHIPShipBorneBoatSeaTrialsForm: React.FC = () => {
   const [formData, setFormData] = useState<RHIPShipBorneBoatSeaTrialsData>({
-    ship: '',
-    dateOfTrials: null,
     place: '',
+    date: null,
+    wind: '',
+    seaState: '',
     boatType: '',
     boatRegnNo: '',
-    trialTeams: '',
-    seaState: '',
-    windSpeed: '',
-    visibility: '',
-    temperature: '',
-    humidity: '',
-    maxSpeed: '',
-    cruisingSpeed: '',
-    fuelConsumption: '',
-    range: '',
-    endurance: '',
-    turningCircle: '',
-    stoppingDistance: '',
-    acceleration: '',
-    deceleration: '',
-    lifeJackets: '',
-    lifeRaft: '',
-    distressSignals: '',
-    firstAidKit: '',
-    fireExtinguisher: '',
-    compass: '',
-    gps: '',
-    radar: '',
-    depthSound: '',
-    radio: '',
-    engineStart: '',
-    engineIdle: '',
-    engineFullPower: '',
-    engineTemperature: '',
-    oilPressure: '',
-    hullCondition: '',
-    deckCondition: '',
-    fittingsCondition: '',
-    corrosionLevel: '',
-    generalObservations: '',
-    recommendations: '',
-    overallAssessment: ''
+    distance: '1 Nm (Nautical mile) for each run.',
+    shipRepresentative: '',
+    trialTeamsRepresentative: '',
+    lightLoad50Power: [],
+    lightLoad85Power: [],
+    lightLoad100Power: [],
+    lightLoadRemarks: '',
+    fullLoad50Power: [],
+    fullLoad85Power: [],
+    fullLoad100Power: [],
+    fullLoadRemarks: '',
   });
 
-  const [errors, setErrors] = useState<Partial<RHIPShipBorneBoatSeaTrialsData>>({});
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [isDraftModalOpen, setIsDraftModalOpen] = useState(false);
+  const [drafts, setDrafts] = useState<any[]>([]);
 
-  const handleInputChange = (field: keyof RHIPShipBorneBoatSeaTrialsData, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
-    if (errors[field]) {
-      setErrors(prev => ({ ...prev, [field]: undefined }));
+  useEffect(() => {
+    loadDrafts();
+  }, []);
+
+  const loadDrafts = () => {
+    const savedDrafts = localStorage.getItem('rhibSeaTrials_drafts');
+    if (savedDrafts) {
+      setDrafts(JSON.parse(savedDrafts));
     }
   };
 
-  const handleDateChange = (field: keyof RHIPShipBorneBoatSeaTrialsData, date: Date | undefined) => {
-    setFormData(prev => ({ ...prev, [field]: date || null }));
+  const saveDraft = () => {
+    const draftData = {
+      ...formData,
+      id: Date.now().toString(),
+      timestamp: new Date().toISOString(),
+      title: `Draft - ${formData.place || 'Untitled'} - ${formData.boatType || 'No Type'}`
+    };
+    
+    const updatedDrafts = [...drafts, draftData];
+    setDrafts(updatedDrafts);
+    localStorage.setItem('rhibSeaTrials_drafts', JSON.stringify(updatedDrafts));
+    setIsDraftModalOpen(false);
   };
 
-  const validateForm = (): boolean => {
-    const newErrors: Partial<RHIPShipBorneBoatSeaTrialsData> = {};
+  const validateForm = () => {
+    const newErrors: Record<string, string> = {};
 
-    if (!formData.ship) newErrors.ship = 'Ship selection is required';
-    if (!formData.dateOfTrials) newErrors.dateOfTrials = 'Date of trials is required';
+    // Validate required fields
     if (!formData.place) newErrors.place = 'Place is required';
-    if (!formData.boatType) newErrors.boatType = 'Boat type is required';
-    if (!formData.boatRegnNo) newErrors.boatRegnNo = 'Boat registration number is required';
+    if (!formData.date) newErrors.date = 'Date is required';
+    if (!formData.wind) newErrors.wind = 'Wind is required';
+    if (!formData.seaState) newErrors.seaState = 'Sea State is required';
+    if (!formData.boatType) newErrors.boatType = 'Boat Type is required';
+    if (!formData.boatRegnNo) newErrors.boatRegnNo = 'Boat Registration Number is required';
+    if (!formData.shipRepresentative) newErrors.shipRepresentative = 'Ship Representative is required';
+    if (!formData.trialTeamsRepresentative) newErrors.trialTeamsRepresentative = 'Trial Teams Representative is required';
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -152,9 +122,163 @@ const RHIPShipBorneBoatSeaTrialsForm: React.FC = () => {
     }
   };
 
-  const ships = [
-    'SHIVALIK', 'JAMUNA', 'BANGARAM', 'TARANGINI', 'SARYU', 'MYSORE'
-  ];
+  const resetForm = () => {
+    setFormData({
+      place: '',
+      date: null,
+      wind: '',
+      seaState: '',
+      boatType: '',
+      boatRegnNo: '',
+      distance: '1 Nm (Nautical mile) for each run.',
+      shipRepresentative: '',
+      trialTeamsRepresentative: '',
+      lightLoad50Power: [],
+      lightLoad85Power: [],
+      lightLoad100Power: [],
+      lightLoadRemarks: '',
+      fullLoad50Power: [],
+      fullLoad85Power: [],
+      fullLoad100Power: [],
+      fullLoadRemarks: '',
+    });
+    setErrors({});
+  };
+
+  const addPowerRegimeRow = (powerType: string, powerLevel: string) => {
+    const newRow: PowerRegimeData = {
+      id: Date.now().toString(),
+      srNo: '',
+      run: '',
+      engineSpeedRPM: '',
+      speedByGPS: '',
+      coolantTemp: '',
+      loPressure: '',
+    };
+
+    setFormData(prev => ({
+      ...prev,
+      [`${powerType}${powerLevel}Power`]: [...prev[`${powerType}${powerLevel}Power` as keyof RHIPShipBorneBoatSeaTrialsData] as PowerRegimeData[], newRow]
+    }));
+  };
+
+  const removePowerRegimeRow = (powerType: string, powerLevel: string, id: string) => {
+    setFormData(prev => ({
+      ...prev,
+      [`${powerType}${powerLevel}Power`]: (prev[`${powerType}${powerLevel}Power` as keyof RHIPShipBorneBoatSeaTrialsData] as PowerRegimeData[]).filter(row => row.id !== id)
+    }));
+  };
+
+  const updatePowerRegimeRow = (powerType: string, powerLevel: string, id: string, field: keyof PowerRegimeData, value: string) => {
+    setFormData(prev => ({
+      ...prev,
+      [`${powerType}${powerLevel}Power`]: (prev[`${powerType}${powerLevel}Power` as keyof RHIPShipBorneBoatSeaTrialsData] as PowerRegimeData[]).map(row =>
+        row.id === id ? { ...row, [field]: value } : row
+      )
+    }));
+  };
+
+  const renderPowerRegimeTable = (powerType: string, powerLevel: string, title: string) => {
+    const powerData = formData[`${powerType}${powerLevel}Power` as keyof RHIPShipBorneBoatSeaTrialsData] as PowerRegimeData[];
+    
+    return (
+      <div className="space-y-4">
+        <div className="flex items-center justify-between">
+          <h4 className="text-md font-medium text-gray-800">{title}</h4>
+          <Button
+            type="button"
+            onClick={() => addPowerRegimeRow(powerType, powerLevel)}
+            className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm"
+          >
+            Add Row
+          </Button>
+        </div>
+        
+        <div className="overflow-x-auto">
+          <table className="w-full border border-gray-300">
+            <thead className="bg-gray-50">
+              <tr>
+                <th className="border border-gray-300 px-3 py-2 text-left font-medium">Sr No.</th>
+                <th className="border border-gray-300 px-3 py-2 text-left font-medium">Run*</th>
+                <th className="border border-gray-300 px-3 py-2 text-left font-medium">Engine Speed RPM*</th>
+                <th className="border border-gray-300 px-3 py-2 text-left font-medium">Parameters</th>
+                <th className="border border-gray-300 px-3 py-2 text-left font-medium">Speed by GPS (Knot)*</th>
+                <th className="border border-gray-300 px-3 py-2 text-left font-medium">Coolant Temp (°C)*</th>
+                <th className="border border-gray-300 px-3 py-2 text-left font-medium">LO Pressure (bar)*</th>
+                <th className="border border-gray-300 px-3 py-2 text-left font-medium">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {powerData.map((row, index) => (
+                <tr key={row.id}>
+                  <td className="border border-gray-300 px-3 py-2">
+                    <Input
+                      value={row.srNo}
+                      onChange={(e) => updatePowerRegimeRow(powerType, powerLevel, row.id, 'srNo', e.target.value)}
+                      placeholder={`(${String.fromCharCode(97 + index)})`}
+                      className="border-0 p-1 w-16"
+                    />
+                  </td>
+                  <td className="border border-gray-300 px-3 py-2">
+                    <Input
+                      value={row.run}
+                      onChange={(e) => updatePowerRegimeRow(powerType, powerLevel, row.id, 'run', e.target.value)}
+                      placeholder="Enter run"
+                      className="border-0 p-1"
+                    />
+                  </td>
+                  <td className="border border-gray-300 px-3 py-2">
+                    <Input
+                      value={row.engineSpeedRPM}
+                      onChange={(e) => updatePowerRegimeRow(powerType, powerLevel, row.id, 'engineSpeedRPM', e.target.value)}
+                      placeholder="Enter RPM"
+                      className="border-0 p-1"
+                    />
+                  </td>
+                  <td className="border border-gray-300 px-3 py-2">
+                    <div className="text-sm text-gray-600">Parameters</div>
+                  </td>
+                  <td className="border border-gray-300 px-3 py-2">
+                    <Input
+                      value={row.speedByGPS}
+                      onChange={(e) => updatePowerRegimeRow(powerType, powerLevel, row.id, 'speedByGPS', e.target.value)}
+                      placeholder="Enter speed"
+                      className="border-0 p-1"
+                    />
+                  </td>
+                  <td className="border border-gray-300 px-3 py-2">
+                    <Input
+                      value={row.coolantTemp}
+                      onChange={(e) => updatePowerRegimeRow(powerType, powerLevel, row.id, 'coolantTemp', e.target.value)}
+                      placeholder="Enter temp"
+                      className="border-0 p-1"
+                    />
+                  </td>
+                  <td className="border border-gray-300 px-3 py-2">
+                    <Input
+                      value={row.loPressure}
+                      onChange={(e) => updatePowerRegimeRow(powerType, powerLevel, row.id, 'loPressure', e.target.value)}
+                      placeholder="Enter pressure"
+                      className="border-0 p-1"
+                    />
+                  </td>
+                  <td className="border border-gray-300 px-3 py-2">
+                    <Button
+                      type="button"
+                      onClick={() => removePowerRegimeRow(powerType, powerLevel, row.id)}
+                      className="bg-red-600 hover:bg-red-700 text-white px-2 py-1 rounded text-xs"
+                    >
+                      Remove
+                    </Button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    );
+  };
 
   return (
     <div className="max-w-6xl mx-auto p-6 space-y-6">
@@ -167,57 +291,16 @@ const RHIPShipBorneBoatSeaTrialsForm: React.FC = () => {
         {/* Basic Information */}
         <Card>
           <CardHeader>
-            <CardTitle>1. Basic Information</CardTitle>
+            <CardTitle>Basic Information</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="ship">Ship <span className="text-red-500">*</span></Label>
-                <Select value={formData.ship} onValueChange={(value) => handleInputChange('ship', value)}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="--Select Ship--" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {ships.map((ship) => (
-                      <SelectItem key={ship} value={ship}>
-                        {ship}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                {errors.ship && <p className="text-red-500 text-sm mt-1">{errors.ship}</p>}
-              </div>
-
-              <div>
-                <Label htmlFor="dateOfTrials">Date of Sea Trials <span className="text-red-500">*</span></Label>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant="outline"
-                      className="w-full justify-start text-left font-normal"
-                    >
-                      <CalendarIcon className="mr-2 h-4 w-4" />
-                      {formData.dateOfTrials ? format(formData.dateOfTrials, 'dd/MM/yyyy') : 'Select date'}
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0">
-                    <Calendar
-                      mode="single"
-                      selected={formData.dateOfTrials || undefined}
-                      onSelect={(date) => handleDateChange('dateOfTrials', date)}
-                      initialFocus
-                    />
-                  </PopoverContent>
-                </Popover>
-                {errors.dateOfTrials && <p className="text-red-500 text-sm mt-1">{errors.dateOfTrials}</p>}
-              </div>
-
-              <div>
-                <Label htmlFor="place">Place <span className="text-red-500">*</span></Label>
+                <Label htmlFor="place">Place *</Label>
                 <Input
                   id="place"
                   value={formData.place}
-                  onChange={(e) => handleInputChange('place', e.target.value)}
+                  onChange={(e) => setFormData(prev => ({ ...prev, place: e.target.value }))}
                   placeholder="Enter place"
                   maxLength={50}
                 />
@@ -225,584 +308,234 @@ const RHIPShipBorneBoatSeaTrialsForm: React.FC = () => {
               </div>
 
               <div>
-                <Label htmlFor="boatType">Boat Type <span className="text-red-500">*</span></Label>
+                <Label htmlFor="date">Date *</Label>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button variant="outline" className="w-full justify-start text-left font-normal">
+                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      {formData.date ? format(formData.date, 'dd/MM/yyyy') : 'Select date'}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0">
+                    <Calendar
+                      mode="single"
+                      selected={formData.date || undefined}
+                      onSelect={(date) => setFormData(prev => ({ ...prev, date: date || null }))}
+                      initialFocus
+                    />
+                  </PopoverContent>
+                </Popover>
+                {errors.date && <p className="text-red-500 text-sm mt-1">{errors.date}</p>}
+              </div>
+
+              <div>
+                <Label htmlFor="wind">Wind *</Label>
+                <Input
+                  id="wind"
+                  value={formData.wind}
+                  onChange={(e) => setFormData(prev => ({ ...prev, wind: e.target.value }))}
+                  placeholder="Enter wind conditions"
+                  maxLength={50}
+                />
+                {errors.wind && <p className="text-red-500 text-sm mt-1">{errors.wind}</p>}
+              </div>
+
+              <div>
+                <Label htmlFor="seaState">Sea State *</Label>
+                <Input
+                  id="seaState"
+                  value={formData.seaState}
+                  onChange={(e) => setFormData(prev => ({ ...prev, seaState: e.target.value }))}
+                  placeholder="Enter sea state"
+                  maxLength={50}
+                />
+                {errors.seaState && <p className="text-red-500 text-sm mt-1">{errors.seaState}</p>}
+              </div>
+
+              <div>
+                <Label htmlFor="boatType">Boat Type *</Label>
                 <Input
                   id="boatType"
                   value={formData.boatType}
-                  onChange={(e) => handleInputChange('boatType', e.target.value)}
+                  onChange={(e) => setFormData(prev => ({ ...prev, boatType: e.target.value }))}
                   placeholder="Enter boat type"
-                  maxLength={30}
+                  maxLength={50}
                 />
                 {errors.boatType && <p className="text-red-500 text-sm mt-1">{errors.boatType}</p>}
               </div>
 
               <div>
-                <Label htmlFor="boatRegnNo">Boat Registration No. <span className="text-red-500">*</span></Label>
+                <Label htmlFor="boatRegnNo">Boat Regn No *</Label>
                 <Input
                   id="boatRegnNo"
                   value={formData.boatRegnNo}
-                  onChange={(e) => handleInputChange('boatRegnNo', e.target.value)}
+                  onChange={(e) => setFormData(prev => ({ ...prev, boatRegnNo: e.target.value }))}
                   placeholder="Enter boat registration number"
-                  maxLength={20}
+                  maxLength={50}
                 />
                 {errors.boatRegnNo && <p className="text-red-500 text-sm mt-1">{errors.boatRegnNo}</p>}
               </div>
 
               <div>
-                <Label htmlFor="trialTeams">Trial Teams</Label>
+                <Label htmlFor="distance">Distance</Label>
                 <Input
-                  id="trialTeams"
-                  value={formData.trialTeams}
-                  onChange={(e) => handleInputChange('trialTeams', e.target.value)}
-                  placeholder="Enter trial teams"
-                  maxLength={100}
+                  id="distance"
+                  value={formData.distance}
+                  onChange={(e) => setFormData(prev => ({ ...prev, distance: e.target.value }))}
+                  placeholder="Enter distance"
+                  maxLength={50}
                 />
               </div>
             </div>
-          </CardContent>
-        </Card>
 
-        {/* Sea Conditions */}
-        <Card>
-          <CardHeader>
-            <CardTitle>2. Sea Conditions</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div>
-                <Label htmlFor="seaState">Sea State</Label>
-                <Select value={formData.seaState} onValueChange={(value) => handleInputChange('seaState', value)}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="--Select Sea State--" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="0">0 - Calm</SelectItem>
-                    <SelectItem value="1">1 - Smooth</SelectItem>
-                    <SelectItem value="2">2 - Slight</SelectItem>
-                    <SelectItem value="3">3 - Moderate</SelectItem>
-                    <SelectItem value="4">4 - Rough</SelectItem>
-                    <SelectItem value="5">5 - Very Rough</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div>
-                <Label htmlFor="windSpeed">Wind Speed (knots)</Label>
-                <Input
-                  id="windSpeed"
-                  value={formData.windSpeed}
-                  onChange={(e) => handleInputChange('windSpeed', e.target.value)}
-                  placeholder="Enter wind speed"
-                  type="number"
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="visibility">Visibility (nm)</Label>
-                <Input
-                  id="visibility"
-                  value={formData.visibility}
-                  onChange={(e) => handleInputChange('visibility', e.target.value)}
-                  placeholder="Enter visibility"
-                  type="number"
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="temperature">Temperature (°C)</Label>
-                <Input
-                  id="temperature"
-                  value={formData.temperature}
-                  onChange={(e) => handleInputChange('temperature', e.target.value)}
-                  placeholder="Enter temperature"
-                  type="number"
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="humidity">Humidity (%)</Label>
-                <Input
-                  id="humidity"
-                  value={formData.humidity}
-                  onChange={(e) => handleInputChange('humidity', e.target.value)}
-                  placeholder="Enter humidity"
-                  type="number"
-                />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Performance Tests */}
-        <Card>
-          <CardHeader>
-            <CardTitle>3. Performance Tests</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="maxSpeed">Maximum Speed (knots)</Label>
-                <Input
-                  id="maxSpeed"
-                  value={formData.maxSpeed}
-                  onChange={(e) => handleInputChange('maxSpeed', e.target.value)}
-                  placeholder="Enter maximum speed"
-                  type="number"
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="cruisingSpeed">Cruising Speed (knots)</Label>
-                <Input
-                  id="cruisingSpeed"
-                  value={formData.cruisingSpeed}
-                  onChange={(e) => handleInputChange('cruisingSpeed', e.target.value)}
-                  placeholder="Enter cruising speed"
-                  type="number"
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="fuelConsumption">Fuel Consumption (L/hr)</Label>
-                <Input
-                  id="fuelConsumption"
-                  value={formData.fuelConsumption}
-                  onChange={(e) => handleInputChange('fuelConsumption', e.target.value)}
-                  placeholder="Enter fuel consumption"
-                  type="number"
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="range">Range (nm)</Label>
-                <Input
-                  id="range"
-                  value={formData.range}
-                  onChange={(e) => handleInputChange('range', e.target.value)}
-                  placeholder="Enter range"
-                  type="number"
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="endurance">Endurance (hours)</Label>
-                <Input
-                  id="endurance"
-                  value={formData.endurance}
-                  onChange={(e) => handleInputChange('endurance', e.target.value)}
-                  placeholder="Enter endurance"
-                  type="number"
-                />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Maneuvering Tests */}
-        <Card>
-          <CardHeader>
-            <CardTitle>4. Maneuvering Tests</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="turningCircle">Turning Circle (meters)</Label>
-                <Input
-                  id="turningCircle"
-                  value={formData.turningCircle}
-                  onChange={(e) => handleInputChange('turningCircle', e.target.value)}
-                  placeholder="Enter turning circle"
-                  type="number"
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="stoppingDistance">Stopping Distance (meters)</Label>
-                <Input
-                  id="stoppingDistance"
-                  value={formData.stoppingDistance}
-                  onChange={(e) => handleInputChange('stoppingDistance', e.target.value)}
-                  placeholder="Enter stopping distance"
-                  type="number"
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="acceleration">Acceleration (0-20 knots in seconds)</Label>
-                <Input
-                  id="acceleration"
-                  value={formData.acceleration}
-                  onChange={(e) => handleInputChange('acceleration', e.target.value)}
-                  placeholder="Enter acceleration time"
-                  type="number"
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="deceleration">Deceleration (20-0 knots in seconds)</Label>
-                <Input
-                  id="deceleration"
-                  value={formData.deceleration}
-                  onChange={(e) => handleInputChange('deceleration', e.target.value)}
-                  placeholder="Enter deceleration time"
-                  type="number"
-                />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Safety Equipment */}
-        <Card>
-          <CardHeader>
-            <CardTitle>5. Safety Equipment</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="lifeJackets">Life Jackets</Label>
-                <Select value={formData.lifeJackets} onValueChange={(value) => handleInputChange('lifeJackets', value)}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="--Select Status--" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="SAT">SAT</SelectItem>
-                    <SelectItem value="UNSAT">UNSAT</SelectItem>
-                    <SelectItem value="SAT WITH OBSERVATION">SAT WITH OBSERVATION</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div>
-                <Label htmlFor="lifeRaft">Life Raft</Label>
-                <Select value={formData.lifeRaft} onValueChange={(value) => handleInputChange('lifeRaft', value)}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="--Select Status--" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="SAT">SAT</SelectItem>
-                    <SelectItem value="UNSAT">UNSAT</SelectItem>
-                    <SelectItem value="SAT WITH OBSERVATION">SAT WITH OBSERVATION</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div>
-                <Label htmlFor="distressSignals">Distress Signals</Label>
-                <Select value={formData.distressSignals} onValueChange={(value) => handleInputChange('distressSignals', value)}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="--Select Status--" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="SAT">SAT</SelectItem>
-                    <SelectItem value="UNSAT">UNSAT</SelectItem>
-                    <SelectItem value="SAT WITH OBSERVATION">SAT WITH OBSERVATION</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div>
-                <Label htmlFor="firstAidKit">First Aid Kit</Label>
-                <Select value={formData.firstAidKit} onValueChange={(value) => handleInputChange('firstAidKit', value)}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="--Select Status--" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="SAT">SAT</SelectItem>
-                    <SelectItem value="UNSAT">UNSAT</SelectItem>
-                    <SelectItem value="SAT WITH OBSERVATION">SAT WITH OBSERVATION</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div>
-                <Label htmlFor="fireExtinguisher">Fire Extinguisher</Label>
-                <Select value={formData.fireExtinguisher} onValueChange={(value) => handleInputChange('fireExtinguisher', value)}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="--Select Status--" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="SAT">SAT</SelectItem>
-                    <SelectItem value="UNSAT">UNSAT</SelectItem>
-                    <SelectItem value="SAT WITH OBSERVATION">SAT WITH OBSERVATION</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Navigation Equipment */}
-        <Card>
-          <CardHeader>
-            <CardTitle>6. Navigation Equipment</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="compass">Compass</Label>
-                <Select value={formData.compass} onValueChange={(value) => handleInputChange('compass', value)}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="--Select Status--" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="SAT">SAT</SelectItem>
-                    <SelectItem value="UNSAT">UNSAT</SelectItem>
-                    <SelectItem value="SAT WITH OBSERVATION">SAT WITH OBSERVATION</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div>
-                <Label htmlFor="gps">GPS</Label>
-                <Select value={formData.gps} onValueChange={(value) => handleInputChange('gps', value)}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="--Select Status--" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="SAT">SAT</SelectItem>
-                    <SelectItem value="UNSAT">UNSAT</SelectItem>
-                    <SelectItem value="SAT WITH OBSERVATION">SAT WITH OBSERVATION</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div>
-                <Label htmlFor="radar">Radar</Label>
-                <Select value={formData.radar} onValueChange={(value) => handleInputChange('radar', value)}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="--Select Status--" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="SAT">SAT</SelectItem>
-                    <SelectItem value="UNSAT">UNSAT</SelectItem>
-                    <SelectItem value="SAT WITH OBSERVATION">SAT WITH OBSERVATION</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div>
-                <Label htmlFor="depthSound">Depth Sounder</Label>
-                <Select value={formData.depthSound} onValueChange={(value) => handleInputChange('depthSound', value)}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="--Select Status--" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="SAT">SAT</SelectItem>
-                    <SelectItem value="UNSAT">UNSAT</SelectItem>
-                    <SelectItem value="SAT WITH OBSERVATION">SAT WITH OBSERVATION</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div>
-                <Label htmlFor="radio">Radio</Label>
-                <Select value={formData.radio} onValueChange={(value) => handleInputChange('radio', value)}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="--Select Status--" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="SAT">SAT</SelectItem>
-                    <SelectItem value="UNSAT">UNSAT</SelectItem>
-                    <SelectItem value="SAT WITH OBSERVATION">SAT WITH OBSERVATION</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Engine Performance */}
-        <Card>
-          <CardHeader>
-            <CardTitle>7. Engine Performance</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="engineStart">Engine Start</Label>
-                <Select value={formData.engineStart} onValueChange={(value) => handleInputChange('engineStart', value)}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="--Select Status--" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="SAT">SAT</SelectItem>
-                    <SelectItem value="UNSAT">UNSAT</SelectItem>
-                    <SelectItem value="SAT WITH OBSERVATION">SAT WITH OBSERVATION</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div>
-                <Label htmlFor="engineIdle">Engine Idle</Label>
-                <Select value={formData.engineIdle} onValueChange={(value) => handleInputChange('engineIdle', value)}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="--Select Status--" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="SAT">SAT</SelectItem>
-                    <SelectItem value="UNSAT">UNSAT</SelectItem>
-                    <SelectItem value="SAT WITH OBSERVATION">SAT WITH OBSERVATION</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div>
-                <Label htmlFor="engineFullPower">Engine Full Power</Label>
-                <Select value={formData.engineFullPower} onValueChange={(value) => handleInputChange('engineFullPower', value)}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="--Select Status--" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="SAT">SAT</SelectItem>
-                    <SelectItem value="UNSAT">UNSAT</SelectItem>
-                    <SelectItem value="SAT WITH OBSERVATION">SAT WITH OBSERVATION</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div>
-                <Label htmlFor="engineTemperature">Engine Temperature</Label>
-                <Input
-                  id="engineTemperature"
-                  value={formData.engineTemperature}
-                  onChange={(e) => handleInputChange('engineTemperature', e.target.value)}
-                  placeholder="Enter temperature"
-                  type="number"
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="oilPressure">Oil Pressure</Label>
-                <Input
-                  id="oilPressure"
-                  value={formData.oilPressure}
-                  onChange={(e) => handleInputChange('oilPressure', e.target.value)}
-                  placeholder="Enter oil pressure"
-                  type="number"
-                />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Hull and Structure */}
-        <Card>
-          <CardHeader>
-            <CardTitle>8. Hull and Structure</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="hullCondition">Hull Condition</Label>
-                <Select value={formData.hullCondition} onValueChange={(value) => handleInputChange('hullCondition', value)}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="--Select Status--" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="SAT">SAT</SelectItem>
-                    <SelectItem value="UNSAT">UNSAT</SelectItem>
-                    <SelectItem value="SAT WITH OBSERVATION">SAT WITH OBSERVATION</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div>
-                <Label htmlFor="deckCondition">Deck Condition</Label>
-                <Select value={formData.deckCondition} onValueChange={(value) => handleInputChange('deckCondition', value)}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="--Select Status--" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="SAT">SAT</SelectItem>
-                    <SelectItem value="UNSAT">UNSAT</SelectItem>
-                    <SelectItem value="SAT WITH OBSERVATION">SAT WITH OBSERVATION</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div>
-                <Label htmlFor="fittingsCondition">Fittings Condition</Label>
-                <Select value={formData.fittingsCondition} onValueChange={(value) => handleInputChange('fittingsCondition', value)}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="--Select Status--" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="SAT">SAT</SelectItem>
-                    <SelectItem value="UNSAT">UNSAT</SelectItem>
-                    <SelectItem value="SAT WITH OBSERVATION">SAT WITH OBSERVATION</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div>
-                <Label htmlFor="corrosionLevel">Corrosion Level</Label>
-                <Select value={formData.corrosionLevel} onValueChange={(value) => handleInputChange('corrosionLevel', value)}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="--Select Level--" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="MINIMAL">MINIMAL</SelectItem>
-                    <SelectItem value="MODERATE">MODERATE</SelectItem>
-                    <SelectItem value="SEVERE">SEVERE</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Observations and Remarks */}
-        <Card>
-          <CardHeader>
-            <CardTitle>9. Observations and Remarks</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
+            {/* Representatives */}
             <div>
-              <Label htmlFor="generalObservations">General Observations</Label>
+              <h4 className="font-medium text-gray-900 mb-4">Representatives:</h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="shipRepresentative">(a) Ship *</Label>
+                  <Input
+                    id="shipRepresentative"
+                    value={formData.shipRepresentative}
+                    onChange={(e) => setFormData(prev => ({ ...prev, shipRepresentative: e.target.value }))}
+                    placeholder="Enter ship representative"
+                    maxLength={50}
+                  />
+                  {errors.shipRepresentative && <p className="text-red-500 text-sm mt-1">{errors.shipRepresentative}</p>}
+                </div>
+
+                <div>
+                  <Label htmlFor="trialTeamsRepresentative">(b) Trial Teams *</Label>
+                  <Input
+                    id="trialTeamsRepresentative"
+                    value={formData.trialTeamsRepresentative}
+                    onChange={(e) => setFormData(prev => ({ ...prev, trialTeamsRepresentative: e.target.value }))}
+                    placeholder="Enter trial teams representative"
+                    maxLength={50}
+                  />
+                  {errors.trialTeamsRepresentative && <p className="text-red-500 text-sm mt-1">{errors.trialTeamsRepresentative}</p>}
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Light Load Condition Power Regimes */}
+        <Card>
+          <CardHeader>
+            <CardTitle>1. Light Load Condition Power Regimes are as Follows: -</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            {renderPowerRegimeTable('lightLoad', '50', 'a. 50% Power')}
+            {renderPowerRegimeTable('lightLoad', '85', 'b. 85% Power')}
+            {renderPowerRegimeTable('lightLoad', '100', 'c. 100% Power (Max ERPM Achieved)')}
+            
+            <div>
+              <Label htmlFor="lightLoadRemarks">Remarks *</Label>
               <Textarea
-                id="generalObservations"
-                value={formData.generalObservations}
-                onChange={(e) => handleInputChange('generalObservations', e.target.value)}
-                placeholder="Enter general observations"
-                rows={4}
+                id="lightLoadRemarks"
+                value={formData.lightLoadRemarks}
+                onChange={(e) => setFormData(prev => ({ ...prev, lightLoadRemarks: e.target.value }))}
+                placeholder="Enter remarks for light load condition"
+                rows={3}
               />
             </div>
+          </CardContent>
+        </Card>
 
+        {/* Full Load Condition Power Regimes */}
+        <Card>
+          <CardHeader>
+            <CardTitle>2. Full Load Condition Power regimes are as follows: -</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            {renderPowerRegimeTable('fullLoad', '50', 'a. 50% Power')}
+            {renderPowerRegimeTable('fullLoad', '85', 'b. 85% Power')}
+            {renderPowerRegimeTable('fullLoad', '100', 'c. 100% Power (Max ERPM Achieved)')}
+            
             <div>
-              <Label htmlFor="recommendations">Recommendations</Label>
+              <Label htmlFor="fullLoadRemarks">Remarks *</Label>
               <Textarea
-                id="recommendations"
-                value={formData.recommendations}
-                onChange={(e) => handleInputChange('recommendations', e.target.value)}
-                placeholder="Enter recommendations"
-                rows={4}
+                id="fullLoadRemarks"
+                value={formData.fullLoadRemarks}
+                onChange={(e) => setFormData(prev => ({ ...prev, fullLoadRemarks: e.target.value }))}
+                placeholder="Enter remarks for full load condition"
+                rows={3}
               />
-            </div>
-
-            <div>
-              <Label htmlFor="overallAssessment">Overall Assessment</Label>
-              <Select value={formData.overallAssessment} onValueChange={(value) => handleInputChange('overallAssessment', value)}>
-                <SelectTrigger>
-                  <SelectValue placeholder="--Select Overall Assessment--" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="SATISFACTORY">SATISFACTORY</SelectItem>
-                  <SelectItem value="UNSATISFACTORY">UNSATISFACTORY</SelectItem>
-                  <SelectItem value="SATISFACTORY WITH OBSERVATIONS">SATISFACTORY WITH OBSERVATIONS</SelectItem>
-                </SelectContent>
-              </Select>
             </div>
           </CardContent>
         </Card>
 
-        {/* Submit Button */}
+        {/* Action Buttons */}
         <div className="flex justify-center space-x-4">
-          <Button type="submit" className="bg-blue-600 hover:bg-blue-700">
-            <Save className="mr-2 h-4 w-4" />
-            Submit Form
+          <Button type="button" className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded" onClick={() => setIsDraftModalOpen(true)}>
+            Fetch Drafts
+          </Button>
+          
+          <Button type="button" className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded" onClick={saveDraft}>
+            SAVE DRAFT
+          </Button>
+          
+          <Button type="button" className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded" onClick={resetForm}>
+            Clear
+          </Button>
+          
+          <Button type="submit" className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded">
+            Save
           </Button>
         </div>
+
+        {/* Drafts Modal */}
+        <Dialog open={isDraftModalOpen} onOpenChange={setIsDraftModalOpen}>
+          <DialogContent className="max-w-4xl">
+            <DialogHeader>
+              <DialogTitle>Saved Drafts</DialogTitle>
+            </DialogHeader>
+            <div className="max-h-96 overflow-y-auto">
+              <div className="space-y-4">
+                {drafts.length === 0 ? (
+                  <p className="text-center text-gray-500">No drafts saved yet</p>
+                ) : (
+                  drafts.map((draft) => (
+                    <div key={draft.id} className="border rounded-lg p-4">
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <h3 className="font-medium">{draft.title}</h3>
+                          <p className="text-sm text-gray-500">
+                            {new Date(draft.timestamp).toLocaleString()}
+                          </p>
+                        </div>
+                        <div className="flex space-x-2">
+                          <Button
+                            size="sm"
+                            onClick={() => {
+                              setFormData(draft);
+                              setIsDraftModalOpen(false);
+                            }}
+                            className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded"
+                          >
+                            Edit
+                          </Button>
+                          <Button
+                            size="sm"
+                            onClick={() => {
+                              const updatedDrafts = drafts.filter(d => d.id !== draft.id);
+                              setDrafts(updatedDrafts);
+                              localStorage.setItem('rhibSeaTrials_drafts', JSON.stringify(updatedDrafts));
+                            }}
+                            className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded"
+                          >
+                            Delete
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
       </form>
     </div>
   );
