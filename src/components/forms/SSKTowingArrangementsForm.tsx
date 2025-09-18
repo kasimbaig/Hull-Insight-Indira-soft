@@ -268,54 +268,35 @@ const SSKTowingArrangementsForm: React.FC = () => {
               </div>
 
               {/* Action Buttons */}
-              <div className="flex flex-col sm:flex-row gap-4 pt-6 border-t">
-                <Button
-                  type="button"
-                  onClick={loadDrafts}
-                  variant="outline"
-                  className="flex-1"
-                >
-                  <FileText className="h-4 w-4 mr-2" />
-                  Fetch Drafts
-                </Button>
-
-                <Button
-                  type="button"
-                  onClick={saveDraft}
-                  variant="outline"
-                  className="flex-1"
-                >
-                  <Save className="h-4 w-4 mr-2" />
-                  Save Draft
-                </Button>
-
-                <Button
-                  type="button"
-                  onClick={clearForm}
-                  variant="destructive"
-                  className="flex-1"
-                >
-                  Clear
-                </Button>
-
-                <Button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="flex-1 bg-blue-600 hover:bg-blue-700 text-white"
-                >
-                  {isSubmitting ? (
-                    <>
-                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                      Submitting...
-                    </>
-                  ) : (
-                    <>
-                      <Save className="h-4 w-4 mr-2" />
-                      Save
-                    </>
-                  )}
-                </Button>
-              </div>
+              <div className="flex flex-wrap gap-4 justify-center mt-8">
+              <Button
+              type="button"
+              onClick={loadDrafts}
+              className="px-6 bg-cyan-500 hover:bg-cyan-600 text-white font-semibold uppercase"
+            >
+              FETCH DRAFTS
+            </Button>
+            <Button
+              type="button"
+              onClick={saveDraft}
+              className="px-6 bg-green-500 hover:bg-green-600 text-white font-semibold uppercase"
+            >
+              SAVE DRAFT
+            </Button>
+            <Button
+              type="button"
+              onClick={clearForm}
+              className="px-6 bg-red-500 hover:bg-red-600 text-white font-semibold uppercase"
+            >
+              CLEAR
+            </Button>
+            <Button
+              type="submit"
+              className="px-6 bg-blue-600 hover:bg-blue-700 text-white font-semibold uppercase"
+            >
+              SAVE
+            </Button>
+          </div>
             </form>
           </div>
         </div>

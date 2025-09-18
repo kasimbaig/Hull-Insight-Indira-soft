@@ -9,6 +9,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { CalendarIcon } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
 import { format } from "date-fns";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 // Interfaces for dynamic table data
 interface DynamicRow {
@@ -99,6 +100,9 @@ const initialFormData: FormData = {
 
 const HullMaintenanceInspectionforSubmarinesForm = () => {
   const [formData, setFormData] = useState<FormData>(initialFormData);
+  const [drafts, setDrafts] = useState<any[]>([]);
+  const [isDraftModalOpen, setIsDraftModalOpen] = useState(false);
+  const [hidDraftId, setHidDraftId] = useState<string | null>(null);
 
   // Handlers for dynamic tables
   const addRow = (field: keyof FormData) => {
@@ -118,6 +122,48 @@ const HullMaintenanceInspectionforSubmarinesForm = () => {
         ? (prev[field] as DynamicRow[]).filter((row) => row.id !== id)
         : prev[field],
     }));
+  };
+
+  const handleSaveDraft = () => {
+
+    const draftData = {
+      id: Date.now().toString(),
+      timestamp: new Date().toISOString(),
+      formData: { ...formData }
+    };
+  
+    const existingDrafts = JSON.parse(localStorage.getItem('hullMaintenanceInspectionSubmarinesDrafts') || '[]');
+    const updatedDrafts = hidDraftId 
+      ? existingDrafts.map(draft => draft.id === hidDraftId ? draftData : draft)
+      : [...existingDrafts, draftData];
+    localStorage.setItem('hullMaintenanceInspectionSubmarinesDrafts', JSON.stringify(updatedDrafts));
+    
+    alert('Draft saved successfully!');
+  };
+
+  const handleClear = () => {
+    setFormData(initialFormData);
+    setHidDraftId(null);
+    setIsDraftModalOpen(false);
+  };
+
+  const handleEditDraft = (draft: any) => {
+    setFormData(draft.formData);
+    setHidDraftId(draft.id);
+    setIsDraftModalOpen(false);
+  };
+
+  const handleDeleteDraft = (draftId: string) => {
+    const existingDrafts = JSON.parse(localStorage.getItem('hullMaintenanceInspectionSubmarinesDrafts') || '[]');
+    const updatedDrafts = existingDrafts.filter((draft: any) => draft.id !== draftId);
+    localStorage.setItem('hullMaintenanceInspectionSubmarinesDrafts', JSON.stringify(updatedDrafts));
+    setDrafts(updatedDrafts);
+  };
+
+  const handleFetchDrafts = () => {
+    const existingDrafts = JSON.parse(localStorage.getItem('hullMaintenanceInspectionSubmarinesDrafts') || '[]');
+    setDrafts(existingDrafts);
+    setIsDraftModalOpen(true);
   };
 
   const updateRow = (
@@ -772,23 +818,88 @@ const HullMaintenanceInspectionforSubmarinesForm = () => {
               </div>
 
               {/* Action Buttons */}
-              <div className="flex flex-col sm:flex-row gap-4 pt-6 border-t">
-                <Button type="submit" className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded">
-                  Save
-                </Button>
-                <Button
-                  type="button"
-                  onClick={() => setFormData(initialFormData)}
-                  className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded"
-                >
-                  Clear
-                </Button>
-              </div>
+              <div className="flex flex-wrap gap-4 justify-center mt-8">
+              <Button
+              type="button"
+              onClick={handleFetchDrafts}
+              className="px-6 bg-cyan-500 hover:bg-cyan-600 text-white font-semibold uppercase"
+            >
+              FETCH DRAFTS
+            </Button>
+            <Button
+              type="button"
+              onClick={handleSaveDraft}
+              className="px-6 bg-green-500 hover:bg-green-600 text-white font-semibold uppercase"
+            >
+              SAVE DRAFT
+            </Button>
+            <Button
+              type="button"
+              onClick={handleClear}
+              className="px-6 bg-red-500 hover:bg-red-600 text-white font-semibold uppercase"
+            >
+              CLEAR
+            </Button>
+            <Button
+              type="submit"
+              className="px-6 bg-blue-600 hover:bg-blue-700 text-white font-semibold uppercase"
+            >
+              SAVE
+            </Button>
+          </div>
             </form>
           </CardContent>
         </Card>
       </div>
-    </div>
+
+      {/* Drafts Modal */}
+      <Dialog open={isDraftModalOpen} onOpenChange={setIsDraftModalOpen}>
+          <DialogContent className="max-w-4xl">
+            <DialogHeader>
+              <DialogTitle>Saved Drafts</DialogTitle>
+            </DialogHeader>
+            <div className="max-h-96 overflow-y-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Timestamp</TableHead>
+                    <TableHead>Inspection Type</TableHead>
+                    <TableHead>Inspection Date</TableHead>
+                    <TableHead>Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {drafts.map((draft) => (
+                    <TableRow key={draft.id}>
+                      <TableCell>{new Date(draft.timestamp).toLocaleString()}</TableCell>
+                      <TableCell>{draft.formData.inspectionForShips}</TableCell>
+                      <TableCell>{draft.formData.dateOfInspection}</TableCell>
+                      <TableCell>
+                        <div className="flex gap-2">
+                          <Button
+                            size="sm"
+                            onClick={() => handleEditDraft(draft)}
+                            variant="outline"
+                          >
+                            Edit
+                          </Button>
+                          <Button
+                            size="sm"
+                            onClick={() => handleDeleteDraft(draft.id)}
+                            variant="destructive"
+                          >
+                            Delete
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          </DialogContent>
+        </Dialog>       
+</div>
   );
 };
 
