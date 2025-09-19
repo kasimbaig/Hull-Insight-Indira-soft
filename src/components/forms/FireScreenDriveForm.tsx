@@ -356,9 +356,7 @@ const FireScreenDriveForm = () => {
   ) => (
     <div className="border border-gray-200 rounded-lg p-6 mb-6">
       <div className="flex items-center mb-4">
-        <span className="bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold mr-3">
-          {sectionNumber}
-        </span>
+       
         <h5 className="text-lg font-bold text-gray-900">{title}</h5>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -700,8 +698,7 @@ const FireScreenDriveForm = () => {
                   {renderObservationSection(
                     "",
                     "conditions_of_deck_plate_observations",
-                    "conditions_of_deck_plate_remarks",
-                    9
+                    "conditions_of_deck_plate_remarks"
                   )}
                 </div>
 
@@ -713,8 +710,7 @@ const FireScreenDriveForm = () => {
                   {renderObservationSection(
                     "",
                     "conditions_of_brake_brake_observations",
-                    "conditions_of_brake_brake_remarks",
-                    9
+                    "conditions_of_brake_brake_remarks"
                   )}
                 </div>
 
@@ -1210,17 +1206,33 @@ const FireScreenDriveForm = () => {
               </div>
 
               {/* Form Actions */}
-              <div className="flex justify-end space-x-4 pt-6 border-t border-gray-200">
-                <Button type="button" variant="outline" onClick={handleFetchDrafts}>
+              <div className="flex flex-wrap gap-4 justify-center mt-8">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={handleFetchDrafts}
+                  className="bg-blue-500 text-white hover:bg-blue-600"
+                >
                   Fetch Drafts
                 </Button>
-                <Button type="button" variant="outline" onClick={handleSaveDraft}>
-                  Save Draft
+                <Button
+                  type="button"
+                  onClick={handleSaveDraft}
+                  className="bg-green-500 text-white hover:bg-green-600"
+                >
+                  SAVE DRAFT
                 </Button>
-                <Button type="button" variant="outline" onClick={handleClear}>
+                <Button
+                  type="button"
+                  variant="destructive"
+                  onClick={handleClear}
+                >
                   Clear
                 </Button>
-                <Button type="submit" className="bg-blue-600 hover:bg-blue-700">
+                <Button
+                  type="submit"
+                  className="bg-blue-600 text-white hover:bg-blue-700"
+                >
                   Save
                 </Button>
               </div>

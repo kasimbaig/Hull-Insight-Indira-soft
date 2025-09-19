@@ -1009,35 +1009,34 @@ const EKMAnchorCapstanForm = () => {
               </div>
 
               {/* Action Buttons */}
-              <div className="flex flex-wrap gap-4 justify-center pt-6">
+              <div className="flex flex-wrap gap-4 justify-center mt-8">
                 <Button
                   type="button"
+                  variant="outline"
                   onClick={handleFetchDrafts}
-                  className="px-6 bg-cyan-500 hover:bg-cyan-600 text-white font-semibold uppercase"
+                  className="bg-blue-500 text-white hover:bg-blue-600"
                 >
-                  <FileText className="h-4 w-4 mr-2" />
-                  FETCH DRAFTS
+                  Fetch Drafts
                 </Button>
                 <Button
                   type="button"
                   onClick={handleSaveDraft}
-                  className="px-6 bg-green-500 hover:bg-green-600 text-white font-semibold uppercase"
+                  className="bg-green-500 text-white hover:bg-green-600"
                 >
-                  <Save className="h-4 w-4 mr-2" />
                   SAVE DRAFT
                 </Button>
                 <Button
                   type="button"
+                  variant="destructive"
                   onClick={handleClear}
-                  className="px-6 bg-red-500 hover:bg-red-600 text-white font-semibold uppercase"
                 >
-                  CLEAR
+                  Clear
                 </Button>
                 <Button
                   type="submit"
-                  className="px-6 bg-blue-600 hover:bg-blue-700 text-white font-semibold uppercase"
+                  className="bg-blue-600 text-white hover:bg-blue-700"
                 >
-                  SAVE
+                  Save
                 </Button>
               </div>
             </form>

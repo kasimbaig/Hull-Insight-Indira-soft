@@ -573,7 +573,7 @@ const CargoWinchForm: React.FC = () => {
                 onClick={handleFetchDrafts}
                 className="px-6 py-2 bg-cyan-500 hover:bg-cyan-600 text-white rounded-lg"
               >
-                <FileText className="h-4 w-4 mr-2" />
+                {/* <FileText className="h-4 w-4 mr-2" /> */}
                 FETCH DRAFTS
               </Button>
               <Button
@@ -581,7 +581,7 @@ const CargoWinchForm: React.FC = () => {
                 onClick={handleSaveDraft}
                 className="px-6 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg"
               >
-                <Save className="h-4 w-4 mr-2" />
+                {/* <Save className="h-4 w-4 mr-2" /> */}
                 SAVE DRAFT
               </Button>
               <Button

@@ -908,17 +908,33 @@ const FinalUnderwaterHullInspectionForm = () => {
               </div>
 
               {/* Form Actions */}
-              <div className="flex justify-end space-x-4 pt-6 border-t border-gray-200">
-                <Button type="button" variant="outline" onClick={handleFetchDrafts}>
+              <div className="flex flex-wrap gap-4 justify-center mt-8">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={handleFetchDrafts}
+                  className="bg-blue-500 text-white hover:bg-blue-600"
+                >
                   Fetch Drafts
                 </Button>
-                <Button type="button" variant="outline" onClick={handleSaveDraft}>
-                  Save Draft
+                <Button
+                  type="button"
+                  onClick={handleSaveDraft}
+                  className="bg-green-500 text-white hover:bg-green-600"
+                >
+                  SAVE DRAFT
                 </Button>
-                <Button type="button" variant="outline" onClick={handleClear}>
+                <Button
+                  type="button"
+                  variant="destructive"
+                  onClick={handleClear}
+                >
                   Clear
                 </Button>
-                <Button type="submit" className="bg-blue-600 hover:bg-blue-700">
+                <Button
+                  type="submit"
+                  className="bg-blue-600 text-white hover:bg-blue-700"
+                >
                   Save
                 </Button>
               </div>

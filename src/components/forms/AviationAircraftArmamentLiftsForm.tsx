@@ -1696,7 +1696,7 @@ const AviationAircraftArmamentLiftsForm = () => {
                 onClick={handleFetchDrafts} 
                 className="px-6 bg-cyan-500 hover:bg-cyan-600 text-white font-semibold uppercase"
               >
-                <FileText className="h-4 w-4 mr-2" />
+                {/* <FileText className="h-4 w-4 mr-2" /> */}
                 FETCH DRAFTS
               </Button>
               <Button 
@@ -1704,7 +1704,7 @@ const AviationAircraftArmamentLiftsForm = () => {
                 onClick={handleSaveDraft} 
                 className="px-6 bg-green-500 hover:bg-green-600 text-white font-semibold uppercase"
               >
-                <Save className="h-4 w-4 mr-2" />
+                {/* <Save className="h-4 w-4 mr-2" /> */}
                 SAVE DRAFT
               </Button>
               <Button 

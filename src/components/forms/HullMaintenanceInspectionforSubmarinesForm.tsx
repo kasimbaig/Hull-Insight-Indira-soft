@@ -31,30 +31,36 @@ interface FormData {
   conditionOfRubberSeals: string;
   conditionOfJoints: string;
   tightnessTest: string;
-
+  
   // 2. Defect History
   knownDefects: DynamicRow[];
   lastOhmInspection: Date | null;
   pendingLiquidations: DynamicRow[];
 
+  // Additional fields for the table sections
+  outerCasing: string;
+  ocPreservationStd: string;
+  ocRusting: DynamicRow[];
+  ocStructuralDefects: DynamicRow[];
+
   // 3. Towing/Mooring Arrangement
   towingHook: string;
   towingPendant: string;
   towingRope: string;
-
+  
   // 4. Miscellaneous hull fittings
   mhfBollards: string;
   mhfCleats: string;
   mhfFairleads: string;
   mhfCableClench: string;
-
+  
   // 5. Capstan/Windlass
   operationalState: string;
   periodicMaintenance: string;
   crewProficiency: string;
   checkOffList: string;
   capstanDetailsDefect: string;
-
+  
   // 6. Indicator Buoy
   preservationStatus: string;
   lastSurveyedBySs: Date | null;
@@ -63,39 +69,45 @@ interface FormData {
 }
 
 const initialFormData: FormData = {
-  inspectionForSubmarines: "",
+    inspectionForSubmarines: "",
   dateOfInspection: null,
 
   lastVacuumTest: null,
   leakages: [{ id: "1", location: "", observation: "", remarks: "" }],
-  structuralDefects: "",
-  conditionOfRubberSeals: "",
-  conditionOfJoints: "",
-  tightnessTest: "",
+    structuralDefects: "",
+    conditionOfRubberSeals: "",
+    conditionOfJoints: "",
+    tightnessTest: "",
 
   knownDefects: [{ id: "1", location: "", observation: "", remarks: "" }],
   lastOhmInspection: null,
   pendingLiquidations: [{ id: "1", location: "", observation: "", remarks: "" }],
 
-  towingHook: "",
-  towingPendant: "",
-  towingRope: "",
+  // Additional fields initialization
+    outerCasing: "",
+    ocPreservationStd: "",
+  ocRusting: [{ id: "1", details: "" }],
+  ocStructuralDefects: [{ id: "1", details: "" }],
 
-  mhfBollards: "",
-  mhfCleats: "",
-  mhfFairleads: "",
-  mhfCableClench: "",
+    towingHook: "",
+    towingPendant: "",
+    towingRope: "",
 
-  operationalState: "",
-  periodicMaintenance: "",
-  crewProficiency: "",
-  checkOffList: "",
-  capstanDetailsDefect: "",
+    mhfBollards: "",
+    mhfCleats: "",
+    mhfFairleads: "",
+    mhfCableClench: "",
 
-  preservationStatus: "",
+    operationalState: "",
+    periodicMaintenance: "",
+    crewProficiency: "",
+    checkOffList: "",
+    capstanDetailsDefect: "",
+
+    preservationStatus: "",
   lastSurveyedBySs: null,
-  conditionOfLugsDuringSurvey: "",
-  conditionOfReleasing: "",
+    conditionOfLugsDuringSurvey: "",
+    conditionOfReleasing: "",
 };
 
 const HullMaintenanceInspectionforSubmarinesForm = () => {
@@ -131,13 +143,13 @@ const HullMaintenanceInspectionforSubmarinesForm = () => {
       timestamp: new Date().toISOString(),
       formData: { ...formData }
     };
-  
+
     const existingDrafts = JSON.parse(localStorage.getItem('hullMaintenanceInspectionSubmarinesDrafts') || '[]');
     const updatedDrafts = hidDraftId 
       ? existingDrafts.map(draft => draft.id === hidDraftId ? draftData : draft)
       : [...existingDrafts, draftData];
     localStorage.setItem('hullMaintenanceInspectionSubmarinesDrafts', JSON.stringify(updatedDrafts));
-    
+
     alert('Draft saved successfully!');
   };
 
@@ -167,6 +179,74 @@ const HullMaintenanceInspectionforSubmarinesForm = () => {
   };
 
   const updateRow = (
+    field: keyof FormData,
+    id: string,
+    key: keyof DynamicRow,
+    value: string
+  ) => {
+    setFormData((prev) => ({
+      ...prev,
+      [field]: (prev[field] as DynamicRow[]).map((row) =>
+        row.id === id ? { ...row, [key]: value } : row
+      ),
+    }));
+  };
+
+  // Functions for rusting rows
+  const addRustingRow = (field: keyof FormData) => {
+    setFormData((prev) => ({
+      ...prev,
+      [field]: [
+        ...(prev[field] as DynamicRow[]),
+        { id: Date.now().toString(), details: "" },
+      ],
+    }));
+  };
+
+  const removeRustingRow = (field: keyof FormData, id: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      [field]: (prev[field] as DynamicRow[]).length > 1
+        ? (prev[field] as DynamicRow[]).filter((row) => row.id !== id)
+        : prev[field],
+    }));
+  };
+
+  const updateRustingRow = (
+    field: keyof FormData,
+    id: string,
+    key: keyof DynamicRow,
+    value: string
+  ) => {
+    setFormData((prev) => ({
+      ...prev,
+      [field]: (prev[field] as DynamicRow[]).map((row) =>
+        row.id === id ? { ...row, [key]: value } : row
+      ),
+    }));
+  };
+
+  // Functions for structural defects rows
+  const addStructuralDefectRow = (field: keyof FormData) => {
+    setFormData((prev) => ({
+      ...prev,
+      [field]: [
+        ...(prev[field] as DynamicRow[]),
+        { id: Date.now().toString(), details: "" },
+      ],
+    }));
+  };
+
+  const removeStructuralDefectRow = (field: keyof FormData, id: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      [field]: (prev[field] as DynamicRow[]).length > 1
+        ? (prev[field] as DynamicRow[]).filter((row) => row.id !== id)
+        : prev[field],
+    }));
+  };
+
+  const updateStructuralDefectRow = (
     field: keyof FormData,
     id: string,
     key: keyof DynamicRow,
@@ -218,9 +298,9 @@ const HullMaintenanceInspectionforSubmarinesForm = () => {
           </CardHeader>
           <CardContent className="p-6">
             <form onSubmit={handleSubmit} className="space-y-6">
-              {/* Header Fields */}
+          {/* Header Fields */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
+            <div>
                   <Label className="text-sm font-medium">
                     INSPECTION FOR SUBMARINES INS <span className="text-red-500">*</span>
                   </Label>
@@ -228,19 +308,19 @@ const HullMaintenanceInspectionforSubmarinesForm = () => {
                     value={formData.inspectionForSubmarines}
                     onValueChange={(value) => handleInputChange("inspectionForSubmarines", value)}
                   >
-                    <SelectTrigger>
-                      <SelectValue placeholder="--Select--" />
-                    </SelectTrigger>
-                    <SelectContent>
+                <SelectTrigger>
+                  <SelectValue placeholder="--Select--" />
+                </SelectTrigger>
+                <SelectContent>
                       {shipOptions.map((option) => (
                         <SelectItem key={option.value} value={option.value}>
                           {option.label}
                         </SelectItem>
                       ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
                   <Label className="text-sm font-medium">
                     DATE OF INSPECTION <span className="text-red-500">*</span>
                   </Label>
@@ -265,27 +345,27 @@ const HullMaintenanceInspectionforSubmarinesForm = () => {
                       />
                     </PopoverContent>
                   </Popover>
-                </div>
-              </div>
+            </div>
+          </div>
 
-              {/* Main Table Structure */}
-              <div className="overflow-x-auto">
-                <Table className="border border-gray-300">
-                  <TableHeader>
-                    <TableRow className="bg-gray-50">
-                      <TableHead className="border border-gray-300 text-center font-medium">Sr No.</TableHead>
-                      <TableHead className="border border-gray-300 text-center font-medium">Equipment/ System</TableHead>
-                      <TableHead className="border border-gray-300 text-center font-medium">Description of Inspection</TableHead>
-                      <TableHead className="border border-gray-300 text-center font-medium">Remarks</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
+          {/* Main Table Structure */}
+          <div className="overflow-x-auto">
+            <Table className="border border-gray-300">
+              <TableHeader>
+                <TableRow className="bg-gray-50">
+                  <TableHead className="border border-gray-300 text-center font-medium">Sr No.</TableHead>
+                  <TableHead className="border border-gray-300 text-center font-medium">Equipment/ System</TableHead>
+                  <TableHead className="border border-gray-300 text-center font-medium">Description of Inspection</TableHead>
+                  <TableHead className="border border-gray-300 text-center font-medium">Remarks</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
                     {/* 1. WT/GT Integrity */}
-                    <TableRow>
+                <TableRow>
                       <TableCell rowSpan={6} className="border border-gray-300 text-center align-top">1</TableCell>
                       <TableCell rowSpan={6} className="border border-gray-300 align-top">WT/ GT Integrity*</TableCell>
-                      <TableCell className="border border-gray-300">Date of Last Vacuum test undertaken*</TableCell>
-                      <TableCell className="border border-gray-300">
+                  <TableCell className="border border-gray-300">Date of Last Vacuum test undertaken*</TableCell>
+                  <TableCell className="border border-gray-300">
                         <Popover>
                           <PopoverTrigger asChild>
                             <Button variant="outline" className="w-full justify-start text-left font-normal">
@@ -304,30 +384,30 @@ const HullMaintenanceInspectionforSubmarinesForm = () => {
                             />
                           </PopoverContent>
                         </Popover>
-                      </TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell className="border border-gray-300">Leakages / defects observed if any*</TableCell>
-                      <TableCell className="border border-gray-300">
-                        <div className="space-y-2">
-                          <div className="flex items-center gap-2">
-                            <Label className="text-sm">Enter Total Number of Rows.</Label>
-                            <Input
-                              type="number"
-                              value={formData.leakages.length}
-                              onChange={(e) => {
-                                const count = parseInt(e.target.value) || 0;
-                                if (count > formData.leakages.length) {
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell className="border border-gray-300">Leakages / defects observed if any*</TableCell>
+                  <TableCell className="border border-gray-300">
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2">
+                        <Label className="text-sm">Enter Total Number of Rows.</Label>
+                        <Input
+                          type="number"
+                          value={formData.leakages.length}
+                          onChange={(e) => {
+                            const count = parseInt(e.target.value) || 0;
+                            if (count > formData.leakages.length) {
                                   for (let i = formData.leakages.length; i < count; i++) addRow("leakages");
                                 } else if (count < formData.leakages.length && count > 0) {
-                                  const toRemove = formData.leakages.slice(count);
+                              const toRemove = formData.leakages.slice(count);
                                   toRemove.forEach((row) => removeRow("leakages", row.id));
-                                }
-                              }}
-                              className="w-20"
+                            }
+                          }}
+                          className="w-20"
                               min="1"
-                            />
-                          </div>
+                        />
+                      </div>
                           <Table className="border border-gray-300">
                             <TableHeader>
                               <TableRow className="bg-gray-50">
@@ -346,7 +426,7 @@ const HullMaintenanceInspectionforSubmarinesForm = () => {
                                       value={row.location}
                                       onChange={(e) => updateRow("leakages", row.id, "location", e.target.value)}
                                       maxLength={20}
-                                      placeholder="Enter location"
+                                    //   placeholder="Enter location"
                                       className="border-0 p-1"
                                     />
                                   </TableCell>
@@ -355,7 +435,7 @@ const HullMaintenanceInspectionforSubmarinesForm = () => {
                                       value={row.observation}
                                       onChange={(e) => updateRow("leakages", row.id, "observation", e.target.value)}
                                       maxLength={50}
-                                      placeholder="Enter observation"
+                                    //    
                                       className="border-0 p-1"
                                     />
                                   </TableCell>
@@ -364,7 +444,7 @@ const HullMaintenanceInspectionforSubmarinesForm = () => {
                                       value={row.remarks}
                                       onChange={(e) => updateRow("leakages", row.id, "remarks", e.target.value)}
                                       maxLength={50}
-                                      placeholder="Enter remarks"
+                                    //   placeholder="Enter remarks"
                                       className="border-0 p-1"
                                     />
                                   </TableCell>
@@ -372,65 +452,65 @@ const HullMaintenanceInspectionforSubmarinesForm = () => {
                               ))}
                             </TableBody>
                           </Table>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell className="border border-gray-300">Structural defects on doors/ hatches / flap*</TableCell>
-                      <TableCell className="border border-gray-300">
-                        <Input
-                          value={formData.structuralDefects}
+                    </div>
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell className="border border-gray-300">Structural defects on doors/ hatches / flap*</TableCell>
+                  <TableCell className="border border-gray-300">
+                    <Input
+                      value={formData.structuralDefects}
                           onChange={(e) => handleInputChange("structuralDefects", e.target.value)}
                           maxLength={100}
-                          placeholder="Enter structural defects"
-                        />
-                      </TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell className="border border-gray-300">Condition of rubber seals*</TableCell>
-                      <TableCell className="border border-gray-300">
+                    //   placeholder="Enter structural defects"
+                    />
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell className="border border-gray-300">Condition of rubber seals*</TableCell>
+                  <TableCell className="border border-gray-300">
                         <Select
                           value={formData.conditionOfRubberSeals}
                           onValueChange={(value) => handleInputChange("conditionOfRubberSeals", value)}
                         >
-                          <SelectTrigger>
-                            <SelectValue placeholder="--Select--" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="SAT">SAT</SelectItem>
-                            <SelectItem value="UNSAT">UNSAT</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell className="border border-gray-300">Condition of Joints/ Surfaces of assembly hatch and soft patch*</TableCell>
-                      <TableCell className="border border-gray-300">
+                      <SelectTrigger>
+                        <SelectValue placeholder="--Select--" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="SAT">SAT</SelectItem>
+                        <SelectItem value="UNSAT">UNSAT</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell className="border border-gray-300">Condition of Joints/ Surfaces of assembly hatch and soft patch*</TableCell>
+                  <TableCell className="border border-gray-300">
                         <Select
                           value={formData.conditionOfJoints}
                           onValueChange={(value) => handleInputChange("conditionOfJoints", value)}
                         >
-                          <SelectTrigger>
-                            <SelectValue placeholder="--Select--" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="SAT">SAT</SelectItem>
-                            <SelectItem value="UNSAT">UNSAT</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell className="border border-gray-300">Tightness test for all compartments and conning tower*</TableCell>
-                      <TableCell className="border border-gray-300">
-                        <Input
-                          value={formData.tightnessTest}
+                      <SelectTrigger>
+                        <SelectValue placeholder="--Select--" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="SAT">SAT</SelectItem>
+                        <SelectItem value="UNSAT">UNSAT</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell className="border border-gray-300">Tightness test for all compartments and conning tower*</TableCell>
+                  <TableCell className="border border-gray-300">
+                    <Input
+                      value={formData.tightnessTest}
                           onChange={(e) => handleInputChange("tightnessTest", e.target.value)}
                           maxLength={100}
-                          placeholder="Enter tightness test details"
-                        />
-                      </TableCell>
-                    </TableRow>
+                    //   placeholder="Enter tightness test details"
+                    />
+                  </TableCell>
+                </TableRow>
 
                     {/* 2. Defect History/Structure/Location */}
                     <TableRow>
@@ -475,7 +555,7 @@ const HullMaintenanceInspectionforSubmarinesForm = () => {
                                       value={row.location}
                                       onChange={(e) => updateRow("knownDefects", row.id, "location", e.target.value)}
                                       maxLength={20}
-                                      placeholder="Enter location"
+                                    //   placeholder="Enter location"
                                       className="border-0 p-1"
                                     />
                                   </TableCell>
@@ -484,7 +564,7 @@ const HullMaintenanceInspectionforSubmarinesForm = () => {
                                       value={row.observation}
                                       onChange={(e) => updateRow("knownDefects", row.id, "observation", e.target.value)}
                                       maxLength={50}
-                                      placeholder="Enter observation"
+                                       
                                       className="border-0 p-1"
                                     />
                                   </TableCell>
@@ -493,15 +573,15 @@ const HullMaintenanceInspectionforSubmarinesForm = () => {
                                       value={row.remarks}
                                       onChange={(e) => updateRow("knownDefects", row.id, "remarks", e.target.value)}
                                       maxLength={50}
-                                      placeholder="Enter remarks"
+
                                       className="border-0 p-1"
                                     />
                                   </TableCell>
                                 </TableRow>
                               ))}
-                            </TableBody>
-                          </Table>
-                        </div>
+              </TableBody>
+            </Table>
+          </div>
                       </TableCell>
                     </TableRow>
                     <TableRow>
@@ -576,7 +656,7 @@ const HullMaintenanceInspectionforSubmarinesForm = () => {
                                       value={row.observation}
                                       onChange={(e) => updateRow("pendingLiquidations", row.id, "observation", e.target.value)}
                                       maxLength={50}
-                                      placeholder="Enter observation"
+                                       
                                       className="border-0 p-1"
                                     />
                                   </TableCell>
@@ -585,7 +665,7 @@ const HullMaintenanceInspectionforSubmarinesForm = () => {
                                       value={row.remarks}
                                       onChange={(e) => updateRow("pendingLiquidations", row.id, "remarks", e.target.value)}
                                       maxLength={50}
-                                      placeholder="Enter remarks"
+
                                       className="border-0 p-1"
                                     />
                                   </TableCell>
@@ -598,7 +678,930 @@ const HullMaintenanceInspectionforSubmarinesForm = () => {
                     </TableRow>
 
 
-                    {/* 3. Towing/Mooring Arrangement */}
+                    {/* Outer Casing Section */}
+                    <TableRow>
+                      <TableCell rowSpan={4} className="border border-gray-300 text-center align-top"> </TableCell>
+                      <TableCell rowSpan={4} className="border border-gray-300 align-top"> </TableCell>
+                      <TableCell className="border border-gray-300"><b>Outer Casing*</b><span className="text-red-500">*</span></TableCell>
+                      <TableCell className="border border-gray-300">
+                        <Input
+                          value={formData.outerCasing}
+                          onChange={(e) => handleInputChange('outerCasing', e.target.value)}
+                          maxLength={100}
+                        //   placeholder="Enter outer casing details"
+                        />
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell className="border border-gray-300">(i) Preservation Standards<span className="text-red-500">*</span></TableCell>
+                      <TableCell className="border border-gray-300">
+                        <Input
+                          value={formData.ocPreservationStd}
+                          onChange={(e) => handleInputChange('ocPreservationStd', e.target.value)}
+                          maxLength={20}
+                           
+                        />
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell className="border border-gray-300">(ii) Rusting / Corrosion<span className="text-red-500">*</span></TableCell>
+                      <TableCell className="border border-gray-300">
+                        <div className="space-y-2">
+                          <div className="flex items-center gap-2">
+                            <Label className="text-sm">Enter Total Number of Rows.</Label>
+                            <Input
+                              type="number"
+                              value={formData.ocRusting.length}
+                              onChange={(e) => {
+                                const count = parseInt(e.target.value) || 0;
+                                if (count > formData.ocRusting.length) {
+                                  for (let i = formData.ocRusting.length; i < count; i++) {
+                                    addRustingRow('ocRusting');
+                                  }
+                                } else if (count < formData.ocRusting.length && count > 0) {
+                                  const toRemove = formData.ocRusting.slice(count);
+                                  toRemove.forEach(rusting => removeRustingRow('ocRusting', rusting.id));
+                                }
+                              }}
+                              className="w-20"
+                              min="1"
+                            />
+                          </div>
+                          {formData.ocRusting.length > 0 && (
+                            <div className="overflow-x-auto">
+                              <Table className="border border-gray-300">
+                                <TableHeader>
+                                  <TableRow className="bg-gray-50">
+                                    <TableHead className="border border-gray-300 text-center font-medium">Sr No.</TableHead>
+                                    <TableHead className="border border-gray-300 text-center font-medium">Details</TableHead>
+                                  </TableRow>
+                                </TableHeader>
+                                <TableBody>
+                                  {formData.ocRusting.map((rusting, index) => (
+                                    <TableRow key={rusting.id}>
+                                      <TableCell className="border border-gray-300 text-center">{index + 1}</TableCell>
+                                      <TableCell className="border border-gray-300">
+                                        <Input
+                                          value={rusting.details}
+                                          onChange={(e) => updateRustingRow('ocRusting', rusting.id, 'details', e.target.value)}
+                                          maxLength={100}
+                                          placeholder="Enter rusting/corrosion details"
+                                          className="border-0 p-1"
+                                        />
+                                      </TableCell>
+                                    </TableRow>
+                                  ))}
+                                </TableBody>
+                              </Table>
+                            </div>
+                          )}
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell className="border border-gray-300">(iii) Structural Defects<span className="text-red-500">*</span></TableCell>
+                      <TableCell className="border border-gray-300">
+                        <div className="space-y-2">
+                          <div className="flex items-center gap-2">
+                            <Label className="text-sm">Enter Total Number of Rows.</Label>
+                            <Input
+                              type="number"
+                              value={formData.ocStructuralDefects.length}
+                              onChange={(e) => {
+                                const count = parseInt(e.target.value) || 0;
+                                if (count > formData.ocStructuralDefects.length) {
+                                  for (let i = formData.ocStructuralDefects.length; i < count; i++) {
+                                    addStructuralDefectRow('ocStructuralDefects');
+                                  }
+                                } else if (count < formData.ocStructuralDefects.length && count > 0) {
+                                  const toRemove = formData.ocStructuralDefects.slice(count);
+                                  toRemove.forEach(defect => removeStructuralDefectRow('ocStructuralDefects', defect.id));
+                                }
+                              }}
+                              className="w-20"
+                              min="1"
+                            />
+                          </div>
+                          {formData.ocStructuralDefects.length > 0 && (
+                            <div className="overflow-x-auto">
+                              <Table className="border border-gray-300">
+                                <TableHeader>
+                                  <TableRow className="bg-gray-50">
+                                    <TableHead className="border border-gray-300 text-center font-medium">Sr No.</TableHead>
+                                    <TableHead className="border border-gray-300 text-center font-medium">Details</TableHead>
+                                  </TableRow>
+                                </TableHeader>
+                                <TableBody>
+                                  {formData.ocStructuralDefects.map((defect, index) => (
+                                    <TableRow key={defect.id}>
+                                      <TableCell className="border border-gray-300 text-center">{index + 1}</TableCell>
+                                      <TableCell className="border border-gray-300">
+                                        <Input
+                                          value={defect.details}
+                                          onChange={(e) => updateStructuralDefectRow('ocStructuralDefects', defect.id, 'details', e.target.value)}
+                                          maxLength={100}
+                                        //   placeholder="Enter structural defects details"
+                                          className="border-0 p-1"
+                                        />
+                                      </TableCell>
+                                    </TableRow>
+                                  ))}
+                                </TableBody>
+                              </Table>
+                            </div>
+                          )}
+                        </div>
+                      </TableCell>
+                    </TableRow>
+
+                    {/* Continue with remaining sections... */}
+                    {/* For brevity, I'll add a few more key sections */}
+                    
+                    {/* Row 3: Towing/Mooring Arrangement */}
+
+
+
+
+                    <TableRow>
+                      <TableCell rowSpan={4} className="border border-gray-300 text-center align-top"> </TableCell>
+                      <TableCell rowSpan={4} className="border border-gray-300 align-top"> </TableCell>
+                      <TableCell className="border border-gray-300"><b>Internal Compartments*</b><span className="text-red-500">*</span></TableCell>
+                      <TableCell className="border border-gray-300">
+                        <Input
+                          value={formData.outerCasing}
+                          onChange={(e) => handleInputChange('outerCasing', e.target.value)}
+                          maxLength={100}
+                        //   placeholder="Enter internal compartments details"
+                        />
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell className="border border-gray-300">(i) Preservation Standards<span className="text-red-500">*</span></TableCell>
+                      <TableCell className="border border-gray-300">
+                        <Input
+                          value={formData.ocPreservationStd}
+                          onChange={(e) => handleInputChange('ocPreservationStd', e.target.value)}
+                          maxLength={20}
+                           
+                        />
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell className="border border-gray-300">(ii) Rusting / Corrosion<span className="text-red-500">*</span></TableCell>
+                      <TableCell className="border border-gray-300">
+                        <div className="space-y-2">
+                          <div className="flex items-center gap-2">
+                            <Label className="text-sm">Enter Total Number of Rows.</Label>
+                            <Input
+                              type="number"
+                              value={formData.ocRusting.length}
+                              onChange={(e) => {
+                                const count = parseInt(e.target.value) || 0;
+                                if (count > formData.ocRusting.length) {
+                                  for (let i = formData.ocRusting.length; i < count; i++) {
+                                    addRustingRow('ocRusting');
+                                  }
+                                } else if (count < formData.ocRusting.length && count > 0) {
+                                  const toRemove = formData.ocRusting.slice(count);
+                                  toRemove.forEach(rusting => removeRustingRow('ocRusting', rusting.id));
+                                }
+                              }}
+                              className="w-20"
+                              min="1"
+                            />
+                          </div>
+                          {formData.ocRusting.length > 0 && (
+                            <div className="overflow-x-auto">
+                              <Table className="border border-gray-300">
+                                <TableHeader>
+                                  <TableRow className="bg-gray-50">
+                                    <TableHead className="border border-gray-300 text-center font-medium">Sr No.</TableHead>
+                                    <TableHead className="border border-gray-300 text-center font-medium">Details</TableHead>
+                                  </TableRow>
+                                </TableHeader>
+                                <TableBody>
+                                  {formData.ocRusting.map((rusting, index) => (
+                                    <TableRow key={rusting.id}>
+                                      <TableCell className="border border-gray-300 text-center">{index + 1}</TableCell>
+                                      <TableCell className="border border-gray-300">
+                                        <Input
+                                          value={rusting.details}
+                                          onChange={(e) => updateRustingRow('ocRusting', rusting.id, 'details', e.target.value)}
+                                          maxLength={100}
+                                        //   placeholder="Enter rusting/corrosion details"
+                                          className="border-0 p-1"
+                                        />
+                                      </TableCell>
+                                    </TableRow>
+                                  ))}
+                                </TableBody>
+                              </Table>
+                            </div>
+                          )}
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell className="border border-gray-300">(iii) Structural Defects<span className="text-red-500">*</span></TableCell>
+                      <TableCell className="border border-gray-300">
+                        <div className="space-y-2">
+                          <div className="flex items-center gap-2">
+                            <Label className="text-sm">Enter Total Number of Rows.</Label>
+                            <Input
+                              type="number"
+                              value={formData.ocStructuralDefects.length}
+                              onChange={(e) => {
+                                const count = parseInt(e.target.value) || 0;
+                                if (count > formData.ocStructuralDefects.length) {
+                                  for (let i = formData.ocStructuralDefects.length; i < count; i++) {
+                                    addStructuralDefectRow('ocStructuralDefects');
+                                  }
+                                } else if (count < formData.ocStructuralDefects.length && count > 0) {
+                                  const toRemove = formData.ocStructuralDefects.slice(count);
+                                  toRemove.forEach(defect => removeStructuralDefectRow('ocStructuralDefects', defect.id));
+                                }
+                              }}
+                              className="w-20"
+                              min="1"
+                            />
+                          </div>
+                          {formData.ocStructuralDefects.length > 0 && (
+                            <div className="overflow-x-auto">
+                              <Table className="border border-gray-300">
+                                <TableHeader>
+                                  <TableRow className="bg-gray-50">
+                                    <TableHead className="border border-gray-300 text-center font-medium">Sr No.</TableHead>
+                                    <TableHead className="border border-gray-300 text-center font-medium">Details</TableHead>
+                                  </TableRow>
+                                </TableHeader>
+                                <TableBody>
+                                  {formData.ocStructuralDefects.map((defect, index) => (
+                                    <TableRow key={defect.id}>
+                                      <TableCell className="border border-gray-300 text-center">{index + 1}</TableCell>
+                                      <TableCell className="border border-gray-300">
+                                        <Input
+                                          value={defect.details}
+                                          onChange={(e) => updateStructuralDefectRow('ocStructuralDefects', defect.id, 'details', e.target.value)}
+                                          maxLength={100}
+                                        //   placeholder="Enter structural defects details"
+                                          className="border-0 p-1"
+                                        />
+                                      </TableCell>
+                                    </TableRow>
+                                  ))}
+                                </TableBody>
+                              </Table>
+                            </div>
+                          )}
+                        </div>
+                      </TableCell>
+                    </TableRow>
+
+
+
+                    <TableRow>
+                      <TableCell rowSpan={4} className="border border-gray-300 text-center align-top"> </TableCell>
+                      <TableCell rowSpan={4} className="border border-gray-300 align-top"> </TableCell>
+                      <TableCell className="border border-gray-300"><b>Wet Compartments*</b><span className="text-red-500">*</span></TableCell>
+                      <TableCell className="border border-gray-300">
+                        <Input
+                          value={formData.outerCasing}
+                          onChange={(e) => handleInputChange('outerCasing', e.target.value)}
+                          maxLength={100}
+                        //   placeholder="Enter wet compartments details"
+                        />
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell className="border border-gray-300">(i) Preservation Standards<span className="text-red-500">*</span></TableCell>
+                      <TableCell className="border border-gray-300">
+                        <Input
+                          value={formData.ocPreservationStd}
+                          onChange={(e) => handleInputChange('ocPreservationStd', e.target.value)}
+                          maxLength={20}
+                           
+                        />
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell className="border border-gray-300">(ii) Rusting / Corrosion<span className="text-red-500">*</span></TableCell>
+                      <TableCell className="border border-gray-300">
+                        <div className="space-y-2">
+                          <div className="flex items-center gap-2">
+                            <Label className="text-sm">Enter Total Number of Rows.</Label>
+                            <Input
+                              type="number"
+                              value={formData.ocRusting.length}
+                              onChange={(e) => {
+                                const count = parseInt(e.target.value) || 0;
+                                if (count > formData.ocRusting.length) {
+                                  for (let i = formData.ocRusting.length; i < count; i++) {
+                                    addRustingRow('ocRusting');
+                                  }
+                                } else if (count < formData.ocRusting.length && count > 0) {
+                                  const toRemove = formData.ocRusting.slice(count);
+                                  toRemove.forEach(rusting => removeRustingRow('ocRusting', rusting.id));
+                                }
+                              }}
+                              className="w-20"
+                              min="1"
+                            />
+                          </div>
+                          {formData.ocRusting.length > 0 && (
+                            <div className="overflow-x-auto">
+                              <Table className="border border-gray-300">
+                                <TableHeader>
+                                  <TableRow className="bg-gray-50">
+                                    <TableHead className="border border-gray-300 text-center font-medium">Sr No.</TableHead>
+                                    <TableHead className="border border-gray-300 text-center font-medium">Details</TableHead>
+                                  </TableRow>
+                                </TableHeader>
+                                <TableBody>
+                                  {formData.ocRusting.map((rusting, index) => (
+                                    <TableRow key={rusting.id}>
+                                      <TableCell className="border border-gray-300 text-center">{index + 1}</TableCell>
+                                      <TableCell className="border border-gray-300">
+                                        <Input
+                                          value={rusting.details}
+                                          onChange={(e) => updateRustingRow('ocRusting', rusting.id, 'details', e.target.value)}
+                                          maxLength={100}
+                                        //   placeholder="Enter rusting/corrosion details"
+                                          className="border-0 p-1"
+                                        />
+                                      </TableCell>
+                                    </TableRow>
+                                  ))}
+                                </TableBody>
+                              </Table>
+                            </div>
+                          )}
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell className="border border-gray-300">(iii) Structural Defects<span className="text-red-500">*</span></TableCell>
+                      <TableCell className="border border-gray-300">
+                        <div className="space-y-2">
+                          <div className="flex items-center gap-2">
+                            <Label className="text-sm">Enter Total Number of Rows.</Label>
+                            <Input
+                              type="number"
+                              value={formData.ocStructuralDefects.length}
+                              onChange={(e) => {
+                                const count = parseInt(e.target.value) || 0;
+                                if (count > formData.ocStructuralDefects.length) {
+                                  for (let i = formData.ocStructuralDefects.length; i < count; i++) {
+                                    addStructuralDefectRow('ocStructuralDefects');
+                                  }
+                                } else if (count < formData.ocStructuralDefects.length && count > 0) {
+                                  const toRemove = formData.ocStructuralDefects.slice(count);
+                                  toRemove.forEach(defect => removeStructuralDefectRow('ocStructuralDefects', defect.id));
+                                }
+                              }}
+                              className="w-20"
+                              min="1"
+                            />
+                          </div>
+                          {formData.ocStructuralDefects.length > 0 && (
+                            <div className="overflow-x-auto">
+                              <Table className="border border-gray-300">
+                                <TableHeader>
+                                  <TableRow className="bg-gray-50">
+                                    <TableHead className="border border-gray-300 text-center font-medium">Sr No.</TableHead>
+                                    <TableHead className="border border-gray-300 text-center font-medium">Details</TableHead>
+                                  </TableRow>
+                                </TableHeader>
+                                <TableBody>
+                                  {formData.ocStructuralDefects.map((defect, index) => (
+                                    <TableRow key={defect.id}>
+                                      <TableCell className="border border-gray-300 text-center">{index + 1}</TableCell>
+                                      <TableCell className="border border-gray-300">
+                                        <Input
+                                          value={defect.details}
+                                          onChange={(e) => updateStructuralDefectRow('ocStructuralDefects', defect.id, 'details', e.target.value)}
+                                          maxLength={100}
+                                        //   placeholder="Enter structural defects details"
+                                          className="border-0 p-1"
+                                        />
+                                      </TableCell>
+                                    </TableRow>
+                                  ))}
+                                </TableBody>
+                              </Table>
+                            </div>
+                          )}
+                        </div>
+                      </TableCell>
+                    </TableRow>
+
+                    <TableRow>
+                      <TableCell rowSpan={4} className="border border-gray-300 text-center align-top"> </TableCell>
+                      <TableCell rowSpan={4} className="border border-gray-300 align-top"> </TableCell>
+                      <TableCell className="border border-gray-300"><b>Tank Tops / Free Flood Area*</b><span className="text-red-500">*</span></TableCell>
+                      <TableCell className="border border-gray-300">
+                        <Input
+                          value={formData.outerCasing}
+                          onChange={(e) => handleInputChange('outerCasing', e.target.value)}
+                          maxLength={100}
+                        //  placeholder="Enter tank tops details"
+                        />
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell className="border border-gray-300">(i) Preservation Standards<span className="text-red-500">*</span></TableCell>
+                      <TableCell className="border border-gray-300">
+                        <Input
+                          value={formData.ocPreservationStd}
+                          onChange={(e) => handleInputChange('ocPreservationStd', e.target.value)}
+                          maxLength={20}
+                           
+                        />
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell className="border border-gray-300">(ii) Rusting / Corrosion<span className="text-red-500">*</span></TableCell>
+                      <TableCell className="border border-gray-300">
+                        <div className="space-y-2">
+                          <div className="flex items-center gap-2">
+                            <Label className="text-sm">Enter Total Number of Rows.</Label>
+                            <Input
+                              type="number"
+                              value={formData.ocRusting.length}
+                              onChange={(e) => {
+                                const count = parseInt(e.target.value) || 0;
+                                if (count > formData.ocRusting.length) {
+                                  for (let i = formData.ocRusting.length; i < count; i++) {
+                                    addRustingRow('ocRusting');
+                                  }
+                                } else if (count < formData.ocRusting.length && count > 0) {
+                                  const toRemove = formData.ocRusting.slice(count);
+                                  toRemove.forEach(rusting => removeRustingRow('ocRusting', rusting.id));
+                                }
+                              }}
+                              className="w-20"
+                              min="1"
+                            />
+                          </div>
+                          {formData.ocRusting.length > 0 && (
+                            <div className="overflow-x-auto">
+                              <Table className="border border-gray-300">
+                                <TableHeader>
+                                  <TableRow className="bg-gray-50">
+                                    <TableHead className="border border-gray-300 text-center font-medium">Sr No.</TableHead>
+                                    <TableHead className="border border-gray-300 text-center font-medium">Details</TableHead>
+                                  </TableRow>
+                                </TableHeader>
+                                <TableBody>
+                                  {formData.ocRusting.map((rusting, index) => (
+                                    <TableRow key={rusting.id}>
+                                      <TableCell className="border border-gray-300 text-center">{index + 1}</TableCell>
+                                      <TableCell className="border border-gray-300">
+                                        <Input
+                                          value={rusting.details}
+                                          onChange={(e) => updateRustingRow('ocRusting', rusting.id, 'details', e.target.value)}
+                                          maxLength={100}
+                                        //   placeholder="Enter rusting/corrosion details"
+                                          className="border-0 p-1"
+                                        />
+                                      </TableCell>
+                                    </TableRow>
+                                  ))}
+                                </TableBody>
+                              </Table>
+                            </div>
+                          )}
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell className="border border-gray-300">(iii) Structural Defects<span className="text-red-500">*</span></TableCell>
+                      <TableCell className="border border-gray-300">
+                        <div className="space-y-2">
+                          <div className="flex items-center gap-2">
+                            <Label className="text-sm">Enter Total Number of Rows.</Label>
+                            <Input
+                              type="number"
+                              value={formData.ocStructuralDefects.length}
+                              onChange={(e) => {
+                                const count = parseInt(e.target.value) || 0;
+                                if (count > formData.ocStructuralDefects.length) {
+                                  for (let i = formData.ocStructuralDefects.length; i < count; i++) {
+                                    addStructuralDefectRow('ocStructuralDefects');
+                                  }
+                                } else if (count < formData.ocStructuralDefects.length && count > 0) {
+                                  const toRemove = formData.ocStructuralDefects.slice(count);
+                                  toRemove.forEach(defect => removeStructuralDefectRow('ocStructuralDefects', defect.id));
+                                }
+                              }}
+                              className="w-20"
+                              min="1"
+                            />
+                          </div>
+                          {formData.ocStructuralDefects.length > 0 && (
+                            <div className="overflow-x-auto">
+                              <Table className="border border-gray-300">
+                                <TableHeader>
+                                  <TableRow className="bg-gray-50">
+                                    <TableHead className="border border-gray-300 text-center font-medium">Sr No.</TableHead>
+                                    <TableHead className="border border-gray-300 text-center font-medium">Details</TableHead>
+                                  </TableRow>
+                                </TableHeader>
+                                <TableBody>
+                                  {formData.ocStructuralDefects.map((defect, index) => (
+                                    <TableRow key={defect.id}>
+                                      <TableCell className="border border-gray-300 text-center">{index + 1}</TableCell>
+                                      <TableCell className="border border-gray-300">
+                                        <Input
+                                          value={defect.details}
+                                          onChange={(e) => updateStructuralDefectRow('ocStructuralDefects', defect.id, 'details', e.target.value)}
+                                          maxLength={100}
+                                        //   placeholder="Enter structural defects details"
+                                          className="border-0 p-1"
+                                        />
+                                      </TableCell>
+                                    </TableRow>
+                                  ))}
+                                </TableBody>
+                              </Table>
+                            </div>
+                          )}
+                        </div>
+                      </TableCell>
+                    </TableRow>
+
+
+
+
+                    <TableRow>
+                      <TableCell rowSpan={4} className="border border-gray-300 text-center align-top"> </TableCell>
+                      <TableCell rowSpan={4} className="border border-gray-300 align-top"> </TableCell>
+                      <TableCell className="border border-gray-300"><b>Machinery Compartments*</b><span className="text-red-500">*</span></TableCell>
+                      <TableCell className="border border-gray-300">
+                        <Input
+                          value={formData.outerCasing}
+                          onChange={(e) => handleInputChange('outerCasing', e.target.value)}
+                          maxLength={100}
+                        //   placeholder="Enter machinery compartments details"
+                        />
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell className="border border-gray-300">(i) Preservation Standards<span className="text-red-500">*</span></TableCell>
+                      <TableCell className="border border-gray-300">
+                        <Input
+                          value={formData.ocPreservationStd}
+                          onChange={(e) => handleInputChange('ocPreservationStd', e.target.value)}
+                          maxLength={20}
+                           
+                        />
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell className="border border-gray-300">(ii) Rusting / Corrosion<span className="text-red-500">*</span></TableCell>
+                      <TableCell className="border border-gray-300">
+                        <div className="space-y-2">
+                          <div className="flex items-center gap-2">
+                            <Label className="text-sm">Enter Total Number of Rows.</Label>
+                            <Input
+                              type="number"
+                              value={formData.ocRusting.length}
+                              onChange={(e) => {
+                                const count = parseInt(e.target.value) || 0;
+                                if (count > formData.ocRusting.length) {
+                                  for (let i = formData.ocRusting.length; i < count; i++) {
+                                    addRustingRow('ocRusting');
+                                  }
+                                } else if (count < formData.ocRusting.length && count > 0) {
+                                  const toRemove = formData.ocRusting.slice(count);
+                                  toRemove.forEach(rusting => removeRustingRow('ocRusting', rusting.id));
+                                }
+                              }}
+                              className="w-20"
+                              min="1"
+                            />
+                          </div>
+                          {formData.ocRusting.length > 0 && (
+                            <div className="overflow-x-auto">
+                              <Table className="border border-gray-300">
+                                <TableHeader>
+                                  <TableRow className="bg-gray-50">
+                                    <TableHead className="border border-gray-300 text-center font-medium">Sr No.</TableHead>
+                                    <TableHead className="border border-gray-300 text-center font-medium">Details</TableHead>
+                                  </TableRow>
+                                </TableHeader>
+                                <TableBody>
+                                  {formData.ocRusting.map((rusting, index) => (
+                                    <TableRow key={rusting.id}>
+                                      <TableCell className="border border-gray-300 text-center">{index + 1}</TableCell>
+                                      <TableCell className="border border-gray-300">
+                                        <Input
+                                          value={rusting.details}
+                                          onChange={(e) => updateRustingRow('ocRusting', rusting.id, 'details', e.target.value)}
+                                          maxLength={100}
+                                        //   placeholder="Enter rusting/corrosion details"
+                                          className="border-0 p-1"
+                                        />
+                                      </TableCell>
+                                    </TableRow>
+                                  ))}
+                                </TableBody>
+                              </Table>
+                            </div>
+                          )}
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell className="border border-gray-300">(iii) General Bilges Hygiene<span className="text-red-500">*</span></TableCell>
+                      <TableCell className="border border-gray-300">
+                        <div className="space-y-2">
+                          <div className="flex items-center gap-2">
+                            <Label className="text-sm">Enter Total Number of Rows.</Label>
+                            <Input
+                              type="number"
+                              value={formData.ocRusting.length}
+                              onChange={(e) => {
+                                const count = parseInt(e.target.value) || 0;
+                                if (count > formData.ocRusting.length) {
+                                  for (let i = formData.ocRusting.length; i < count; i++) {
+                                    addRustingRow('ocRusting');
+                                  }
+                                } else if (count < formData.ocRusting.length && count > 0) {
+                                  const toRemove = formData.ocRusting.slice(count);
+                                  toRemove.forEach(rusting => removeRustingRow('ocRusting', rusting.id));
+                                }
+                              }}
+                              className="w-20"
+                              min="1"
+                            />
+                          </div>
+                          {formData.ocRusting.length > 0 && (
+                            <div className="overflow-x-auto">
+                              <Table className="border border-gray-300">
+                                <TableHeader>
+                                  <TableRow className="bg-gray-50">
+                                    <TableHead className="border border-gray-300 text-center font-medium">Sr No.</TableHead>
+                                    <TableHead className="border border-gray-300 text-center font-medium">Details</TableHead>
+                                  </TableRow>
+                                </TableHeader>
+                                <TableBody>
+                                  {formData.ocRusting.map((rusting, index) => (
+                                    <TableRow key={rusting.id}>
+                                      <TableCell className="border border-gray-300 text-center">{index + 1}</TableCell>
+                                      <TableCell className="border border-gray-300">
+                                        <Input
+                                          value={rusting.details}
+                                          onChange={(e) => updateRustingRow('ocRusting', rusting.id, 'details', e.target.value)}
+                                          maxLength={100}
+                                        //   placeholder="Enter rusting/corrosion details"
+                                          className="border-0 p-1"
+                                        />
+                                      </TableCell>
+                                    </TableRow>
+                                  ))}
+                                </TableBody>
+                              </Table>
+                            </div>
+                          )}
+                        </div>
+                      </TableCell>
+                    </TableRow>
+
+                    <TableRow>
+                      <TableCell rowSpan={4} className="border border-gray-300 text-center align-top"> </TableCell>
+                                            <TableCell rowSpan={4} className="border border-gray-300 text-center align-top"> </TableCell>
+
+                      <TableCell className="border border-gray-300">(iii) Structural Defects<span className="text-red-500">*</span></TableCell>
+                      <TableCell className="border border-gray-300">
+                        <div className="space-y-2">
+                          <div className="flex items-center gap-2">
+                            <Label className="text-sm">Enter Total Number of Rows.</Label>
+                            <Input
+                              type="number"
+                              value={formData.ocStructuralDefects.length}
+                              onChange={(e) => {
+                                const count = parseInt(e.target.value) || 0;
+                                if (count > formData.ocStructuralDefects.length) {
+                                  for (let i = formData.ocStructuralDefects.length; i < count; i++) {
+                                    addStructuralDefectRow('ocStructuralDefects');
+                                  }
+                                } else if (count < formData.ocStructuralDefects.length && count > 0) {
+                                  const toRemove = formData.ocStructuralDefects.slice(count);
+                                  toRemove.forEach(defect => removeStructuralDefectRow('ocStructuralDefects', defect.id));
+                                }
+                              }}
+                              className="w-20"
+                              min="1"
+                            />
+                          </div>
+                          {formData.ocStructuralDefects.length > 0 && (
+                            <div className="overflow-x-auto">
+                              <Table className="border border-gray-300">
+                                <TableHeader>
+                                  <TableRow className="bg-gray-50">
+                                    <TableHead className="border border-gray-300 text-center font-medium">Sr No.</TableHead>
+                                    <TableHead className="border border-gray-300 text-center font-medium">Details</TableHead>
+                                  </TableRow>
+                                </TableHeader>
+                                <TableBody>
+                                  {formData.ocStructuralDefects.map((defect, index) => (
+                                    <TableRow key={defect.id}>
+                                      <TableCell className="border border-gray-300 text-center">{index + 1}</TableCell>
+                                      <TableCell className="border border-gray-300">
+                                        <Input
+                                          value={defect.details}
+                                          onChange={(e) => updateStructuralDefectRow('ocStructuralDefects', defect.id, 'details', e.target.value)}
+                                          maxLength={100}
+                                        //   placeholder="Enter structural defects details"
+                                          className="border-0 p-1"
+                                        />
+                                      </TableCell>
+                                    </TableRow>
+                                  ))}
+                                </TableBody>
+                              </Table>
+                            </div>
+                          )}
+                        </div>
+                      </TableCell>
+                    </TableRow>
+
+
+
+
+
+                    <TableRow>
+                      {/* <TableCell rowSpan={4} className="border border-gray-300 text-center align-top"> </TableCell> */}
+                      {/* <TableCell rowSpan={4} className="border border-gray-300 align-top"> </TableCell> */}
+                      <TableCell className="border border-gray-300"><b>Battery Pits*</b><span className="text-red-500">*</span></TableCell>
+                      <TableCell className="border border-gray-300">
+                        <Input
+                          value={formData.outerCasing}
+                          onChange={(e) => handleInputChange('outerCasing', e.target.value)}
+                          maxLength={100}
+                        //   placeholder="Enter battery pits details"
+                        />
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell className="border border-gray-300">(i)Paint Scheme<span className="text-red-500">*</span></TableCell>
+                      <TableCell className="border border-gray-300">
+                        <Input
+                          value={formData.ocPreservationStd}
+                          onChange={(e) => handleInputChange('ocPreservationStd', e.target.value)}
+                          maxLength={20}
+                           
+                        />
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+
+                      <TableCell className="border border-gray-300">(ii)Date of application / whether in - date<span className="text-red-500">*</span></TableCell>
+                      <TableCell className="border border-gray-300">
+                        <Input
+                          value={formData.ocPreservationStd}
+                          onChange={(e) => handleInputChange('ocPreservationStd', e.target.value)}
+                          maxLength={20}
+                           
+                        />
+                      </TableCell>
+                    </TableRow>  <TableRow>
+                      <TableCell rowSpan={4} className="border border-gray-300 text-center align-top"> </TableCell>
+                      <TableCell rowSpan={4} className="border border-gray-300 text-center align-top"> </TableCell>
+
+                      <TableCell className="border border-gray-300">(iii)Details of defects if any<span className="text-red-500">*</span></TableCell>
+                      <TableCell className="border border-gray-300">
+                        <Input
+                          value={formData.ocPreservationStd}
+                          onChange={(e) => handleInputChange('ocPreservationStd', e.target.value)}
+                          maxLength={20}
+                           
+                        />
+                      </TableCell>
+                    </TableRow>
+
+
+
+
+
+
+                    <TableRow>
+                      {/* <TableCell rowSpan={3} className="border border-gray-300 text-center align-top"> </TableCell> */}
+                      {/* <TableCell rowSpan={3} className="border border-gray-300 align-top"> </TableCell> */}
+                      <TableCell className="border border-gray-300"><b>Vacuum Test of Battery Pits*</b><span className="text-red-500">*</span></TableCell>
+                      <TableCell className="border border-gray-300">
+                        <Input
+                          value={formData.outerCasing}
+                          onChange={(e) => handleInputChange('outerCasing', e.target.value)}
+                          maxLength={100}
+                        //   placeholder="Enter vacuum test details"
+                        />
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell className="border border-gray-300">(i) Open Loop - Using Standard Blowers and Exhaust/Supply blowers.<span className="text-red-500">*</span></TableCell>
+                      <TableCell className="border border-gray-300">
+                        <Input
+                          value={formData.ocPreservationStd}
+                          onChange={(e) => handleInputChange('ocPreservationStd', e.target.value)}
+                          maxLength={20}
+                           
+                        />
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell className="border border-gray-300">(ii) Closed Loop - Using Closed Loop Blowers.<span className="text-red-500">*</span></TableCell>
+                      <TableCell className="border border-gray-300">
+                        <Input
+                          value={formData.ocPreservationStd}
+                          onChange={(e) => handleInputChange('ocPreservationStd', e.target.value)}
+                          maxLength={20}
+                           
+                        />
+                      </TableCell>
+                    </TableRow>
+
+
+
+
+                    <TableRow>
+                      <TableCell rowSpan={4} className="border border-gray-300 text-center align-top"> </TableCell>
+                      <TableCell rowSpan={4} className="border border-gray-300 align-top"> </TableCell>
+                      <TableCell className="border border-gray-300"><b>Tanks (Internal and External)*</b><span className="text-red-500">*</span></TableCell>
+                      <TableCell className="border border-gray-300">
+                        <Input
+                          value={formData.outerCasing}
+                          onChange={(e) => handleInputChange('outerCasing', e.target.value)}
+                          maxLength={100}
+                        //    placeholder="Enter tanks details"
+                        />
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell className="border border-gray-300">(i)Paint Scheme<span className="text-red-500">*</span></TableCell>
+                      <TableCell className="border border-gray-300">
+                        <Input
+                          value={formData.ocPreservationStd}
+                          onChange={(e) => handleInputChange('ocPreservationStd', e.target.value)}
+                          maxLength={20}
+                           
+                        />
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell className="border border-gray-300">(ii)Date of application / whether in - date<span className="text-red-500">*</span></TableCell>
+                      <TableCell className="border border-gray-300">
+                        <Input
+                          value={formData.ocPreservationStd}
+                          onChange={(e) => handleInputChange('ocPreservationStd', e.target.value)}
+                          maxLength={20}
+                           
+                        />
+                      </TableCell>
+                    </TableRow>  <TableRow>
+                      <TableCell className="border border-gray-300">(iii)Details of defects if any<span className="text-red-500">*</span></TableCell>
+                      <TableCell className="border border-gray-300">
+                        <Input
+                          value={formData.ocPreservationStd}
+                          onChange={(e) => handleInputChange('ocPreservationStd', e.target.value)}
+                          maxLength={20}
+                           
+                        />
+                      </TableCell>
+                    </TableRow>
+
+
+
+                    <TableRow>
+                      <TableCell rowSpan={2} className="border border-gray-300 text-center align-top"> </TableCell>
+                      <TableCell rowSpan={2} className="border border-gray-300 align-top"> </TableCell>
+                      <TableCell className="border border-gray-300"><b>Solid Ballast Distribution*</b><span className="text-red-500">*</span></TableCell>
+                      <TableCell className="border border-gray-300">
+                        <Input
+                          value={formData.outerCasing}
+                          onChange={(e) => handleInputChange('outerCasing', e.target.value)}
+                          maxLength={100}
+                        //   placeholder="Enter solid ballast details"
+                        />
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell className="border border-gray-300">(i) Solid Ballast redistribution last carried out with details/ locations/ Authority*<span className="text-red-500">*</span></TableCell>
+                      <TableCell className="border border-gray-300">
+                        <Input
+                          value={formData.ocPreservationStd}
+                          onChange={(e) => handleInputChange('ocPreservationStd', e.target.value)}
+                          maxLength={20}
+                           
+                        />
+                      </TableCell>
+                    </TableRow>
+                  
+
+
+
+
+                    {/* 11. Towing/Mooring Arrangement */}
                     <TableRow>
                       <TableCell rowSpan={3} className="border border-gray-300 text-center align-top">3</TableCell>
                       <TableCell rowSpan={3} className="border border-gray-300 align-top">Towing/ Mooring Arrangement*</TableCell>
@@ -608,7 +1611,7 @@ const HullMaintenanceInspectionforSubmarinesForm = () => {
                           value={formData.towingHook}
                           onChange={(e) => handleInputChange("towingHook", e.target.value)}
                           maxLength={100}
-                          placeholder="Enter towing hook status"
+                        //   placeholder="Enter towing hook status"
                         />
                       </TableCell>
                     </TableRow>
@@ -619,23 +1622,24 @@ const HullMaintenanceInspectionforSubmarinesForm = () => {
                           value={formData.towingPendant}
                           onChange={(e) => handleInputChange("towingPendant", e.target.value)}
                           maxLength={100}
-                          placeholder="Enter towing pendant details"
+                        //   placeholder="Enter towing pendant details"
                         />
                       </TableCell>
                     </TableRow>
                     <TableRow>
+                  
                       <TableCell className="border border-gray-300">Towing Rope*</TableCell>
                       <TableCell className="border border-gray-300">
                         <Input
                           value={formData.towingRope}
                           onChange={(e) => handleInputChange("towingRope", e.target.value)}
                           maxLength={100}
-                          placeholder="Enter towing rope details"
+                        //   placeholder="Enter towing rope details"
                         />
                       </TableCell>
                     </TableRow>
 
-                    {/* 4. Miscellaneous hull fittings */}
+                    {/* 12. Miscellaneous hull fittings */}
                     <TableRow>
                       <TableCell rowSpan={4} className="border border-gray-300 text-center align-top">4</TableCell>
                       <TableCell rowSpan={4} className="border border-gray-300 align-top">Miscellaneous hull fittings on weather deck*</TableCell>
@@ -645,7 +1649,7 @@ const HullMaintenanceInspectionforSubmarinesForm = () => {
                           value={formData.mhfBollards}
                           onChange={(e) => handleInputChange("mhfBollards", e.target.value)}
                           maxLength={100}
-                          placeholder="Enter bollards details"
+                        //   placeholder="Enter bollards details"
                         />
                       </TableCell>
                     </TableRow>
@@ -656,7 +1660,7 @@ const HullMaintenanceInspectionforSubmarinesForm = () => {
                           value={formData.mhfCleats}
                           onChange={(e) => handleInputChange("mhfCleats", e.target.value)}
                           maxLength={100}
-                          placeholder="Enter cleats details"
+                        //   placeholder="Enter cleats details"
                         />
                       </TableCell>
                     </TableRow>
@@ -667,7 +1671,7 @@ const HullMaintenanceInspectionforSubmarinesForm = () => {
                           value={formData.mhfFairleads}
                           onChange={(e) => handleInputChange("mhfFairleads", e.target.value)}
                           maxLength={100}
-                          placeholder="Enter fairleads details"
+                        //   placeholder="Enter fairleads details"
                         />
                       </TableCell>
                     </TableRow>
@@ -678,12 +1682,12 @@ const HullMaintenanceInspectionforSubmarinesForm = () => {
                           value={formData.mhfCableClench}
                           onChange={(e) => handleInputChange("mhfCableClench", e.target.value)}
                           maxLength={100}
-                          placeholder="Enter cable clench details"
+                        //   placeholder="Enter cable clench details"
                         />
                       </TableCell>
                     </TableRow>
 
-                    {/* 5. Capstan/Windlass */}
+                    {/* 13. Capstan/Windlass */}
                     <TableRow>
                       <TableCell rowSpan={5} className="border border-gray-300 text-center align-top">5</TableCell>
                       <TableCell rowSpan={5} className="border border-gray-300 align-top">Capstan/ Windlass*</TableCell>
@@ -693,7 +1697,7 @@ const HullMaintenanceInspectionforSubmarinesForm = () => {
                           value={formData.operationalState}
                           onChange={(e) => handleInputChange("operationalState", e.target.value)}
                           maxLength={100}
-                          placeholder="Enter operational state"
+                        //   placeholder="Enter operational state"
                         />
                       </TableCell>
                     </TableRow>
@@ -704,7 +1708,7 @@ const HullMaintenanceInspectionforSubmarinesForm = () => {
                           value={formData.periodicMaintenance}
                           onChange={(e) => handleInputChange("periodicMaintenance", e.target.value)}
                           maxLength={100}
-                          placeholder="Enter periodic maintenance details"
+                        //   placeholder="Enter periodic maintenance details"
                         />
                       </TableCell>
                     </TableRow>
@@ -715,7 +1719,7 @@ const HullMaintenanceInspectionforSubmarinesForm = () => {
                           value={formData.crewProficiency}
                           onChange={(e) => handleInputChange("crewProficiency", e.target.value)}
                           maxLength={100}
-                          placeholder="Enter crew proficiency details"
+                        //   placeholder="Enter crew proficiency details"
                         />
                       </TableCell>
                     </TableRow>
@@ -726,7 +1730,7 @@ const HullMaintenanceInspectionforSubmarinesForm = () => {
                           value={formData.checkOffList}
                           onChange={(e) => handleInputChange("checkOffList", e.target.value)}
                           maxLength={100}
-                          placeholder="Enter check off list details"
+                        //   placeholder="Enter check off list details"
                         />
                       </TableCell>
                     </TableRow>
@@ -737,12 +1741,12 @@ const HullMaintenanceInspectionforSubmarinesForm = () => {
                           value={formData.capstanDetailsDefect}
                           onChange={(e) => handleInputChange("capstanDetailsDefect", e.target.value)}
                           maxLength={100}
-                          placeholder="Enter defect details"
+                        //    placeholder="Enter defect details"
                         />
                       </TableCell>
                     </TableRow>
 
-                    {/* 6. Indicator Buoy */}
+                    {/* 14. Indicator Buoy */}
                     <TableRow>
                       <TableCell rowSpan={4} className="border border-gray-300 text-center align-top">6</TableCell>
                       <TableCell rowSpan={4} className="border border-gray-300 align-top">Indicator Buoy*</TableCell>
@@ -752,7 +1756,7 @@ const HullMaintenanceInspectionforSubmarinesForm = () => {
                           value={formData.preservationStatus}
                           onChange={(e) => handleInputChange("preservationStatus", e.target.value)}
                           maxLength={100}
-                          placeholder="Enter preservation status"
+                        //    placeholder="Enter preservation status"
                         />
                       </TableCell>
                     </TableRow>
@@ -819,41 +1823,42 @@ const HullMaintenanceInspectionforSubmarinesForm = () => {
 
               {/* Action Buttons */}
               <div className="flex flex-wrap gap-4 justify-center mt-8">
-              <Button
-              type="button"
-              onClick={handleFetchDrafts}
-              className="px-6 bg-cyan-500 hover:bg-cyan-600 text-white font-semibold uppercase"
-            >
-              FETCH DRAFTS
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={handleFetchDrafts}
+                  className="bg-blue-500 text-white hover:bg-blue-600"
+                >
+              Fetch Drafts
             </Button>
-            <Button
-              type="button"
-              onClick={handleSaveDraft}
-              className="px-6 bg-green-500 hover:bg-green-600 text-white font-semibold uppercase"
-            >
+                <Button
+                  type="button"
+                  onClick={handleSaveDraft}
+                  className="bg-green-500 text-white hover:bg-green-600"
+                >
               SAVE DRAFT
             </Button>
-            <Button
-              type="button"
-              onClick={handleClear}
-              className="px-6 bg-red-500 hover:bg-red-600 text-white font-semibold uppercase"
-            >
-              CLEAR
+                <Button
+                  type="button"
+                  variant="destructive"
+                  onClick={handleClear}
+                >
+              Clear
             </Button>
-            <Button
-              type="submit"
-              className="px-6 bg-blue-600 hover:bg-blue-700 text-white font-semibold uppercase"
-            >
-              SAVE
+                <Button
+                  type="submit"
+                  className="bg-blue-600 text-white hover:bg-blue-700"
+                >
+              Save
             </Button>
           </div>
-            </form>
+        </form>
           </CardContent>
         </Card>
       </div>
 
-      {/* Drafts Modal */}
-      <Dialog open={isDraftModalOpen} onOpenChange={setIsDraftModalOpen}>
+        {/* Drafts Modal */}
+        <Dialog open={isDraftModalOpen} onOpenChange={setIsDraftModalOpen}>
           <DialogContent className="max-w-4xl">
             <DialogHeader>
               <DialogTitle>Saved Drafts</DialogTitle>
@@ -898,8 +1903,8 @@ const HullMaintenanceInspectionforSubmarinesForm = () => {
               </Table>
             </div>
           </DialogContent>
-        </Dialog>       
-</div>
+        </Dialog>
+    </div>
   );
 };
 

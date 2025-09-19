@@ -15,7 +15,7 @@ const CargoPassengerGalleyLiftsForm: React.FC = () => {
   const [hidDraftId, setHidDraftId] = useState<string>("");
 
   const [formData, setFormData] = useState({
-    // Basic Information (Sections 1-5)
+    // Basic Information (Sections 1-6)
     ship: "",
     date_of_inspection: "",
     make: "",
@@ -52,159 +52,142 @@ const CargoPassengerGalleyLiftsForm: React.FC = () => {
     remarks_sailing: "",
     
     // Section 8: Greasing
-    observations_greasing: "",
-    remarks_greasing: "",
-    observations_grease_layer: "",
-    remarks_grease_layer: "",
-    observations_bearing: "",
-    remarks_bearing: "",
+    observations_greasing_points: "",
+    remarks_greasing_points: "",
+    observations_grease_layer_friction: "",
+    remarks_grease_layer_friction: "",
+    observations_bearings: "",
+    remarks_bearings: "",
     observations_lift_guides: "",
     remarks_lift_guides: "",
-    observations_chain_holder: "",
-    remarks_chain_holder: "",
-    observations_rollers: "",
-    remarks_rollers: "",
-    observations_cabin: "",
-    remarks_cabin: "",
-    observations_wire_rope: "",
-    remarks_wire_rope: "",
-    observations_ss: "",
-    remarks_ss: "",
+    observations_chain_holders: "",
+    remarks_chain_holders: "",
+    observations_rollers_pulleys: "",
+    remarks_rollers_pulleys: "",
+    observations_cabin_counter_weight_tracks: "",
+    remarks_cabin_counter_weight_tracks: "",
+    observations_wire_ropes_cargo: "",
+    remarks_wire_ropes_cargo: "",
+    observations_ss_confirm_greasing: "",
+    remarks_ss_confirm_greasing: "",
     
     // Section 9: Oil
-    remarks_oil_type: "",
-    observations_oil_level: "",
-    remarks_oil_level: "",
+    remarks_oil_type_approved: "",
+    observations_oil_level_gear_box: "",
+    remarks_oil_level_gear_box: "",
     date_oil_change: "",
     remarks_oil_change: "",
     date_last_oil_analysis: "",
     remarks_last_oil_analysis: "",
-    observations_oil_analysis: "",
-    remarks_oil_analysis: "",
-    observations_oil_leakage: "",
-    remarks_oil_leakage: "",
+    observations_oil_analysis_certificate: "",
+    remarks_oil_analysis_certificate: "",
+    observations_oil_leakages_gear_box: "",
+    remarks_oil_leakages_gear_box: "",
     
     // Section 10: Visual Condition
-    observations_lift_shaft: "",
-    remarks_lift_shaft: "",
-    observations_cabin_structure: "",
-    remarks_cabin_structure: "",
-    observations_counter: "",
-    remarks_counter: "",
-    observations_cabin_door: "",
-    remarks_cabin_door: "",
-    observations_operating_machine: "",
-    remarks_operating_machine: "",
-    observations_structure: "",
-    remarks_structure: "",
-    observations_exposed_part: "",
-    remarks_exposed_part: "",
-    observations_cabin_roof: "",
-    remarks_cabin_roof: "",
-    observations_brake: "",
-    remarks_brake: "",
-    observations_wear_tear: "",
-    remarks_wear_tear: "",
-    observations_equip_fastening: "",
-    remarks_equip_fastening: "",
-    observations_circuit_breaker: "",
-    remarks_circuit_breaker: "",
+    observations_lift_shaft_structure_preservation: "",
+    remarks_lift_shaft_structure_preservation: "",
+    observations_cabin_structure_preservation: "",
+    remarks_cabin_structure_preservation: "",
+    observations_counter_weight_areas_guides: "",
+    remarks_counter_weight_areas_guides: "",
+    observations_cabin_door_operation: "",
+    remarks_cabin_door_operation: "",
+    observations_operating_machinery_foundations: "",
+    remarks_operating_machinery_foundations: "",
+    observations_structure_mechanism_defects: "",
+    remarks_structure_mechanism_defects: "",
+    observations_dirt_oil_moisture_exposed: "",
+    remarks_dirt_oil_moisture_exposed: "",
+    observations_dust_debris_cabin_roof: "",
+    remarks_dust_debris_cabin_roof: "",
+    observations_inspection_brake_mechanism: "",
+    remarks_inspection_brake_mechanism: "",
+    observations_wear_tear_traction_sheave: "",
+    remarks_wear_tear_traction_sheave: "",
+    observations_equipment_fastening_equaliser: "",
+    remarks_equipment_fastening_equaliser: "",
+    observations_circuit_breaker_control_unit: "",
+    remarks_circuit_breaker_control_unit: "",
     
     // Section 11: Wire Ropes
-    observations_visual: "",
-    remarks_visual: "",
-    date_last_changed: "",
-    remarks_last_changed: "",
-    date_last_service: "",
-    remarks_last_service: "",
-    observations_ropes: "",
-    remarks_ropes: "",
+    observations_visual_condition_ropes: "",
+    remarks_visual_condition_ropes: "",
+    date_last_changed_replaced: "",
+    remarks_last_changed_replaced: "",
+    date_last_serviceability_check: "",
+    remarks_last_serviceability_check: "",
+    observations_securing_ropes_ends: "",
+    remarks_securing_ropes_ends: "",
     
     // Section 12: Electric Checks
-    observations_insulation: "",
-    remarks_insulation: "",
-    observations_spm: "",
-    remarks_spm: "",
-    observations_electrical: "",
-    remarks_electrical: "",
-    observations_grounding: "",
-    remarks_grounding: "",
-    observations_jb: "",
-    remarks_jb: "",
+    observations_insulation_measurement_etma: "",
+    remarks_insulation_measurement_etma: "",
+    observations_spm_checks_motors: "",
+    remarks_spm_checks_motors: "",
+    observations_tightness_electrical_cable: "",
+    remarks_tightness_electrical_cable: "",
+    observations_grounding_bonding_connections: "",
+    remarks_grounding_bonding_connections: "",
+    observations_condition_jb_control_panel: "",
+    remarks_condition_jb_control_panel: "",
     
     // Section 13: Electric Checks by ETMA
     observations_completed: "",
     remarks_completed: "",
-    observations_report: "",
-    remarks_report: "",
+    observations_availability_report: "",
+    remarks_availability_report: "",
     
     // Section 14: Limit Switches
-    observations_ss1: "",
-    remarks_ss2: "",
-    observations_limit_switches: "",
-    remarks_limit_switches: "",
+    observations_ss_confirm_operational_availability: "",
+    remarks_ss_confirm_operational_availability: "",
+    observations_visual_check_limit_switches: "",
+    remarks_visual_check_limit_switches: "",
     
     // Section 15: Load Testing
     date_last_load_testing: "",
     remarks_last_load_testing: "",
-    observations_check_certi: "",
-    remarks_check_certi: "",
+    observations_check_certificates_static: "",
+    remarks_check_certificates_static: "",
     
     // Section 16: Operational / Functional Check
-    observations_lifting_speed: "",
-    remarks_lifting_speed: "",
-    observations_lowering_speed: "",
-    remarks_lowering_speed: "",
-    observations_operation_limit: "",
-    remarks_operation_limit: "",
-    observations_accurate: "",
-    remarks_accurate: "",
-    observations_simulate: "",
-    remarks_simulate: "",
-    observations_free_movement: "",
-    remarks_free_movement: "",
-    observations_hindered: "",
-    remarks_hindered: "",
-    observations_oil_leakeges: "",
-    remarks_oil_leakeges: "",
-    observations_excessive: "",
-    remarks_excessive: "",
-    observations_electro_magnet: "",
-    remarks_electro_magnet: "",
-    observations_manual_brake: "",
-    remarks_manual_brake: "",
-    observations_auto_catch: "",
-    remarks_auto_catch: "",
-    observations_operation_indicator: "",
-    remarks_operation_indicator: "",
-    observations_safety_check: "",
-    remarks_safety_check: "",
+    observations_lifting_speeds: "",
+    remarks_lifting_speeds: "",
+    observations_lowering_speeds: "",
+    remarks_lowering_speeds: "",
+    observations_operation_limit_switches: "",
+    remarks_operation_limit_switches: "",
+    observations_accurate_stopping_lift: "",
+    remarks_accurate_stopping_lift: "",
+    observations_simulate_power_failing: "",
+    remarks_simulate_power_failing: "",
+    observations_free_movement_pulleys: "",
+    remarks_free_movement_pulleys: "",
+    observations_hindered_jerky_movement: "",
+    remarks_hindered_jerky_movement: "",
+    observations_oil_leakages_gear_box_operational: "",
+    remarks_oil_leakages_gear_box_operational: "",
+    observations_excessive_vibrations_operating: "",
+    remarks_excessive_vibrations_operating: "",
+    observations_electro_magnetic_brake_operation: "",
+    remarks_electro_magnetic_brake_operation: "",
+    observations_manual_brake_operation: "",
+    remarks_manual_brake_operation: "",
+    observations_lift_door_auto_catch: "",
+    remarks_lift_door_auto_catch: "",
+    observations_operation_indicator_lamps: "",
+    remarks_operation_indicator_lamps: "",
+    observations_safety_check_operation_alarms: "",
+    remarks_safety_check_operation_alarms: "",
     
     // Section 17: Other Observation
-    observations_other_observ: "",
-    remarks_other_observ: "",
+    observations_other_observation: "",
+    remarks_other_observation: "",
     
     // Section 18: Overall Remarks
     remarks_overall: "",
     
-    // Section 21: Safety and Compliance Check
-    observations_emergency_procedures: "",
-    remarks_emergency_procedures: "",
-    observations_safety_equipment: "",
-    remarks_safety_equipment: "",
-    
-    // Section 22: Additional Inspection Points
-    observations_safety_systems: "",
-    remarks_safety_systems: "",
-    observations_emergency_procedures_22: "",
-    remarks_emergency_procedures_22: "",
-    
-    // Section 23: Final Inspection Report
-    inspection_status: "",
-    remarks_inspection_status: "",
-    recommendations: "",
-    
-    // Section 24: Authority Signature
+    // Section 23: Authority Signature
     authority_signature: null as File | null,
   });
 
@@ -301,132 +284,121 @@ const CargoPassengerGalleyLiftsForm: React.FC = () => {
       remarks_inspection_3months: "",
       observations_sailing: "",
       remarks_sailing: "",
-      observations_greasing: "",
-      remarks_greasing: "",
-      observations_grease_layer: "",
-      remarks_grease_layer: "",
-      observations_bearing: "",
-      remarks_bearing: "",
+      observations_greasing_points: "",
+      remarks_greasing_points: "",
+      observations_grease_layer_friction: "",
+      remarks_grease_layer_friction: "",
+      observations_bearings: "",
+      remarks_bearings: "",
       observations_lift_guides: "",
       remarks_lift_guides: "",
-      observations_chain_holder: "",
-      remarks_chain_holder: "",
-      observations_rollers: "",
-      remarks_rollers: "",
-      observations_cabin: "",
-      remarks_cabin: "",
-      observations_wire_rope: "",
-      remarks_wire_rope: "",
-      observations_ss: "",
-      remarks_ss: "",
-      remarks_oil_type: "",
-      observations_oil_level: "",
-      remarks_oil_level: "",
+      observations_chain_holders: "",
+      remarks_chain_holders: "",
+      observations_rollers_pulleys: "",
+      remarks_rollers_pulleys: "",
+      observations_cabin_counter_weight_tracks: "",
+      remarks_cabin_counter_weight_tracks: "",
+      observations_wire_ropes_cargo: "",
+      remarks_wire_ropes_cargo: "",
+      observations_ss_confirm_greasing: "",
+      remarks_ss_confirm_greasing: "",
+      remarks_oil_type_approved: "",
+      observations_oil_level_gear_box: "",
+      remarks_oil_level_gear_box: "",
       date_oil_change: "",
       remarks_oil_change: "",
       date_last_oil_analysis: "",
       remarks_last_oil_analysis: "",
-      observations_oil_analysis: "",
-      remarks_oil_analysis: "",
-      observations_oil_leakage: "",
-      remarks_oil_leakage: "",
-      observations_lift_shaft: "",
-      remarks_lift_shaft: "",
-      observations_cabin_structure: "",
-      remarks_cabin_structure: "",
-      observations_counter: "",
-      remarks_counter: "",
-      observations_cabin_door: "",
-      remarks_cabin_door: "",
-      observations_operating_machine: "",
-      remarks_operating_machine: "",
-      observations_structure: "",
-      remarks_structure: "",
-      observations_exposed_part: "",
-      remarks_exposed_part: "",
-      observations_cabin_roof: "",
-      remarks_cabin_roof: "",
-      observations_brake: "",
-      remarks_brake: "",
-      observations_wear_tear: "",
-      remarks_wear_tear: "",
-      observations_equip_fastening: "",
-      remarks_equip_fastening: "",
-      observations_circuit_breaker: "",
-      remarks_circuit_breaker: "",
-      observations_visual: "",
-      remarks_visual: "",
-      date_last_changed: "",
-      remarks_last_changed: "",
-      date_last_service: "",
-      remarks_last_service: "",
-      observations_ropes: "",
-      remarks_ropes: "",
-      observations_insulation: "",
-      remarks_insulation: "",
-      observations_spm: "",
-      remarks_spm: "",
-      observations_electrical: "",
-      remarks_electrical: "",
-      observations_grounding: "",
-      remarks_grounding: "",
-      observations_jb: "",
-      remarks_jb: "",
+      observations_oil_analysis_certificate: "",
+      remarks_oil_analysis_certificate: "",
+      observations_oil_leakages_gear_box: "",
+      remarks_oil_leakages_gear_box: "",
+      observations_lift_shaft_structure_preservation: "",
+      remarks_lift_shaft_structure_preservation: "",
+      observations_cabin_structure_preservation: "",
+      remarks_cabin_structure_preservation: "",
+      observations_counter_weight_areas_guides: "",
+      remarks_counter_weight_areas_guides: "",
+      observations_cabin_door_operation: "",
+      remarks_cabin_door_operation: "",
+      observations_operating_machinery_foundations: "",
+      remarks_operating_machinery_foundations: "",
+      observations_structure_mechanism_defects: "",
+      remarks_structure_mechanism_defects: "",
+      observations_dirt_oil_moisture_exposed: "",
+      remarks_dirt_oil_moisture_exposed: "",
+      observations_dust_debris_cabin_roof: "",
+      remarks_dust_debris_cabin_roof: "",
+      observations_inspection_brake_mechanism: "",
+      remarks_inspection_brake_mechanism: "",
+      observations_wear_tear_traction_sheave: "",
+      remarks_wear_tear_traction_sheave: "",
+      observations_equipment_fastening_equaliser: "",
+      remarks_equipment_fastening_equaliser: "",
+      observations_circuit_breaker_control_unit: "",
+      remarks_circuit_breaker_control_unit: "",
+      observations_visual_condition_ropes: "",
+      remarks_visual_condition_ropes: "",
+      date_last_changed_replaced: "",
+      remarks_last_changed_replaced: "",
+      date_last_serviceability_check: "",
+      remarks_last_serviceability_check: "",
+      observations_securing_ropes_ends: "",
+      remarks_securing_ropes_ends: "",
+      observations_insulation_measurement_etma: "",
+      remarks_insulation_measurement_etma: "",
+      observations_spm_checks_motors: "",
+      remarks_spm_checks_motors: "",
+      observations_tightness_electrical_cable: "",
+      remarks_tightness_electrical_cable: "",
+      observations_grounding_bonding_connections: "",
+      remarks_grounding_bonding_connections: "",
+      observations_condition_jb_control_panel: "",
+      remarks_condition_jb_control_panel: "",
       observations_completed: "",
       remarks_completed: "",
-      observations_report: "",
-      remarks_report: "",
-      observations_ss1: "",
-      remarks_ss2: "",
-      observations_limit_switches: "",
-      remarks_limit_switches: "",
+      observations_availability_report: "",
+      remarks_availability_report: "",
+      observations_ss_confirm_operational_availability: "",
+      remarks_ss_confirm_operational_availability: "",
+      observations_visual_check_limit_switches: "",
+      remarks_visual_check_limit_switches: "",
       date_last_load_testing: "",
       remarks_last_load_testing: "",
-      observations_check_certi: "",
-      remarks_check_certi: "",
-      observations_lifting_speed: "",
-      remarks_lifting_speed: "",
-      observations_lowering_speed: "",
-      remarks_lowering_speed: "",
-      observations_operation_limit: "",
-      remarks_operation_limit: "",
-      observations_accurate: "",
-      remarks_accurate: "",
-      observations_simulate: "",
-      remarks_simulate: "",
-      observations_free_movement: "",
-      remarks_free_movement: "",
-      observations_hindered: "",
-      remarks_hindered: "",
-      observations_oil_leakeges: "",
-      remarks_oil_leakeges: "",
-      observations_excessive: "",
-      remarks_excessive: "",
-      observations_electro_magnet: "",
-      remarks_electro_magnet: "",
-      observations_manual_brake: "",
-      remarks_manual_brake: "",
-      observations_auto_catch: "",
-      remarks_auto_catch: "",
-      observations_operation_indicator: "",
-      remarks_operation_indicator: "",
-      observations_safety_check: "",
-      remarks_safety_check: "",
-      observations_other_observ: "",
-      remarks_other_observ: "",
+      observations_check_certificates_static: "",
+      remarks_check_certificates_static: "",
+      observations_lifting_speeds: "",
+      remarks_lifting_speeds: "",
+      observations_lowering_speeds: "",
+      remarks_lowering_speeds: "",
+      observations_operation_limit_switches: "",
+      remarks_operation_limit_switches: "",
+      observations_accurate_stopping_lift: "",
+      remarks_accurate_stopping_lift: "",
+      observations_simulate_power_failing: "",
+      remarks_simulate_power_failing: "",
+      observations_free_movement_pulleys: "",
+      remarks_free_movement_pulleys: "",
+      observations_hindered_jerky_movement: "",
+      remarks_hindered_jerky_movement: "",
+      observations_oil_leakages_gear_box_operational: "",
+      remarks_oil_leakages_gear_box_operational: "",
+      observations_excessive_vibrations_operating: "",
+      remarks_excessive_vibrations_operating: "",
+      observations_electro_magnetic_brake_operation: "",
+      remarks_electro_magnetic_brake_operation: "",
+      observations_manual_brake_operation: "",
+      remarks_manual_brake_operation: "",
+      observations_lift_door_auto_catch: "",
+      remarks_lift_door_auto_catch: "",
+      observations_operation_indicator_lamps: "",
+      remarks_operation_indicator_lamps: "",
+      observations_safety_check_operation_alarms: "",
+      remarks_safety_check_operation_alarms: "",
+      observations_other_observation: "",
+      remarks_other_observation: "",
       remarks_overall: "",
-    observations_emergency_procedures: "",
-    remarks_emergency_procedures: "",
-    observations_safety_equipment: "",
-    remarks_safety_equipment: "",
-    observations_safety_systems: "",
-    remarks_safety_systems: "",
-    observations_emergency_procedures_22: "",
-    remarks_emergency_procedures_22: "",
-    inspection_status: "",
-    remarks_inspection_status: "",
-    recommendations: "",
-    authority_signature: null,
+      authority_signature: null,
     });
     setPendingObservations([{ equipment: "", observation: "", remarks: "" }]);
     setHidDraftId("");
@@ -704,7 +676,7 @@ const CargoPassengerGalleyLiftsForm: React.FC = () => {
                           <TableHead>Equipment <span className="text-red-500">*</span></TableHead>
                           <TableHead>Observation <span className="text-red-500">*</span></TableHead>
                           <TableHead>Remarks <span className="text-red-500">*</span></TableHead>
-                          <TableHead>Action</TableHead>
+                          {/* <TableHead>Action</TableHead> */}
                         </TableRow>
                       </TableHeader>
                       <TableBody>
@@ -763,10 +735,10 @@ const CargoPassengerGalleyLiftsForm: React.FC = () => {
               </div>
             </div>
 
-            {/* Section 9: Maintenance Record/ Inspection Log */}
+            {/* Section 7: Maintenance Record/ Inspection Log */}
             <div className="space-y-4">
               <div className="flex items-center gap-2">
-                <span className="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">9</span>
+                <span className="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">7</span>
                 <Label className="text-base font-medium">Maintenance Record/ Inspection Log (maintenance record/log i.a.w OEM Manual)</Label>
               </div>
               <div className="ml-4 space-y-4">
@@ -799,7 +771,7 @@ const CargoPassengerGalleyLiftsForm: React.FC = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <div className="text-sm font-medium">ii) Prior to Sailing</div>
+                  <div className="text-sm font-medium">ii) Prior Sailing</div>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
                       <Label className="text-sm font-medium">Observations:<span className="text-red-500">*</span></Label>
@@ -824,20 +796,24 @@ const CargoPassengerGalleyLiftsForm: React.FC = () => {
                   </div>
                 </div>
 
-                <div className="text-sm font-medium text-gray-700">b) Inspection Log for Cargo and Passenger Remote</div>
+                <div className="text-sm font-medium text-gray-700">b) Inspection Log/ Record for Cargo and Passenger Remote</div>
                 
                 <div className="space-y-2">
                   <div className="text-sm font-medium">i) Daily Inspection</div>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
                       <Label className="text-sm font-medium">Observations:<span className="text-red-500">*</span></Label>
-                      <Input
-                        value={formData.observations_daily_inspection}
-                        onChange={(e) => handleInputChange("observations_daily_inspection", e.target.value)}
-                        placeholder="Enter numeric only"
-                        maxLength={5}
-                        required
-                      />
+                      <Select value={formData.observations_daily_inspection} onValueChange={(value) => handleInputChange("observations_daily_inspection", value)}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="--Select--" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="0">--Select--</SelectItem>
+                          <SelectItem value="SAT">SAT</SelectItem>
+                          <SelectItem value="UNSAT">UNSAT</SelectItem>
+                          <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
                     <div className="md:col-span-2">
                       <Label className="text-sm font-medium">Remarks:<span className="text-red-500">*</span></Label>
@@ -853,17 +829,21 @@ const CargoPassengerGalleyLiftsForm: React.FC = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <div className="text-sm font-medium">ii) Once in 10 Days (Inactive)</div>
+                  <div className="text-sm font-medium">ii) Once in 10 Days, If Lift not Operated for 10 or More Days.</div>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
                       <Label className="text-sm font-medium">Observations:<span className="text-red-500">*</span></Label>
-                      <Input
-                        value={formData.observations_once_ten_days}
-                        onChange={(e) => handleInputChange("observations_once_ten_days", e.target.value)}
-                        placeholder="Enter numeric only"
-                        maxLength={5}
-                        required
-                      />
+                      <Select value={formData.observations_once_ten_days} onValueChange={(value) => handleInputChange("observations_once_ten_days", value)}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="--Select--" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="0">--Select--</SelectItem>
+                          <SelectItem value="SAT">SAT</SelectItem>
+                          <SelectItem value="UNSAT">UNSAT</SelectItem>
+                          <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
                     <div className="md:col-span-2">
                       <Label className="text-sm font-medium">Remarks:<span className="text-red-500">*</span></Label>
@@ -883,13 +863,17 @@ const CargoPassengerGalleyLiftsForm: React.FC = () => {
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
                       <Label className="text-sm font-medium">Observations:<span className="text-red-500">*</span></Label>
-                      <Input
-                        value={formData.observations_once_3months}
-                        onChange={(e) => handleInputChange("observations_once_3months", e.target.value)}
-                        placeholder="Enter numeric only"
-                        maxLength={5}
-                        required
-                      />
+                      <Select value={formData.observations_once_3months} onValueChange={(value) => handleInputChange("observations_once_3months", value)}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="--Select--" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="0">--Select--</SelectItem>
+                          <SelectItem value="SAT">SAT</SelectItem>
+                          <SelectItem value="UNSAT">UNSAT</SelectItem>
+                          <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
                     <div className="md:col-span-2">
                       <Label className="text-sm font-medium">Remarks:<span className="text-red-500">*</span></Label>
@@ -905,17 +889,21 @@ const CargoPassengerGalleyLiftsForm: React.FC = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <div className="text-sm font-medium">iv) After Sailing</div>
+                  <div className="text-sm font-medium">iv) After Sailing - (When Ship Experienced &gt; 15° heel &amp; &gt; 5° trim )</div>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
                       <Label className="text-sm font-medium">Observations:<span className="text-red-500">*</span></Label>
-                      <Input
-                        value={formData.observations_after_sailing}
-                        onChange={(e) => handleInputChange("observations_after_sailing", e.target.value)}
-                        placeholder="Enter numeric only"
-                        maxLength={5}
-                        required
-                      />
+                      <Select value={formData.observations_after_sailing} onValueChange={(value) => handleInputChange("observations_after_sailing", value)}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="--Select--" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="0">--Select--</SelectItem>
+                          <SelectItem value="SAT">SAT</SelectItem>
+                          <SelectItem value="UNSAT">UNSAT</SelectItem>
+                          <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
                     <div className="md:col-span-2">
                       <Label className="text-sm font-medium">Remarks:<span className="text-red-500">*</span></Label>
@@ -933,17 +921,21 @@ const CargoPassengerGalleyLiftsForm: React.FC = () => {
                 <div className="text-sm font-medium text-gray-700">c) Inspection Log/ Record - Galley Lifts</div>
                 
                 <div className="space-y-2">
-                  <div className="text-sm font-medium">i) 3 Months</div>
+                  <div className="text-sm font-medium">i) Once in 3 Months</div>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
                       <Label className="text-sm font-medium">Observations:<span className="text-red-500">*</span></Label>
-                      <Input
-                        value={formData.observations_inspection_3months}
-                        onChange={(e) => handleInputChange("observations_inspection_3months", e.target.value)}
-                        placeholder="Enter numeric only"
-                        maxLength={5}
-                        required
-                      />
+                      <Select value={formData.observations_inspection_3months} onValueChange={(value) => handleInputChange("observations_inspection_3months", value)}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="--Select--" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="0">--Select--</SelectItem>
+                          <SelectItem value="SAT">SAT</SelectItem>
+                          <SelectItem value="UNSAT">UNSAT</SelectItem>
+                          <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
                     <div className="md:col-span-2">
                       <Label className="text-sm font-medium">Remarks:<span className="text-red-500">*</span></Label>
@@ -959,17 +951,21 @@ const CargoPassengerGalleyLiftsForm: React.FC = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <div className="text-sm font-medium">ii) After Sailing</div>
+                  <div className="text-sm font-medium">ii) After Sailing - (When Ship Experienced &gt; 15° heel &amp; &gt; 5° trim )</div>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
                       <Label className="text-sm font-medium">Observations:<span className="text-red-500">*</span></Label>
-                      <Input
-                        value={formData.observations_sailing}
-                        onChange={(e) => handleInputChange("observations_sailing", e.target.value)}
-                        placeholder="Enter numeric only"
-                        maxLength={5}
-                        required
-                      />
+                      <Select value={formData.observations_sailing} onValueChange={(value) => handleInputChange("observations_sailing", value)}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="--Select--" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="0">--Select--</SelectItem>
+                          <SelectItem value="SAT">SAT</SelectItem>
+                          <SelectItem value="UNSAT">UNSAT</SelectItem>
+                          <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
                     <div className="md:col-span-2">
                       <Label className="text-sm font-medium">Remarks:<span className="text-red-500">*</span></Label>
@@ -986,31 +982,35 @@ const CargoPassengerGalleyLiftsForm: React.FC = () => {
               </div>
             </div>
 
-            {/* Section 10: Greasing */}
+            {/* Section 8: Greasing */}
             <div className="space-y-4">
               <div className="flex items-center gap-2">
-                <span className="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">10</span>
-                <Label className="text-base font-medium">Greasing</Label>
+                <span className="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">8</span>
+                <Label className="text-base font-medium">Greasing (Thin Layer of Grease on All Unpainted Mental Surfaces)</Label>
               </div>
               <div className="ml-4 space-y-4">
                 <div className="space-y-2">
-                  <div className="text-sm font-medium">a) Greasing of all moving parts</div>
+                  <div className="text-sm font-medium">a) Condition of Greasing Points</div>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
                       <Label className="text-sm font-medium">Observations:<span className="text-red-500">*</span></Label>
-                      <Input
-                        value={formData.observations_greasing}
-                        onChange={(e) => handleInputChange("observations_greasing", e.target.value)}
-                        placeholder="Enter numeric only"
-                        maxLength={5}
-                        required
-                      />
+                      <Select value={formData.observations_greasing_points} onValueChange={(value) => handleInputChange("observations_greasing_points", value)}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="--Select--" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="0">--Select--</SelectItem>
+                          <SelectItem value="SAT">SAT</SelectItem>
+                          <SelectItem value="UNSAT">UNSAT</SelectItem>
+                          <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
                     <div className="md:col-span-2">
                       <Label className="text-sm font-medium">Remarks:<span className="text-red-500">*</span></Label>
                       <Textarea
-                        value={formData.remarks_greasing}
-                        onChange={(e) => handleInputChange("remarks_greasing", e.target.value)}
+                        value={formData.remarks_greasing_points}
+                        onChange={(e) => handleInputChange("remarks_greasing_points", e.target.value)}
                         rows={2}
                         maxLength={1000}
                         required
@@ -1020,23 +1020,27 @@ const CargoPassengerGalleyLiftsForm: React.FC = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <div className="text-sm font-medium">b) Grease layer thickness</div>
+                  <div className="text-sm font-medium">b) Grease Layer on Friction Parts</div>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
                       <Label className="text-sm font-medium">Observations:<span className="text-red-500">*</span></Label>
-                      <Input
-                        value={formData.observations_grease_layer}
-                        onChange={(e) => handleInputChange("observations_grease_layer", e.target.value)}
-                        placeholder="Enter numeric only"
-                        maxLength={5}
-                        required
-                      />
+                      <Select value={formData.observations_grease_layer_friction} onValueChange={(value) => handleInputChange("observations_grease_layer_friction", value)}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="--Select--" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="0">--Select--</SelectItem>
+                          <SelectItem value="SAT">SAT</SelectItem>
+                          <SelectItem value="UNSAT">UNSAT</SelectItem>
+                          <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
                     <div className="md:col-span-2">
                       <Label className="text-sm font-medium">Remarks:<span className="text-red-500">*</span></Label>
                       <Textarea
-                        value={formData.remarks_grease_layer}
-                        onChange={(e) => handleInputChange("remarks_grease_layer", e.target.value)}
+                        value={formData.remarks_grease_layer_friction}
+                        onChange={(e) => handleInputChange("remarks_grease_layer_friction", e.target.value)}
                         rows={2}
                         maxLength={1000}
                         required
@@ -1046,23 +1050,27 @@ const CargoPassengerGalleyLiftsForm: React.FC = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <div className="text-sm font-medium">c) Bearing condition</div>
+                  <div className="text-sm font-medium">c) Bearings</div>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
                       <Label className="text-sm font-medium">Observations:<span className="text-red-500">*</span></Label>
-                      <Input
-                        value={formData.observations_bearing}
-                        onChange={(e) => handleInputChange("observations_bearing", e.target.value)}
-                        placeholder="Enter numeric only"
-                        maxLength={5}
-                        required
-                      />
+                      <Select value={formData.observations_bearings} onValueChange={(value) => handleInputChange("observations_bearings", value)}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="--Select--" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="0">--Select--</SelectItem>
+                          <SelectItem value="SAT">SAT</SelectItem>
+                          <SelectItem value="UNSAT">UNSAT</SelectItem>
+                          <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
                     <div className="md:col-span-2">
                       <Label className="text-sm font-medium">Remarks:<span className="text-red-500">*</span></Label>
                       <Textarea
-                        value={formData.remarks_bearing}
-                        onChange={(e) => handleInputChange("remarks_bearing", e.target.value)}
+                        value={formData.remarks_bearings}
+                        onChange={(e) => handleInputChange("remarks_bearings", e.target.value)}
                         rows={2}
                         maxLength={1000}
                         required
@@ -1072,17 +1080,21 @@ const CargoPassengerGalleyLiftsForm: React.FC = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <div className="text-sm font-medium">d) Lift guides</div>
+                  <div className="text-sm font-medium">d) Lift Guides</div>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
                       <Label className="text-sm font-medium">Observations:<span className="text-red-500">*</span></Label>
-                      <Input
-                        value={formData.observations_lift_guides}
-                        onChange={(e) => handleInputChange("observations_lift_guides", e.target.value)}
-                        placeholder="Enter numeric only"
-                        maxLength={5}
-                        required
-                      />
+                      <Select value={formData.observations_lift_guides} onValueChange={(value) => handleInputChange("observations_lift_guides", value)}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="--Select--" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="0">--Select--</SelectItem>
+                          <SelectItem value="SAT">SAT</SelectItem>
+                          <SelectItem value="UNSAT">UNSAT</SelectItem>
+                          <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
                     <div className="md:col-span-2">
                       <Label className="text-sm font-medium">Remarks:<span className="text-red-500">*</span></Label>
@@ -1098,23 +1110,27 @@ const CargoPassengerGalleyLiftsForm: React.FC = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <div className="text-sm font-medium">e) Chain holder</div>
+                  <div className="text-sm font-medium">e) Chain &amp; Holders</div>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
                       <Label className="text-sm font-medium">Observations:<span className="text-red-500">*</span></Label>
-                      <Input
-                        value={formData.observations_chain_holder}
-                        onChange={(e) => handleInputChange("observations_chain_holder", e.target.value)}
-                        placeholder="Enter numeric only"
-                        maxLength={5}
-                        required
-                      />
+                      <Select value={formData.observations_chain_holders} onValueChange={(value) => handleInputChange("observations_chain_holders", value)}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="--Select--" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="0">--Select--</SelectItem>
+                          <SelectItem value="SAT">SAT</SelectItem>
+                          <SelectItem value="UNSAT">UNSAT</SelectItem>
+                          <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
                     <div className="md:col-span-2">
                       <Label className="text-sm font-medium">Remarks:<span className="text-red-500">*</span></Label>
                       <Textarea
-                        value={formData.remarks_chain_holder}
-                        onChange={(e) => handleInputChange("remarks_chain_holder", e.target.value)}
+                        value={formData.remarks_chain_holders}
+                        onChange={(e) => handleInputChange("remarks_chain_holders", e.target.value)}
                         rows={2}
                         maxLength={1000}
                         required
@@ -1124,23 +1140,27 @@ const CargoPassengerGalleyLiftsForm: React.FC = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <div className="text-sm font-medium">f) Rollers</div>
+                  <div className="text-sm font-medium">f) Rollers &amp; Pulleys</div>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
                       <Label className="text-sm font-medium">Observations:<span className="text-red-500">*</span></Label>
-                      <Input
-                        value={formData.observations_rollers}
-                        onChange={(e) => handleInputChange("observations_rollers", e.target.value)}
-                        placeholder="Enter numeric only"
-                        maxLength={5}
-                        required
-                      />
+                      <Select value={formData.observations_rollers_pulleys} onValueChange={(value) => handleInputChange("observations_rollers_pulleys", value)}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="--Select--" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="0">--Select--</SelectItem>
+                          <SelectItem value="SAT">SAT</SelectItem>
+                          <SelectItem value="UNSAT">UNSAT</SelectItem>
+                          <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
                     <div className="md:col-span-2">
                       <Label className="text-sm font-medium">Remarks:<span className="text-red-500">*</span></Label>
                       <Textarea
-                        value={formData.remarks_rollers}
-                        onChange={(e) => handleInputChange("remarks_rollers", e.target.value)}
+                        value={formData.remarks_rollers_pulleys}
+                        onChange={(e) => handleInputChange("remarks_rollers_pulleys", e.target.value)}
                         rows={2}
                         maxLength={1000}
                         required
@@ -1150,23 +1170,27 @@ const CargoPassengerGalleyLiftsForm: React.FC = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <div className="text-sm font-medium">g) Cabin</div>
+                  <div className="text-sm font-medium">g) Cabin &amp; Counter Weight Tracks</div>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
                       <Label className="text-sm font-medium">Observations:<span className="text-red-500">*</span></Label>
-                      <Input
-                        value={formData.observations_cabin}
-                        onChange={(e) => handleInputChange("observations_cabin", e.target.value)}
-                        placeholder="Enter numeric only"
-                        maxLength={5}
-                        required
-                      />
+                      <Select value={formData.observations_cabin_counter_weight_tracks} onValueChange={(value) => handleInputChange("observations_cabin_counter_weight_tracks", value)}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="--Select--" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="0">--Select--</SelectItem>
+                          <SelectItem value="SAT">SAT</SelectItem>
+                          <SelectItem value="UNSAT">UNSAT</SelectItem>
+                          <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
                     <div className="md:col-span-2">
                       <Label className="text-sm font-medium">Remarks:<span className="text-red-500">*</span></Label>
                       <Textarea
-                        value={formData.remarks_cabin}
-                        onChange={(e) => handleInputChange("remarks_cabin", e.target.value)}
+                        value={formData.remarks_cabin_counter_weight_tracks}
+                        onChange={(e) => handleInputChange("remarks_cabin_counter_weight_tracks", e.target.value)}
                         rows={2}
                         maxLength={1000}
                         required
@@ -1176,23 +1200,27 @@ const CargoPassengerGalleyLiftsForm: React.FC = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <div className="text-sm font-medium">h) Wire rope</div>
+                  <div className="text-sm font-medium">h) Wire Ropes (Cargo &amp; Over-Speed Governor Ropes)</div>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
                       <Label className="text-sm font-medium">Observations:<span className="text-red-500">*</span></Label>
-                      <Input
-                        value={formData.observations_wire_rope}
-                        onChange={(e) => handleInputChange("observations_wire_rope", e.target.value)}
-                        placeholder="Enter numeric only"
-                        maxLength={5}
-                        required
-                      />
+                      <Select value={formData.observations_wire_ropes_cargo} onValueChange={(value) => handleInputChange("observations_wire_ropes_cargo", value)}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="--Select--" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="0">--Select--</SelectItem>
+                          <SelectItem value="SAT">SAT</SelectItem>
+                          <SelectItem value="UNSAT">UNSAT</SelectItem>
+                          <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
                     <div className="md:col-span-2">
                       <Label className="text-sm font-medium">Remarks:<span className="text-red-500">*</span></Label>
                       <Textarea
-                        value={formData.remarks_wire_rope}
-                        onChange={(e) => handleInputChange("remarks_wire_rope", e.target.value)}
+                        value={formData.remarks_wire_ropes_cargo}
+                        onChange={(e) => handleInputChange("remarks_wire_ropes_cargo", e.target.value)}
                         rows={2}
                         maxLength={1000}
                         required
@@ -1202,23 +1230,27 @@ const CargoPassengerGalleyLiftsForm: React.FC = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <div className="text-sm font-medium">i) Safety systems</div>
+                  <div className="text-sm font-medium">i) SS to Confirm (Greasing between Gearing of Reduction Gear, Sprokets and Other Xnaccessible and OEM Manual)</div>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
                       <Label className="text-sm font-medium">Observations:<span className="text-red-500">*</span></Label>
-                      <Input
-                        value={formData.observations_ss}
-                        onChange={(e) => handleInputChange("observations_ss", e.target.value)}
-                        placeholder="Enter numeric only"
-                        maxLength={5}
-                        required
-                      />
+                      <Select value={formData.observations_ss_confirm_greasing} onValueChange={(value) => handleInputChange("observations_ss_confirm_greasing", value)}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="--Select--" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="0">--Select--</SelectItem>
+                          <SelectItem value="SAT">SAT</SelectItem>
+                          <SelectItem value="UNSAT">UNSAT</SelectItem>
+                          <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
                     <div className="md:col-span-2">
                       <Label className="text-sm font-medium">Remarks:<span className="text-red-500">*</span></Label>
                       <Textarea
-                        value={formData.remarks_ss}
-                        onChange={(e) => handleInputChange("remarks_ss", e.target.value)}
+                        value={formData.remarks_ss_confirm_greasing}
+                        onChange={(e) => handleInputChange("remarks_ss_confirm_greasing", e.target.value)}
                         rows={2}
                         maxLength={1000}
                         required
@@ -1229,21 +1261,21 @@ const CargoPassengerGalleyLiftsForm: React.FC = () => {
               </div>
             </div>
 
-            {/* Section 11: Oil */}
+            {/* Section 9: Oil */}
             <div className="space-y-4">
               <div className="flex items-center gap-2">
-                <span className="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">11</span>
+                <span className="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">9</span>
                 <Label className="text-base font-medium">Oil</Label>
               </div>
               <div className="ml-4 space-y-4">
                 <div className="space-y-2">
-                  <div className="text-sm font-medium">a) Oil type and grade</div>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div className="md:col-span-3">
+                  <div className="text-sm font-medium">a) Type of Oil Used - (approved / OEM defined)</div>
+                  <div className="grid grid-cols-1 gap-4">
+                    <div>
                       <Label className="text-sm font-medium">Remarks:<span className="text-red-500">*</span></Label>
                       <Textarea
-                        value={formData.remarks_oil_type}
-                        onChange={(e) => handleInputChange("remarks_oil_type", e.target.value)}
+                        value={formData.remarks_oil_type_approved}
+                        onChange={(e) => handleInputChange("remarks_oil_type_approved", e.target.value)}
                         rows={2}
                         maxLength={1000}
                         required
@@ -1253,23 +1285,27 @@ const CargoPassengerGalleyLiftsForm: React.FC = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <div className="text-sm font-medium">b) Oil level</div>
+                  <div className="text-sm font-medium">b) Oil Level in Gear Box</div>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
                       <Label className="text-sm font-medium">Observations:<span className="text-red-500">*</span></Label>
-                      <Input
-                        value={formData.observations_oil_level}
-                        onChange={(e) => handleInputChange("observations_oil_level", e.target.value)}
-                        placeholder="Enter numeric only"
-                        maxLength={5}
-                        required
-                      />
+                      <Select value={formData.observations_oil_level_gear_box} onValueChange={(value) => handleInputChange("observations_oil_level_gear_box", value)}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="--Select--" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="0">--Select--</SelectItem>
+                          <SelectItem value="SAT">SAT</SelectItem>
+                          <SelectItem value="UNSAT">UNSAT</SelectItem>
+                          <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
                     <div className="md:col-span-2">
                       <Label className="text-sm font-medium">Remarks:<span className="text-red-500">*</span></Label>
                       <Textarea
-                        value={formData.remarks_oil_level}
-                        onChange={(e) => handleInputChange("remarks_oil_level", e.target.value)}
+                        value={formData.remarks_oil_level_gear_box}
+                        onChange={(e) => handleInputChange("remarks_oil_level_gear_box", e.target.value)}
                         rows={2}
                         maxLength={1000}
                         required
@@ -1279,7 +1315,7 @@ const CargoPassengerGalleyLiftsForm: React.FC = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <div className="text-sm font-medium">c) Date of last oil change</div>
+                  <div className="text-sm font-medium">c) Date of Oil Change</div>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
                       <Label className="text-sm font-medium">Date:<span className="text-red-500">*</span></Label>
@@ -1304,7 +1340,7 @@ const CargoPassengerGalleyLiftsForm: React.FC = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <div className="text-sm font-medium">d) Date of last oil analysis</div>
+                  <div className="text-sm font-medium">d) Date of Last Oil Analysis (Annual Requirement i.a.w OEM Manual)</div>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
                       <Label className="text-sm font-medium">Date:<span className="text-red-500">*</span></Label>
@@ -1329,23 +1365,27 @@ const CargoPassengerGalleyLiftsForm: React.FC = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <div className="text-sm font-medium">e) Oil analysis results</div>
+                  <div className="text-sm font-medium">e) Oil Analysis Certificate Result</div>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
                       <Label className="text-sm font-medium">Observations:<span className="text-red-500">*</span></Label>
-                      <Input
-                        value={formData.observations_oil_analysis}
-                        onChange={(e) => handleInputChange("observations_oil_analysis", e.target.value)}
-                        placeholder="Enter numeric only"
-                        maxLength={5}
-                        required
-                      />
+                      <Select value={formData.observations_oil_analysis_certificate} onValueChange={(value) => handleInputChange("observations_oil_analysis_certificate", value)}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="--Select--" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="0">--Select--</SelectItem>
+                          <SelectItem value="SAT">SAT</SelectItem>
+                          <SelectItem value="UNSAT">UNSAT</SelectItem>
+                          <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
                     <div className="md:col-span-2">
                       <Label className="text-sm font-medium">Remarks:<span className="text-red-500">*</span></Label>
                       <Textarea
-                        value={formData.remarks_oil_analysis}
-                        onChange={(e) => handleInputChange("remarks_oil_analysis", e.target.value)}
+                        value={formData.remarks_oil_analysis_certificate}
+                        onChange={(e) => handleInputChange("remarks_oil_analysis_certificate", e.target.value)}
                         rows={2}
                         maxLength={1000}
                         required
@@ -1355,23 +1395,27 @@ const CargoPassengerGalleyLiftsForm: React.FC = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <div className="text-sm font-medium">f) Oil leakage</div>
+                  <div className="text-sm font-medium">f) Oil Leakages from Gear Box</div>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
                       <Label className="text-sm font-medium">Observations:<span className="text-red-500">*</span></Label>
-                      <Input
-                        value={formData.observations_oil_leakage}
-                        onChange={(e) => handleInputChange("observations_oil_leakage", e.target.value)}
-                        placeholder="Enter numeric only"
-                        maxLength={5}
-                        required
-                      />
+                      <Select value={formData.observations_oil_leakages_gear_box} onValueChange={(value) => handleInputChange("observations_oil_leakages_gear_box", value)}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="--Select--" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="0">--Select--</SelectItem>
+                          <SelectItem value="SAT">SAT</SelectItem>
+                          <SelectItem value="UNSAT">UNSAT</SelectItem>
+                          <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
                     <div className="md:col-span-2">
                       <Label className="text-sm font-medium">Remarks:<span className="text-red-500">*</span></Label>
                       <Textarea
-                        value={formData.remarks_oil_leakage}
-                        onChange={(e) => handleInputChange("remarks_oil_leakage", e.target.value)}
+                        value={formData.remarks_oil_leakages_gear_box}
+                        onChange={(e) => handleInputChange("remarks_oil_leakages_gear_box", e.target.value)}
                         rows={2}
                         maxLength={1000}
                         required
@@ -1382,31 +1426,38 @@ const CargoPassengerGalleyLiftsForm: React.FC = () => {
               </div>
             </div>
 
-            {/* Section 12: Visual Condition */}
+            {/* Section 10: Visual Condition */}
             <div className="space-y-4">
               <div className="flex items-center gap-2">
-                <span className="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">12</span>
+                <span className="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">10</span>
                 <Label className="text-base font-medium">Visual Condition</Label>
               </div>
               <div className="ml-4 space-y-4">
                 <div className="space-y-2">
-                  <div className="text-sm font-medium">a) Lift shaft</div>
+                  <div className="text-sm font-medium">a) Lift Shaft Structure &amp; Preservation</div>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
                       <Label className="text-sm font-medium">Observations:<span className="text-red-500">*</span></Label>
-                      <Input
-                        value={formData.observations_lift_shaft}
-                        onChange={(e) => handleInputChange("observations_lift_shaft", e.target.value)}
-                        placeholder="Enter numeric only"
-                        maxLength={5}
+                      <Select
+                        value={formData.observations_lift_shaft_structure_preservation}
+                        onValueChange={(value) => handleInputChange("observations_lift_shaft_structure_preservation", value)}
                         required
-                      />
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="--Select--" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="satisfactory">Satisfactory</SelectItem>
+                          <SelectItem value="unsatisfactory">Unsatisfactory</SelectItem>
+                          <SelectItem value="needs_attention">Needs Attention</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
                     <div className="md:col-span-2">
                       <Label className="text-sm font-medium">Remarks:<span className="text-red-500">*</span></Label>
                       <Textarea
-                        value={formData.remarks_lift_shaft}
-                        onChange={(e) => handleInputChange("remarks_lift_shaft", e.target.value)}
+                        value={formData.remarks_lift_shaft_structure_preservation}
+                        onChange={(e) => handleInputChange("remarks_lift_shaft_structure_preservation", e.target.value)}
                         rows={2}
                         maxLength={1000}
                         required
@@ -1416,23 +1467,30 @@ const CargoPassengerGalleyLiftsForm: React.FC = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <div className="text-sm font-medium">b) Cabin structure</div>
+                  <div className="text-sm font-medium">b) Cabin Structure &amp; Preservation</div>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
                       <Label className="text-sm font-medium">Observations:<span className="text-red-500">*</span></Label>
-                      <Input
-                        value={formData.observations_cabin_structure}
-                        onChange={(e) => handleInputChange("observations_cabin_structure", e.target.value)}
-                        placeholder="Enter numeric only"
-                        maxLength={5}
+                      <Select
+                        value={formData.observations_cabin_structure_preservation}
+                        onValueChange={(value) => handleInputChange("observations_cabin_structure_preservation", value)}
                         required
-                      />
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="--Select--" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="satisfactory">Satisfactory</SelectItem>
+                          <SelectItem value="unsatisfactory">Unsatisfactory</SelectItem>
+                          <SelectItem value="needs_attention">Needs Attention</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
                     <div className="md:col-span-2">
                       <Label className="text-sm font-medium">Remarks:<span className="text-red-500">*</span></Label>
                       <Textarea
-                        value={formData.remarks_cabin_structure}
-                        onChange={(e) => handleInputChange("remarks_cabin_structure", e.target.value)}
+                        value={formData.remarks_cabin_structure_preservation}
+                        onChange={(e) => handleInputChange("remarks_cabin_structure_preservation", e.target.value)}
                         rows={2}
                         maxLength={1000}
                         required
@@ -1442,23 +1500,30 @@ const CargoPassengerGalleyLiftsForm: React.FC = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <div className="text-sm font-medium">c) Counter weight</div>
+                  <div className="text-sm font-medium">c) Counter-weight Areas, Guides and Fastenings to Shaft Structure</div>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
                       <Label className="text-sm font-medium">Observations:<span className="text-red-500">*</span></Label>
-                      <Input
-                        value={formData.observations_counter}
-                        onChange={(e) => handleInputChange("observations_counter", e.target.value)}
-                        placeholder="Enter numeric only"
-                        maxLength={5}
+                      <Select
+                        value={formData.observations_counter_weight_areas_guides}
+                        onValueChange={(value) => handleInputChange("observations_counter_weight_areas_guides", value)}
                         required
-                      />
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="--Select--" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="satisfactory">Satisfactory</SelectItem>
+                          <SelectItem value="unsatisfactory">Unsatisfactory</SelectItem>
+                          <SelectItem value="needs_attention">Needs Attention</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
                     <div className="md:col-span-2">
                       <Label className="text-sm font-medium">Remarks:<span className="text-red-500">*</span></Label>
                       <Textarea
-                        value={formData.remarks_counter}
-                        onChange={(e) => handleInputChange("remarks_counter", e.target.value)}
+                        value={formData.remarks_counter_weight_areas_guides}
+                        onChange={(e) => handleInputChange("remarks_counter_weight_areas_guides", e.target.value)}
                         rows={2}
                         maxLength={1000}
                         required
@@ -1468,23 +1533,30 @@ const CargoPassengerGalleyLiftsForm: React.FC = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <div className="text-sm font-medium">d) Cabin door</div>
+                  <div className="text-sm font-medium">d) Cabin Door and Door Operation - All Levels</div>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
                       <Label className="text-sm font-medium">Observations:<span className="text-red-500">*</span></Label>
-                      <Input
-                        value={formData.observations_cabin_door}
-                        onChange={(e) => handleInputChange("observations_cabin_door", e.target.value)}
-                        placeholder="Enter numeric only"
-                        maxLength={5}
+                      <Select
+                        value={formData.observations_cabin_door_operation}
+                        onValueChange={(value) => handleInputChange("observations_cabin_door_operation", value)}
                         required
-                      />
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="--Select--" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="satisfactory">Satisfactory</SelectItem>
+                          <SelectItem value="unsatisfactory">Unsatisfactory</SelectItem>
+                          <SelectItem value="needs_attention">Needs Attention</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
                     <div className="md:col-span-2">
                       <Label className="text-sm font-medium">Remarks:<span className="text-red-500">*</span></Label>
                       <Textarea
-                        value={formData.remarks_cabin_door}
-                        onChange={(e) => handleInputChange("remarks_cabin_door", e.target.value)}
+                        value={formData.remarks_cabin_door_operation}
+                        onChange={(e) => handleInputChange("remarks_cabin_door_operation", e.target.value)}
                         rows={2}
                         maxLength={1000}
                         required
@@ -1494,23 +1566,30 @@ const CargoPassengerGalleyLiftsForm: React.FC = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <div className="text-sm font-medium">e) Operating machine</div>
+                  <div className="text-sm font-medium">e) Condition of Operating Machinery Foundations and Preservation</div>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
                       <Label className="text-sm font-medium">Observations:<span className="text-red-500">*</span></Label>
-                      <Input
-                        value={formData.observations_operating_machine}
-                        onChange={(e) => handleInputChange("observations_operating_machine", e.target.value)}
-                        placeholder="Enter numeric only"
-                        maxLength={5}
+                      <Select
+                        value={formData.observations_operating_machinery_foundations}
+                        onValueChange={(value) => handleInputChange("observations_operating_machinery_foundations", value)}
                         required
-                      />
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="--Select--" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="satisfactory">Satisfactory</SelectItem>
+                          <SelectItem value="unsatisfactory">Unsatisfactory</SelectItem>
+                          <SelectItem value="needs_attention">Needs Attention</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
                     <div className="md:col-span-2">
                       <Label className="text-sm font-medium">Remarks:<span className="text-red-500">*</span></Label>
                       <Textarea
-                        value={formData.remarks_operating_machine}
-                        onChange={(e) => handleInputChange("remarks_operating_machine", e.target.value)}
+                        value={formData.remarks_operating_machinery_foundations}
+                        onChange={(e) => handleInputChange("remarks_operating_machinery_foundations", e.target.value)}
                         rows={2}
                         maxLength={1000}
                         required
@@ -1520,23 +1599,30 @@ const CargoPassengerGalleyLiftsForm: React.FC = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <div className="text-sm font-medium">f) Structure</div>
+                  <div className="text-sm font-medium">f) Check All Structure and Mechanism for Defects/ Deformation/ Damage</div>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
                       <Label className="text-sm font-medium">Observations:<span className="text-red-500">*</span></Label>
-                      <Input
-                        value={formData.observations_structure}
-                        onChange={(e) => handleInputChange("observations_structure", e.target.value)}
-                        placeholder="Enter numeric only"
-                        maxLength={5}
+                      <Select
+                        value={formData.observations_structure_mechanism_defects}
+                        onValueChange={(value) => handleInputChange("observations_structure_mechanism_defects", value)}
                         required
-                      />
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="--Select--" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="satisfactory">Satisfactory</SelectItem>
+                          <SelectItem value="unsatisfactory">Unsatisfactory</SelectItem>
+                          <SelectItem value="needs_attention">Needs Attention</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
                     <div className="md:col-span-2">
                       <Label className="text-sm font-medium">Remarks:<span className="text-red-500">*</span></Label>
                       <Textarea
-                        value={formData.remarks_structure}
-                        onChange={(e) => handleInputChange("remarks_structure", e.target.value)}
+                        value={formData.remarks_structure_mechanism_defects}
+                        onChange={(e) => handleInputChange("remarks_structure_mechanism_defects", e.target.value)}
                         rows={2}
                         maxLength={1000}
                         required
@@ -1546,23 +1632,30 @@ const CargoPassengerGalleyLiftsForm: React.FC = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <div className="text-sm font-medium">g) Exposed parts</div>
+                  <div className="text-sm font-medium">g) Dirt/ Oil Moisture on Exposed Parts</div>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
                       <Label className="text-sm font-medium">Observations:<span className="text-red-500">*</span></Label>
-                      <Input
-                        value={formData.observations_exposed_part}
-                        onChange={(e) => handleInputChange("observations_exposed_part", e.target.value)}
-                        placeholder="Enter numeric only"
-                        maxLength={5}
+                      <Select
+                        value={formData.observations_dirt_oil_moisture_exposed}
+                        onValueChange={(value) => handleInputChange("observations_dirt_oil_moisture_exposed", value)}
                         required
-                      />
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="--Select--" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="satisfactory">Satisfactory</SelectItem>
+                          <SelectItem value="unsatisfactory">Unsatisfactory</SelectItem>
+                          <SelectItem value="needs_attention">Needs Attention</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
                     <div className="md:col-span-2">
                       <Label className="text-sm font-medium">Remarks:<span className="text-red-500">*</span></Label>
                       <Textarea
-                        value={formData.remarks_exposed_part}
-                        onChange={(e) => handleInputChange("remarks_exposed_part", e.target.value)}
+                        value={formData.remarks_dirt_oil_moisture_exposed}
+                        onChange={(e) => handleInputChange("remarks_dirt_oil_moisture_exposed", e.target.value)}
                         rows={2}
                         maxLength={1000}
                         required
@@ -1572,23 +1665,30 @@ const CargoPassengerGalleyLiftsForm: React.FC = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <div className="text-sm font-medium">h) Cabin roof</div>
+                  <div className="text-sm font-medium">h) Dust/ Debris on Cabin Roof &amp; Lift-Pits</div>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
                       <Label className="text-sm font-medium">Observations:<span className="text-red-500">*</span></Label>
-                      <Input
-                        value={formData.observations_cabin_roof}
-                        onChange={(e) => handleInputChange("observations_cabin_roof", e.target.value)}
-                        placeholder="Enter numeric only"
-                        maxLength={5}
+                      <Select
+                        value={formData.observations_dust_debris_cabin_roof}
+                        onValueChange={(value) => handleInputChange("observations_dust_debris_cabin_roof", value)}
                         required
-                      />
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="--Select--" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="satisfactory">Satisfactory</SelectItem>
+                          <SelectItem value="unsatisfactory">Unsatisfactory</SelectItem>
+                          <SelectItem value="needs_attention">Needs Attention</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
                     <div className="md:col-span-2">
                       <Label className="text-sm font-medium">Remarks:<span className="text-red-500">*</span></Label>
                       <Textarea
-                        value={formData.remarks_cabin_roof}
-                        onChange={(e) => handleInputChange("remarks_cabin_roof", e.target.value)}
+                        value={formData.remarks_dust_debris_cabin_roof}
+                        onChange={(e) => handleInputChange("remarks_dust_debris_cabin_roof", e.target.value)}
                         rows={2}
                         maxLength={1000}
                         required
@@ -1598,23 +1698,30 @@ const CargoPassengerGalleyLiftsForm: React.FC = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <div className="text-sm font-medium">i) Brake</div>
+                  <div className="text-sm font-medium">i) Inspection of Brake Mechanism</div>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
                       <Label className="text-sm font-medium">Observations:<span className="text-red-500">*</span></Label>
-                      <Input
-                        value={formData.observations_brake}
-                        onChange={(e) => handleInputChange("observations_brake", e.target.value)}
-                        placeholder="Enter numeric only"
-                        maxLength={5}
+                      <Select
+                        value={formData.observations_inspection_brake_mechanism}
+                        onValueChange={(value) => handleInputChange("observations_inspection_brake_mechanism", value)}
                         required
-                      />
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="--Select--" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="satisfactory">Satisfactory</SelectItem>
+                          <SelectItem value="unsatisfactory">Unsatisfactory</SelectItem>
+                          <SelectItem value="needs_attention">Needs Attention</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
                     <div className="md:col-span-2">
                       <Label className="text-sm font-medium">Remarks:<span className="text-red-500">*</span></Label>
                       <Textarea
-                        value={formData.remarks_brake}
-                        onChange={(e) => handleInputChange("remarks_brake", e.target.value)}
+                        value={formData.remarks_inspection_brake_mechanism}
+                        onChange={(e) => handleInputChange("remarks_inspection_brake_mechanism", e.target.value)}
                         rows={2}
                         maxLength={1000}
                         required
@@ -1624,23 +1731,30 @@ const CargoPassengerGalleyLiftsForm: React.FC = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <div className="text-sm font-medium">j) Wear and tear</div>
+                  <div className="text-sm font-medium">j) Wear &amp; Tear of Traction-Sheave Grooves.</div>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
                       <Label className="text-sm font-medium">Observations:<span className="text-red-500">*</span></Label>
-                      <Input
-                        value={formData.observations_wear_tear}
-                        onChange={(e) => handleInputChange("observations_wear_tear", e.target.value)}
-                        placeholder="Enter numeric only"
-                        maxLength={5}
+                      <Select
+                        value={formData.observations_wear_tear_traction_sheave}
+                        onValueChange={(value) => handleInputChange("observations_wear_tear_traction_sheave", value)}
                         required
-                      />
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="--Select--" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="satisfactory">Satisfactory</SelectItem>
+                          <SelectItem value="unsatisfactory">Unsatisfactory</SelectItem>
+                          <SelectItem value="needs_attention">Needs Attention</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
                     <div className="md:col-span-2">
                       <Label className="text-sm font-medium">Remarks:<span className="text-red-500">*</span></Label>
                       <Textarea
-                        value={formData.remarks_wear_tear}
-                        onChange={(e) => handleInputChange("remarks_wear_tear", e.target.value)}
+                        value={formData.remarks_wear_tear_traction_sheave}
+                        onChange={(e) => handleInputChange("remarks_wear_tear_traction_sheave", e.target.value)}
                         rows={2}
                         maxLength={1000}
                         required
@@ -1650,23 +1764,30 @@ const CargoPassengerGalleyLiftsForm: React.FC = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <div className="text-sm font-medium">k) Equipment fastening</div>
+                  <div className="text-sm font-medium">k) Equipment Fastening - Equaliser, Suspension, Over-Speed Governor, Angel Blocks</div>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
                       <Label className="text-sm font-medium">Observations:<span className="text-red-500">*</span></Label>
-                      <Input
-                        value={formData.observations_equip_fastening}
-                        onChange={(e) => handleInputChange("observations_equip_fastening", e.target.value)}
-                        placeholder="Enter numeric only"
-                        maxLength={5}
+                      <Select
+                        value={formData.observations_equipment_fastening_equaliser}
+                        onValueChange={(value) => handleInputChange("observations_equipment_fastening_equaliser", value)}
                         required
-                      />
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="--Select--" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="satisfactory">Satisfactory</SelectItem>
+                          <SelectItem value="unsatisfactory">Unsatisfactory</SelectItem>
+                          <SelectItem value="needs_attention">Needs Attention</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
                     <div className="md:col-span-2">
                       <Label className="text-sm font-medium">Remarks:<span className="text-red-500">*</span></Label>
                       <Textarea
-                        value={formData.remarks_equip_fastening}
-                        onChange={(e) => handleInputChange("remarks_equip_fastening", e.target.value)}
+                        value={formData.remarks_equipment_fastening_equaliser}
+                        onChange={(e) => handleInputChange("remarks_equipment_fastening_equaliser", e.target.value)}
                         rows={2}
                         maxLength={1000}
                         required
@@ -1676,23 +1797,30 @@ const CargoPassengerGalleyLiftsForm: React.FC = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <div className="text-sm font-medium">l) Circuit breaker</div>
+                  <div className="text-sm font-medium">l) Circuit Breaker of Control Unit and Condition/ Hygiene of Control Panel and Junction Box</div>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
                       <Label className="text-sm font-medium">Observations:<span className="text-red-500">*</span></Label>
-                      <Input
-                        value={formData.observations_circuit_breaker}
-                        onChange={(e) => handleInputChange("observations_circuit_breaker", e.target.value)}
-                        placeholder="Enter numeric only"
-                        maxLength={5}
+                      <Select
+                        value={formData.observations_circuit_breaker_control_unit}
+                        onValueChange={(value) => handleInputChange("observations_circuit_breaker_control_unit", value)}
                         required
-                      />
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="--Select--" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="satisfactory">Satisfactory</SelectItem>
+                          <SelectItem value="unsatisfactory">Unsatisfactory</SelectItem>
+                          <SelectItem value="needs_attention">Needs Attention</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
                     <div className="md:col-span-2">
                       <Label className="text-sm font-medium">Remarks:<span className="text-red-500">*</span></Label>
                       <Textarea
-                        value={formData.remarks_circuit_breaker}
-                        onChange={(e) => handleInputChange("remarks_circuit_breaker", e.target.value)}
+                        value={formData.remarks_circuit_breaker_control_unit}
+                        onChange={(e) => handleInputChange("remarks_circuit_breaker_control_unit", e.target.value)}
                         rows={2}
                         maxLength={1000}
                         required
@@ -1703,31 +1831,38 @@ const CargoPassengerGalleyLiftsForm: React.FC = () => {
               </div>
             </div>
 
-            {/* Section 13: Wire Ropes */}
+            {/* Section 11: Wire Ropes */}
             <div className="space-y-4">
               <div className="flex items-center gap-2">
-                <span className="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">13</span>
+                <span className="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">11</span>
                 <Label className="text-base font-medium">Wire Ropes</Label>
               </div>
               <div className="ml-4 space-y-4">
                 <div className="space-y-2">
-                  <div className="text-sm font-medium">a) Visual inspection</div>
+                  <div className="text-sm font-medium">a) Visual Condition - Ropes &amp; End Fitting</div>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
                       <Label className="text-sm font-medium">Observations:<span className="text-red-500">*</span></Label>
-                      <Input
-                        value={formData.observations_visual}
-                        onChange={(e) => handleInputChange("observations_visual", e.target.value)}
-                        placeholder="Enter numeric only"
-                        maxLength={5}
+                      <Select
+                        value={formData.observations_visual_condition_ropes}
+                        onValueChange={(value) => handleInputChange("observations_visual_condition_ropes", value)}
                         required
-                      />
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="--Select--" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="satisfactory">Satisfactory</SelectItem>
+                          <SelectItem value="unsatisfactory">Unsatisfactory</SelectItem>
+                          <SelectItem value="needs_attention">Needs Attention</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
                     <div className="md:col-span-2">
                       <Label className="text-sm font-medium">Remarks:<span className="text-red-500">*</span></Label>
                       <Textarea
-                        value={formData.remarks_visual}
-                        onChange={(e) => handleInputChange("remarks_visual", e.target.value)}
+                        value={formData.remarks_visual_condition_ropes}
+                        onChange={(e) => handleInputChange("remarks_visual_condition_ropes", e.target.value)}
                         rows={2}
                         maxLength={1000}
                         required
@@ -1737,22 +1872,22 @@ const CargoPassengerGalleyLiftsForm: React.FC = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <div className="text-sm font-medium">b) Date of last change</div>
+                  <div className="text-sm font-medium">b) Date of Last Changed / Replaced (to be replaced every 5 years)</div>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
                       <Label className="text-sm font-medium">Date:<span className="text-red-500">*</span></Label>
                       <Input
                         type="date"
-                        value={formData.date_last_changed}
-                        onChange={(e) => handleInputChange("date_last_changed", e.target.value)}
+                        value={formData.date_last_changed_replaced}
+                        onChange={(e) => handleInputChange("date_last_changed_replaced", e.target.value)}
                         required
                       />
                     </div>
                     <div className="md:col-span-2">
                       <Label className="text-sm font-medium">Remarks:<span className="text-red-500">*</span></Label>
                       <Textarea
-                        value={formData.remarks_last_changed}
-                        onChange={(e) => handleInputChange("remarks_last_changed", e.target.value)}
+                        value={formData.remarks_last_changed_replaced}
+                        onChange={(e) => handleInputChange("remarks_last_changed_replaced", e.target.value)}
                         rows={2}
                         maxLength={1000}
                         required
@@ -1762,22 +1897,22 @@ const CargoPassengerGalleyLiftsForm: React.FC = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <div className="text-sm font-medium">c) Date of last service</div>
+                  <div className="text-sm font-medium">c) Date of Last Serviceability Check</div>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
                       <Label className="text-sm font-medium">Date:<span className="text-red-500">*</span></Label>
                       <Input
                         type="date"
-                        value={formData.date_last_service}
-                        onChange={(e) => handleInputChange("date_last_service", e.target.value)}
+                        value={formData.date_last_serviceability_check}
+                        onChange={(e) => handleInputChange("date_last_serviceability_check", e.target.value)}
                         required
                       />
                     </div>
                     <div className="md:col-span-2">
                       <Label className="text-sm font-medium">Remarks:<span className="text-red-500">*</span></Label>
                       <Textarea
-                        value={formData.remarks_last_service}
-                        onChange={(e) => handleInputChange("remarks_last_service", e.target.value)}
+                        value={formData.remarks_last_serviceability_check}
+                        onChange={(e) => handleInputChange("remarks_last_serviceability_check", e.target.value)}
                         rows={2}
                         maxLength={1000}
                         required
@@ -1787,23 +1922,30 @@ const CargoPassengerGalleyLiftsForm: React.FC = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <div className="text-sm font-medium">d) Ropes condition</div>
+                  <div className="text-sm font-medium">d) Securing of Ropes Ends</div>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
                       <Label className="text-sm font-medium">Observations:<span className="text-red-500">*</span></Label>
-                      <Input
-                        value={formData.observations_ropes}
-                        onChange={(e) => handleInputChange("observations_ropes", e.target.value)}
-                        placeholder="Enter numeric only"
-                        maxLength={5}
+                      <Select
+                        value={formData.observations_securing_ropes_ends}
+                        onValueChange={(value) => handleInputChange("observations_securing_ropes_ends", value)}
                         required
-                      />
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="--Select--" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="satisfactory">Satisfactory</SelectItem>
+                          <SelectItem value="unsatisfactory">Unsatisfactory</SelectItem>
+                          <SelectItem value="needs_attention">Needs Attention</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
                     <div className="md:col-span-2">
                       <Label className="text-sm font-medium">Remarks:<span className="text-red-500">*</span></Label>
                       <Textarea
-                        value={formData.remarks_ropes}
-                        onChange={(e) => handleInputChange("remarks_ropes", e.target.value)}
+                        value={formData.remarks_securing_ropes_ends}
+                        onChange={(e) => handleInputChange("remarks_securing_ropes_ends", e.target.value)}
                         rows={2}
                         maxLength={1000}
                         required
@@ -1814,31 +1956,38 @@ const CargoPassengerGalleyLiftsForm: React.FC = () => {
               </div>
             </div>
 
-            {/* Section 14: Electric Checks */}
+            {/* Section 12: Electric Checks */}
             <div className="space-y-4">
               <div className="flex items-center gap-2">
-                <span className="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">14</span>
+                <span className="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">12</span>
                 <Label className="text-base font-medium">Electric Checks</Label>
               </div>
               <div className="ml-4 space-y-4">
                 <div className="space-y-2">
-                  <div className="text-sm font-medium">a) Insulation resistance</div>
+                  <div className="text-sm font-medium">a) Insulation Measurement by ETMA/SS not less than 1.0 M-ohm</div>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
                       <Label className="text-sm font-medium">Observations:<span className="text-red-500">*</span></Label>
-                      <Input
-                        value={formData.observations_insulation}
-                        onChange={(e) => handleInputChange("observations_insulation", e.target.value)}
-                        placeholder="Enter numeric only"
-                        maxLength={5}
+                      <Select
+                        value={formData.observations_insulation_measurement_etma}
+                        onValueChange={(value) => handleInputChange("observations_insulation_measurement_etma", value)}
                         required
-                      />
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="--Select--" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="satisfactory">Satisfactory</SelectItem>
+                          <SelectItem value="unsatisfactory">Unsatisfactory</SelectItem>
+                          <SelectItem value="needs_attention">Needs Attention</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
                     <div className="md:col-span-2">
                       <Label className="text-sm font-medium">Remarks:<span className="text-red-500">*</span></Label>
                       <Textarea
-                        value={formData.remarks_insulation}
-                        onChange={(e) => handleInputChange("remarks_insulation", e.target.value)}
+                        value={formData.remarks_insulation_measurement_etma}
+                        onChange={(e) => handleInputChange("remarks_insulation_measurement_etma", e.target.value)}
                         rows={2}
                         maxLength={1000}
                         required
@@ -1848,23 +1997,30 @@ const CargoPassengerGalleyLiftsForm: React.FC = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <div className="text-sm font-medium">b) SPM condition</div>
+                  <div className="text-sm font-medium">b) SPM Checks for Motors</div>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
                       <Label className="text-sm font-medium">Observations:<span className="text-red-500">*</span></Label>
-                      <Input
-                        value={formData.observations_spm}
-                        onChange={(e) => handleInputChange("observations_spm", e.target.value)}
-                        placeholder="Enter numeric only"
-                        maxLength={5}
+                      <Select
+                        value={formData.observations_spm_checks_motors}
+                        onValueChange={(value) => handleInputChange("observations_spm_checks_motors", value)}
                         required
-                      />
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="--Select--" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="satisfactory">Satisfactory</SelectItem>
+                          <SelectItem value="unsatisfactory">Unsatisfactory</SelectItem>
+                          <SelectItem value="needs_attention">Needs Attention</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
                     <div className="md:col-span-2">
                       <Label className="text-sm font-medium">Remarks:<span className="text-red-500">*</span></Label>
                       <Textarea
-                        value={formData.remarks_spm}
-                        onChange={(e) => handleInputChange("remarks_spm", e.target.value)}
+                        value={formData.remarks_spm_checks_motors}
+                        onChange={(e) => handleInputChange("remarks_spm_checks_motors", e.target.value)}
                         rows={2}
                         maxLength={1000}
                         required
@@ -1874,23 +2030,30 @@ const CargoPassengerGalleyLiftsForm: React.FC = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <div className="text-sm font-medium">c) Electrical connections</div>
+                  <div className="text-sm font-medium">c) Tightness of Electrical Cable Fasteners</div>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
                       <Label className="text-sm font-medium">Observations:<span className="text-red-500">*</span></Label>
-                      <Input
-                        value={formData.observations_electrical}
-                        onChange={(e) => handleInputChange("observations_electrical", e.target.value)}
-                        placeholder="Enter numeric only"
-                        maxLength={5}
+                      <Select
+                        value={formData.observations_tightness_electrical_cable}
+                        onValueChange={(value) => handleInputChange("observations_tightness_electrical_cable", value)}
                         required
-                      />
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="--Select--" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="satisfactory">Satisfactory</SelectItem>
+                          <SelectItem value="unsatisfactory">Unsatisfactory</SelectItem>
+                          <SelectItem value="needs_attention">Needs Attention</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
                     <div className="md:col-span-2">
                       <Label className="text-sm font-medium">Remarks:<span className="text-red-500">*</span></Label>
                       <Textarea
-                        value={formData.remarks_electrical}
-                        onChange={(e) => handleInputChange("remarks_electrical", e.target.value)}
+                        value={formData.remarks_tightness_electrical_cable}
+                        onChange={(e) => handleInputChange("remarks_tightness_electrical_cable", e.target.value)}
                         rows={2}
                         maxLength={1000}
                         required
@@ -1900,23 +2063,30 @@ const CargoPassengerGalleyLiftsForm: React.FC = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <div className="text-sm font-medium">d) Grounding</div>
+                  <div className="text-sm font-medium">d) Grounding/ Bonding Connections</div>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
                       <Label className="text-sm font-medium">Observations:<span className="text-red-500">*</span></Label>
-                      <Input
-                        value={formData.observations_grounding}
-                        onChange={(e) => handleInputChange("observations_grounding", e.target.value)}
-                        placeholder="Enter numeric only"
-                        maxLength={5}
+                      <Select
+                        value={formData.observations_grounding_bonding_connections}
+                        onValueChange={(value) => handleInputChange("observations_grounding_bonding_connections", value)}
                         required
-                      />
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="--Select--" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="satisfactory">Satisfactory</SelectItem>
+                          <SelectItem value="unsatisfactory">Unsatisfactory</SelectItem>
+                          <SelectItem value="needs_attention">Needs Attention</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
                     <div className="md:col-span-2">
                       <Label className="text-sm font-medium">Remarks:<span className="text-red-500">*</span></Label>
                       <Textarea
-                        value={formData.remarks_grounding}
-                        onChange={(e) => handleInputChange("remarks_grounding", e.target.value)}
+                        value={formData.remarks_grounding_bonding_connections}
+                        onChange={(e) => handleInputChange("remarks_grounding_bonding_connections", e.target.value)}
                         rows={2}
                         maxLength={1000}
                         required
@@ -1926,23 +2096,30 @@ const CargoPassengerGalleyLiftsForm: React.FC = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <div className="text-sm font-medium">e) Junction box</div>
+                  <div className="text-sm font-medium">e) Condition of JB, Control Panel</div>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
                       <Label className="text-sm font-medium">Observations:<span className="text-red-500">*</span></Label>
-                      <Input
-                        value={formData.observations_jb}
-                        onChange={(e) => handleInputChange("observations_jb", e.target.value)}
-                        placeholder="Enter numeric only"
-                        maxLength={5}
+                      <Select
+                        value={formData.observations_condition_jb_control_panel}
+                        onValueChange={(value) => handleInputChange("observations_condition_jb_control_panel", value)}
                         required
-                      />
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="--Select--" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="satisfactory">Satisfactory</SelectItem>
+                          <SelectItem value="unsatisfactory">Unsatisfactory</SelectItem>
+                          <SelectItem value="needs_attention">Needs Attention</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
                     <div className="md:col-span-2">
                       <Label className="text-sm font-medium">Remarks:<span className="text-red-500">*</span></Label>
                       <Textarea
-                        value={formData.remarks_jb}
-                        onChange={(e) => handleInputChange("remarks_jb", e.target.value)}
+                        value={formData.remarks_condition_jb_control_panel}
+                        onChange={(e) => handleInputChange("remarks_condition_jb_control_panel", e.target.value)}
                         rows={2}
                         maxLength={1000}
                         required
@@ -1956,7 +2133,7 @@ const CargoPassengerGalleyLiftsForm: React.FC = () => {
             {/* Section 15: Electric Checks by ETMA */}
             <div className="space-y-4">
               <div className="flex items-center gap-2">
-                <span className="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">15</span>
+                <span className="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">13</span>
                 <Label className="text-base font-medium">Electric Checks by ETMA</Label>
               </div>
               <div className="ml-4 space-y-4">
@@ -2017,7 +2194,7 @@ const CargoPassengerGalleyLiftsForm: React.FC = () => {
             {/* Section 16: Limit Switches */}
             <div className="space-y-4">
               <div className="flex items-center gap-2">
-                <span className="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">16</span>
+                <span className="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">14</span>
                 <Label className="text-base font-medium">Limit Switches</Label>
               </div>
               <div className="ml-4 space-y-4">
@@ -2078,7 +2255,7 @@ const CargoPassengerGalleyLiftsForm: React.FC = () => {
             {/* Section 17: Load Testing */}
             <div className="space-y-4">
               <div className="flex items-center gap-2">
-                <span className="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">17</span>
+                <span className="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">15</span>
                 <Label className="text-base font-medium">Load Testing</Label>
               </div>
               <div className="ml-4 space-y-4">
@@ -2138,7 +2315,7 @@ const CargoPassengerGalleyLiftsForm: React.FC = () => {
             {/* Section 18: Operational / Functional Check */}
             <div className="space-y-4">
               <div className="flex items-center gap-2">
-                <span className="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">18</span>
+                <span className="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">16</span>
                 <Label className="text-base font-medium">Operational / Functional Check</Label>
               </div>
               <div className="ml-4 space-y-4">
@@ -2511,7 +2688,7 @@ const CargoPassengerGalleyLiftsForm: React.FC = () => {
             {/* Section 19: Other Observation */}
             <div className="space-y-4">
               <div className="flex items-center gap-2">
-                <span className="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">19</span>
+                <span className="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">17</span>
                 <Label className="text-base font-medium">Other Observation</Label>
               </div>
               <div className="ml-4 space-y-4">
@@ -2546,7 +2723,7 @@ const CargoPassengerGalleyLiftsForm: React.FC = () => {
             {/* Section 20: Overall Remarks */}
             <div className="space-y-4">
               <div className="flex items-center gap-2">
-                <span className="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">20</span>
+                <span className="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">18</span>
                 <Label className="text-base font-medium">Overall Remarks</Label>
               </div>
               <div className="ml-4 space-y-4">
@@ -2568,146 +2745,12 @@ const CargoPassengerGalleyLiftsForm: React.FC = () => {
               </div>
             </div>
 
-            {/* Section 21: Safety and Compliance Check */}
-            <div className="space-y-4">
-              <div className="flex items-center gap-2">
-                <span className="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">21</span>
-                <Label className="text-base font-medium">Safety and Compliance Check</Label>
-              </div>
-              <div className="ml-4 space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <Label className="text-sm font-medium">Emergency Procedures:</Label>
-                    <div className="space-y-2 mt-2">
-                      <div>
-                        <Label className="text-sm font-medium">Observations: <span className="text-red-500">*</span></Label>
-                        <Select value={formData.observations_emergency_procedures || ""} onValueChange={(value) => handleInputChange("observations_emergency_procedures", value)}>
-                          <SelectTrigger>
-                            <SelectValue placeholder="--Select--" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="SAT">SAT</SelectItem>
-                            <SelectItem value="UNSAT">UNSAT</SelectItem>
-                            <SelectItem value="SAT WITH OBSERVATION">SAT WITH OBSERVATION</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                      <div>
-                        <Label className="text-sm font-medium">Remarks: <span className="text-red-500">*</span></Label>
-                        <Textarea
-                          value={formData.remarks_emergency_procedures || ""}
-                          onChange={(e) => handleInputChange("remarks_emergency_procedures", e.target.value)}
-                          rows={2}
-                          maxLength={1000}
-                          required
-                        />
-                      </div>
-                    </div>
-                  </div>
-                  <div>
-                    <Label className="text-sm font-medium">Safety Equipment:</Label>
-                    <div className="space-y-2 mt-2">
-                      <div>
-                        <Label className="text-sm font-medium">Observations: <span className="text-red-500">*</span></Label>
-                        <Select value={formData.observations_safety_equipment || ""} onValueChange={(value) => handleInputChange("observations_safety_equipment", value)}>
-                          <SelectTrigger>
-                            <SelectValue placeholder="--Select--" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="SAT">SAT</SelectItem>
-                            <SelectItem value="UNSAT">UNSAT</SelectItem>
-                            <SelectItem value="SAT WITH OBSERVATION">SAT WITH OBSERVATION</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                      <div>
-                        <Label className="text-sm font-medium">Remarks: <span className="text-red-500">*</span></Label>
-                        <Textarea
-                          value={formData.remarks_safety_equipment || ""}
-                          onChange={(e) => handleInputChange("remarks_safety_equipment", e.target.value)}
-                          rows={2}
-                          maxLength={1000}
-                          required
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Section 22: Additional Inspection Points */}
-            <div className="space-y-4">
-              <div className="flex items-center gap-2">
-                <span className="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">22</span>
-                <Label className="text-base font-medium">Additional Inspection Points</Label>
-              </div>
-              <div className="ml-4 space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <Label className="text-sm font-medium">Safety Systems Check:</Label>
-                    <div className="space-y-2 mt-2">
-                      <div>
-                        <Label className="text-sm font-medium">Observations: <span className="text-red-500">*</span></Label>
-                        <Select value={formData.observations_safety_systems || ""} onValueChange={(value) => handleInputChange("observations_safety_systems", value)}>
-                          <SelectTrigger>
-                            <SelectValue placeholder="--Select--" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="SAT">SAT</SelectItem>
-                            <SelectItem value="UNSAT">UNSAT</SelectItem>
-                            <SelectItem value="SAT WITH OBSERVATION">SAT WITH OBSERVATION</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                      <div>
-                        <Label className="text-sm font-medium">Remarks: <span className="text-red-500">*</span></Label>
-                        <Textarea
-                          value={formData.remarks_safety_systems || ""}
-                          onChange={(e) => handleInputChange("remarks_safety_systems", e.target.value)}
-                          rows={2}
-                          maxLength={1000}
-                          required
-                        />
-                      </div>
-                    </div>
-                  </div>
-                  <div>
-                    <Label className="text-sm font-medium">Emergency Procedures:</Label>
-                    <div className="space-y-2 mt-2">
-                      <div>
-                        <Label className="text-sm font-medium">Observations: <span className="text-red-500">*</span></Label>
-                        <Select value={formData.observations_emergency_procedures || ""} onValueChange={(value) => handleInputChange("observations_emergency_procedures", value)}>
-                          <SelectTrigger>
-                            <SelectValue placeholder="--Select--" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="SAT">SAT</SelectItem>
-                            <SelectItem value="UNSAT">UNSAT</SelectItem>
-                            <SelectItem value="SAT WITH OBSERVATION">SAT WITH OBSERVATION</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                      <div>
-                        <Label className="text-sm font-medium">Remarks: <span className="text-red-500">*</span></Label>
-                        <Textarea
-                          value={formData.remarks_emergency_procedures || ""}
-                          onChange={(e) => handleInputChange("remarks_emergency_procedures", e.target.value)}
-                          rows={2}
-                          maxLength={1000}
-                          required
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+          
 
             {/* Section 23: Final Inspection Report */}
             <div className="space-y-4">
               <div className="flex items-center gap-2">
-                <span className="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">23</span>
+                <span className="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">19</span>
                 <Label className="text-base font-medium">Final Inspection Report</Label>
               </div>
               <div className="ml-4 space-y-4">
@@ -2762,7 +2805,7 @@ const CargoPassengerGalleyLiftsForm: React.FC = () => {
             {/* Section 24: Authority Signature */}
             <div className="space-y-4">
               <div className="flex items-center gap-2">
-                <span className="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">24</span>
+                <span className="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">20</span>
                 <Label className="text-base font-medium">Authority Signature <span className="text-red-500">*</span></Label>
               </div>
               <div className="ml-4">
