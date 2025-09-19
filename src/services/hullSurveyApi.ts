@@ -88,6 +88,21 @@ export interface StrakeDeckSurveyData {
   dyanamic_fields?: any;
 }
 
+// Form data interface for table rows
+export interface StrakeDeckSurveyFormData {
+  id: number;
+  strakeDeckNo: string;
+  frameStationFrom: string;
+  frameStationTo: string;
+  originalThickness: string;
+  extentOfCorrosion: string;
+  extentOfPitting: string;
+  meanThickness: string;
+  reductionInThickness: string;
+  grading: string;
+  actionTaken: string;
+}
+
 // API service class
 export class HullSurveyApiService {
   // Vessel API calls
@@ -193,32 +208,117 @@ export class HullSurveyApiService {
     return results;
   }
 
-  // Draft operations
-  static async saveDraft(data: { part1: InternalAbovewaterHullSurveyData; part2: StrakeDeckSurveyData[] }): Promise<any> {
-    // For now, we'll use localStorage for drafts, but this could be replaced with API calls
-    const draftId = Date.now().toString();
-    const draftData = {
-      id: draftId,
-      timestamp: new Date().toISOString(),
-      data,
-    };
-    
-    const existingDrafts = JSON.parse(localStorage.getItem('hullSurveyDrafts') || '[]');
-    existingDrafts.push(draftData);
-    localStorage.setItem('hullSurveyDrafts', JSON.stringify(existingDrafts));
-    
-    return draftData;
+  // Draft operations - Save as draft records with draft_status: 'draft'
+  static async saveDraft(data: { part1: InternalAbovewaterHullSurveyData; part2: StrakeDeckSurveyFormData[] }): Promise<any> {
+    try {
+      // Prepare Part I data with draft status
+      const part1Data: InternalAbovewaterHullSurveyData = {
+        ...data.part1,
+        draft_status: 'draft'
+      };
+
+      console.log('Saving Part I draft...', part1Data);
+      const createdSurvey = await HullSurveyApiService.createInternalAbovewaterHullSurvey(part1Data);
+      console.log('Part I draft created:', createdSurvey);
+
+      // Prepare Part II data with draft status
+      const part2Data: StrakeDeckSurveyData[] = data.part2.map(row => ({
+        internal_abovewater_hull_survey: createdSurvey?.id || undefined,
+        strake_deck_no: row.strakeDeckNo || undefined,
+        frame_station_from: row.frameStationFrom || undefined,
+        frame_station_to: row.frameStationTo || undefined,
+        original_thickness: row.originalThickness || undefined,
+        extent_of_corrosion: row.extentOfCorrosion || undefined,
+        extent_of_pitting: row.extentOfPitting || undefined,
+        mean_thickness: row.meanThickness || undefined,
+        percent_reduction_in_thickness: row.reductionInThickness || undefined,
+        grading: row.grading || undefined,
+        action_taken: row.actionTaken || undefined,
+        draft_status: 'draft'
+      }));
+
+      // Create Part II draft records
+      const createdPart2Surveys = [];
+      for (const surveyData of part2Data) {
+        if (surveyData.strake_deck_no || surveyData.frame_station_from || surveyData.frame_station_to) {
+          try {
+            console.log('Saving Part II draft...', surveyData);
+            const createdSurvey = await HullSurveyApiService.createStrakeDeckSurvey(surveyData);
+            createdPart2Surveys.push(createdSurvey);
+            console.log('Part II draft created:', createdSurvey);
+          } catch (error) {
+            console.error('Error creating Part II draft:', error);
+            throw error;
+          }
+        }
+      }
+
+      return {
+        part1: createdSurvey,
+        part2: createdPart2Surveys,
+        timestamp: new Date().toISOString()
+      };
+    } catch (error) {
+      console.error('Error saving draft:', error);
+      throw error;
+    }
   }
 
   static async getDrafts(): Promise<any[]> {
-    const drafts = JSON.parse(localStorage.getItem('hullSurveyDrafts') || '[]');
-    return drafts;
+    try {
+      // Fetch drafts from Part I (InternalAbovewaterHullSurvey with draft_status: 'draft')
+      const response = await get('/yardmodule/internal-abovewater-hull-surveys/?draft_status=draft');
+      console.log('Fetched drafts:', response);
+      
+      if (response && response.data) {
+        return response.data.map((draft: any) => ({
+          id: draft.id,
+          timestamp: draft.created_at || draft.updated_at || new Date().toISOString(),
+          data: {
+            part1: {
+              nameOfShip: draft.vessel?.toString() || '0',
+              typeOfRefit: draft.type_of_refit || '0',
+              refitStartedOn: draft.refit_started_on || '',
+              refitCompletionOn: draft.refit_completion_on || '',
+              refittingYard: draft.refitting_yard || '0',
+              place: draft.place || '',
+              supervisor: draft.supervisor || '',
+              officerInCharge: draft.officer_in_charge || '',
+              surveyParticulars: draft.survey_particulars || '',
+              typeOfSurveyCarriedOut: draft.type_of_survey || '0',
+              totalAreaSurveyed: draft.total_area_surveyed?.toString() || '',
+              areaSurveyed: draft.area_surveyed?.toString() || '',
+              areaGradedSuspect: draft.area_graded_suspect?.toString() || '',
+              areaGradedDefective: draft.area_graded_defective?.toString() || '',
+              areaGradedSuspectAndRenewed: draft.area_graded_suspect_renewed?.toString() || '',
+              areaGradedDefectiveAndRenewed: draft.area_graded_defective_renewed?.toString() || '',
+              areaGradedSuspectDefectiveAndTemporary: draft.area_graded_suspect_defective_temporary?.toString() || '',
+              repairCarriedOut: draft.repair_carried_out?.toString() || '',
+              totalTonnageOfHullStructureRenewal: draft.total_tonnage_renewal?.toString() || '',
+              generalObservationOnConditionOfHullMaterialState: draft.condition_of_hull_material_state || '0',
+              date: draft.date || ''
+            },
+            part2: [] // Will be populated separately if needed
+          }
+        }));
+      }
+      
+      return [];
+    } catch (error) {
+      console.error('Error fetching drafts:', error);
+      return [];
+    }
   }
 
   static async deleteDraft(draftId: string): Promise<void> {
-    const existingDrafts = JSON.parse(localStorage.getItem('hullSurveyDrafts') || '[]');
-    const updatedDrafts = existingDrafts.filter((draft: any) => draft.id !== draftId);
-    localStorage.setItem('hullSurveyDrafts', JSON.stringify(updatedDrafts));
+    try {
+      // Delete the draft record
+      await del(`/yardmodule/internal-abovewater-hull-surveys/${draftId}/`);
+      console.log('Draft deleted successfully');
+    } catch (error) {
+      console.error('Error deleting draft:', error);
+      throw error;
+    }
   }
 }
 

@@ -296,28 +296,68 @@ const ParticularsInternalAboveWaterStructure = () => {
 
   const handleFetchDrafts = async () => {
     try {
+      setLoading(true);
+      setError(null);
+      console.log('Fetching drafts...');
       const draftsData = await HullSurveyApiService.getDrafts();
+      console.log('Drafts fetched:', draftsData);
       setDrafts(draftsData);
       setIsDraftModalOpen(true);
     } catch (err) {
       setError('Failed to fetch drafts');
       console.error('Error fetching drafts:', err);
+      alert('Failed to fetch drafts. Please try again.');
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleSaveDraft = async () => {
     try {
+      setLoading(true);
+      setError(null);
+
+      // Prepare Part I data for draft
+      const part1Data: InternalAbovewaterHullSurveyData = {
+        vessel: formData.nameOfShip !== '0' ? parseInt(formData.nameOfShip) : undefined,
+        type_of_refit: formData.typeOfRefit !== '0' ? formData.typeOfRefit : undefined,
+        refitting_yard: formData.refittingYard !== '0' ? formData.refittingYard : undefined,
+        type_of_survey: formData.typeOfSurveyCarriedOut !== '0' ? formData.typeOfSurveyCarriedOut : undefined,
+        refit_started_on: formData.refitStartedOn ? formData.refitStartedOn : undefined,
+        refit_completion_on: formData.refitCompletionOn ? formData.refitCompletionOn : undefined,
+        place: formData.place || undefined,
+        supervisor: formData.supervisor || undefined,
+        officer_in_charge: formData.officerInCharge || undefined,
+        survey_particulars: formData.surveyParticulars || undefined,
+        total_area_surveyed: formData.totalAreaSurveyed ? parseFloat(formData.totalAreaSurveyed) : undefined,
+        area_surveyed: formData.areaSurveyed ? parseFloat(formData.areaSurveyed) : undefined,
+        area_graded_suspect: formData.areaGradedSuspect ? parseFloat(formData.areaGradedSuspect) : undefined,
+        area_graded_suspect_renewed: formData.areaGradedSuspectAndRenewed ? parseFloat(formData.areaGradedSuspectAndRenewed) : undefined,
+        area_graded_defective: formData.areaGradedDefective ? parseFloat(formData.areaGradedDefective) : undefined,
+        area_graded_defective_renewed: formData.areaGradedDefectiveAndRenewed ? parseFloat(formData.areaGradedDefectiveAndRenewed) : undefined,
+        area_graded_suspect_defective_temporary: formData.areaGradedSuspectDefectiveAndTemporary ? parseFloat(formData.areaGradedSuspectDefectiveAndTemporary) : undefined,
+        repair_carried_out: formData.repairCarriedOut ? parseFloat(formData.repairCarriedOut) : undefined,
+        total_tonnage_renewal: formData.totalTonnageOfHullStructureRenewal ? parseFloat(formData.totalTonnageOfHullStructureRenewal) : undefined,
+        condition_of_hull_material_state: formData.generalObservationOnConditionOfHullMaterialState !== '0' ? formData.generalObservationOnConditionOfHullMaterialState : undefined,
+        date: formData.date || undefined,
+        draft_status: 'draft'
+      };
+
       const draftData = {
-        part1: formData,
+        part1: part1Data,
         part2: tableData
       };
       
-      await HullSurveyApiService.saveDraft(draftData);
+      console.log('Saving draft...', draftData);
+      const result = await HullSurveyApiService.saveDraft(draftData);
+      console.log('Draft saved successfully:', result);
       alert('Draft saved successfully!');
     } catch (err) {
       setError('Failed to save draft');
       console.error('Error saving draft:', err);
       alert('Failed to save draft. Please try again.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -331,13 +371,19 @@ const ParticularsInternalAboveWaterStructure = () => {
 
   const handleDeleteDraft = async (draftId: string) => {
     try {
+      setLoading(true);
+      setError(null);
+      console.log('Deleting draft:', draftId);
       await HullSurveyApiService.deleteDraft(draftId);
       setDrafts(prev => prev.filter(draft => draft.id !== draftId));
+      console.log('Draft deleted successfully');
       alert('Draft deleted successfully!');
     } catch (err) {
       setError('Failed to delete draft');
       console.error('Error deleting draft:', err);
       alert('Failed to delete draft. Please try again.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -1005,14 +1051,8 @@ const ParticularsInternalAboveWaterStructure = () => {
               >
                 CLEAR
               </button>
-              <button
-                type="button"
-                onClick={testPart2API}
-                disabled={loading}
-                className="px-6 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                TEST PART 2 API
-              </button>
+              
+              
               <button
                 type="submit"
                 form="part1-form"
