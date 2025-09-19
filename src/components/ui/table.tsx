@@ -293,13 +293,13 @@ export function DataTable<T extends Record<string, any>>({
         </TableBody>
       </Table>
 
-      {totalPages > 1 && (
+      {/* {totalPages > 1 && (
         <TablePagination
           currentPage={currentPage}
           totalPages={totalPages}
           onPageChange={setCurrentPage}
         />
-      )}
+      )} */}
 
       {/* Delete Confirmation Dialog */}
       <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
@@ -335,5 +335,5 @@ export {
   TableRow,
   TableHead,
   TableCell,
-  TablePagination,
+  // TablePagination,
 };

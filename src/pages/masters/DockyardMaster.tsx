@@ -230,7 +230,7 @@ const DockyardMaster = () => {
       {/* Table */}
       <Card>
         <CardHeader>
-          <CardTitle>Dockyards ({filteredDockyards.length})</CardTitle>
+          <CardTitle>Dockyards</CardTitle>
         </CardHeader>
         <CardContent>
           <DataTable columns={columns} data={filteredDockyards} rowsPerPage={5} />
