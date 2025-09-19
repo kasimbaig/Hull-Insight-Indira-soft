@@ -1,6 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import HullSurveyApiService, { 
+  InternalAbovewaterHullSurveyData, 
+  StrakeDeckSurveyData, 
+  Vessel,
+  DROPDOWN_CHOICES 
+} from '../services/hullSurveyApi';
 
 const ParticularsInternalAboveWaterStructure = () => {
+  // State for API data
+  const [vessels, setVessels] = useState<Vessel[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [drafts, setDrafts] = useState<any[]>([]);
+  const [isDraftModalOpen, setIsDraftModalOpen] = useState(false);
+  const [currentDraftId, setCurrentDraftId] = useState<string | null>(null);
+
   // Part I form data
   const [formData, setFormData] = useState({
     nameOfShip: '0',
@@ -44,6 +58,26 @@ const ParticularsInternalAboveWaterStructure = () => {
     }
   ]);
 
+  // Load vessels on component mount
+  useEffect(() => {
+    const loadVessels = async () => {
+      try {
+        setLoading(true);
+        console.log('Loading vessels...');
+        const vesselsData = await HullSurveyApiService.getVessels();
+        console.log('Vessels loaded:', vesselsData);
+        setVessels(vesselsData);
+      } catch (err) {
+        setError('Failed to load vessels');
+        console.error('Error loading vessels:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadVessels();
+  }, []);
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({
@@ -52,9 +86,138 @@ const ParticularsInternalAboveWaterStructure = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Form submitted:', formData);
+    try {
+      setLoading(true);
+      setError(null);
+
+      // Prepare Part I data
+      const part1Data: InternalAbovewaterHullSurveyData = {
+        vessel: formData.nameOfShip !== '0' ? parseInt(formData.nameOfShip) : undefined,
+        type_of_refit: formData.typeOfRefit !== '0' ? formData.typeOfRefit : undefined,
+        refitting_yard: formData.refittingYard !== '0' ? formData.refittingYard : undefined,
+        type_of_survey: formData.typeOfSurveyCarriedOut !== '0' ? formData.typeOfSurveyCarriedOut : undefined,
+        refit_started_on: formData.refitStartedOn ? formData.refitStartedOn : undefined,
+        refit_completion_on: formData.refitCompletionOn ? formData.refitCompletionOn : undefined,
+        place: formData.place || undefined,
+        supervisor: formData.supervisor || undefined,
+        officer_in_charge: formData.officerInCharge || undefined,
+        survey_particulars: formData.surveyParticulars || undefined,
+        total_area_surveyed: formData.totalAreaSurveyed ? parseFloat(formData.totalAreaSurveyed) : undefined,
+        area_surveyed: formData.areaSurveyed ? parseFloat(formData.areaSurveyed) : undefined,
+        area_graded_suspect: formData.areaGradedSuspect ? parseFloat(formData.areaGradedSuspect) : undefined,
+        area_graded_suspect_renewed: formData.areaGradedSuspectAndRenewed ? parseFloat(formData.areaGradedSuspectAndRenewed) : undefined,
+        area_graded_defective: formData.areaGradedDefective ? parseFloat(formData.areaGradedDefective) : undefined,
+        area_graded_defective_renewed: formData.areaGradedDefectiveAndRenewed ? parseFloat(formData.areaGradedDefectiveAndRenewed) : undefined,
+        area_graded_suspect_defective_temporary: formData.areaGradedSuspectDefectiveAndTemporary ? parseFloat(formData.areaGradedSuspectDefectiveAndTemporary) : undefined,
+        repair_carried_out: formData.repairCarriedOut ? parseFloat(formData.repairCarriedOut) : undefined,
+        total_tonnage_renewal: formData.totalTonnageOfHullStructureRenewal ? parseFloat(formData.totalTonnageOfHullStructureRenewal) : undefined,
+        condition_of_hull_material_state: formData.generalObservationOnConditionOfHullMaterialState !== '0' ? formData.generalObservationOnConditionOfHullMaterialState : undefined,
+        date: formData.date || undefined,
+        draft_status: 'approved'
+      };
+
+      // Create Part I survey
+      console.log('Creating Part I survey...', part1Data);
+      const createdSurvey = await HullSurveyApiService.createInternalAbovewaterHullSurvey(part1Data);
+      console.log('Part I survey created:', createdSurvey);
+
+      // Check if Part I was created successfully
+      if (!createdSurvey || !createdSurvey.id) {
+        console.warn('Part I survey created but no ID returned. Proceeding with Part II without foreign key.');
+        // For testing purposes, we'll create Part II records without the foreign key
+        const part2Data: StrakeDeckSurveyData[] = tableData.map(row => ({
+          // internal_abovewater_hull_survey: undefined, // No foreign key
+          strake_deck_no: row.strakeDeckNo || undefined,
+          frame_station_from: row.frameStationFrom || undefined,
+          frame_station_to: row.frameStationTo || undefined,
+          original_thickness: row.originalThickness || undefined,
+          extent_of_corrosion: row.extentOfCorrosion || undefined,
+          extent_of_pitting: row.extentOfPitting || undefined,
+          mean_thickness: row.meanThickness || undefined,
+          percent_reduction_in_thickness: row.reductionInThickness || undefined,
+          grading: row.grading || undefined,
+          action_taken: row.actionTaken || undefined,
+          draft_status: 'approved'
+        }));
+        
+        // Create Part II surveys without foreign key
+        if (part2Data.length > 0) {
+          console.log('Creating Part II surveys without foreign key...', part2Data);
+          for (const surveyData of part2Data) {
+            if (surveyData.strake_deck_no || surveyData.frame_station_from || surveyData.frame_station_to) {
+              try {
+                console.log('Calling Part II API with data:', surveyData);
+                const createdSurvey = await HullSurveyApiService.createStrakeDeckSurvey(surveyData);
+                console.log('Part II survey created successfully:', createdSurvey);
+              } catch (error) {
+                console.error('Error creating Part II survey:', error);
+                throw error;
+              }
+            }
+          }
+        }
+        
+        alert('Survey saved successfully! (Part I created, Part II created without foreign key)');
+        handleReset();
+        return;
+      }
+
+      // Prepare Part II data
+      console.log('Table data for Part II:', tableData);
+      const part2Data: StrakeDeckSurveyData[] = tableData.map(row => ({
+        internal_abovewater_hull_survey: createdSurvey.id,
+        strake_deck_no: row.strakeDeckNo || undefined,
+        frame_station_from: row.frameStationFrom || undefined,
+        frame_station_to: row.frameStationTo || undefined,
+        original_thickness: row.originalThickness || undefined,
+        extent_of_corrosion: row.extentOfCorrosion || undefined,
+        extent_of_pitting: row.extentOfPitting || undefined,
+        mean_thickness: row.meanThickness || undefined,
+        percent_reduction_in_thickness: row.reductionInThickness || undefined,
+        grading: row.grading || undefined,
+        action_taken: row.actionTaken || undefined,
+        draft_status: 'approved'
+      }));
+      console.log('Prepared Part II data:', part2Data);
+
+      // Create Part II surveys individually
+      if (part2Data.length > 0) {
+        console.log('Creating Part II surveys...', part2Data);
+        const createdPart2Surveys = [];
+        
+        for (const surveyData of part2Data) {
+          // Only create if there's meaningful data
+          if (surveyData.strake_deck_no || surveyData.frame_station_from || surveyData.frame_station_to) {
+            try {
+              console.log('Calling Part II API with data:', surveyData);
+              const createdSurvey = await HullSurveyApiService.createStrakeDeckSurvey(surveyData);
+              createdPart2Surveys.push(createdSurvey);
+              console.log('Part II survey created successfully:', createdSurvey);
+            } catch (error) {
+              console.error('Error creating Part II survey:', error);
+              throw error;
+            }
+          } else {
+            console.log('Skipping empty Part II survey row:', surveyData);
+          }
+        }
+        
+        console.log('All Part II surveys created:', createdPart2Surveys);
+      } else {
+        console.log('No Part II data to save');
+      }
+
+      alert('Survey saved successfully!');
+      handleReset();
+    } catch (err) {
+      setError('Failed to save survey');
+      console.error('Error saving survey:', err);
+      alert('Failed to save survey. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleReset = () => {
@@ -131,14 +294,79 @@ const ParticularsInternalAboveWaterStructure = () => {
     setTableData(clearedData);
   };
 
-  const handleFetchDrafts = () => {
-    console.log('Fetching drafts...');
-    // Add fetch drafts functionality here
+  const handleFetchDrafts = async () => {
+    try {
+      const draftsData = await HullSurveyApiService.getDrafts();
+      setDrafts(draftsData);
+      setIsDraftModalOpen(true);
+    } catch (err) {
+      setError('Failed to fetch drafts');
+      console.error('Error fetching drafts:', err);
+    }
   };
 
-  const handleSaveDraft = () => {
-    console.log('Saving draft:', { formData, tableData });
-    // Add save draft functionality here
+  const handleSaveDraft = async () => {
+    try {
+      const draftData = {
+        part1: formData,
+        part2: tableData
+      };
+      
+      await HullSurveyApiService.saveDraft(draftData);
+      alert('Draft saved successfully!');
+    } catch (err) {
+      setError('Failed to save draft');
+      console.error('Error saving draft:', err);
+      alert('Failed to save draft. Please try again.');
+    }
+  };
+
+  const handleEditDraft = (draft: any) => {
+    setFormData(draft.data.part1);
+    setTableData(draft.data.part2);
+    setTotalRows(draft.data.part2.length);
+    setCurrentDraftId(draft.id);
+    setIsDraftModalOpen(false);
+  };
+
+  const handleDeleteDraft = async (draftId: string) => {
+    try {
+      await HullSurveyApiService.deleteDraft(draftId);
+      setDrafts(prev => prev.filter(draft => draft.id !== draftId));
+      alert('Draft deleted successfully!');
+    } catch (err) {
+      setError('Failed to delete draft');
+      console.error('Error deleting draft:', err);
+      alert('Failed to delete draft. Please try again.');
+    }
+  };
+
+  // Test function for Part II API
+  const testPart2API = async () => {
+    try {
+      console.log('Testing Part II API...');
+      const testData: StrakeDeckSurveyData = {
+        internal_abovewater_hull_survey: 1, // Test with ID 1
+        strake_deck_no: 'Test Strake',
+        frame_station_from: 'Test From',
+        frame_station_to: 'Test To',
+        original_thickness: '10',
+        extent_of_corrosion: 'Minimal',
+        extent_of_pitting: 'None',
+        mean_thickness: '9.5',
+        percent_reduction_in_thickness: '5',
+        grading: 'Good',
+        action_taken: 'Monitor',
+        draft_status: 'approved'
+      };
+      
+      const result = await HullSurveyApiService.createStrakeDeckSurvey(testData);
+      console.log('Part II API test successful:', result);
+      alert('Part II API test successful! Check console for details.');
+    } catch (error) {
+      console.error('Part II API test failed:', error);
+      alert('Part II API test failed! Check console for details.');
+    }
   };
 
   return (
@@ -151,7 +379,7 @@ const ParticularsInternalAboveWaterStructure = () => {
             <h5 className="text-3xl font-bold">PARTICULARS OF INTERNAL & ABOVE WATER STRUCTURE</h5>
           </div>
 
-          <form onSubmit={handleSubmit} className="p-6">
+          <form id="part1-form" onSubmit={handleSubmit} className="p-6">
             {/* Row 1 */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-6">
               {/* Name of Ship */}
@@ -165,99 +393,23 @@ const ParticularsInternalAboveWaterStructure = () => {
                   onChange={handleInputChange}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   required
+                  disabled={loading}
                 >
-                  <option value="0">--Select--</option>
-                  <option value="43">SHIVALIK</option>
-                  <option value="84">JAMUNA</option>
-                  <option value="23">BANGARAM</option>
-                  <option value="56">TARANGINI</option>
-                  <option value="99">SARYU</option>
-                  <option value="31">KUMBHIR</option>
-                  <option value="87">T-83</option>
-                  <option value="27">AIRAVAT</option>
-                  <option value="48">KHANJAR</option>
-                  <option value="57">SHUDERSHINI</option>
-                  <option value="59">TRISHUL</option>
-                  <option value="62">TEG</option>
-                  <option value="55">RANVIJAY</option>
-                  <option value="47">KIRPAN</option>
-                  <option value="35">DELHI</option>
-                  <option value="83">SURVEKSHAK</option>
-                  <option value="65">JYOTI</option>
-                  <option value="94">SUJATA</option>
-                  <option value="76">KABRA</option>
-                  <option value="68">CANKARSO</option>
-                  <option value="88">T-84</option>
-                  <option value="18">VIBHUTI</option>
-                  <option value="17">NISHANK</option>
-                  <option value="25">MAGAR</option>
-                  <option value="42">BEAS</option>
-                  <option value="90">SUVERNA</option>
-                  <option value="45">SAHYADRI</option>
-                  <option value="16">PRALAYA</option>
-                  <option value="74">CHERIYAM</option>
-                  <option value="44">SATPURA</option>
-                  <option value="20">JALASHWA</option>
-                  <option value="63">TARKASH</option>
-                  <option value="52">KARMUK</option>
-                  <option value="82">SUTLEJ</option>
-                  <option value="96">SUMEDHA</option>
-                  <option value="15">PRABAL</option>
-                  <option value="75">CORA DIVH</option>
-                  <option value="21">BATTIMALV</option>
-                  <option value="38">CHENNAI</option>
-                  <option value="97">SUMITRA</option>
-                  <option value="86">T-82</option>
-                  <option value="46">KUTHAR</option>
-                  <option value="69">KONDUL</option>
-                  <option value="89">SUBHDRA</option>
-                  <option value="80">DARSHAK</option>
-                  <option value="24">BITRA</option>
-                  <option value="73">CHETLAT</option>
-                  <option value="81">NIREEKSHAK</option>
-                  <option value="71">KARUVA</option>
-                  <option value="67">DEEPAK</option>
-                  <option value="123">SHAKTI</option>
-                  <option value="36">KOLKATA</option>
-                  <option value="85">INVETIGATOR</option>
-                  <option value="93">SHARDA</option>
-                  <option value="64">SHAKTI</option>
-                  <option value="33">MUMBAI</option>
-                  <option value="39">GOMTI</option>
-                  <option value="41">BETWA</option>
-                  <option value="13">NASHAK</option>
-                  <option value="70">KOSWARI</option>
-                  <option value="30">CHEETAH</option>
-                  <option value="58">TALWAR</option>
-                  <option value="28">KESARI</option>
-                  <option value="66">ADITYA</option>
-                  <option value="22">BARATANG</option>
-                  <option value="49">KORA</option>
-                  <option value="51">KULISH</option>
-                  <option value="53">RANA</option>
-                  <option value="77">KALPENI</option>
-                  <option value="122">SHAKTI</option>
-                  <option value="12">VIPUL</option>
-                  <option value="60">TABAR</option>
-                  <option value="61">TRINKAND</option>
-                  <option value="37">KOCHI</option>
-                  <option value="91">SUKANYA</option>
-                  <option value="92">SAVITRI</option>
-                  <option value="29">GULDAR</option>
-                  <option value="40">BRAHMAPUTRA</option>
-                  <option value="26">GHARIAL</option>
-                  <option value="54">RANVIR</option>
-                  <option value="79">NIRUPAK</option>
-                  <option value="19">VINASH</option>
-                  <option value="50">KIRCH</option>
-                  <option value="78">SANDHAYAK</option>
-                  <option value="14">VIDYUT</option>
-                  <option value="95">TIR</option>
-                  <option value="32">GAJ</option>
-                  <option value="72">CAR NICOBAR</option>
-                  <option value="98">SUNAYNA</option>
-                  <option value="34">MYSORE</option>
+                  <option value="0">
+                    {loading ? 'Loading vessels...' : '--Select--'}
+                  </option>
+                  {vessels.map((vessel) => (
+                    <option key={vessel.id} value={vessel.id}>
+                      {vessel.name}
+                    </option>
+                  ))}
                 </select>
+                {vessels.length === 0 && !loading && (
+                  <p className="text-sm text-gray-500 mt-1">No vessels available</p>
+                )}
+                {vessels.length > 0 && (
+                  <p className="text-sm text-green-600 mt-1">{vessels.length} vessels loaded</p>
+                )}
               </div>
 
               {/* Type of Refit */}
@@ -273,11 +425,11 @@ const ParticularsInternalAboveWaterStructure = () => {
                   required
                 >
                   <option value="0">--Select--</option>
-                  <option value="ENR">ENR</option>
-                  <option value="ESR">ESR</option>
-                  <option value="MR-MLU">MR-MLU</option>
-                  <option value="NR-MLU">NR-MLU</option>
-                  <option value="SRGD">SRGD</option>
+                  {DROPDOWN_CHOICES.TYPE_OF_REFIT.map((choice) => (
+                    <option key={choice.value} value={choice.value}>
+                      {choice.label}
+                    </option>
+                  ))}
                 </select>
               </div>
 
@@ -294,7 +446,7 @@ const ParticularsInternalAboveWaterStructure = () => {
                     onChange={handleInputChange}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     placeholder="DD-MM-YYYY"
-                    maxLength="10"
+                    maxLength={10}
                     required
                   />
                   <i className="pi pi-calendar absolute right-3 top-3 text-gray-400"></i>
@@ -314,7 +466,7 @@ const ParticularsInternalAboveWaterStructure = () => {
                     onChange={handleInputChange}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     placeholder="DD-MM-YYYY"
-                    maxLength="10"
+                    maxLength={10}
                     required
                   />
                   <i className="pi pi-calendar absolute right-3 top-3 text-gray-400"></i>
@@ -334,9 +486,11 @@ const ParticularsInternalAboveWaterStructure = () => {
                   required
                 >
                   <option value="0">--Select--</option>
-                  <option value="ND MUMBAI">ND MUMBAI</option>
-                  <option value="NSRY KOCHI">NSRY KOCHI</option>
-                  <option value="ND VISAKHAPATNAM">ND VISAKHAPATNAM</option>
+                  {DROPDOWN_CHOICES.REFITTING_YARD.map((choice) => (
+                    <option key={choice.value} value={choice.value}>
+                      {choice.label}
+                    </option>
+                  ))}
                 </select>
               </div>
             </div>
@@ -423,11 +577,11 @@ const ParticularsInternalAboveWaterStructure = () => {
                   required
                 >
                   <option value="0">--Select--</option>
-                  <option value="Visual_Inspection">Visual Inspection</option>
-                  <option value="Ultrasonic_Testing">Ultrasonic Testing</option>
-                  <option value="Magnetic_Particle_Testing">Magnetic Particle Testing</option>
-                  <option value="Dye_Penetrant_Testing">Dye Penetrant Testing</option>
-                  <option value="Radiographic_Testing">Radiographic Testing</option>
+                  {DROPDOWN_CHOICES.TYPE_OF_SURVEY.map((choice) => (
+                    <option key={choice.value} value={choice.value}>
+                      {choice.label}
+                    </option>
+                  ))}
                 </select>
               </div>
 
@@ -594,11 +748,11 @@ const ParticularsInternalAboveWaterStructure = () => {
                   required
                 >
                   <option value="0">--Select--</option>
-                  <option value="Excellent">Excellent</option>
-                  <option value="Good">Good</option>
-                  <option value="Fair">Fair</option>
-                  <option value="Poor">Poor</option>
-                  <option value="Critical">Critical</option>
+                  {DROPDOWN_CHOICES.CONDITION_OF_HULL_MATERIAL_STATE.map((choice) => (
+                    <option key={choice.value} value={choice.value}>
+                      {choice.label}
+                    </option>
+                  ))}
                 </select>
               </div>
 
@@ -615,7 +769,7 @@ const ParticularsInternalAboveWaterStructure = () => {
                     onChange={handleInputChange}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     placeholder="DD-MM-YYYY"
-                    maxLength="10"
+                    maxLength={10}
                     required
                   />
                   <i className="pi pi-calendar absolute right-3 top-3 text-gray-400"></i>
@@ -662,7 +816,7 @@ const ParticularsInternalAboveWaterStructure = () => {
                     <th className="bg-[#0072a6] text-white p-3 text-sm font-medium border border-gray-300 text-center">
                       Strake/Deck No. etc. <span className="text-red-500">*</span>
                     </th>
-                    <th className="bg-[#0072a6] text-white p-3 text-sm font-medium border border-gray-300 text-center" colSpan="2">
+                    <th className="bg-[#0072a6] text-white p-3 text-sm font-medium border border-gray-300 text-center" colSpan={2}>
                       Frame Station
                     </th>
                     <th className="bg-[#0072a6] text-white p-3 text-sm font-medium border border-gray-300 text-center">
@@ -830,37 +984,125 @@ const ParticularsInternalAboveWaterStructure = () => {
               <button
                 type="button"
                 onClick={handleFetchDrafts}
-                className="px-6 py-2 bg-[#0072a6] text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200"
+                disabled={loading}
+                className="px-6 py-2 bg-[#0072a6] text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                FETCH DRAFTS
+                {loading ? 'LOADING...' : 'FETCH DRAFTS'}
               </button>
               <button
                 type="button"
                 onClick={handleSaveDraft}
-                className="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-colors duration-200"
+                disabled={loading}
+                className="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                SAVE DRAFT
+                {loading ? 'SAVING...' : 'SAVE DRAFT'}
               </button>
               <button
                 type="button"
                 onClick={handleClearTable}
-                className="px-6 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors duration-200"
+                disabled={loading}
+                className="px-6 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 CLEAR
               </button>
               <button
                 type="button"
-                onClick={() => console.log('Save Part II:', { formData, tableData })}
-                className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200"
+                onClick={testPart2API}
+                disabled={loading}
+                className="px-6 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                SAVE
+                TEST PART 2 API
+              </button>
+              <button
+                type="submit"
+                form="part1-form"
+                disabled={loading}
+                className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {loading ? 'SAVING...' : 'SAVE'}
               </button>
             </div>
           </div>
         </div>
       </div>
+
+      {/* Drafts Modal */}
+      {isDraftModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-4xl w-full mx-4 max-h-96 overflow-y-auto">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-semibold">Saved Drafts</h3>
+              <button
+                onClick={() => setIsDraftModalOpen(false)}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                ✕
+              </button>
+            </div>
+            <div className="overflow-x-auto">
+              <table className="w-full border border-gray-300 text-sm">
+                <thead>
+                  <tr>
+                    <th className="bg-[#0072a6] text-white p-3 text-sm font-medium border border-gray-300 text-center">
+                      Timestamp
+                    </th>
+                    <th className="bg-[#0072a6] text-white p-3 text-sm font-medium border border-gray-300 text-center">
+                      Ship
+                    </th>
+                    <th className="bg-[#0072a6] text-white p-3 text-sm font-medium border border-gray-300 text-center">
+                      Actions
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {drafts.map((draft) => (
+                    <tr key={draft.id}>
+                      <td className="p-3 border border-gray-300 text-sm text-center">
+                        {new Date(draft.timestamp).toLocaleString()}
+                      </td>
+                      <td className="p-3 border border-gray-300 text-sm text-center">
+                        {vessels.find(v => v.id === parseInt(draft.data.part1.nameOfShip))?.name || 'Unknown Ship'}
+                      </td>
+                      <td className="p-3 border border-gray-300 text-sm text-center">
+                        <div className="flex gap-2 justify-center">
+                          <button
+                            onClick={() => handleEditDraft(draft)}
+                            className="px-3 py-1 bg-blue-500 text-white rounded text-xs hover:bg-blue-600"
+                          >
+                            Edit
+                          </button>
+                          <button
+                            onClick={() => handleDeleteDraft(draft.id)}
+                            className="px-3 py-1 bg-red-500 text-white rounded text-xs hover:bg-red-600"
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Error Message */}
+      {error && (
+        <div className="fixed top-4 right-4 bg-red-500 text-white px-4 py-2 rounded shadow-lg z-50">
+          {error}
+          <button
+            onClick={() => setError(null)}
+            className="ml-2 text-white hover:text-gray-200"
+          >
+            ✕
+          </button>
+        </div>
+      )}
     </div>
   );
 };
 
 export default ParticularsInternalAboveWaterStructure;
+ 
