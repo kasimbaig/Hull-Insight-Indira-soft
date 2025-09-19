@@ -14,13 +14,25 @@ const CargoLiftVKDForm: React.FC = () => {
   const [hidDraftId, setHidDraftId] = useState<string | null>(null);
 
   const [formData, setFormData] = useState({
-    // Basic Information (Sections 1-7)
+    // Section 1: Ship
     ship: "",
+    
+    // Section 2: Date of Inspection/Trials
     date_of_inspection: "",
+    
+    // Section 3: Make & Model
     make: "",
+    
+    // Section 4: Type
     type: "",
+    
+    // Section 5: Year of Manufacture
     year_manufacture: "",
+    
+    // Section 6: Ref Documents
     documents: "",
+    
+    // Section 7: Maintenance Routines
     maintenance_observations: "",
     maintenance_remarks: "",
     
@@ -44,6 +56,14 @@ const CargoLiftVKDForm: React.FC = () => {
     inspection_log_10days_remarks: "",
     inspection_log_3months_observations: "",
     inspection_log_3months_remarks: "",
+    inspection_log_after_sailing_observations: "",
+    inspection_log_after_sailing_remarks: "",
+    
+    // Inspection Log Gallery Lifts
+    gallery_lifts_3months_observations: "",
+    gallery_lifts_3months_remarks: "",
+    gallery_lifts_after_sailing_observations: "",
+    gallery_lifts_after_sailing_remarks: "",
     
     // Section 10: Greasing
     greasing_points_condition_observations: "",
@@ -58,8 +78,14 @@ const CargoLiftVKDForm: React.FC = () => {
     chain_holders_remarks: "",
     rollers_pulleys_observations: "",
     rollers_pulleys_remarks: "",
+    cabin_counter_weight_tracks_observations: "",
+    cabin_counter_weight_tracks_remarks: "",
+    wire_ropes_greasing_observations: "",
+    wire_ropes_greasing_remarks: "",
+    ss_confirm_greasing_observations: "",
+    ss_confirm_greasing_remarks: "",
     
-    // Section 11: Oil System
+    // Section 11: Oil
     oil_type_observations: "",
     oil_type_remarks: "",
     oil_level_observations: "",
@@ -68,64 +94,48 @@ const CargoLiftVKDForm: React.FC = () => {
     oil_change_remarks: "",
     oil_analysis_date: "",
     oil_analysis_remarks: "",
-    oil_analysis_observations: "",
-    oil_analysis_observations_remarks: "",
+    oil_analysis_certificate_observations: "",
+    oil_analysis_certificate_remarks: "",
     oil_leakages_observations: "",
     oil_leakages_remarks: "",
     
-    // Section 12: Lift Shaft
-    lift_shaft_observations: "",
-    lift_shaft_remarks: "",
-    
-    // Section 13: Cabin Structure
+    // Section 12: Visual Conditions
+    lift_shaft_structure_observations: "",
+    lift_shaft_structure_remarks: "",
     cabin_structure_observations: "",
     cabin_structure_remarks: "",
-    
-    // Section 14: Counter Weight
-    counter_weight_observations: "",
-    counter_weight_remarks: "",
-    
-    // Section 15: Cabin Door
-    cabin_door_observations: "",
-    cabin_door_remarks: "",
-    
-    // Section 16: Machinery Foundation
-    machinery_foundation_observations: "",
-    machinery_foundation_remarks: "",
-    
-    // Section 17: Structure Mechanism
-    structure_mechanism_observations: "",
-    structure_mechanism_remarks: "",
-    
-    // Section 18: Dirt/Oil
-    dirt_oil_observations: "",
-    dirt_oil_remarks: "",
-    
-    // Section 19: Dust/Debris
+    counter_weight_areas_observations: "",
+    counter_weight_areas_remarks: "",
+    cabin_door_operation_observations: "",
+    cabin_door_operation_remarks: "",
+    machinery_foundations_observations: "",
+    machinery_foundations_remarks: "",
+    structure_mechanism_defects_observations: "",
+    structure_mechanism_defects_remarks: "",
+    dirt_oil_moisture_observations: "",
+    dirt_oil_moisture_remarks: "",
     dust_debris_observations: "",
     dust_debris_remarks: "",
-    
-    // Section 20: Brake Mechanism
-    brake_mechanism_observations: "",
-    brake_mechanism_remarks: "",
-    
-    // Section 21: Traction Sheave
-    traction_sheave_observations: "",
-    traction_sheave_remarks: "",
-    
-    // Additional fields for other sections
+    brake_mechanism_inspection_observations: "",
+    brake_mechanism_inspection_remarks: "",
+    traction_sheave_wear_observations: "",
+    traction_sheave_wear_remarks: "",
     equipment_fastening_observations: "",
     equipment_fastening_remarks: "",
-    circuit_breaker_observations: "",
-    circuit_breaker_remarks: "",
-    wire_ropes_observations: "",
-    wire_ropes_remarks: "",
+    circuit_breaker_control_observations: "",
+    circuit_breaker_control_remarks: "",
+    
+    // Section 13: Wire Ropes
+    wire_ropes_visual_observations: "",
+    wire_ropes_visual_remarks: "",
     wire_ropes_last_changed_date: "",
     wire_ropes_last_changed_remarks: "",
     wire_ropes_serviceability_check_date: "",
     wire_ropes_serviceability_check_remarks: "",
     securing_ropes_end_observations: "",
     securing_ropes_end_remarks: "",
+    
+    // Section 14: Electrical Checks
     insulation_measurement_observations: "",
     insulation_measurement_remarks: "",
     spm_checks_motor_observations: "",
@@ -136,36 +146,44 @@ const CargoLiftVKDForm: React.FC = () => {
     grounding_bonding_remarks: "",
     condition_jb_control_panel_observations: "",
     condition_jb_control_panel_remarks: "",
+    
+    // Section 15: Electric Checks by ETMA
     completed_observations: "",
     completed_remarks: "",
-    report_observations: "",
-    report_remarks: "",
+    report_availability_observations: "",
+    report_availability_remarks: "",
+    
+    // Section 16: Limit Switches
     limit_switches_operational_observations: "",
     limit_switches_operational_remarks: "",
     visual_checks_limit_switches_observations: "",
     visual_checks_limit_switches_remarks: "",
+    
+    // Section 17: Load Testing
     last_load_testing_date: "",
     last_load_testing_remarks: "",
     check_certificates_observations: "",
     check_certificates_remarks: "",
-    no_oil_leakages_observations: "",
-    no_oil_leakages_remarks: "",
-    lifting_speed_observations: "",
-    lifting_speed_remarks: "",
-    lowering_speed_observations: "",
-    lowering_speed_remarks: "",
-    limits_switches_observations: "",
-    limits_switches_remarks: "",
+    no_oil_leakages_load_testing_observations: "",
+    no_oil_leakages_load_testing_remarks: "",
+    
+    // Section 18: Operational / Functional Checks
+    lifting_speeds_observations: "",
+    lifting_speeds_remarks: "",
+    lowering_speeds_observations: "",
+    lowering_speeds_remarks: "",
+    limits_switches_operation_observations: "",
+    limits_switches_operation_remarks: "",
     accurate_stopping_observations: "",
     accurate_stopping_remarks: "",
     power_failure_observations: "",
     power_failure_remarks: "",
-    free_movement_observations: "",
-    free_movement_remarks: "",
+    free_movement_pulleys_observations: "",
+    free_movement_pulleys_remarks: "",
     jerky_movement_observations: "",
     jerky_movement_remarks: "",
-    oil_leakage_observations: "",
-    oil_leakage_remarks: "",
+    oil_leakage_operational_observations: "",
+    oil_leakage_operational_remarks: "",
     excessive_vibrations_observations: "",
     excessive_vibrations_remarks: "",
     electro_magnetic_brake_observations: "",
@@ -178,8 +196,14 @@ const CargoLiftVKDForm: React.FC = () => {
     indicator_lamps_remarks: "",
     safety_check_observations: "",
     safety_check_remarks: "",
-    remarks_other_observ: "",
-    remarks_overall: "",
+    
+    // Section 19: Other Observation
+    other_observation_remarks: "",
+    
+    // Section 20: Overall Remarks
+    overall_remarks: "",
+    
+    // Section 21: Authority Signature
     authority_signature: null as File | null,
   });
 
@@ -285,58 +309,40 @@ const CargoLiftVKDForm: React.FC = () => {
       oil_change_remarks: "",
       oil_analysis_date: "",
       oil_analysis_remarks: "",
-      oil_analysis_observations: "",
-      oil_analysis_observations_remarks: "",
+      oil_analysis_certificate_observations: "",
+      oil_analysis_certificate_remarks: "",
       oil_leakages_observations: "",
       oil_leakages_remarks: "",
       
-      // Section 12: Lift Shaft
-      lift_shaft_observations: "",
-      lift_shaft_remarks: "",
-      
-      // Section 13: Cabin Structure
+      // Section 12: Visual Conditions
+      lift_shaft_structure_observations: "",
+      lift_shaft_structure_remarks: "",
       cabin_structure_observations: "",
       cabin_structure_remarks: "",
-      
-      // Section 14: Counter Weight
-      counter_weight_observations: "",
-      counter_weight_remarks: "",
-      
-      // Section 15: Cabin Door
-      cabin_door_observations: "",
-      cabin_door_remarks: "",
-      
-      // Section 16: Machinery Foundation
-      machinery_foundation_observations: "",
-      machinery_foundation_remarks: "",
-      
-      // Section 17: Structure Mechanism
-      structure_mechanism_observations: "",
-      structure_mechanism_remarks: "",
-      
-      // Section 18: Dirt/Oil
-      dirt_oil_observations: "",
-      dirt_oil_remarks: "",
-      
-      // Section 19: Dust/Debris
+      counter_weight_areas_observations: "",
+      counter_weight_areas_remarks: "",
+      cabin_door_operation_observations: "",
+      cabin_door_operation_remarks: "",
+      machinery_foundations_observations: "",
+      machinery_foundations_remarks: "",
+      structure_mechanism_defects_observations: "",
+      structure_mechanism_defects_remarks: "",
+      dirt_oil_moisture_observations: "",
+      dirt_oil_moisture_remarks: "",
       dust_debris_observations: "",
       dust_debris_remarks: "",
-      
-      // Section 20: Brake Mechanism
-      brake_mechanism_observations: "",
-      brake_mechanism_remarks: "",
-      
-      // Section 21: Traction Sheave
-      traction_sheave_observations: "",
-      traction_sheave_remarks: "",
+      brake_mechanism_inspection_observations: "",
+      brake_mechanism_inspection_remarks: "",
+      traction_sheave_wear_observations: "",
+      traction_sheave_wear_remarks: "",
       
       // Additional fields for other sections
       equipment_fastening_observations: "",
       equipment_fastening_remarks: "",
-      circuit_breaker_observations: "",
-      circuit_breaker_remarks: "",
-      wire_ropes_observations: "",
-      wire_ropes_remarks: "",
+      circuit_breaker_control_observations: "",
+      circuit_breaker_control_remarks: "",
+      wire_ropes_visual_observations: "",
+      wire_ropes_visual_remarks: "",
       wire_ropes_last_changed_date: "",
       wire_ropes_last_changed_remarks: "",
       wire_ropes_serviceability_check_date: "",
@@ -355,8 +361,8 @@ const CargoLiftVKDForm: React.FC = () => {
       condition_jb_control_panel_remarks: "",
       completed_observations: "",
       completed_remarks: "",
-      report_observations: "",
-      report_remarks: "",
+      report_availability_observations: "",
+      report_availability_remarks: "",
       limit_switches_operational_observations: "",
       limit_switches_operational_remarks: "",
       visual_checks_limit_switches_observations: "",
@@ -395,8 +401,8 @@ const CargoLiftVKDForm: React.FC = () => {
       indicator_lamps_remarks: "",
       safety_check_observations: "",
       safety_check_remarks: "",
-      remarks_other_observ: "",
-      remarks_overall: "",
+      other_observation_remarks: "",
+      overall_remarks: "",
       authority_signature: null as File | null,
     });
   };
@@ -525,9 +531,11 @@ const CargoLiftVKDForm: React.FC = () => {
                 <Label className="text-base font-medium">Date of Inspection/Trials<strong className="text-red-500">*</strong></Label>
               </div>
               <Input
-                type="date"
+                type="text"
                 value={formData.date_of_inspection}
                 onChange={(e) => handleInputChange("date_of_inspection", e.target.value)}
+                placeholder="DD-MM-YYYY"
+                maxLength={10}
                 required
               />
             </div>
@@ -642,9 +650,11 @@ const CargoLiftVKDForm: React.FC = () => {
                     <div>
                       <Label className="text-sm font-medium">Date:<strong className="text-red-500">*</strong></Label>
                       <Input
-                        type="date"
+                        type="text"
                         value={formData.structure_last_survey_date}
                         onChange={(e) => handleInputChange("structure_last_survey_date", e.target.value)}
+                        placeholder="DD-MM-YYYY"
+                        maxLength={10}
                         required
                       />
                     </div>
@@ -667,9 +677,11 @@ const CargoLiftVKDForm: React.FC = () => {
                     <div>
                       <Label className="text-sm font-medium">Date:<strong className="text-red-500">*</strong></Label>
                       <Input
-                        type="date"
+                        type="text"
                         value={formData.structure_pending_observations_date}
                         onChange={(e) => handleInputChange("structure_pending_observations_date", e.target.value)}
+                        placeholder="DD-MM-YYYY"
+                        maxLength={10}
                         required
                       />
                     </div>
@@ -845,6 +857,100 @@ const CargoLiftVKDForm: React.FC = () => {
                         <Textarea
                           value={formData.inspection_log_3months_remarks}
                           onChange={(e) => handleInputChange("inspection_log_3months_remarks", e.target.value)}
+                          rows={2}
+                          maxLength={1000}
+                          required
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <div className="text-sm font-medium">d) After Sailing - When Ship Experienced &gt; 15 Degree Heel &amp; &gt; 5 Degree Trim:</div>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div>
+                        <Label className="text-sm font-medium">Observations:<strong className="text-red-500">*</strong></Label>
+                        <Select value={formData.inspection_log_after_sailing_observations} onValueChange={(value) => handleInputChange("inspection_log_after_sailing_observations", value)}>
+                          <SelectTrigger>
+                            <SelectValue placeholder="--Select--" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="0">--Select--</SelectItem>
+                            <SelectItem value="SAT">SAT</SelectItem>
+                            <SelectItem value="UNSAT">UNSAT</SelectItem>
+                            <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="md:col-span-2">
+                        <Label className="text-sm font-medium">Remarks:<strong className="text-red-500">*</strong></Label>
+                        <Textarea
+                          value={formData.inspection_log_after_sailing_remarks}
+                          onChange={(e) => handleInputChange("inspection_log_after_sailing_remarks", e.target.value)}
+                          rows={2}
+                          maxLength={1000}
+                          required
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-4">
+                  <div className="text-sm font-medium text-gray-700">Inspection Log / Record Gallery Lifts:</div>
+                  
+                  <div className="space-y-2">
+                    <div className="text-sm font-medium">a) Once in 3 Months:</div>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div>
+                        <Label className="text-sm font-medium">Observations:<strong className="text-red-500">*</strong></Label>
+                        <Select value={formData.gallery_lifts_3months_observations} onValueChange={(value) => handleInputChange("gallery_lifts_3months_observations", value)}>
+                          <SelectTrigger>
+                            <SelectValue placeholder="--Select--" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="0">--Select--</SelectItem>
+                            <SelectItem value="SAT">SAT</SelectItem>
+                            <SelectItem value="UNSAT">UNSAT</SelectItem>
+                            <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="md:col-span-2">
+                        <Label className="text-sm font-medium">Remarks:<strong className="text-red-500">*</strong></Label>
+                        <Textarea
+                          value={formData.gallery_lifts_3months_remarks}
+                          onChange={(e) => handleInputChange("gallery_lifts_3months_remarks", e.target.value)}
+                          rows={2}
+                          maxLength={1000}
+                          required
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <div className="text-sm font-medium">b) After Sailing - When Ship Experienced &gt; 15 Degree Hell &amp; &gt; 5 Degree Trim:</div>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div>
+                        <Label className="text-sm font-medium">Observations:<strong className="text-red-500">*</strong></Label>
+                        <Select value={formData.gallery_lifts_after_sailing_observations} onValueChange={(value) => handleInputChange("gallery_lifts_after_sailing_observations", value)}>
+                          <SelectTrigger>
+                            <SelectValue placeholder="--Select--" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="0">--Select--</SelectItem>
+                            <SelectItem value="SAT">SAT</SelectItem>
+                            <SelectItem value="UNSAT">UNSAT</SelectItem>
+                            <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="md:col-span-2">
+                        <Label className="text-sm font-medium">Remarks:<strong className="text-red-500">*</strong></Label>
+                        <Textarea
+                          value={formData.gallery_lifts_after_sailing_remarks}
+                          onChange={(e) => handleInputChange("gallery_lifts_after_sailing_remarks", e.target.value)}
                           rows={2}
                           maxLength={1000}
                           required
@@ -1043,19 +1149,109 @@ const CargoLiftVKDForm: React.FC = () => {
                     </div>
                   </div>
                 </div>
+
+                <div className="space-y-2">
+                  <div className="text-sm font-medium">g) Cabin and Counter Weight Tracks:</div>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                      <Label className="text-sm font-medium">Observations:<strong className="text-red-500">*</strong></Label>
+                      <Select value={formData.cabin_counter_weight_tracks_observations} onValueChange={(value) => handleInputChange("cabin_counter_weight_tracks_observations", value)}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="--Select--" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="0">--Select--</SelectItem>
+                          <SelectItem value="SAT">SAT</SelectItem>
+                          <SelectItem value="UNSAT">UNSAT</SelectItem>
+                          <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="md:col-span-2">
+                      <Label className="text-sm font-medium">Remarks:<strong className="text-red-500">*</strong></Label>
+                      <Textarea
+                        value={formData.cabin_counter_weight_tracks_remarks}
+                        onChange={(e) => handleInputChange("cabin_counter_weight_tracks_remarks", e.target.value)}
+                        rows={2}
+                        maxLength={1000}
+                        required
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <div className="text-sm font-medium">h) Wire Ropes (Cargo & Over Speed Governor Ropes):</div>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                      <Label className="text-sm font-medium">Observations:<strong className="text-red-500">*</strong></Label>
+                      <Select value={formData.wire_ropes_greasing_observations} onValueChange={(value) => handleInputChange("wire_ropes_greasing_observations", value)}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="--Select--" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="0">--Select--</SelectItem>
+                          <SelectItem value="SAT">SAT</SelectItem>
+                          <SelectItem value="UNSAT">UNSAT</SelectItem>
+                          <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="md:col-span-2">
+                      <Label className="text-sm font-medium">Remarks:<strong className="text-red-500">*</strong></Label>
+                      <Textarea
+                        value={formData.wire_ropes_greasing_remarks}
+                        onChange={(e) => handleInputChange("wire_ropes_greasing_remarks", e.target.value)}
+                        rows={2}
+                        maxLength={1000}
+                        required
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <div className="text-sm font-medium">i) SS to Confirm (Greasing Routines of All Threaded and Wearing Surfaces Undertaken i.a.w MAINTOPs and OEM manuals):</div>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                      <Label className="text-sm font-medium">Observations:<strong className="text-red-500">*</strong></Label>
+                      <Select value={formData.ss_confirm_greasing_observations} onValueChange={(value) => handleInputChange("ss_confirm_greasing_observations", value)}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="--Select--" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="0">--Select--</SelectItem>
+                          <SelectItem value="SAT">SAT</SelectItem>
+                          <SelectItem value="UNSAT">UNSAT</SelectItem>
+                          <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="md:col-span-2">
+                      <Label className="text-sm font-medium">Remarks:<strong className="text-red-500">*</strong></Label>
+                      <Textarea
+                        value={formData.ss_confirm_greasing_remarks}
+                        onChange={(e) => handleInputChange("ss_confirm_greasing_remarks", e.target.value)}
+                        rows={2}
+                        maxLength={1000}
+                        required
+                      />
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
 
-            {/* Section 11: Oil System */}
+            {/* Section 11: Oil */}
             <div className="space-y-4">
               <div className="flex items-center gap-2">
                 <span className="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">11</span>
-                <Label className="text-base font-medium">Oil System</Label>
+                <Label className="text-base font-medium">Oil</Label>
               </div>
               <div className="ml-4 space-y-4">
                 
                 <div className="space-y-2">
-                  <div className="text-sm font-medium">a) Type of Oil:</div>
+                  <div className="text-sm font-medium">a) Type of Oil Used (approved / OEM defined):</div>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
                       <Label className="text-sm font-medium">Observations:<strong className="text-red-500">*</strong></Label>
@@ -1085,7 +1281,7 @@ const CargoLiftVKDForm: React.FC = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <div className="text-sm font-medium">b) Oil Level:</div>
+                  <div className="text-sm font-medium">b) Oil Level in Gear Box:</div>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
                       <Label className="text-sm font-medium">Observations:<strong className="text-red-500">*</strong></Label>
@@ -1165,11 +1361,11 @@ const CargoLiftVKDForm: React.FC = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <div className="text-sm font-medium">e) Oil Analysis Results:</div>
+                  <div className="text-sm font-medium">e) Oil Analysis Certificate / Results:</div>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
                       <Label className="text-sm font-medium">Observations:<strong className="text-red-500">*</strong></Label>
-                      <Select value={formData.oil_analysis_observations} onValueChange={(value) => handleInputChange("oil_analysis_observations", value)}>
+                        <Select value={formData.oil_analysis_certificate_observations} onValueChange={(value) => handleInputChange("oil_analysis_certificate_observations", value)}>
                         <SelectTrigger>
                           <SelectValue placeholder="--Select--" />
                         </SelectTrigger>
@@ -1183,9 +1379,9 @@ const CargoLiftVKDForm: React.FC = () => {
                     </div>
                     <div className="md:col-span-2">
                       <Label className="text-sm font-medium">Remarks:<strong className="text-red-500">*</strong></Label>
-                      <Textarea
-                        value={formData.oil_analysis_observations_remarks}
-                        onChange={(e) => handleInputChange("oil_analysis_observations_remarks", e.target.value)}
+                        <Textarea
+                          value={formData.oil_analysis_certificate_remarks}
+                          onChange={(e) => handleInputChange("oil_analysis_certificate_remarks", e.target.value)}
                         rows={2}
                         maxLength={1000}
                         required
@@ -1195,7 +1391,7 @@ const CargoLiftVKDForm: React.FC = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <div className="text-sm font-medium">f) Oil Leakages:</div>
+                  <div className="text-sm font-medium">f)  Oil Leakages from Gear Box:</div>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
                       <Label className="text-sm font-medium">Observations:<strong className="text-red-500">*</strong></Label>
@@ -1226,386 +1422,1376 @@ const CargoLiftVKDForm: React.FC = () => {
               </div>
             </div>
 
-            {/* Section 12: Lift Shaft */}
+            {/* Section 12: Visual Conditions */}
             <div className="space-y-4">
               <div className="flex items-center gap-2">
                 <span className="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">12</span>
-                <Label className="text-base font-medium">Lift Shaft</Label>
+                <Label className="text-base font-medium">Visual Conditions</Label>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div>
-                  <Label className="text-sm font-medium">Observations:<strong className="text-red-500">*</strong></Label>
-                  <Select value={formData.lift_shaft_observations} onValueChange={(value) => handleInputChange("lift_shaft_observations", value)}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="--Select--" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="0">--Select--</SelectItem>
-                      <SelectItem value="SAT">SAT</SelectItem>
-                      <SelectItem value="UNSAT">UNSAT</SelectItem>
-                      <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
-                    </SelectContent>
-                  </Select>
+              <div className="ml-4 space-y-4">
+                
+                <div className="space-y-2">
+                  <div className="text-sm font-medium">a) Lift Shaft Structure &amp; Preservation:</div>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                      <Label className="text-sm font-medium">Observations:<strong className="text-red-500">*</strong></Label>
+                      <Select value={formData.lift_shaft_structure_observations} onValueChange={(value) => handleInputChange("lift_shaft_structure_observations", value)}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="--Select--" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="0">--Select--</SelectItem>
+                          <SelectItem value="SAT">SAT</SelectItem>
+                          <SelectItem value="UNSAT">UNSAT</SelectItem>
+                          <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="md:col-span-2">
+                      <Label className="text-sm font-medium">Remarks:<strong className="text-red-500">*</strong></Label>
+                      <Textarea
+                        value={formData.lift_shaft_structure_remarks}
+                        onChange={(e) => handleInputChange("lift_shaft_structure_remarks", e.target.value)}
+                        rows={2}
+                        maxLength={1000}
+                        required
+                      />
+                    </div>
+                  </div>
                 </div>
-                <div className="md:col-span-2">
-                  <Label className="text-sm font-medium">Remarks:<strong className="text-red-500">*</strong></Label>
-                  <Textarea
-                    value={formData.lift_shaft_remarks}
-                    onChange={(e) => handleInputChange("lift_shaft_remarks", e.target.value)}
-                    rows={2}
-                    maxLength={1000}
-                    required
-                  />
+
+                <div className="space-y-2">
+                  <div className="text-sm font-medium">b) Cabin Structure &amp; Preservation:</div>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                      <Label className="text-sm font-medium">Observations:<strong className="text-red-500">*</strong></Label>
+                      <Select value={formData.cabin_structure_observations} onValueChange={(value) => handleInputChange("cabin_structure_observations", value)}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="--Select--" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="0">--Select--</SelectItem>
+                          <SelectItem value="SAT">SAT</SelectItem>
+                          <SelectItem value="UNSAT">UNSAT</SelectItem>
+                          <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="md:col-span-2">
+                      <Label className="text-sm font-medium">Remarks:<strong className="text-red-500">*</strong></Label>
+                      <Textarea
+                        value={formData.cabin_structure_remarks}
+                        onChange={(e) => handleInputChange("cabin_structure_remarks", e.target.value)}
+                        rows={2}
+                        maxLength={1000}
+                        required
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <div className="text-sm font-medium">c) Counter Weight areas, Guides and Fastening to Shaft Structure:</div>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                      <Label className="text-sm font-medium">Observations:<strong className="text-red-500">*</strong></Label>
+                      <Select value={formData.counter_weight_areas_observations} onValueChange={(value) => handleInputChange("counter_weight_areas_observations", value)}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="--Select--" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="0">--Select--</SelectItem>
+                          <SelectItem value="SAT">SAT</SelectItem>
+                          <SelectItem value="UNSAT">UNSAT</SelectItem>
+                          <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="md:col-span-2">
+                      <Label className="text-sm font-medium">Remarks:<strong className="text-red-500">*</strong></Label>
+                      <Textarea
+                        value={formData.counter_weight_areas_remarks}
+                        onChange={(e) => handleInputChange("counter_weight_areas_remarks", e.target.value)}
+                        rows={2}
+                        maxLength={1000}
+                        required
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <div className="text-sm font-medium">d) Cabin Door and Door Operation - All Levels:</div>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                      <Label className="text-sm font-medium">Observations:<strong className="text-red-500">*</strong></Label>
+                      <Select value={formData.cabin_door_operation_observations} onValueChange={(value) => handleInputChange("cabin_door_operation_observations", value)}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="--Select--" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="0">--Select--</SelectItem>
+                          <SelectItem value="SAT">SAT</SelectItem>
+                          <SelectItem value="UNSAT">UNSAT</SelectItem>
+                          <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="md:col-span-2">
+                      <Label className="text-sm font-medium">Remarks:<strong className="text-red-500">*</strong></Label>
+                      <Textarea
+                        value={formData.cabin_door_operation_remarks}
+                        onChange={(e) => handleInputChange("cabin_door_operation_remarks", e.target.value)}
+                        rows={2}
+                        maxLength={1000}
+                        required
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <div className="text-sm font-medium">e) Conditions of Operating Machinery Foundations and Preservation:</div>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                      <Label className="text-sm font-medium">Observations:<strong className="text-red-500">*</strong></Label>
+                      <Select value={formData.machinery_foundations_observations} onValueChange={(value) => handleInputChange("machinery_foundations_observations", value)}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="--Select--" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="0">--Select--</SelectItem>
+                          <SelectItem value="SAT">SAT</SelectItem>
+                          <SelectItem value="UNSAT">UNSAT</SelectItem>
+                          <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="md:col-span-2">
+                      <Label className="text-sm font-medium">Remarks:<strong className="text-red-500">*</strong></Label>
+                      <Textarea
+                        value={formData.machinery_foundations_remarks}
+                        onChange={(e) => handleInputChange("machinery_foundations_remarks", e.target.value)}
+                        rows={2}
+                        maxLength={1000}
+                        required
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <div className="text-sm font-medium">f) Check all Structure and Mechanism for Defects/Deformation/Damage:</div>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                      <Label className="text-sm font-medium">Observations:<strong className="text-red-500">*</strong></Label>
+                      <Select value={formData.structure_mechanism_defects_observations} onValueChange={(value) => handleInputChange("structure_mechanism_defects_observations", value)}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="--Select--" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="0">--Select--</SelectItem>
+                          <SelectItem value="SAT">SAT</SelectItem>
+                          <SelectItem value="UNSAT">UNSAT</SelectItem>
+                          <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="md:col-span-2">
+                      <Label className="text-sm font-medium">Remarks:<strong className="text-red-500">*</strong></Label>
+                      <Textarea
+                        value={formData.structure_mechanism_defects_remarks}
+                        onChange={(e) => handleInputChange("structure_mechanism_defects_remarks", e.target.value)}
+                        rows={2}
+                        maxLength={1000}
+                        required
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <div className="text-sm font-medium">g) Dirt/ Oil Moisture on Exposed Parts:</div>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                      <Label className="text-sm font-medium">Observations:<strong className="text-red-500">*</strong></Label>
+                      <Select value={formData.dirt_oil_moisture_observations} onValueChange={(value) => handleInputChange("dirt_oil_moisture_observations", value)}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="--Select--" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="0">--Select--</SelectItem>
+                          <SelectItem value="SAT">SAT</SelectItem>
+                          <SelectItem value="UNSAT">UNSAT</SelectItem>
+                          <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="md:col-span-2">
+                      <Label className="text-sm font-medium">Remarks:<strong className="text-red-500">*</strong></Label>
+                      <Textarea
+                        value={formData.dirt_oil_moisture_remarks}
+                        onChange={(e) => handleInputChange("dirt_oil_moisture_remarks", e.target.value)}
+                        rows={2}
+                        maxLength={1000}
+                        required
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <div className="text-sm font-medium">h) Dust / Debris on Cabin Roof &amp; Lift Pits:</div>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                      <Label className="text-sm font-medium">Observations:<strong className="text-red-500">*</strong></Label>
+                      <Select value={formData.dust_debris_observations} onValueChange={(value) => handleInputChange("dust_debris_observations", value)}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="--Select--" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="0">--Select--</SelectItem>
+                          <SelectItem value="SAT">SAT</SelectItem>
+                          <SelectItem value="UNSAT">UNSAT</SelectItem>
+                          <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="md:col-span-2">
+                      <Label className="text-sm font-medium">Remarks:<strong className="text-red-500">*</strong></Label>
+                      <Textarea
+                        value={formData.dust_debris_remarks}
+                        onChange={(e) => handleInputChange("dust_debris_remarks", e.target.value)}
+                        rows={2}
+                        maxLength={1000}
+                        required
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <div className="text-sm font-medium">i) Inspections of Brake Mechanism:</div>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                      <Label className="text-sm font-medium">Observations:<strong className="text-red-500">*</strong></Label>
+                      <Select value={formData.brake_mechanism_inspection_observations} onValueChange={(value) => handleInputChange("brake_mechanism_inspection_observations", value)}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="--Select--" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="0">--Select--</SelectItem>
+                          <SelectItem value="SAT">SAT</SelectItem>
+                          <SelectItem value="UNSAT">UNSAT</SelectItem>
+                          <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="md:col-span-2">
+                      <Label className="text-sm font-medium">Remarks:<strong className="text-red-500">*</strong></Label>
+                      <Textarea
+                        value={formData.brake_mechanism_inspection_remarks}
+                        onChange={(e) => handleInputChange("brake_mechanism_inspection_remarks", e.target.value)}
+                        rows={2}
+                        maxLength={1000}
+                        required
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <div className="text-sm font-medium">j) Wear &amp; Tear of Traction Sheave Grooves:</div>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                      <Label className="text-sm font-medium">Observations:<strong className="text-red-500">*</strong></Label>
+                      <Select value={formData.traction_sheave_wear_observations} onValueChange={(value) => handleInputChange("traction_sheave_wear_observations", value)}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="--Select--" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="0">--Select--</SelectItem>
+                          <SelectItem value="SAT">SAT</SelectItem>
+                          <SelectItem value="UNSAT">UNSAT</SelectItem>
+                          <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="md:col-span-2">
+                      <Label className="text-sm font-medium">Remarks:<strong className="text-red-500">*</strong></Label>
+                      <Textarea
+                        value={formData.traction_sheave_wear_remarks}
+                        onChange={(e) => handleInputChange("traction_sheave_wear_remarks", e.target.value)}
+                        rows={2}
+                        maxLength={1000}
+                        required
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <div className="text-sm font-medium">k) Equipment Fastening - Equaliser Suspension, Over Speed Governor Angle Blocks:</div>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                      <Label className="text-sm font-medium">Observations:<strong className="text-red-500">*</strong></Label>
+                      <Select value={formData.equipment_fastening_observations} onValueChange={(value) => handleInputChange("equipment_fastening_observations", value)}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="--Select--" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="0">--Select--</SelectItem>
+                          <SelectItem value="SAT">SAT</SelectItem>
+                          <SelectItem value="UNSAT">UNSAT</SelectItem>
+                          <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="md:col-span-2">
+                      <Label className="text-sm font-medium">Remarks:<strong className="text-red-500">*</strong></Label>
+                      <Textarea
+                        value={formData.equipment_fastening_remarks}
+                        onChange={(e) => handleInputChange("equipment_fastening_remarks", e.target.value)}
+                        rows={2}
+                        maxLength={1000}
+                        required
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <div className="text-sm font-medium">l) Circuit Breaker of Control Unit and Condition / Hygiene of Control Panel and Junctions Box:</div>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                      <Label className="text-sm font-medium">Observations:<strong className="text-red-500">*</strong></Label>
+                      <Select value={formData.circuit_breaker_control_observations} onValueChange={(value) => handleInputChange("circuit_breaker_control_observations", value)}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="--Select--" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="0">--Select--</SelectItem>
+                          <SelectItem value="SAT">SAT</SelectItem>
+                          <SelectItem value="UNSAT">UNSAT</SelectItem>
+                          <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="md:col-span-2">
+                      <Label className="text-sm font-medium">Remarks:<strong className="text-red-500">*</strong></Label>
+                      <Textarea
+                        value={formData.circuit_breaker_control_remarks}
+                        onChange={(e) => handleInputChange("circuit_breaker_control_remarks", e.target.value)}
+                        rows={2}
+                        maxLength={1000}
+                        required
+                      />
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
 
-            {/* Section 13: Cabin Structure */}
+            {/* Section 13: Wire Ropes */}
             <div className="space-y-4">
               <div className="flex items-center gap-2">
                 <span className="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">13</span>
-                <Label className="text-base font-medium">Cabin Structure</Label>
+                <Label className="text-base font-medium">Wire Ropes</Label>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div>
-                  <Label className="text-sm font-medium">Observations:<strong className="text-red-500">*</strong></Label>
-                  <Select value={formData.cabin_structure_observations} onValueChange={(value) => handleInputChange("cabin_structure_observations", value)}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="--Select--" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="0">--Select--</SelectItem>
-                      <SelectItem value="SAT">SAT</SelectItem>
-                      <SelectItem value="UNSAT">UNSAT</SelectItem>
-                      <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
-                    </SelectContent>
-                  </Select>
+              <div className="ml-4 space-y-4">
+                
+                <div className="space-y-2">
+                  <div className="text-sm font-medium">a) Visual Conditions of Ropes &amp; End Fitting:</div>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                      <Label className="text-sm font-medium">Observations:<strong className="text-red-500">*</strong></Label>
+                      <Select value={formData.wire_ropes_visual_observations} onValueChange={(value) => handleInputChange("wire_ropes_visual_observations", value)}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="--Select--" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="0">--Select--</SelectItem>
+                          <SelectItem value="SAT">SAT</SelectItem>
+                          <SelectItem value="UNSAT">UNSAT</SelectItem>
+                          <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="md:col-span-2">
+                      <Label className="text-sm font-medium">Remarks:<strong className="text-red-500">*</strong></Label>
+                      <Textarea
+                        value={formData.wire_ropes_visual_remarks}
+                        onChange={(e) => handleInputChange("wire_ropes_visual_remarks", e.target.value)}
+                        rows={2}
+                        maxLength={1000}
+                        required
+                      />
+                    </div>
+                  </div>
                 </div>
-                <div className="md:col-span-2">
-                  <Label className="text-sm font-medium">Remarks:<strong className="text-red-500">*</strong></Label>
-                  <Textarea
-                    value={formData.cabin_structure_remarks}
-                    onChange={(e) => handleInputChange("cabin_structure_remarks", e.target.value)}
-                    rows={2}
-                    maxLength={1000}
-                    required
-                  />
+
+                <div className="space-y-2">
+                  <div className="text-sm font-medium">b) Date Last Changed / Replaced:</div>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                      <Label className="text-sm font-medium">Date:<strong className="text-red-500">*</strong></Label>
+                      <Input
+                        type="text"
+                        value={formData.wire_ropes_last_changed_date}
+                        onChange={(e) => handleInputChange("wire_ropes_last_changed_date", e.target.value)}
+                        placeholder="DD-MM-YYYY"
+                        maxLength={10}
+                        required
+                      />
+                    </div>
+                    <div className="md:col-span-2">
+                      <Label className="text-sm font-medium">Remarks:<strong className="text-red-500">*</strong></Label>
+                      <Textarea
+                        value={formData.wire_ropes_last_changed_remarks}
+                        onChange={(e) => handleInputChange("wire_ropes_last_changed_remarks", e.target.value)}
+                        rows={2}
+                        maxLength={1000}
+                        required
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <div className="text-sm font-medium">c) Date of Last Serviceability Check:</div>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                      <Label className="text-sm font-medium">Date:<strong className="text-red-500">*</strong></Label>
+                      <Input
+                        type="text"
+                        value={formData.wire_ropes_serviceability_check_date}
+                        onChange={(e) => handleInputChange("wire_ropes_serviceability_check_date", e.target.value)}
+                        placeholder="DD-MM-YYYY"
+                        maxLength={10}
+                        required
+                      />
+                    </div>
+                    <div className="md:col-span-2">
+                      <Label className="text-sm font-medium">Remarks:<strong className="text-red-500">*</strong></Label>
+                      <Textarea
+                        value={formData.wire_ropes_serviceability_check_remarks}
+                        onChange={(e) => handleInputChange("wire_ropes_serviceability_check_remarks", e.target.value)}
+                        rows={2}
+                        maxLength={1000}
+                        required
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <div className="text-sm font-medium">d) Securing of Ropes End:</div>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                      <Label className="text-sm font-medium">Observations:<strong className="text-red-500">*</strong></Label>
+                      <Select value={formData.securing_ropes_end_observations} onValueChange={(value) => handleInputChange("securing_ropes_end_observations", value)}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="--Select--" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="0">--Select--</SelectItem>
+                          <SelectItem value="SAT">SAT</SelectItem>
+                          <SelectItem value="UNSAT">UNSAT</SelectItem>
+                          <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="md:col-span-2">
+                      <Label className="text-sm font-medium">Remarks:<strong className="text-red-500">*</strong></Label>
+                      <Textarea
+                        value={formData.securing_ropes_end_remarks}
+                        onChange={(e) => handleInputChange("securing_ropes_end_remarks", e.target.value)}
+                        rows={2}
+                        maxLength={1000}
+                        required
+                      />
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
 
-            {/* Section 14: Counter Weight */}
+            {/* Section 14: Electrical Checks */}
             <div className="space-y-4">
               <div className="flex items-center gap-2">
                 <span className="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">14</span>
-                <Label className="text-base font-medium">Counter Weight</Label>
+                <Label className="text-base font-medium">Electrical Checks (In addition to standard checks by ETMA)</Label>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div>
-                  <Label className="text-sm font-medium">Observations:<strong className="text-red-500">*</strong></Label>
-                  <Select value={formData.counter_weight_observations} onValueChange={(value) => handleInputChange("counter_weight_observations", value)}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="--Select--" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="0">--Select--</SelectItem>
-                      <SelectItem value="SAT">SAT</SelectItem>
-                      <SelectItem value="UNSAT">UNSAT</SelectItem>
-                      <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
-                    </SelectContent>
-                  </Select>
+              <div className="ml-4 space-y-4">
+                
+                <div className="space-y-2">
+                  <div className="text-sm font-medium">a) Insulation Measurement (by ETMA/SS) - not less than 1.0 m-ohm:</div>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                      <Label className="text-sm font-medium">Observations:<strong className="text-red-500">*</strong></Label>
+                      <Select value={formData.insulation_measurement_observations} onValueChange={(value) => handleInputChange("insulation_measurement_observations", value)}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="--Select--" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="0">--Select--</SelectItem>
+                          <SelectItem value="SAT">SAT</SelectItem>
+                          <SelectItem value="UNSAT">UNSAT</SelectItem>
+                          <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="md:col-span-2">
+                      <Label className="text-sm font-medium">Remarks:<strong className="text-red-500">*</strong></Label>
+                      <Textarea
+                        value={formData.insulation_measurement_remarks}
+                        onChange={(e) => handleInputChange("insulation_measurement_remarks", e.target.value)}
+                        rows={2}
+                        maxLength={1000}
+                        required
+                      />
+                    </div>
+                  </div>
                 </div>
-                <div className="md:col-span-2">
-                  <Label className="text-sm font-medium">Remarks:<strong className="text-red-500">*</strong></Label>
-                  <Textarea
-                    value={formData.counter_weight_remarks}
-                    onChange={(e) => handleInputChange("counter_weight_remarks", e.target.value)}
-                    rows={2}
-                    maxLength={1000}
-                    required
-                  />
+
+                <div className="space-y-2">
+                  <div className="text-sm font-medium">b) SPM Checks of Motor:</div>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                      <Label className="text-sm font-medium">Observations:<strong className="text-red-500">*</strong></Label>
+                      <Select value={formData.spm_checks_motor_observations} onValueChange={(value) => handleInputChange("spm_checks_motor_observations", value)}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="--Select--" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="0">--Select--</SelectItem>
+                          <SelectItem value="SAT">SAT</SelectItem>
+                          <SelectItem value="UNSAT">UNSAT</SelectItem>
+                          <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="md:col-span-2">
+                      <Label className="text-sm font-medium">Remarks:<strong className="text-red-500">*</strong></Label>
+                      <Textarea
+                        value={formData.spm_checks_motor_remarks}
+                        onChange={(e) => handleInputChange("spm_checks_motor_remarks", e.target.value)}
+                        rows={2}
+                        maxLength={1000}
+                        required
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <div className="text-sm font-medium">c) Tightness of Electrical Cable Fasteners:</div>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                      <Label className="text-sm font-medium">Observations:<strong className="text-red-500">*</strong></Label>
+                      <Select value={formData.cable_fasteners_observations} onValueChange={(value) => handleInputChange("cable_fasteners_observations", value)}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="--Select--" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="0">--Select--</SelectItem>
+                          <SelectItem value="SAT">SAT</SelectItem>
+                          <SelectItem value="UNSAT">UNSAT</SelectItem>
+                          <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="md:col-span-2">
+                      <Label className="text-sm font-medium">Remarks:<strong className="text-red-500">*</strong></Label>
+                      <Textarea
+                        value={formData.cable_fasteners_remarks}
+                        onChange={(e) => handleInputChange("cable_fasteners_remarks", e.target.value)}
+                        rows={2}
+                        maxLength={1000}
+                        required
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <div className="text-sm font-medium">d) Grounding / Bonding Connections:</div>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                      <Label className="text-sm font-medium">Observations:<strong className="text-red-500">*</strong></Label>
+                      <Select value={formData.grounding_bonding_observations} onValueChange={(value) => handleInputChange("grounding_bonding_observations", value)}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="--Select--" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="0">--Select--</SelectItem>
+                          <SelectItem value="SAT">SAT</SelectItem>
+                          <SelectItem value="UNSAT">UNSAT</SelectItem>
+                          <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="md:col-span-2">
+                      <Label className="text-sm font-medium">Remarks:<strong className="text-red-500">*</strong></Label>
+                      <Textarea
+                        value={formData.grounding_bonding_remarks}
+                        onChange={(e) => handleInputChange("grounding_bonding_remarks", e.target.value)}
+                        rows={2}
+                        maxLength={1000}
+                        required
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <div className="text-sm font-medium">e) Condition of JB / Control panel:</div>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                      <Label className="text-sm font-medium">Observations:<strong className="text-red-500">*</strong></Label>
+                      <Select value={formData.condition_jb_control_panel_observations} onValueChange={(value) => handleInputChange("condition_jb_control_panel_observations", value)}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="--Select--" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="0">--Select--</SelectItem>
+                          <SelectItem value="SAT">SAT</SelectItem>
+                          <SelectItem value="UNSAT">UNSAT</SelectItem>
+                          <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="md:col-span-2">
+                      <Label className="text-sm font-medium">Remarks:<strong className="text-red-500">*</strong></Label>
+                      <Textarea
+                        value={formData.condition_jb_control_panel_remarks}
+                        onChange={(e) => handleInputChange("condition_jb_control_panel_remarks", e.target.value)}
+                        rows={2}
+                        maxLength={1000}
+                        required
+                      />
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
 
-            {/* Section 15: Cabin Door */}
+            {/* Section 15: Electric Checks by ETMA */}
             <div className="space-y-4">
               <div className="flex items-center gap-2">
                 <span className="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">15</span>
-                <Label className="text-base font-medium">Cabin Door</Label>
+                <Label className="text-base font-medium">Electric Checks by ETMA</Label>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div>
-                  <Label className="text-sm font-medium">Observations:<strong className="text-red-500">*</strong></Label>
-                  <Select value={formData.cabin_door_observations} onValueChange={(value) => handleInputChange("cabin_door_observations", value)}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="--Select--" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="0">--Select--</SelectItem>
-                      <SelectItem value="SAT">SAT</SelectItem>
-                      <SelectItem value="UNSAT">UNSAT</SelectItem>
-                      <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
-                    </SelectContent>
-                  </Select>
+              <div className="ml-4 space-y-4">
+                
+                <div className="space-y-2">
+                  <div className="text-sm font-medium">a) Completed:</div>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                      <Label className="text-sm font-medium">Observations:<strong className="text-red-500">*</strong></Label>
+                      <Select value={formData.completed_observations} onValueChange={(value) => handleInputChange("completed_observations", value)}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="--Select--" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="0">--Select--</SelectItem>
+                          <SelectItem value="SAT">SAT</SelectItem>
+                          <SelectItem value="UNSAT">UNSAT</SelectItem>
+                          <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="md:col-span-2">
+                      <Label className="text-sm font-medium">Remarks:<strong className="text-red-500">*</strong></Label>
+                      <Textarea
+                        value={formData.completed_remarks}
+                        onChange={(e) => handleInputChange("completed_remarks", e.target.value)}
+                        rows={2}
+                        maxLength={1000}
+                        required
+                      />
+                    </div>
+                  </div>
                 </div>
-                <div className="md:col-span-2">
-                  <Label className="text-sm font-medium">Remarks:<strong className="text-red-500">*</strong></Label>
-                  <Textarea
-                    value={formData.cabin_door_remarks}
-                    onChange={(e) => handleInputChange("cabin_door_remarks", e.target.value)}
-                    rows={2}
-                    maxLength={1000}
-                    required
-                  />
+
+                <div className="space-y-2">
+                  <div className="text-sm font-medium">b) Availability of Report:</div>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                      <Label className="text-sm font-medium">Observations:<strong className="text-red-500">*</strong></Label>
+                      <Select value={formData.report_availability_observations} onValueChange={(value) => handleInputChange("report_availability_observations", value)}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="--Select--" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="0">--Select--</SelectItem>
+                          <SelectItem value="SAT">SAT</SelectItem>
+                          <SelectItem value="UNSAT">UNSAT</SelectItem>
+                          <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="md:col-span-2">
+                      <Label className="text-sm font-medium">Remarks:<strong className="text-red-500">*</strong></Label>
+                      <Textarea
+                        value={formData.report_availability_remarks}
+                        onChange={(e) => handleInputChange("report_availability_remarks", e.target.value)}
+                        rows={2}
+                        maxLength={1000}
+                        required
+                      />
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
 
-            {/* Section 16: Machinery Foundation */}
+            {/* Section 16: Limit Switches */}
             <div className="space-y-4">
               <div className="flex items-center gap-2">
                 <span className="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">16</span>
-                <Label className="text-base font-medium">Machinery Foundation</Label>
+                <Label className="text-base font-medium">Limit Switches</Label>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div>
-                  <Label className="text-sm font-medium">Observations:<strong className="text-red-500">*</strong></Label>
-                  <Select value={formData.machinery_foundation_observations} onValueChange={(value) => handleInputChange("machinery_foundation_observations", value)}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="--Select--" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="0">--Select--</SelectItem>
-                      <SelectItem value="SAT">SAT</SelectItem>
-                      <SelectItem value="UNSAT">UNSAT</SelectItem>
-                      <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
-                    </SelectContent>
-                  </Select>
+              <div className="ml-4 space-y-4">
+                
+                <div className="space-y-2">
+                  <div className="text-sm font-medium">a) SS to Confirm Operational Availability of All Limit Switches:</div>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                      <Label className="text-sm font-medium">Observations:<strong className="text-red-500">*</strong></Label>
+                      <Select value={formData.limit_switches_operational_observations} onValueChange={(value) => handleInputChange("limit_switches_operational_observations", value)}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="--Select--" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="0">--Select--</SelectItem>
+                          <SelectItem value="SAT">SAT</SelectItem>
+                          <SelectItem value="UNSAT">UNSAT</SelectItem>
+                          <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="md:col-span-2">
+                      <Label className="text-sm font-medium">Remarks:<strong className="text-red-500">*</strong></Label>
+                      <Textarea
+                        value={formData.limit_switches_operational_remarks}
+                        onChange={(e) => handleInputChange("limit_switches_operational_remarks", e.target.value)}
+                        rows={2}
+                        maxLength={1000}
+                        required
+                      />
+                    </div>
+                  </div>
                 </div>
-                <div className="md:col-span-2">
-                  <Label className="text-sm font-medium">Remarks:<strong className="text-red-500">*</strong></Label>
-                  <Textarea
-                    value={formData.machinery_foundation_remarks}
-                    onChange={(e) => handleInputChange("machinery_foundation_remarks", e.target.value)}
-                    rows={2}
-                    maxLength={1000}
-                    required
-                  />
+
+                <div className="space-y-2">
+                  <div className="text-sm font-medium">b) Visual Checks of Limit Switches at All Deck Levels:</div>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                      <Label className="text-sm font-medium">Observations:<strong className="text-red-500">*</strong></Label>
+                      <Select value={formData.visual_checks_limit_switches_observations} onValueChange={(value) => handleInputChange("visual_checks_limit_switches_observations", value)}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="--Select--" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="0">--Select--</SelectItem>
+                          <SelectItem value="SAT">SAT</SelectItem>
+                          <SelectItem value="UNSAT">UNSAT</SelectItem>
+                          <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="md:col-span-2">
+                      <Label className="text-sm font-medium">Remarks:<strong className="text-red-500">*</strong></Label>
+                      <Textarea
+                        value={formData.visual_checks_limit_switches_remarks}
+                        onChange={(e) => handleInputChange("visual_checks_limit_switches_remarks", e.target.value)}
+                        rows={2}
+                        maxLength={1000}
+                        required
+                      />
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
 
-            {/* Section 17: Structure Mechanism */}
+            {/* Section 17: Load Testing */}
             <div className="space-y-4">
               <div className="flex items-center gap-2">
                 <span className="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">17</span>
-                <Label className="text-base font-medium">Structure Mechanism</Label>
+                <Label className="text-base font-medium">Load Testing</Label>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div>
-                  <Label className="text-sm font-medium">Observations:<strong className="text-red-500">*</strong></Label>
-                  <Select value={formData.structure_mechanism_observations} onValueChange={(value) => handleInputChange("structure_mechanism_observations", value)}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="--Select--" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="0">--Select--</SelectItem>
-                      <SelectItem value="SAT">SAT</SelectItem>
-                      <SelectItem value="UNSAT">UNSAT</SelectItem>
-                      <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
-                    </SelectContent>
-                  </Select>
+              <div className="ml-4 space-y-4">
+                
+                <div className="space-y-2">
+                  <div className="text-sm font-medium">a) Date of Last Load Testing:</div>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                      <Label className="text-sm font-medium">Date:<strong className="text-red-500">*</strong></Label>
+                      <Input
+                        type="text"
+                        value={formData.last_load_testing_date}
+                        onChange={(e) => handleInputChange("last_load_testing_date", e.target.value)}
+                        placeholder="DD-MM-YYYY"
+                        maxLength={10}
+                        required
+                      />
+                    </div>
+                    <div className="md:col-span-2">
+                      <Label className="text-sm font-medium">Remarks:<strong className="text-red-500">*</strong></Label>
+                      <Textarea
+                        value={formData.last_load_testing_remarks}
+                        onChange={(e) => handleInputChange("last_load_testing_remarks", e.target.value)}
+                        rows={2}
+                        maxLength={1000}
+                        required
+                      />
+                    </div>
+                  </div>
                 </div>
-                <div className="md:col-span-2">
-                  <Label className="text-sm font-medium">Remarks:<strong className="text-red-500">*</strong></Label>
-                  <Textarea
-                    value={formData.structure_mechanism_remarks}
-                    onChange={(e) => handleInputChange("structure_mechanism_remarks", e.target.value)}
-                    rows={2}
-                    maxLength={1000}
-                    required
-                  />
+
+                <div className="space-y-2">
+                  <div className="text-sm font-medium">b) Check Certificates - Static, Running, and Safe Working Loads:</div>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                      <Label className="text-sm font-medium">Observations:<strong className="text-red-500">*</strong></Label>
+                      <Select value={formData.check_certificates_observations} onValueChange={(value) => handleInputChange("check_certificates_observations", value)}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="--Select--" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="0">--Select--</SelectItem>
+                          <SelectItem value="SAT">SAT</SelectItem>
+                          <SelectItem value="UNSAT">UNSAT</SelectItem>
+                          <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="md:col-span-2">
+                      <Label className="text-sm font-medium">Remarks:<strong className="text-red-500">*</strong></Label>
+                      <Textarea
+                        value={formData.check_certificates_remarks}
+                        onChange={(e) => handleInputChange("check_certificates_remarks", e.target.value)}
+                        rows={2}
+                        maxLength={1000}
+                        required
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <div className="text-sm font-medium">c) SS to Confirm no Oil Leakages During Load Testing:</div>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                      <Label className="text-sm font-medium">Observations:<strong className="text-red-500">*</strong></Label>
+                      <Select value={formData.no_oil_leakages_load_testing_observations} onValueChange={(value) => handleInputChange("no_oil_leakages_load_testing_observations", value)}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="--Select--" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="0">--Select--</SelectItem>
+                          <SelectItem value="SAT">SAT</SelectItem>
+                          <SelectItem value="UNSAT">UNSAT</SelectItem>
+                          <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="md:col-span-2">
+                      <Label className="text-sm font-medium">Remarks:<strong className="text-red-500">*</strong></Label>
+                      <Textarea
+                        value={formData.no_oil_leakages_load_testing_remarks}
+                        onChange={(e) => handleInputChange("no_oil_leakages_load_testing_remarks", e.target.value)}
+                        rows={2}
+                        maxLength={1000}
+                        required
+                      />
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
 
-            {/* Section 18: Dirt/Oil */}
+            {/* Section 18: Operational / Functional Checks */}
             <div className="space-y-4">
               <div className="flex items-center gap-2">
                 <span className="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">18</span>
-                <Label className="text-base font-medium">Dirt/Oil</Label>
+                <Label className="text-base font-medium">Operational / Functional Checks (Trails in 'Manual' and 'Auto' modes of operation)</Label>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div>
-                  <Label className="text-sm font-medium">Observations:<strong className="text-red-500">*</strong></Label>
-                  <Select value={formData.dirt_oil_observations} onValueChange={(value) => handleInputChange("dirt_oil_observations", value)}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="--Select--" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="0">--Select--</SelectItem>
-                      <SelectItem value="SAT">SAT</SelectItem>
-                      <SelectItem value="UNSAT">UNSAT</SelectItem>
-                      <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
-                    </SelectContent>
-                  </Select>
+              <div className="ml-4 space-y-4">
+                
+                <div className="space-y-2">
+                  <div className="text-sm font-medium">a) Lifting Speeds - 0.5 m/s:</div>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                      <Label className="text-sm font-medium">Observations:<strong className="text-red-500">*</strong></Label>
+                      <Select value={formData.lifting_speeds_observations} onValueChange={(value) => handleInputChange("lifting_speeds_observations", value)}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="--Select--" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="0">--Select--</SelectItem>
+                          <SelectItem value="SAT">SAT</SelectItem>
+                          <SelectItem value="UNSAT">UNSAT</SelectItem>
+                          <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="md:col-span-2">
+                      <Label className="text-sm font-medium">Remarks:<strong className="text-red-500">*</strong></Label>
+                      <Textarea
+                        value={formData.lifting_speeds_remarks}
+                        onChange={(e) => handleInputChange("lifting_speeds_remarks", e.target.value)}
+                        rows={2}
+                        maxLength={1000}
+                        required
+                      />
+                    </div>
+                  </div>
                 </div>
-                <div className="md:col-span-2">
-                  <Label className="text-sm font-medium">Remarks:<strong className="text-red-500">*</strong></Label>
-                  <Textarea
-                    value={formData.dirt_oil_remarks}
-                    onChange={(e) => handleInputChange("dirt_oil_remarks", e.target.value)}
-                    rows={2}
-                    maxLength={1000}
-                    required
-                  />
+
+                <div className="space-y-2">
+                  <div className="text-sm font-medium">b) Lowering Speeds - 0.5 m/s:</div>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                      <Label className="text-sm font-medium">Observations:<strong className="text-red-500">*</strong></Label>
+                      <Select value={formData.lowering_speeds_observations} onValueChange={(value) => handleInputChange("lowering_speeds_observations", value)}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="--Select--" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="0">--Select--</SelectItem>
+                          <SelectItem value="SAT">SAT</SelectItem>
+                          <SelectItem value="UNSAT">UNSAT</SelectItem>
+                          <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="md:col-span-2">
+                      <Label className="text-sm font-medium">Remarks:<strong className="text-red-500">*</strong></Label>
+                      <Textarea
+                        value={formData.lowering_speeds_remarks}
+                        onChange={(e) => handleInputChange("lowering_speeds_remarks", e.target.value)}
+                        rows={2}
+                        maxLength={1000}
+                        required
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <div className="text-sm font-medium">c) Operation of Limits Switches and Automatic Response of Lift Mechanism:</div>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                      <Label className="text-sm font-medium">Observations:<strong className="text-red-500">*</strong></Label>
+                      <Select value={formData.limits_switches_operation_observations} onValueChange={(value) => handleInputChange("limits_switches_operation_observations", value)}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="--Select--" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="0">--Select--</SelectItem>
+                          <SelectItem value="SAT">SAT</SelectItem>
+                          <SelectItem value="UNSAT">UNSAT</SelectItem>
+                          <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="md:col-span-2">
+                      <Label className="text-sm font-medium">Remarks:<strong className="text-red-500">*</strong></Label>
+                      <Textarea
+                        value={formData.limits_switches_operation_remarks}
+                        onChange={(e) => handleInputChange("limits_switches_operation_remarks", e.target.value)}
+                        rows={2}
+                        maxLength={1000}
+                        required
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <div className="text-sm font-medium">d) Accurate Stopping of Lift at All Locations Levelling of Lift at All Deck Stops (accuracy of ± 50 mm i.a.w OEM manual):</div>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                      <Label className="text-sm font-medium">Observations:<strong className="text-red-500">*</strong></Label>
+                      <Select value={formData.accurate_stopping_observations} onValueChange={(value) => handleInputChange("accurate_stopping_observations", value)}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="--Select--" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="0">--Select--</SelectItem>
+                          <SelectItem value="SAT">SAT</SelectItem>
+                          <SelectItem value="UNSAT">UNSAT</SelectItem>
+                          <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="md:col-span-2">
+                      <Label className="text-sm font-medium">Remarks:<strong className="text-red-500">*</strong></Label>
+                      <Textarea
+                        value={formData.accurate_stopping_remarks}
+                        onChange={(e) => handleInputChange("accurate_stopping_remarks", e.target.value)}
+                        rows={2}
+                        maxLength={1000}
+                        required
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <div className="text-sm font-medium">e) Simulate Power Failure During Lift Operation and Check Response of Brakes During Hoisting and Lowering Operation:</div>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                      <Label className="text-sm font-medium">Observations:<strong className="text-red-500">*</strong></Label>
+                      <Select value={formData.power_failure_observations} onValueChange={(value) => handleInputChange("power_failure_observations", value)}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="--Select--" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="0">--Select--</SelectItem>
+                          <SelectItem value="SAT">SAT</SelectItem>
+                          <SelectItem value="UNSAT">UNSAT</SelectItem>
+                          <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="md:col-span-2">
+                      <Label className="text-sm font-medium">Remarks:<strong className="text-red-500">*</strong></Label>
+                      <Textarea
+                        value={formData.power_failure_remarks}
+                        onChange={(e) => handleInputChange("power_failure_remarks", e.target.value)}
+                        rows={2}
+                        maxLength={1000}
+                        required
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <div className="text-sm font-medium">f) Free Movement of All Pulleys:</div>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                      <Label className="text-sm font-medium">Observations:<strong className="text-red-500">*</strong></Label>
+                      <Select value={formData.free_movement_pulleys_observations} onValueChange={(value) => handleInputChange("free_movement_pulleys_observations", value)}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="--Select--" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="0">--Select--</SelectItem>
+                          <SelectItem value="SAT">SAT</SelectItem>
+                          <SelectItem value="UNSAT">UNSAT</SelectItem>
+                          <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="md:col-span-2">
+                      <Label className="text-sm font-medium">Remarks:<strong className="text-red-500">*</strong></Label>
+                      <Textarea
+                        value={formData.free_movement_pulleys_remarks}
+                        onChange={(e) => handleInputChange("free_movement_pulleys_remarks", e.target.value)}
+                        rows={2}
+                        maxLength={1000}
+                        required
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <div className="text-sm font-medium">g) Hindered / Jerky Movement During Operation (if any):</div>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                      <Label className="text-sm font-medium">Observations:<strong className="text-red-500">*</strong></Label>
+                      <Select value={formData.jerky_movement_observations} onValueChange={(value) => handleInputChange("jerky_movement_observations", value)}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="--Select--" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="0">--Select--</SelectItem>
+                          <SelectItem value="SAT">SAT</SelectItem>
+                          <SelectItem value="UNSAT">UNSAT</SelectItem>
+                          <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="md:col-span-2">
+                      <Label className="text-sm font-medium">Remarks:<strong className="text-red-500">*</strong></Label>
+                      <Textarea
+                        value={formData.jerky_movement_remarks}
+                        onChange={(e) => handleInputChange("jerky_movement_remarks", e.target.value)}
+                        rows={2}
+                        maxLength={1000}
+                        required
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <div className="text-sm font-medium">h) Oil Leakages From Gear Box During Operational Trials:</div>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                      <Label className="text-sm font-medium">Observations:<strong className="text-red-500">*</strong></Label>
+                      <Select value={formData.oil_leakage_operational_observations} onValueChange={(value) => handleInputChange("oil_leakage_operational_observations", value)}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="--Select--" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="0">--Select--</SelectItem>
+                          <SelectItem value="SAT">SAT</SelectItem>
+                          <SelectItem value="UNSAT">UNSAT</SelectItem>
+                          <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="md:col-span-2">
+                      <Label className="text-sm font-medium">Remarks:<strong className="text-red-500">*</strong></Label>
+                      <Textarea
+                        value={formData.oil_leakage_operational_remarks}
+                        onChange={(e) => handleInputChange("oil_leakage_operational_remarks", e.target.value)}
+                        rows={2}
+                        maxLength={1000}
+                        required
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <div className="text-sm font-medium">i) Check for Excessive Vibrations in Operating Mechanism, Structure, Pulleys, Counter Weight and Cabin Movement:</div>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                      <Label className="text-sm font-medium">Observations:<strong className="text-red-500">*</strong></Label>
+                      <Select value={formData.excessive_vibrations_observations} onValueChange={(value) => handleInputChange("excessive_vibrations_observations", value)}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="--Select--" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="0">--Select--</SelectItem>
+                          <SelectItem value="SAT">SAT</SelectItem>
+                          <SelectItem value="UNSAT">UNSAT</SelectItem>
+                          <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="md:col-span-2">
+                      <Label className="text-sm font-medium">Remarks:<strong className="text-red-500">*</strong></Label>
+                      <Textarea
+                        value={formData.excessive_vibrations_remarks}
+                        onChange={(e) => handleInputChange("excessive_vibrations_remarks", e.target.value)}
+                        rows={2}
+                        maxLength={1000}
+                        required
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <div className="text-sm font-medium">j) Electro-Magnetic Brake Operation:</div>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                      <Label className="text-sm font-medium">Observations:<strong className="text-red-500">*</strong></Label>
+                      <Select value={formData.electro_magnetic_brake_observations} onValueChange={(value) => handleInputChange("electro_magnetic_brake_observations", value)}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="--Select--" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="0">--Select--</SelectItem>
+                          <SelectItem value="SAT">SAT</SelectItem>
+                          <SelectItem value="UNSAT">UNSAT</SelectItem>
+                          <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="md:col-span-2">
+                      <Label className="text-sm font-medium">Remarks:<strong className="text-red-500">*</strong></Label>
+                      <Textarea
+                        value={formData.electro_magnetic_brake_remarks}
+                        onChange={(e) => handleInputChange("electro_magnetic_brake_remarks", e.target.value)}
+                        rows={2}
+                        maxLength={1000}
+                        required
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <div className="text-sm font-medium">k) Manual Brake Operation:</div>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                      <Label className="text-sm font-medium">Observations:<strong className="text-red-500">*</strong></Label>
+                      <Select value={formData.manual_brake_observations} onValueChange={(value) => handleInputChange("manual_brake_observations", value)}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="--Select--" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="0">--Select--</SelectItem>
+                          <SelectItem value="SAT">SAT</SelectItem>
+                          <SelectItem value="UNSAT">UNSAT</SelectItem>
+                          <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="md:col-span-2">
+                      <Label className="text-sm font-medium">Remarks:<strong className="text-red-500">*</strong></Label>
+                      <Textarea
+                        value={formData.manual_brake_remarks}
+                        onChange={(e) => handleInputChange("manual_brake_remarks", e.target.value)}
+                        rows={2}
+                        maxLength={1000}
+                        required
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <div className="text-sm font-medium">l) Lift Door 'Auto Catch' Mechanism:</div>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                      <Label className="text-sm font-medium">Observations:<strong className="text-red-500">*</strong></Label>
+                      <Select value={formData.auto_catch_mechanism_observations} onValueChange={(value) => handleInputChange("auto_catch_mechanism_observations", value)}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="--Select--" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="0">--Select--</SelectItem>
+                          <SelectItem value="SAT">SAT</SelectItem>
+                          <SelectItem value="UNSAT">UNSAT</SelectItem>
+                          <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="md:col-span-2">
+                      <Label className="text-sm font-medium">Remarks:<strong className="text-red-500">*</strong></Label>
+                      <Textarea
+                        value={formData.auto_catch_mechanism_remarks}
+                        onChange={(e) => handleInputChange("auto_catch_mechanism_remarks", e.target.value)}
+                        rows={2}
+                        maxLength={1000}
+                        required
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <div className="text-sm font-medium">m) Operational of Indicator Lamps in Control Panel:</div>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                      <Label className="text-sm font-medium">Observations:<strong className="text-red-500">*</strong></Label>
+                      <Select value={formData.indicator_lamps_observations} onValueChange={(value) => handleInputChange("indicator_lamps_observations", value)}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="--Select--" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="0">--Select--</SelectItem>
+                          <SelectItem value="SAT">SAT</SelectItem>
+                          <SelectItem value="UNSAT">UNSAT</SelectItem>
+                          <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="md:col-span-2">
+                      <Label className="text-sm font-medium">Remarks:<strong className="text-red-500">*</strong></Label>
+                      <Textarea
+                        value={formData.indicator_lamps_remarks}
+                        onChange={(e) => handleInputChange("indicator_lamps_remarks", e.target.value)}
+                        rows={2}
+                        maxLength={1000}
+                        required
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <div className="text-sm font-medium">n) Safety Check - Operational of Alarms and Lights:</div>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                      <Label className="text-sm font-medium">Observations:<strong className="text-red-500">*</strong></Label>
+                      <Select value={formData.safety_check_observations} onValueChange={(value) => handleInputChange("safety_check_observations", value)}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="--Select--" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="0">--Select--</SelectItem>
+                          <SelectItem value="SAT">SAT</SelectItem>
+                          <SelectItem value="UNSAT">UNSAT</SelectItem>
+                          <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="md:col-span-2">
+                      <Label className="text-sm font-medium">Remarks:<strong className="text-red-500">*</strong></Label>
+                      <Textarea
+                        value={formData.safety_check_remarks}
+                        onChange={(e) => handleInputChange("safety_check_remarks", e.target.value)}
+                        rows={2}
+                        maxLength={1000}
+                        required
+                      />
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
 
-            {/* Section 19: Dust/Debris */}
+
+            {/* Section 19: Other Observation */}
             <div className="space-y-4">
               <div className="flex items-center gap-2">
                 <span className="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">19</span>
-                <Label className="text-base font-medium">Dust/Debris</Label>
+                <Label className="text-base font-medium">Other Observation</Label>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div>
-                  <Label className="text-sm font-medium">Observations:<strong className="text-red-500">*</strong></Label>
-                  <Select value={formData.dust_debris_observations} onValueChange={(value) => handleInputChange("dust_debris_observations", value)}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="--Select--" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="0">--Select--</SelectItem>
-                      <SelectItem value="SAT">SAT</SelectItem>
-                      <SelectItem value="UNSAT">UNSAT</SelectItem>
-                      <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="md:col-span-2">
-                  <Label className="text-sm font-medium">Remarks:<strong className="text-red-500">*</strong></Label>
-                  <Textarea
-                    value={formData.dust_debris_remarks}
-                    onChange={(e) => handleInputChange("dust_debris_remarks", e.target.value)}
-                    rows={2}
-                    maxLength={1000}
-                    required
-                  />
-                </div>
+              <div>
+                <Label className="text-sm font-medium">Remarks:<strong className="text-red-500">*</strong></Label>
+                <Textarea
+                  value={formData.other_observation_remarks}
+                  onChange={(e) => handleInputChange("other_observation_remarks", e.target.value)}
+                  rows={3}
+                  maxLength={1000}
+                  required
+                />
               </div>
             </div>
 
-            {/* Section 20: Brake Mechanism */}
+            {/* Section 20: Overall Remarks */}
             <div className="space-y-4">
               <div className="flex items-center gap-2">
                 <span className="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">20</span>
-                <Label className="text-base font-medium">Brake Mechanism</Label>
+                <Label className="text-base font-medium">Overall Remarks</Label>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div>
-                  <Label className="text-sm font-medium">Observations:<strong className="text-red-500">*</strong></Label>
-                  <Select value={formData.brake_mechanism_observations} onValueChange={(value) => handleInputChange("brake_mechanism_observations", value)}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="--Select--" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="0">--Select--</SelectItem>
-                      <SelectItem value="SAT">SAT</SelectItem>
-                      <SelectItem value="UNSAT">UNSAT</SelectItem>
-                      <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="md:col-span-2">
-                  <Label className="text-sm font-medium">Remarks:<strong className="text-red-500">*</strong></Label>
-                  <Textarea
-                    value={formData.brake_mechanism_remarks}
-                    onChange={(e) => handleInputChange("brake_mechanism_remarks", e.target.value)}
-                    rows={2}
-                    maxLength={1000}
-                    required
-                  />
-                </div>
+              <div>
+                <Label className="text-sm font-medium">Remarks:<strong className="text-red-500">*</strong></Label>
+                <Textarea
+                  value={formData.overall_remarks}
+                  onChange={(e) => handleInputChange("overall_remarks", e.target.value)}
+                  rows={3}
+                  maxLength={1000}
+                  required
+                />
               </div>
             </div>
 
-            {/* Section 21: Traction Sheave */}
+            {/* Section 21: Authority Signature */}
             <div className="space-y-4">
               <div className="flex items-center gap-2">
                 <span className="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">21</span>
-                <Label className="text-base font-medium">Traction Sheave</Label>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div>
-                  <Label className="text-sm font-medium">Observations:<strong className="text-red-500">*</strong></Label>
-                  <Select value={formData.traction_sheave_observations} onValueChange={(value) => handleInputChange("traction_sheave_observations", value)}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="--Select--" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="0">--Select--</SelectItem>
-                      <SelectItem value="SAT">SAT</SelectItem>
-                      <SelectItem value="UNSAT">UNSAT</SelectItem>
-                      <SelectItem value="SATWITHOBSERVATION">SAT WITH OBSERVATION</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="md:col-span-2">
-                  <Label className="text-sm font-medium">Remarks:<strong className="text-red-500">*</strong></Label>
-                  <Textarea
-                    value={formData.traction_sheave_remarks}
-                    onChange={(e) => handleInputChange("traction_sheave_remarks", e.target.value)}
-                    rows={2}
-                    maxLength={1000}
-                    required
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* Note Section */}
-            <div className="space-y-4">
-              <div className="flex items-center gap-2">
-                <span className="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">N</span>
-                <Label className="text-base font-medium">Note</Label>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <Label className="text-sm font-medium">Other Observations:</Label>
-                  <Textarea
-                    value={formData.remarks_other_observ}
-                    onChange={(e) => handleInputChange("remarks_other_observ", e.target.value)}
-                    rows={3}
-                    maxLength={1000}
-                  />
-                </div>
-                <div>
-                  <Label className="text-sm font-medium">Overall Remarks:</Label>
-                  <Textarea
-                    value={formData.remarks_overall}
-                    onChange={(e) => handleInputChange("remarks_overall", e.target.value)}
-                    rows={3}
-                    maxLength={1000}
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* Authority Signature */}
-            <div className="space-y-4">
-              <div className="flex items-center gap-2">
-                <span className="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">S</span>
-                <Label className="text-base font-medium">Authority Signature</Label>
+                <Label className="text-base font-medium">Authority Signature<strong className="text-red-500">*</strong></Label>
               </div>
               <div>
+                <Label className="text-sm font-medium">Upload File:<strong className="text-red-500">*</strong></Label>
                 <Input
                   type="file"
-                  accept="image/*,.pdf"
-                  onChange={handleFileChange}
-                  className="file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                  onChange={(e) => handleInputChange("authority_signature", e.target.files?.[0] || null)}
+                  required
                 />
               </div>
             </div>
@@ -1617,7 +2803,7 @@ const CargoLiftVKDForm: React.FC = () => {
                 onClick={handleFetchDrafts}
                 className="px-6 bg-cyan-500 hover:bg-cyan-600 text-white font-semibold uppercase"
               >
-                <FileText className="h-4 w-4 mr-2" />
+                {/* <FileText className="h-4 w-4 mr-2" /> */}
                 FETCH DRAFTS
               </Button>
               <Button
@@ -1625,7 +2811,7 @@ const CargoLiftVKDForm: React.FC = () => {
                 onClick={handleSaveDraft}
                 className="px-6 bg-green-500 hover:bg-green-600 text-white font-semibold uppercase"
               >
-                <Save className="h-4 w-4 mr-2" />
+                {/* <Save className="h-4 w-4 mr-2" /> */}
                 SAVE DRAFT
               </Button>
               <Button
