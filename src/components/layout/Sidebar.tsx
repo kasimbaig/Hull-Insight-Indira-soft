@@ -71,6 +71,8 @@ const sidebarItems = [
           { title: "DOCKING PLAN APPROVAL", path: "/app/returns/docking-plan-approval" },
           { title: "Docking Approval", path: "/app/yard/docking-approval" },
           { title: "IN 379 > DOCKING REPORT SECTION -1", path: "/app/returns/in379-docking-report-section1" },
+          { title: "PARTICULARS OF INTERNAL & ABOVE WATER STRUCTURE", path: "/app/yard/particulars-internal-above-water-structure" },
+          { title: "PARTICULARS OF UNDERWATER HULL SURVEY BY YARD", path: "/app/yard/particulars-underwater-hull-survey-by-yard" },
         ],
       },
       // { title: "Reports", path: "/app/yard/reports" },

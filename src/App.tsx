@@ -61,6 +61,8 @@ import IN379DockingReportSection3Report from "./pages/IN379DockingReportSection3
 import ShipStaffReportHullInspection from "./pages/ShipStaffReportHullInspection";
 import FormComments from "./pages/FormComments";
 import TTTest from "./pages/TTTest";
+import ParticularsInternalAboveWaterStructure from "./pages/ParticularsInternalAboveWaterStructure";
+import ParticularsUnderwaterHullSurveyByYard from "./pages/ParticularsUnderwaterHullSurveyByYard";
 // Module imports
 import YardModule from "./pages/yard/YardModule";
 import ShipModule from "./pages/ship/ShipModule";
@@ -105,9 +107,11 @@ const App = () => (
           {/* Placeholder routes for other masters */}
           <Route path="masters/*" element={<div className="p-8 text-center text-muted-foreground">Master page coming soon...</div>} />
           
-          {/* Yard Operations Module */}
-          <Route path="yard/*" element={<YardModule />} />
-          <Route path="yard/docking-approval" element={<DockingApproval />} />
+            {/* Yard Operations Module */}
+            <Route path="yard/*" element={<YardModule />} />
+            <Route path="yard/docking-approval" element={<DockingApproval />} />
+            <Route path="yard/particulars-internal-above-water-structure" element={<ParticularsInternalAboveWaterStructure />} />
+            <Route path="yard/particulars-underwater-hull-survey-by-yard" element={<ParticularsUnderwaterHullSurveyByYard />} />
           
           {/* Ship Operations Module */}
           <Route path="ship/*" element={<ShipModule />} />
