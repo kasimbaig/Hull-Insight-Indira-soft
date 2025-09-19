@@ -471,7 +471,7 @@ const HullPotentialDataForm = () => {
                           className="w-full px-2 py-1 border border-gray-300 rounded text-xs"
                           placeholder="DD-MM-YYYY"
                         />
-                        <Calendar className="absolute right-2 top-2 h-3 w-3 text-gray-400 pointer-events-none" />
+                        {/* <Calendar className="absolute right-2 top-2 h-3 w-3 text-gray-400 pointer-events-none" /> */}
                       </div>
                     </td>
                     <td className="border border-gray-300 px-2 py-2">
@@ -482,7 +482,7 @@ const HullPotentialDataForm = () => {
                           onChange={(e) => handleHullPotentialDataChange(index, 'time', e.target.value)}
                           className="w-full px-2 py-1 border border-gray-300 rounded text-xs"
                         />
-                        <Clock className="absolute right-2 top-2 h-3 w-3 text-gray-400 pointer-events-none" />
+                        {/* <Clock className="absolute right-2 top-2 h-3 w-3 text-gray-400 pointer-events-none" /> */}
                       </div>
                     </td>
                     <td className="border border-gray-300 px-1 py-1">

@@ -1,4 +1,9 @@
 import React, { useState } from 'react';
+import { Calendar } from '@/components/ui/calendar';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Button } from '@/components/ui/button';
+import { CalendarIcon } from 'lucide-react';
+import { format } from 'date-fns';
 
 const DockingApproval = () => {
   const [formData, setFormData] = useState({
@@ -88,6 +93,11 @@ const DockingApproval = () => {
     detailsBreastShore: [{ frNo: '', referencePoint: '', distanceFromReference: '' }],
     detailsVerticalShore: [{ frameStation: '', crossSection: '', height: '' }]
   });
+
+  // State for date pickers
+  const [deputyManagerDate, setDeputyManagerDate] = useState<Date>();
+  const [managerDate, setManagerDate] = useState<Date>();
+  const [verifierDate, setVerifierDate] = useState<Date>();
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -276,7 +286,7 @@ const DockingApproval = () => {
       <div className="bg-white rounded-lg shadow-md overflow-hidden">
           {/* Header Fields */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-            <div className="form-group">
+            <div className="form-group p-3">
               <label className="block text-gray-700 mb-2 font-semibold">
                 Docks <span className="text-red-500">*</span>
               </label>
@@ -297,7 +307,7 @@ const DockingApproval = () => {
               </select>
             </div>
             
-            <div className="form-group">
+            <div className="form-group p-3 ">
               <label className="block text-gray-700 mb-2 font-semibold">
                 Letter No. <span className="text-red-500">*</span>
               </label>
@@ -2714,10 +2724,40 @@ const DockingApproval = () => {
                           type="text"
                           className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                           placeholder="DD-MM-YYYY"
+                          value={deputyManagerDate ? format(deputyManagerDate, "dd-MM-yyyy") : ""}
+                          onChange={(e) => {
+                            // Allow manual input, but also try to parse it as date
+                            const value = e.target.value;
+                            if (value && /^\d{2}-\d{2}-\d{4}$/.test(value)) {
+                              const [day, month, year] = value.split('-');
+                              const date = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+                              if (!isNaN(date.getTime())) {
+                                setDeputyManagerDate(date);
+                              }
+                            } else if (!value) {
+                              setDeputyManagerDate(undefined);
+                            }
+                          }}
                         />
-                        <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                        </svg>
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="px-3"
+                            >
+                              <CalendarIcon className="h-4 w-4" />
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-auto p-0">
+                            <Calendar
+                              mode="single"
+                              selected={deputyManagerDate}
+                              onSelect={setDeputyManagerDate}
+                              initialFocus
+                            />
+                          </PopoverContent>
+                        </Popover>
                       </div>
                     </div>
                     
@@ -2770,10 +2810,40 @@ const DockingApproval = () => {
                           type="text"
                           className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                           placeholder="DD-MM-YYYY"
+                          value={managerDate ? format(managerDate, "dd-MM-yyyy") : ""}
+                          onChange={(e) => {
+                            // Allow manual input, but also try to parse it as date
+                            const value = e.target.value;
+                            if (value && /^\d{2}-\d{2}-\d{4}$/.test(value)) {
+                              const [day, month, year] = value.split('-');
+                              const date = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+                              if (!isNaN(date.getTime())) {
+                                setManagerDate(date);
+                              }
+                            } else if (!value) {
+                              setManagerDate(undefined);
+                            }
+                          }}
                         />
-                        <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                        </svg>
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="px-3"
+                            >
+                              <CalendarIcon className="h-4 w-4" />
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-auto p-0">
+                            <Calendar
+                              mode="single"
+                              selected={managerDate}
+                              onSelect={setManagerDate}
+                              initialFocus
+                            />
+                          </PopoverContent>
+                        </Popover>
                       </div>
                     </div>
                     
@@ -2835,10 +2905,40 @@ const DockingApproval = () => {
                           type="text"
                           className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                           placeholder="DD-MM-YYYY"
+                          value={verifierDate ? format(verifierDate, "dd-MM-yyyy") : ""}
+                          onChange={(e) => {
+                            // Allow manual input, but also try to parse it as date
+                            const value = e.target.value;
+                            if (value && /^\d{2}-\d{2}-\d{4}$/.test(value)) {
+                              const [day, month, year] = value.split('-');
+                              const date = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+                              if (!isNaN(date.getTime())) {
+                                setVerifierDate(date);
+                              }
+                            } else if (!value) {
+                              setVerifierDate(undefined);
+                            }
+                          }}
                         />
-                        <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                        </svg>
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="px-3"
+                            >
+                              <CalendarIcon className="h-4 w-4" />
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-auto p-0">
+                            <Calendar
+                              mode="single"
+                              selected={verifierDate}
+                              onSelect={setVerifierDate}
+                              initialFocus
+                            />
+                          </PopoverContent>
+                        </Popover>
                       </div>
                     </div>
                     
