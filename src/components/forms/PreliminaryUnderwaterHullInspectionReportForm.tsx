@@ -721,78 +721,243 @@ const PreliminaryUnderwaterHullInspectionReportForm = () => {
         </div>
       </div>
 
-          {/* HITU's Inspectors */}
+          {/* Header Card with INS Selection */}
           <Card className="border border-gray-300">
-            <CardHeader className="bg-gray-100">
-              <CardTitle className="text-lg font-semibold text-center underline">HITU's Inspectors</CardTitle>
+            <CardHeader className="border-b border-gray-300">
+              <CardTitle className="text-lg font-semibold text-center">
+                PRELIMINARY UNDERWATER HULL INSPECTION - INS{" "}
+                <Select value={formData.preInspection} onValueChange={(value) => handleInputChange('preInspection', value)}>
+                  <SelectTrigger className="inline-block w-auto ml-2">
+                    <SelectValue placeholder="--Select--" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="43">SHIVALIK</SelectItem>
+                    <SelectItem value="84">JAMUNA</SelectItem>
+                    <SelectItem value="23">BANGARAM</SelectItem>
+                    <SelectItem value="56">TARANGINI</SelectItem>
+                    <SelectItem value="99">SARYU</SelectItem>
+                    <SelectItem value="31">KUMBHIR</SelectItem>
+                    <SelectItem value="87">T-83</SelectItem>
+                    <SelectItem value="27">AIRAVAT</SelectItem>
+                    <SelectItem value="48">KHANJAR</SelectItem>
+                    <SelectItem value="57">SHUDERSHINI</SelectItem>
+                    <SelectItem value="59">TRISHUL</SelectItem>
+                    <SelectItem value="62">TEG</SelectItem>
+                    <SelectItem value="55">RANVIJAY</SelectItem>
+                    <SelectItem value="47">KIRPAN</SelectItem>
+                    <SelectItem value="35">DELHI</SelectItem>
+                    <SelectItem value="83">SURVEKSHAK</SelectItem>
+                    <SelectItem value="65">JYOTI</SelectItem>
+                    <SelectItem value="94">SUJATA</SelectItem>
+                    <SelectItem value="76">KABRA</SelectItem>
+                    <SelectItem value="68">CANKARSO</SelectItem>
+                    <SelectItem value="88">T-84</SelectItem>
+                    <SelectItem value="18">VIBHUTI</SelectItem>
+                    <SelectItem value="17">NISHANK</SelectItem>
+                    <SelectItem value="25">MAGAR</SelectItem>
+                    <SelectItem value="42">BEAS</SelectItem>
+                    <SelectItem value="90">SUVERNA</SelectItem>
+                    <SelectItem value="45">SAHYADRI</SelectItem>
+                    <SelectItem value="16">PRALAYA</SelectItem>
+                    <SelectItem value="74">CHERIYAM</SelectItem>
+                    <SelectItem value="44">SATPURA</SelectItem>
+                    <SelectItem value="20">JALASHWA</SelectItem>
+                    <SelectItem value="63">TARKASH</SelectItem>
+                    <SelectItem value="52">KARMUK</SelectItem>
+                    <SelectItem value="82">SUTLEJ</SelectItem>
+                    <SelectItem value="96">SUMEDHA</SelectItem>
+                    <SelectItem value="15">PRABAL</SelectItem>
+                    <SelectItem value="75">CORA DIVH</SelectItem>
+                    <SelectItem value="21">BATTIMALV</SelectItem>
+                    <SelectItem value="38">CHENNAI</SelectItem>
+                    <SelectItem value="97">SUMITRA</SelectItem>
+                    <SelectItem value="86">T-82</SelectItem>
+                    <SelectItem value="46">KUTHAR</SelectItem>
+                    <SelectItem value="69">KONDUL</SelectItem>
+                    <SelectItem value="89">SUBHDRA</SelectItem>
+                    <SelectItem value="80">DARSHAK</SelectItem>
+                    <SelectItem value="24">BITRA</SelectItem>
+                    <SelectItem value="73">CHETLAT</SelectItem>
+                    <SelectItem value="81">NIREEKSHAK</SelectItem>
+                    <SelectItem value="71">KARUVA</SelectItem>
+                    <SelectItem value="67">DEEPAK</SelectItem>
+                    <SelectItem value="123">SHAKTI</SelectItem>
+                    <SelectItem value="36">KOLKATA</SelectItem>
+                    <SelectItem value="85">INVETIGATOR</SelectItem>
+                    <SelectItem value="93">SHARDA</SelectItem>
+                    <SelectItem value="64">SHAKTI</SelectItem>
+                    <SelectItem value="33">MUMBAI</SelectItem>
+                    <SelectItem value="39">GOMTI</SelectItem>
+                    <SelectItem value="41">BETWA</SelectItem>
+                    <SelectItem value="13">NASHAK</SelectItem>
+                    <SelectItem value="70">KOSWARI</SelectItem>
+                    <SelectItem value="30">CHEETAH</SelectItem>
+                    <SelectItem value="58">TALWAR</SelectItem>
+                    <SelectItem value="28">KESARI</SelectItem>
+                    <SelectItem value="66">ADITYA</SelectItem>
+                    <SelectItem value="22">BARATANG</SelectItem>
+                    <SelectItem value="49">KORA</SelectItem>
+                    <SelectItem value="51">KULISH</SelectItem>
+                    <SelectItem value="53">RANA</SelectItem>
+                    <SelectItem value="77">KALPENI</SelectItem>
+                    <SelectItem value="122">SHAKTI</SelectItem>
+                    <SelectItem value="12">VIPUL</SelectItem>
+                    <SelectItem value="60">TABAR</SelectItem>
+                    <SelectItem value="61">TRINKAND</SelectItem>
+                    <SelectItem value="37">KOCHI</SelectItem>
+                    <SelectItem value="91">SUKANYA</SelectItem>
+                    <SelectItem value="92">SAVITRI</SelectItem>
+                    <SelectItem value="29">GULDAR</SelectItem>
+                    <SelectItem value="40">BRAHMAPUTRA</SelectItem>
+                    <SelectItem value="26">GHARIAL</SelectItem>
+                    <SelectItem value="54">RANVIR</SelectItem>
+                    <SelectItem value="79">NIRUPAK</SelectItem>
+                    <SelectItem value="19">VINASH</SelectItem>
+                    <SelectItem value="50">KIRCH</SelectItem>
+                    <SelectItem value="78">SANDHAYAK</SelectItem>
+                    <SelectItem value="14">VIDYUT</SelectItem>
+                    <SelectItem value="95">TIR</SelectItem>
+                    <SelectItem value="32">GAJ</SelectItem>
+                    <SelectItem value="72">CAR NICOBAR</SelectItem>
+                    <SelectItem value="98">SUNAYNA</SelectItem>
+                    <SelectItem value="34">MYSORE</SelectItem>
+                  </SelectContent>
+                </Select>
+              </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-6 p-6">
-              <div className="flex items-center gap-2 mb-2">
-                <Label className="text-sm">Enter Total Number of Rows.</Label>
-                <Input
-                  type="number"
-                  value={formData.inspectors.length}
-                  onChange={(e) => {
-                    const count = parseInt(e.target.value) || 0;
-                    if (count > formData.inspectors.length) {
-                      for (let i = formData.inspectors.length; i < count; i++) {
-                        handleAddInspector();
-                      }
-                    } else if (count < formData.inspectors.length) {
-                      const toRemove = formData.inspectors.slice(count);
-                      toRemove.forEach(inspector => handleRemoveInspector(inspector.id));
-                    }
-                  }}
-                  className="w-20"
-                />
-        </div>
-              {formData.inspectors.length > 0 && (
-                <div className="overflow-x-auto">
-                  <Table className="border border-gray-300">
-                    <TableHeader>
-                      <TableRow className="bg-gray-50">
-                        <TableHead className="border border-gray-300 text-center font-medium">Sr No.</TableHead>
-                        <TableHead className="border border-gray-300 text-center font-medium">Name*</TableHead>
-                        <TableHead className="border border-gray-300 text-center font-medium">Rank*</TableHead>
-                        <TableHead className="border border-gray-300 text-center font-medium">Designation*</TableHead>
-                      </TableRow>
-                    </TableHeader>
+            <CardContent className="p-6">
+              <div className="col-12 col-12">
+                <div className="table-responsive tbl-scroll">
+                  <Table className="table table-striped table-bordered">
                     <TableBody>
-                      {formData.inspectors.map((inspector, index) => (
-                        <TableRow key={inspector.id}>
-                          <TableCell className="border border-gray-300 p-2 text-center">
-                            {index + 1}
-                          </TableCell>
-                          <TableCell className="border border-gray-300 p-2">
+                      <TableRow>
+                        <TableCell>Date of Inspection<strong className="text-red-500">*</strong></TableCell>
+                        <TableCell>
+                          <div className="autocom_search_icon2 cal">
                             <Input
-                              value={inspector.inspectorName}
-                              onChange={(e) => handleUpdateInspector(inspector.id, 'inspectorName', e.target.value)}
-                              placeholder="Enter inspector name"
-                              className="border-0 p-1"
+                              type="text"
+                              id="dt_inspection"
+                              name="dt_inspection"
+                              value={formData.dtInspection}
+                              onChange={(e) => handleInputChange('dtInspection', e.target.value)}
+                              placeholder="DD-MM-YYYY"
+                              className="form__input"
+                              maxLength={10}
+                              required
                             />
-                          </TableCell>
-                          <TableCell className="border border-gray-300 p-2">
-                            <Input
-                              value={inspector.inspectorRank}
-                              onChange={(e) => handleUpdateInspector(inspector.id, 'inspectorRank', e.target.value)}
-                              placeholder="Enter inspector rank"
-                              className="border-0 p-1"
-                            />
-                          </TableCell>
-                          <TableCell className="border border-gray-300 p-2">
-                            <Input
-                              value={inspector.inspectorDesignation}
-                              onChange={(e) => handleUpdateInspector(inspector.id, 'inspectorDesignation', e.target.value)}
-                              placeholder="Enter inspector designation"
-                              className="border-0 p-1"
-                            />
-                          </TableCell>
-                        </TableRow>
-                      ))}
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell>Authority for Inspection<strong className="text-red-500">*</strong></TableCell>
+                        <TableCell>
+                          <Input
+                            type="text"
+                            id="auth_inspection"
+                            name="auth_inspection"
+                            value={formData.authInspection}
+                            onChange={(e) => handleInputChange('authInspection', e.target.value)}
+                            className="form__input"
+                            maxLength={40}
+                          />
+                        </TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell>HITU's Inspectors<strong className="text-red-500">*</strong></TableCell>
+                        <TableCell>
+                          <div className="col-lg-12 col-12">
+                            <div className="table-responsive tbl-scroll">
+                              <Table className="table table-striped table-bordered">
+                                <TableHeader>
+                                  <TableRow>
+                                    <TableCell colSpan={2}><strong>Enter Total Number of Rows.</strong></TableCell>
+                                    <TableCell colSpan={2}>
+                                      <Input
+                                        type="hidden"
+                                        id="hdaddcountinve"
+                                        name="hdaddcountinve"
+                                        value="1"
+                                        className="form-control"
+                                      />
+                                      <Input
+                                        type="text"
+                                        id="total_row"
+                                        name="total_row"
+                                        value={formData.inspectors.length}
+                                        onChange={(e) => {
+                                          const count = parseInt(e.target.value) || 0;
+                                          if (count > formData.inspectors.length) {
+                                            for (let i = formData.inspectors.length; i < count; i++) {
+                                              handleAddInspector();
+                                            }
+                                          } else if (count < formData.inspectors.length) {
+                                            const toRemove = formData.inspectors.slice(count);
+                                            toRemove.forEach(inspector => handleRemoveInspector(inspector.id));
+                                          }
+                                        }}
+                                        className="input_class"
+                                        maxLength={2}
+                                      />
+                                    </TableCell>
+                                  </TableRow>
+                                  <TableRow className="text-center">
+                                    <TableHead>Sr No.</TableHead>
+                                    <TableHead>Name<strong className="text-red-500">*</strong></TableHead>
+                                    <TableHead>Rank<strong className="text-red-500">*</strong></TableHead>
+                                    <TableHead>Designation<strong className="text-red-500">*</strong></TableHead>
+                                  </TableRow>
+                                </TableHeader>
+                                <TableBody>
+                                  {formData.inspectors.map((inspector, index) => (
+                                    <TableRow key={inspector.id}>
+                                      <TableCell className="text-center" id={`sequence_HINS${index + 1}`}>
+                                        {index + 1}
+                                      </TableCell>
+                                      <TableCell>
+                                        <Input
+                                          type="text"
+                                          id={`inspector_name${index + 1}`}
+                                          name={`inspector_name${index + 1}`}
+                                          value={inspector.inspectorName}
+                                          onChange={(e) => handleUpdateInspector(inspector.id, 'inspectorName', e.target.value)}
+                                          className="form__input"
+                                          maxLength={20}
+                                        />
+                                      </TableCell>
+                                      <TableCell>
+                                        <Input
+                                          type="text"
+                                          id={`inspector_rank${index + 1}`}
+                                          name={`inspector_rank${index + 1}`}
+                                          value={inspector.inspectorRank}
+                                          onChange={(e) => handleUpdateInspector(inspector.id, 'inspectorRank', e.target.value)}
+                                          className="form__input"
+                                          maxLength={10}
+                                        />
+                                      </TableCell>
+                                      <TableCell>
+                                        <Input
+                                          type="text"
+                                          id={`inspector_designation${index + 1}`}
+                                          name={`inspector_designation${index + 1}`}
+                                          value={inspector.inspectorDesignation}
+                                          onChange={(e) => handleUpdateInspector(inspector.id, 'inspectorDesignation', e.target.value)}
+                                          className="form__input"
+                                          maxLength={10}
+                                        />
+                                      </TableCell>
+                                    </TableRow>
+                                  ))}
+                                </TableBody>
+                              </Table>
+                            </div>
+                          </div>
+                        </TableCell>
+                      </TableRow>
                     </TableBody>
                   </Table>
-      </div>
-              )}
+                </div>
+              </div>
             </CardContent>
           </Card>
 

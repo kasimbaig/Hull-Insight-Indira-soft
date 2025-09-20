@@ -772,8 +772,896 @@ const ManualHoistingLiftingAndTransportingDevicesInMagazinesForm: React.FC = () 
                 </div>
               </div>
 
-              {/* Continue with remaining sections... */}
-              {/* For brevity, I'll add the remaining sections in a similar pattern */}
+              {/* Section 9 - Gear Box Oil */}
+              <div className="border-b border-gray-200 pb-4">
+                <div className="flex items-center space-x-4 mb-4">
+                  <div className="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold text-sm">
+                    9
+                  </div>
+                  <div className="flex-1">
+                    <Label className="text-lg font-medium">Gear Box Oil</Label>
+                  </div>
+                </div>
+                
+                <div className="ml-12 space-y-4">
+                  <div>
+                    <div className="text-sm font-medium mb-2">a) Oil Level</div>
+                    <div className="flex items-start space-x-4">
+                      <div className="w-48">
+                        <Label className="text-sm">Observations:<span className="text-red-500">*</span></Label>
+                        <Select value={formData.oilLevelObservations} onValueChange={(value) => handleInputChange('oilLevelObservations', value)}>
+                          <SelectTrigger className="mt-1">
+                            <SelectValue placeholder="--Select--" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {observationOptions.map((option) => (
+                              <SelectItem key={option.value} value={option.value}>
+                                {option.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="flex-1">
+                        <Label className="text-sm">Remarks:<span className="text-red-500">*</span></Label>
+                        <Textarea
+                          value={formData.oilLevelRemarks}
+                          onChange={(e) => handleInputChange('oilLevelRemarks', e.target.value)}
+                          rows={2}
+                          className="mt-1"
+                          required
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <div className="text-sm font-medium mb-2">b) SS to Confirm - Oil Being Used in Gear Box 80W90 (OEM Specified)</div>
+                    <div className="flex items-start space-x-4">
+                      <div className="w-48">
+                        <Label className="text-sm">Observations:<span className="text-red-500">*</span></Label>
+                        <Select value={formData.oilTypeObservations} onValueChange={(value) => handleInputChange('oilTypeObservations', value)}>
+                          <SelectTrigger className="mt-1">
+                            <SelectValue placeholder="--Select--" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {observationOptions.map((option) => (
+                              <SelectItem key={option.value} value={option.value}>
+                                {option.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="flex-1">
+                        <Label className="text-sm">Remarks:<span className="text-red-500">*</span></Label>
+                        <Textarea
+                          value={formData.oilTypeRemarks}
+                          onChange={(e) => handleInputChange('oilTypeRemarks', e.target.value)}
+                          rows={2}
+                          className="mt-1"
+                          required
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <div className="text-sm font-medium mb-2">c) Last Date of Oil Change (annual i.a.w OEM manual)</div>
+                    <div className="flex items-start space-x-4">
+                      <div className="w-48">
+                        <Label className="text-sm">Date:<span className="text-red-500">*</span></Label>
+                        <Input
+                          type="date"
+                          value={formData.oilChangeDate}
+                          onChange={(e) => handleInputChange('oilChangeDate', e.target.value)}
+                          className="mt-1"
+                          required
+                        />
+                      </div>
+                      <div className="flex-1">
+                        <Label className="text-sm">Remarks:<span className="text-red-500">*</span></Label>
+                        <Textarea
+                          value={formData.oilChangeRemarks}
+                          onChange={(e) => handleInputChange('oilChangeRemarks', e.target.value)}
+                          rows={2}
+                          className="mt-1"
+                          required
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Section 10 - Visual Inspection */}
+              <div className="border-b border-gray-200 pb-4">
+                <div className="flex items-center space-x-4 mb-4">
+                  <div className="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold text-sm">
+                    10
+                  </div>
+                  <div className="flex-1">
+                    <Label className="text-lg font-medium">Visual Inspection</Label>
+                  </div>
+                </div>
+                
+                <div className="ml-12 space-y-4">
+                  <div>
+                    <div className="text-sm font-medium mb-2">a) Foundation and Structure</div>
+                    <div className="flex items-start space-x-4">
+                      <div className="w-48">
+                        <Label className="text-sm">Observations:<span className="text-red-500">*</span></Label>
+                        <Select value={formData.foundationObservations} onValueChange={(value) => handleInputChange('foundationObservations', value)}>
+                          <SelectTrigger className="mt-1">
+                            <SelectValue placeholder="--Select--" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {observationOptions.map((option) => (
+                              <SelectItem key={option.value} value={option.value}>
+                                {option.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="flex-1">
+                        <Label className="text-sm">Remarks:<span className="text-red-500">*</span></Label>
+                        <Textarea
+                          value={formData.foundationRemarks}
+                          onChange={(e) => handleInputChange('foundationRemarks', e.target.value)}
+                          rows={2}
+                          className="mt-1"
+                          required
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <div className="text-sm font-medium mb-2">b) Pulleys</div>
+                    <div className="flex items-start space-x-4">
+                      <div className="w-48">
+                        <Label className="text-sm">Observations:<span className="text-red-500">*</span></Label>
+                        <Select value={formData.pulleysObservations} onValueChange={(value) => handleInputChange('pulleysObservations', value)}>
+                          <SelectTrigger className="mt-1">
+                            <SelectValue placeholder="--Select--" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {observationOptions.map((option) => (
+                              <SelectItem key={option.value} value={option.value}>
+                                {option.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="flex-1">
+                        <Label className="text-sm">Remarks:<span className="text-red-500">*</span></Label>
+                        <Textarea
+                          value={formData.pulleysRemarks}
+                          onChange={(e) => handleInputChange('pulleysRemarks', e.target.value)}
+                          rows={2}
+                          className="mt-1"
+                          required
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <div className="text-sm font-medium mb-2">c) Limit Switches</div>
+                    <div className="flex items-start space-x-4">
+                      <div className="w-48">
+                        <Label className="text-sm">Observations:<span className="text-red-500">*</span></Label>
+                        <Select value={formData.limitSwitchesObservations} onValueChange={(value) => handleInputChange('limitSwitchesObservations', value)}>
+                          <SelectTrigger className="mt-1">
+                            <SelectValue placeholder="--Select--" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {observationOptions.map((option) => (
+                              <SelectItem key={option.value} value={option.value}>
+                                {option.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="flex-1">
+                        <Label className="text-sm">Remarks:<span className="text-red-500">*</span></Label>
+                        <Textarea
+                          value={formData.limitSwitchesRemarks}
+                          onChange={(e) => handleInputChange('limitSwitchesRemarks', e.target.value)}
+                          rows={2}
+                          className="mt-1"
+                          required
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <div className="text-sm font-medium mb-2">d) Control Panel</div>
+                    <div className="flex items-start space-x-4">
+                      <div className="w-48">
+                        <Label className="text-sm">Observations:<span className="text-red-500">*</span></Label>
+                        <Select value={formData.controlPanelObservations} onValueChange={(value) => handleInputChange('controlPanelObservations', value)}>
+                          <SelectTrigger className="mt-1">
+                            <SelectValue placeholder="--Select--" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {observationOptions.map((option) => (
+                              <SelectItem key={option.value} value={option.value}>
+                                {option.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="flex-1">
+                        <Label className="text-sm">Remarks:<span className="text-red-500">*</span></Label>
+                        <Textarea
+                          value={formData.controlPanelRemarks}
+                          onChange={(e) => handleInputChange('controlPanelRemarks', e.target.value)}
+                          rows={2}
+                          className="mt-1"
+                          required
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Section 11 - Wire Rope */}
+              <div className="border-b border-gray-200 pb-4">
+                <div className="flex items-center space-x-4 mb-4">
+                  <div className="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold text-sm">
+                    11
+                  </div>
+                  <div className="flex-1">
+                    <Label className="text-lg font-medium">Wire Rope</Label>
+                  </div>
+                </div>
+                
+                <div className="ml-12 space-y-4">
+                  <div>
+                    <div className="text-sm font-medium mb-2">a) Visual Condition - Ropes and Fitting</div>
+                    <div className="flex items-start space-x-4">
+                      <div className="w-48">
+                        <Label className="text-sm">Observations:<span className="text-red-500">*</span></Label>
+                        <Select value={formData.wireRopeObservations} onValueChange={(value) => handleInputChange('wireRopeObservations', value)}>
+                          <SelectTrigger className="mt-1">
+                            <SelectValue placeholder="--Select--" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {observationOptions.map((option) => (
+                              <SelectItem key={option.value} value={option.value}>
+                                {option.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="flex-1">
+                        <Label className="text-sm">Remarks:<span className="text-red-500">*</span></Label>
+                        <Textarea
+                          value={formData.wireRopeRemarks}
+                          onChange={(e) => handleInputChange('wireRopeRemarks', e.target.value)}
+                          rows={2}
+                          className="mt-1"
+                          required
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <div className="text-sm font-medium mb-2">b) Date of Last Changed / Replaced (to be replaced every 5 years)</div>
+                    <div className="flex items-start space-x-4">
+                      <div className="w-48">
+                        <Label className="text-sm">Date:<span className="text-red-500">*</span></Label>
+                        <Input
+                          type="date"
+                          value={formData.wireRopeChangeDate}
+                          onChange={(e) => handleInputChange('wireRopeChangeDate', e.target.value)}
+                          className="mt-1"
+                          required
+                        />
+                      </div>
+                      <div className="flex-1">
+                        <Label className="text-sm">Remarks:<span className="text-red-500">*</span></Label>
+                        <Textarea
+                          value={formData.wireRopeChangeRemarks}
+                          onChange={(e) => handleInputChange('wireRopeChangeRemarks', e.target.value)}
+                          rows={2}
+                          className="mt-1"
+                          required
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <div className="text-sm font-medium mb-2">c) Date of Last Serviceability Check</div>
+                    <div className="flex items-start space-x-4">
+                      <div className="w-48">
+                        <Label className="text-sm">Date:<span className="text-red-500">*</span></Label>
+                        <Input
+                          type="date"
+                          value={formData.wireRopeServiceDate}
+                          onChange={(e) => handleInputChange('wireRopeServiceDate', e.target.value)}
+                          className="mt-1"
+                          required
+                        />
+                      </div>
+                      <div className="flex-1">
+                        <Label className="text-sm">Remarks:<span className="text-red-500">*</span></Label>
+                        <Textarea
+                          value={formData.wireRopeServiceRemarks}
+                          onChange={(e) => handleInputChange('wireRopeServiceRemarks', e.target.value)}
+                          rows={2}
+                          className="mt-1"
+                          required
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Section 12 - Greasing */}
+              <div className="border-b border-gray-200 pb-4">
+                <div className="flex items-center space-x-4 mb-4">
+                  <div className="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold text-sm">
+                    12
+                  </div>
+                  <div className="flex-1">
+                    <Label className="text-lg font-medium">Greasing</Label>
+                  </div>
+                </div>
+                
+                <div className="ml-12 space-y-4">
+                  <div>
+                    <div className="text-sm font-medium mb-2">a) Check of Application of Grease on Mechanical / Moving Parts</div>
+                    <div className="flex items-start space-x-4">
+                      <div className="w-48">
+                        <Label className="text-sm">Observations:<span className="text-red-500">*</span></Label>
+                        <Select value={formData.greaseApplicationObservations} onValueChange={(value) => handleInputChange('greaseApplicationObservations', value)}>
+                          <SelectTrigger className="mt-1">
+                            <SelectValue placeholder="--Select--" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {observationOptions.map((option) => (
+                              <SelectItem key={option.value} value={option.value}>
+                                {option.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="flex-1">
+                        <Label className="text-sm">Remarks:<span className="text-red-500">*</span></Label>
+                        <Textarea
+                          value={formData.greaseApplicationRemarks}
+                          onChange={(e) => handleInputChange('greaseApplicationRemarks', e.target.value)}
+                          rows={2}
+                          className="mt-1"
+                          required
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <div className="text-sm font-medium mb-2">b) SS to Confirm Type of Grease i.a.w.OEM Manual</div>
+                    <div className="flex items-start space-x-4">
+                      <div className="w-48">
+                        <Label className="text-sm">Observations:<span className="text-red-500">*</span></Label>
+                        <Select value={formData.greaseTypeObservations} onValueChange={(value) => handleInputChange('greaseTypeObservations', value)}>
+                          <SelectTrigger className="mt-1">
+                            <SelectValue placeholder="--Select--" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {observationOptions.map((option) => (
+                              <SelectItem key={option.value} value={option.value}>
+                                {option.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="flex-1">
+                        <Label className="text-sm">Remarks:<span className="text-red-500">*</span></Label>
+                        <Textarea
+                          value={formData.greaseTypeRemarks}
+                          onChange={(e) => handleInputChange('greaseTypeRemarks', e.target.value)}
+                          rows={2}
+                          className="mt-1"
+                          required
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <div className="text-sm font-medium mb-2">c) Condition of Greasing Points</div>
+                    <div className="flex items-start space-x-4">
+                      <div className="w-48">
+                        <Label className="text-sm">Observations:<span className="text-red-500">*</span></Label>
+                        <Select value={formData.greasePointsObservations} onValueChange={(value) => handleInputChange('greasePointsObservations', value)}>
+                          <SelectTrigger className="mt-1">
+                            <SelectValue placeholder="--Select--" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {observationOptions.map((option) => (
+                              <SelectItem key={option.value} value={option.value}>
+                                {option.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="flex-1">
+                        <Label className="text-sm">Remarks:<span className="text-red-500">*</span></Label>
+                        <Textarea
+                          value={formData.greasePointsRemarks}
+                          onChange={(e) => handleInputChange('greasePointsRemarks', e.target.value)}
+                          rows={2}
+                          className="mt-1"
+                          required
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Section 13 - Electrical Checks */}
+              <div className="border-b border-gray-200 pb-4">
+                <div className="flex items-center space-x-4 mb-4">
+                  <div className="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold text-sm">
+                    13
+                  </div>
+                  <div className="flex-1">
+                    <Label className="text-lg font-medium">Electrical Checks</Label>
+                  </div>
+                </div>
+                
+                <div className="ml-12 space-y-4">
+                  <div>
+                    <div className="text-sm font-medium mb-2">a) Check by ETMA/SS</div>
+                    <div className="space-y-4">
+                      <div>
+                        <div className="text-sm font-medium mb-2">i) Insulation Checks</div>
+                        <div className="flex items-start space-x-4">
+                          <div className="w-48">
+                            <Label className="text-sm">Observations:<span className="text-red-500">*</span></Label>
+                            <Select value={formData.insulationObservations} onValueChange={(value) => handleInputChange('insulationObservations', value)}>
+                              <SelectTrigger className="mt-1">
+                                <SelectValue placeholder="--Select--" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {observationOptions.map((option) => (
+                                  <SelectItem key={option.value} value={option.value}>
+                                    {option.label}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          <div className="flex-1">
+                            <Label className="text-sm">Remarks:<span className="text-red-500">*</span></Label>
+                            <Textarea
+                              value={formData.insulationRemarks}
+                              onChange={(e) => handleInputChange('insulationRemarks', e.target.value)}
+                              rows={2}
+                              className="mt-1"
+                              required
+                            />
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div>
+                        <div className="text-sm font-medium mb-2">ii) SPM Checks of Motor</div>
+                        <div className="flex items-start space-x-4">
+                          <div className="w-48">
+                            <Label className="text-sm">Observations:<span className="text-red-500">*</span></Label>
+                            <Select value={formData.spmObservations} onValueChange={(value) => handleInputChange('spmObservations', value)}>
+                              <SelectTrigger className="mt-1">
+                                <SelectValue placeholder="--Select--" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {observationOptions.map((option) => (
+                                  <SelectItem key={option.value} value={option.value}>
+                                    {option.label}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          <div className="flex-1">
+                            <Label className="text-sm">Remarks:<span className="text-red-500">*</span></Label>
+                            <Textarea
+                              value={formData.spmRemarks}
+                              onChange={(e) => handleInputChange('spmRemarks', e.target.value)}
+                              rows={2}
+                              className="mt-1"
+                              required
+                            />
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div>
+                        <div className="text-sm font-medium mb-2">iii) Conditions of Cable Connections</div>
+                        <div className="flex items-start space-x-4">
+                          <div className="w-48">
+                            <Label className="text-sm">Observations:<span className="text-red-500">*</span></Label>
+                            <Select value={formData.cableConnectionsObservations} onValueChange={(value) => handleInputChange('cableConnectionsObservations', value)}>
+                              <SelectTrigger className="mt-1">
+                                <SelectValue placeholder="--Select--" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {observationOptions.map((option) => (
+                                  <SelectItem key={option.value} value={option.value}>
+                                    {option.label}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          <div className="flex-1">
+                            <Label className="text-sm">Remarks:<span className="text-red-500">*</span></Label>
+                            <Textarea
+                              value={formData.cableConnectionsRemarks}
+                              onChange={(e) => handleInputChange('cableConnectionsRemarks', e.target.value)}
+                              rows={2}
+                              className="mt-1"
+                              required
+                            />
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div>
+                        <div className="text-sm font-medium mb-2">iv) Conditions of Earthing Connections</div>
+                        <div className="flex items-start space-x-4">
+                          <div className="w-48">
+                            <Label className="text-sm">Observations:<span className="text-red-500">*</span></Label>
+                            <Select value={formData.earthingObservations} onValueChange={(value) => handleInputChange('earthingObservations', value)}>
+                              <SelectTrigger className="mt-1">
+                                <SelectValue placeholder="--Select--" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {observationOptions.map((option) => (
+                                  <SelectItem key={option.value} value={option.value}>
+                                    {option.label}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          <div className="flex-1">
+                            <Label className="text-sm">Remarks:<span className="text-red-500">*</span></Label>
+                            <Textarea
+                              value={formData.earthingRemarks}
+                              onChange={(e) => handleInputChange('earthingRemarks', e.target.value)}
+                              rows={2}
+                              className="mt-1"
+                              required
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <div className="text-sm font-medium mb-2">b) Condition of JB / Control Panel</div>
+                    <div className="flex items-start space-x-4">
+                      <div className="w-48">
+                        <Label className="text-sm">Observations:<span className="text-red-500">*</span></Label>
+                        <Select value={formData.jbControlPanelObservations} onValueChange={(value) => handleInputChange('jbControlPanelObservations', value)}>
+                          <SelectTrigger className="mt-1">
+                            <SelectValue placeholder="--Select--" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {observationOptions.map((option) => (
+                              <SelectItem key={option.value} value={option.value}>
+                                {option.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="flex-1">
+                        <Label className="text-sm">Remarks:<span className="text-red-500">*</span></Label>
+                        <Textarea
+                          value={formData.jbControlPanelRemarks}
+                          onChange={(e) => handleInputChange('jbControlPanelRemarks', e.target.value)}
+                          rows={2}
+                          className="mt-1"
+                          required
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <div className="text-sm font-medium mb-2">c) Condition of Remote Panel</div>
+                    <div className="flex items-start space-x-4">
+                      <div className="w-48">
+                        <Label className="text-sm">Observations:<span className="text-red-500">*</span></Label>
+                        <Select value={formData.remotePanelObservations} onValueChange={(value) => handleInputChange('remotePanelObservations', value)}>
+                          <SelectTrigger className="mt-1">
+                            <SelectValue placeholder="--Select--" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {observationOptions.map((option) => (
+                              <SelectItem key={option.value} value={option.value}>
+                                {option.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="flex-1">
+                        <Label className="text-sm">Remarks:<span className="text-red-500">*</span></Label>
+                        <Textarea
+                          value={formData.remotePanelRemarks}
+                          onChange={(e) => handleInputChange('remotePanelRemarks', e.target.value)}
+                          rows={2}
+                          className="mt-1"
+                          required
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <div className="text-sm font-medium mb-2">d) Tightness of Electrical Cable Fasteners</div>
+                    <div className="flex items-start space-x-4">
+                      <div className="w-48">
+                        <Label className="text-sm">Observations:<span className="text-red-500">*</span></Label>
+                        <Select value={formData.cableFastenersObservations} onValueChange={(value) => handleInputChange('cableFastenersObservations', value)}>
+                          <SelectTrigger className="mt-1">
+                            <SelectValue placeholder="--Select--" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {observationOptions.map((option) => (
+                              <SelectItem key={option.value} value={option.value}>
+                                {option.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="flex-1">
+                        <Label className="text-sm">Remarks:<span className="text-red-500">*</span></Label>
+                        <Textarea
+                          value={formData.cableFastenersRemarks}
+                          onChange={(e) => handleInputChange('cableFastenersRemarks', e.target.value)}
+                          rows={2}
+                          className="mt-1"
+                          required
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Section 14 - Electric Checks by ETMA */}
+              <div className="border-b border-gray-200 pb-4">
+                <div className="flex items-center space-x-4 mb-4">
+                  <div className="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold text-sm">
+                    14
+                  </div>
+                  <div className="flex-1">
+                    <Label className="text-lg font-medium">Electric Checks by ETMA</Label>
+                  </div>
+                </div>
+                
+                <div className="ml-12 space-y-4">
+                  <div>
+                    <div className="text-sm font-medium mb-2">a) Completed</div>
+                    <div className="flex items-start space-x-4">
+                      <div className="w-48">
+                        <Label className="text-sm">Observations:<span className="text-red-500">*</span></Label>
+                        <Select value={formData.etmaCompletedObservations} onValueChange={(value) => handleInputChange('etmaCompletedObservations', value)}>
+                          <SelectTrigger className="mt-1">
+                            <SelectValue placeholder="--Select--" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {observationOptions.map((option) => (
+                              <SelectItem key={option.value} value={option.value}>
+                                {option.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="flex-1">
+                        <Label className="text-sm">Remarks:<span className="text-red-500">*</span></Label>
+                        <Textarea
+                          value={formData.etmaCompletedRemarks}
+                          onChange={(e) => handleInputChange('etmaCompletedRemarks', e.target.value)}
+                          rows={2}
+                          className="mt-1"
+                          required
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <div className="text-sm font-medium mb-2">b) Availability of Report</div>
+                    <div className="flex items-start space-x-4">
+                      <div className="w-48">
+                        <Label className="text-sm">Observations:<span className="text-red-500">*</span></Label>
+                        <Select value={formData.etmaReportObservations} onValueChange={(value) => handleInputChange('etmaReportObservations', value)}>
+                          <SelectTrigger className="mt-1">
+                            <SelectValue placeholder="--Select--" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {observationOptions.map((option) => (
+                              <SelectItem key={option.value} value={option.value}>
+                                {option.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="flex-1">
+                        <Label className="text-sm">Remarks:<span className="text-red-500">*</span></Label>
+                        <Textarea
+                          value={formData.etmaReportRemarks}
+                          onChange={(e) => handleInputChange('etmaReportRemarks', e.target.value)}
+                          rows={2}
+                          className="mt-1"
+                          required
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Section 15 - Operational Trials */}
+              <div className="border-b border-gray-200 pb-4">
+                <div className="flex items-center space-x-4 mb-4">
+                  <div className="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold text-sm">
+                    15
+                  </div>
+                  <div className="flex-1">
+                    <Label className="text-lg font-medium">Operational Trials</Label>
+                  </div>
+                </div>
+                
+                <div className="ml-12 space-y-4">
+                  <div>
+                    <div className="text-sm font-medium mb-2">a) Hoisting/ Lowering Speeds</div>
+                    <div className="space-y-4">
+                      <div>
+                        <div className="text-sm font-medium mb-2">i) Speed 1 - 0.04 m/sec</div>
+                        <div className="flex items-start space-x-4">
+                          <div className="w-48">
+                            <Label className="text-sm">Observations:<span className="text-red-500">*</span></Label>
+                            <Select value={formData.speed1Observations} onValueChange={(value) => handleInputChange('speed1Observations', value)}>
+                              <SelectTrigger className="mt-1">
+                                <SelectValue placeholder="--Select--" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {observationOptions.map((option) => (
+                                  <SelectItem key={option.value} value={option.value}>
+                                    {option.label}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          <div className="flex-1">
+                            <Label className="text-sm">Remarks:<span className="text-red-500">*</span></Label>
+                            <Textarea
+                              value={formData.speed1Remarks}
+                              onChange={(e) => handleInputChange('speed1Remarks', e.target.value)}
+                              rows={2}
+                              className="mt-1"
+                              required
+                            />
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div>
+                        <div className="text-sm font-medium mb-2">ii) Speed 2 - 0.011 m/sec</div>
+                        <div className="flex items-start space-x-4">
+                          <div className="w-48">
+                            <Label className="text-sm">Observations:<span className="text-red-500">*</span></Label>
+                            <Select value={formData.speed2Observations} onValueChange={(value) => handleInputChange('speed2Observations', value)}>
+                              <SelectTrigger className="mt-1">
+                                <SelectValue placeholder="--Select--" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {observationOptions.map((option) => (
+                                  <SelectItem key={option.value} value={option.value}>
+                                    {option.label}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          <div className="flex-1">
+                            <Label className="text-sm">Remarks:<span className="text-red-500">*</span></Label>
+                            <Textarea
+                              value={formData.speed2Remarks}
+                              onChange={(e) => handleInputChange('speed2Remarks', e.target.value)}
+                              rows={2}
+                              className="mt-1"
+                              required
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Section 16 - Other Observation */}
+              <div className="border-b border-gray-200 pb-4">
+                <div className="flex items-center space-x-4 mb-4">
+                  <div className="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold text-sm">
+                    16
+                  </div>
+                  <div className="flex-1">
+                    <Label className="text-lg font-medium">Other Observation</Label>
+                  </div>
+                </div>
+                
+                <div className="ml-12">
+                  <div className="flex items-start space-x-4">
+                    <div className="flex-1">
+                      <Label className="text-sm">Remarks:<span className="text-red-500">*</span></Label>
+                      <Textarea
+                        value={formData.otherObservationRemarks}
+                        onChange={(e) => handleInputChange('otherObservationRemarks', e.target.value)}
+                        rows={3}
+                        className="mt-1"
+                        required
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Section 17 - Overall Remarks */}
+              <div className="border-b border-gray-200 pb-4">
+                <div className="flex items-center space-x-4 mb-4">
+                  <div className="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold text-sm">
+                    17
+                  </div>
+                  <div className="flex-1">
+                    <Label className="text-lg font-medium">Overall Remarks</Label>
+                  </div>
+                </div>
+                
+                <div className="ml-12">
+                  <div className="flex items-start space-x-4">
+                    <div className="flex-1">
+                      <Label className="text-sm">Remarks:<span className="text-red-500">*</span></Label>
+                      <Textarea
+                        value={formData.overallRemarks}
+                        onChange={(e) => handleInputChange('overallRemarks', e.target.value)}
+                        rows={3}
+                        className="mt-1"
+                        required
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
 
               {/* Section 18 - Authority Signature */}
               <div className="border-b border-gray-200 pb-4">
@@ -802,17 +1690,18 @@ const ManualHoistingLiftingAndTransportingDevicesInMagazinesForm: React.FC = () 
                         className="mt-1"
                         required
                       />
+                      <p className="text-sm text-gray-500 mt-1">No file chosen</p>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
 
-            <div className="flex justify-end space-x-4 mt-8 pt-6 border-t border-gray-200">
+            <div className="flex flex-wrap gap-4 justify-center mt-8 pt-6 border-t border-gray-200">
               <Dialog open={showDraftModal} onOpenChange={setShowDraftModal}>
                 <DialogTrigger asChild>
-                  <Button type="button" className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded" onClick={loadDrafts}>
-                    Fetch Drafts
+                  <Button type="button" className="bg-blue-500 text-white hover:bg-blue-600" onClick={loadDrafts}>
+                    FETCH DRAFTS
                   </Button>
                 </DialogTrigger>
                 <DialogContent className="max-w-4xl">
@@ -871,14 +1760,14 @@ const ManualHoistingLiftingAndTransportingDevicesInMagazinesForm: React.FC = () 
                 </DialogContent>
               </Dialog>
 
-              <Button type="button" className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded" onClick={handleSaveDraft}>
+              <Button type="button" className="bg-green-500 text-white hover:bg-green-600" onClick={handleSaveDraft}>
                 SAVE DRAFT
               </Button>
-              <Button type="button" className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded" onClick={handleClear}>
-                Clear
+              <Button type="button" variant="destructive" onClick={handleClear}>
+                CLEAR
               </Button>
-              <Button type="submit" className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded">
-                Save
+              <Button type="submit" className="bg-blue-600 text-white hover:bg-blue-700">
+                SAVE
               </Button>
             </div>
           </form>

@@ -192,7 +192,7 @@ const HeloTraversingSystemForm = () => {
     <div className="w-full min-h-screen bg-gray-50 p-4">
       <div className="container mx-auto p-6 bg-white shadow-lg rounded-lg">
         <h2 className="text-3xl font-bold text-center text-blue-800 mb-6">
-          Helo Traversing System Inspection and Trials Form
+          HELO TRAVERSING SYSTEM
         </h2>
 
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -200,11 +200,11 @@ const HeloTraversingSystemForm = () => {
           <div className="bg-gray-50 p-4 rounded-lg">
             <h4 className="text-lg font-semibold text-gray-800 mb-3 flex items-center">
               <span className="bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm mr-3">1</span>
-              Ship Selection
+              Ship
             </h4>
             <Select value={formData.ship} onValueChange={(value) => handleInputChange("ship", value)}>
               <SelectTrigger className="w-full md:w-1/3">
-                <SelectValue placeholder="--Select Ship--" />
+                <SelectValue placeholder="--Select--" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="SHIVALIK">SHIVALIK</SelectItem>
@@ -228,6 +228,7 @@ const HeloTraversingSystemForm = () => {
               value={formData.date_of_inspection}
               onChange={(e) => handleInputChange("date_of_inspection", e.target.value)}
               className="w-full md:w-1/3"
+              placeholder="DD-MM-YYYY"
             />
             {errors.date_of_inspection && <p className="text-red-500 text-sm mt-1">{errors.date_of_inspection}</p>}
           </div>
@@ -235,7 +236,7 @@ const HeloTraversingSystemForm = () => {
           {/* Type */}
           <div className="bg-gray-50 p-4 rounded-lg">
             <h4 className="text-lg font-semibold text-gray-800 mb-3 flex items-center">
-              <span className="bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm mr-3">3</span>
+              <span className="bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm mr-3">1</span>
               Type <span className="text-red-500 ml-1">*</span>
             </h4>
             <Input
@@ -250,7 +251,7 @@ const HeloTraversingSystemForm = () => {
           {/* Make */}
           <div className="bg-gray-50 p-4 rounded-lg">
             <h4 className="text-lg font-semibold text-gray-800 mb-3 flex items-center">
-              <span className="bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm mr-3">4</span>
+              <span className="bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm mr-3">2</span>
               Make <span className="text-red-500 ml-1">*</span>
             </h4>
             <Input
@@ -265,7 +266,7 @@ const HeloTraversingSystemForm = () => {
           {/* Year of Manufacture */}
           <div className="bg-gray-50 p-4 rounded-lg">
             <h4 className="text-lg font-semibold text-gray-800 mb-3 flex items-center">
-              <span className="bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm mr-3">5</span>
+              <span className="bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm mr-3">3</span>
               Year of Manufacture <span className="text-red-500 ml-1">*</span>
             </h4>
             <Input
@@ -282,12 +283,15 @@ const HeloTraversingSystemForm = () => {
           {/* Motor Condition */}
           <div className="bg-gray-50 p-4 rounded-lg">
             <h4 className="text-lg font-semibold text-gray-800 mb-3 flex items-center">
-              <span className="bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm mr-3">6</span>
-              Checking Condition of Motor Reduction Gear Unit
+              <span className="bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm mr-3">4</span>
+              Checking Condition of Motor Reduction Gear Unit (Check lubrication, All Gears are Available, Abnormal/Excessive Noise) <span className="text-red-500 ml-1">*</span>
             </h4>
+            <div className="mb-4">
+              <p className="text-sm text-gray-600 mb-2">Filling & Drain Plugs Sealing (Check if Greasing points open/concealed with paint)</p>
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
-                <Label>Observations <span className="text-red-500">*</span></Label>
+                <Label>Observations: <span className="text-red-500">*</span></Label>
                 <Select value={formData.checking_condition_of_motor_observations} onValueChange={(value) => handleInputChange("checking_condition_of_motor_observations", value)}>
                   <SelectTrigger>
                     <SelectValue placeholder="--Select--" />
@@ -300,7 +304,7 @@ const HeloTraversingSystemForm = () => {
                 </Select>
               </div>
               <div className="md:col-span-2">
-                <Label>Remarks <span className="text-red-500">*</span></Label>
+                <Label>Remarks: <span className="text-red-500">*</span></Label>
                 <Textarea
                   value={formData.checking_condition_of_motor_observations_remarks}
                   onChange={(e) => handleInputChange("checking_condition_of_motor_observations_remarks", e.target.value)}
@@ -311,8 +315,389 @@ const HeloTraversingSystemForm = () => {
             </div>
           </div>
 
-          {/* Additional sections would continue in similar pattern... */}
-          {/* For brevity, I'm including key sections */}
+          {/* Checking Apparent Condition of Capstans */}
+          <div className="bg-gray-50 p-4 rounded-lg">
+            <h4 className="text-lg font-semibold text-gray-800 mb-3 flex items-center">
+              <span className="bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm mr-3">5</span>
+              Checking Apparent Condition of Capstans
+            </h4>
+            
+            <div className="space-y-4">
+              <div>
+                <p className="text-sm text-gray-600 mb-2">a) Support Frame Attachment to Capstan (Check for rust/corrosion)</p>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div>
+                    <Label>Observations: <span className="text-red-500">*</span></Label>
+                    <Select value={formData.checking_apparent_observations} onValueChange={(value) => handleInputChange("checking_apparent_observations", value)}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="--Select--" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="SAT">SAT</SelectItem>
+                        <SelectItem value="UNSAT">UNSAT</SelectItem>
+                        <SelectItem value="SAT WITH OBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="md:col-span-2">
+                    <Label>Remarks: <span className="text-red-500">*</span></Label>
+                    <Textarea
+                      value={formData.checking_apparent_remarks}
+                      onChange={(e) => handleInputChange("checking_apparent_remarks", e.target.value)}
+                      maxLength={1000}
+                      rows={2}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <p className="text-sm text-gray-600 mb-2">b) Cable Winds on Diving Drums (check cables are properly wound on capstan)</p>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div>
+                    <Label>Observations: <span className="text-red-500">*</span></Label>
+                    <Select value={formData.cable_winds_observations} onValueChange={(value) => handleInputChange("cable_winds_observations", value)}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="--Select--" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="SAT">SAT</SelectItem>
+                        <SelectItem value="UNSAT">UNSAT</SelectItem>
+                        <SelectItem value="SAT WITH OBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="md:col-span-2">
+                    <Label>Remarks: <span className="text-red-500">*</span></Label>
+                    <Textarea
+                      value={formData.cable_winds_remarks}
+                      onChange={(e) => handleInputChange("cable_winds_remarks", e.target.value)}
+                      maxLength={1000}
+                      rows={2}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Checking Oil Level */}
+          <div className="bg-gray-50 p-4 rounded-lg">
+            <h4 className="text-lg font-semibold text-gray-800 mb-3 flex items-center">
+              <span className="bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm mr-3">6</span>
+              Checking Oil Level in Reduction Gears
+            </h4>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <Label>Observations: <span className="text-red-500">*</span></Label>
+                <Select value={formData.checking_oil_level_observations} onValueChange={(value) => handleInputChange("checking_oil_level_observations", value)}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="--Select--" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="SAT">SAT</SelectItem>
+                    <SelectItem value="UNSAT">UNSAT</SelectItem>
+                    <SelectItem value="SAT WITH OBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="md:col-span-2">
+                <Label>Remarks: <span className="text-red-500">*</span></Label>
+                <Textarea
+                  value={formData.checking_oil_level_remarks}
+                  onChange={(e) => handleInputChange("checking_oil_level_remarks", e.target.value)}
+                  maxLength={1000}
+                  rows={2}
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* General Inspection */}
+          <div className="bg-gray-50 p-4 rounded-lg">
+            <h4 className="text-lg font-semibold text-gray-800 mb-3 flex items-center">
+              <span className="bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm mr-3">7</span>
+              General Inspection of Main Carriages, Hooking Arms and Cross Bars
+            </h4>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <Label>Observations: <span className="text-red-500">*</span></Label>
+                <Select value={formData.general_inspection_observations} onValueChange={(value) => handleInputChange("general_inspection_observations", value)}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="--Select--" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="SAT">SAT</SelectItem>
+                    <SelectItem value="UNSAT">UNSAT</SelectItem>
+                    <SelectItem value="SAT WITH OBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="md:col-span-2">
+                <Label>Remarks: <span className="text-red-500">*</span></Label>
+                <Textarea
+                  value={formData.general_inspection_remarks}
+                  onChange={(e) => handleInputChange("general_inspection_remarks", e.target.value)}
+                  maxLength={1000}
+                  rows={2}
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Speed of Carriage */}
+          <div className="bg-gray-50 p-4 rounded-lg">
+            <h4 className="text-lg font-semibold text-gray-800 mb-3 flex items-center">
+              <span className="bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm mr-3">8</span>
+              Speed of Carriage (0.003 to 0.3m/sec)
+            </h4>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <Label>Observations: <span className="text-red-500">*</span></Label>
+                <Select value={formData.speed_of_carriage_observations} onValueChange={(value) => handleInputChange("speed_of_carriage_observations", value)}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="--Select--" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="SAT">SAT</SelectItem>
+                    <SelectItem value="UNSAT">UNSAT</SelectItem>
+                    <SelectItem value="SAT WITH OBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="md:col-span-2">
+                <Label>Remarks: <span className="text-red-500">*</span></Label>
+                <Textarea
+                  value={formData.speed_of_carriage_remarks}
+                  onChange={(e) => handleInputChange("speed_of_carriage_remarks", e.target.value)}
+                  maxLength={1000}
+                  rows={2}
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Indicator Light Test */}
+          <div className="bg-gray-50 p-4 rounded-lg">
+            <h4 className="text-lg font-semibold text-gray-800 mb-3 flex items-center">
+              <span className="bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm mr-3">9</span>
+              Indicator Light Test
+            </h4>
+            
+            <div className="space-y-4">
+              <div>
+                <p className="text-sm text-gray-600 mb-2">a) Electrical Cabinet(OPS Status)</p>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div>
+                    <Label>Observations: <span className="text-red-500">*</span></Label>
+                    <Select value={formData.indicator_light_test_observations} onValueChange={(value) => handleInputChange("indicator_light_test_observations", value)}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="--Select--" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="SAT">SAT</SelectItem>
+                        <SelectItem value="UNSAT">UNSAT</SelectItem>
+                        <SelectItem value="SAT WITH OBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="md:col-span-2">
+                    <Label>Remarks: <span className="text-red-500">*</span></Label>
+                    <Textarea
+                      value={formData.indicator_light_test_remarks}
+                      onChange={(e) => handleInputChange("indicator_light_test_remarks", e.target.value)}
+                      maxLength={1000}
+                      rows={2}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <p className="text-sm text-gray-600 mb-2">b) Control Desk(OPS Status)</p>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div>
+                    <Label>Observations: <span className="text-red-500">*</span></Label>
+                    <Select value={formData.control_desk_observations} onValueChange={(value) => handleInputChange("control_desk_observations", value)}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="--Select--" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="SAT">SAT</SelectItem>
+                        <SelectItem value="UNSAT">UNSAT</SelectItem>
+                        <SelectItem value="SAT WITH OBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="md:col-span-2">
+                    <Label>Remarks: <span className="text-red-500">*</span></Label>
+                    <Textarea
+                      value={formData.control_desk_remarks}
+                      onChange={(e) => handleInputChange("control_desk_remarks", e.target.value)}
+                      maxLength={1000}
+                      rows={2}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Lubrication of Hooking Points */}
+          <div className="bg-gray-50 p-4 rounded-lg">
+            <h4 className="text-lg font-semibold text-gray-800 mb-3 flex items-center">
+              <span className="bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm mr-3">10</span>
+              Lubrication of Hooking Points (Check for Proper Greasing)
+            </h4>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <Label>Observations: <span className="text-red-500">*</span></Label>
+                <Select value={formData.lubrication_of_hooking_observations} onValueChange={(value) => handleInputChange("lubrication_of_hooking_observations", value)}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="--Select--" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="SAT">SAT</SelectItem>
+                    <SelectItem value="UNSAT">UNSAT</SelectItem>
+                    <SelectItem value="SAT WITH OBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="md:col-span-2">
+                <Label>Remarks: <span className="text-red-500">*</span></Label>
+                <Textarea
+                  value={formData.lubrication_of_hooking_remarks}
+                  onChange={(e) => handleInputChange("lubrication_of_hooking_remarks", e.target.value)}
+                  maxLength={1000}
+                  rows={2}
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Replacement of Oil in Air Lubricator */}
+          <div className="bg-gray-50 p-4 rounded-lg">
+            <h4 className="text-lg font-semibold text-gray-800 mb-3 flex items-center">
+              <span className="bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm mr-3">11</span>
+              Replacement of Oil in Air Lubricator (Check Oil level)
+            </h4>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <Label>Observations: <span className="text-red-500">*</span></Label>
+                <Select value={formData.replacement_of_oil_observations} onValueChange={(value) => handleInputChange("replacement_of_oil_observations", value)}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="--Select--" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="SAT">SAT</SelectItem>
+                    <SelectItem value="UNSAT">UNSAT</SelectItem>
+                    <SelectItem value="SAT WITH OBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="md:col-span-2">
+                <Label>Remarks: <span className="text-red-500">*</span></Label>
+                <Textarea
+                  value={formData.replacement_of_oil_remarks}
+                  onChange={(e) => handleInputChange("replacement_of_oil_remarks", e.target.value)}
+                  maxLength={1000}
+                  rows={2}
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Replacement of Pulling Ropes */}
+          <div className="bg-gray-50 p-4 rounded-lg">
+            <h4 className="text-lg font-semibold text-gray-800 mb-3 flex items-center">
+              <span className="bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm mr-3">12</span>
+              Replacement of Pulling Ropes
+            </h4>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <Label>Last Replacement: <span className="text-red-500">*</span></Label>
+                <Input
+                  type="date"
+                  value={formData.last_replacement}
+                  onChange={(e) => handleInputChange("last_replacement", e.target.value)}
+                  placeholder="DD-MM-YYYY"
+                />
+              </div>
+              <div>
+                <Label>Next Due on: <span className="text-red-500">*</span></Label>
+                <Input
+                  type="date"
+                  value={formData.next_due_on}
+                  onChange={(e) => handleInputChange("next_due_on", e.target.value)}
+                  placeholder="DD-MM-YYYY"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Joy-stick Operation */}
+          <div className="bg-gray-50 p-4 rounded-lg">
+            <h4 className="text-lg font-semibold text-gray-800 mb-3 flex items-center">
+              <span className="bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm mr-3">13</span>
+              Joy-stick Operation(Check operation with joy-stick)
+            </h4>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <Label>Observations: <span className="text-red-500">*</span></Label>
+                <Select value={formData.joystick_operation_observations} onValueChange={(value) => handleInputChange("joystick_operation_observations", value)}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="--Select--" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="SAT">SAT</SelectItem>
+                    <SelectItem value="UNSAT">UNSAT</SelectItem>
+                    <SelectItem value="SAT WITH OBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="md:col-span-2">
+                <Label>Remarks: <span className="text-red-500">*</span></Label>
+                <Textarea
+                  value={formData.joystick_operation_remarks}
+                  onChange={(e) => handleInputChange("joystick_operation_remarks", e.target.value)}
+                  maxLength={1000}
+                  rows={2}
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Operation of Arm Direction Changer Valve */}
+          <div className="bg-gray-50 p-4 rounded-lg">
+            <h4 className="text-lg font-semibold text-gray-800 mb-3 flex items-center">
+              <span className="bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm mr-3">14</span>
+              Operation of Arm Direction Changer Valve(Working of the valve)
+            </h4>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <Label>Observations: <span className="text-red-500">*</span></Label>
+                <Select value={formData.operation_of_arm_observations} onValueChange={(value) => handleInputChange("operation_of_arm_observations", value)}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="--Select--" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="SAT">SAT</SelectItem>
+                    <SelectItem value="UNSAT">UNSAT</SelectItem>
+                    <SelectItem value="SAT WITH OBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="md:col-span-2">
+                <Label>Remarks: <span className="text-red-500">*</span></Label>
+                <Textarea
+                  value={formData.operation_of_arm_remarks}
+                  onChange={(e) => handleInputChange("operation_of_arm_remarks", e.target.value)}
+                  maxLength={1000}
+                  rows={2}
+                />
+              </div>
+            </div>
+          </div>
 
           {/* Any Other Observation */}
           <div className="bg-gray-50 p-4 rounded-lg">
@@ -325,7 +710,7 @@ const HeloTraversingSystemForm = () => {
               onChange={(e) => handleInputChange("any_other_remarks", e.target.value)}
               maxLength={1000}
               rows={3}
-              placeholder="Enter any other observations..."
+              placeholder="Remarks:"
             />
           </div>
 
@@ -335,16 +720,21 @@ const HeloTraversingSystemForm = () => {
               <span className="bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm mr-3">16</span>
               Overall Remarks
             </h4>
-            <Select value={formData.overall_observations} onValueChange={(value) => handleInputChange("overall_observations", value)}>
-              <SelectTrigger className="w-full md:w-1/3">
-                <SelectValue placeholder="--Select--" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="SAT">SAT</SelectItem>
-                <SelectItem value="UNSAT">UNSAT</SelectItem>
-                <SelectItem value="SAT WITH OBSERVATION">SAT WITH OBSERVATION</SelectItem>
-              </SelectContent>
-            </Select>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <Label>Observations: <span className="text-red-500">*</span></Label>
+                <Select value={formData.overall_observations} onValueChange={(value) => handleInputChange("overall_observations", value)}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="--Select--" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="SAT">SAT</SelectItem>
+                    <SelectItem value="UNSAT">UNSAT</SelectItem>
+                    <SelectItem value="SAT WITH OBSERVATION">SAT WITH OBSERVATION</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
           </div>
 
           {/* Authority Signature */}
@@ -359,21 +749,38 @@ const HeloTraversingSystemForm = () => {
               onChange={(e) => handleInputChange("authority_signature", e.target.value)}
               className="w-full md:w-1/2"
             />
+            <p className="text-sm text-gray-500 mt-1">No file chosen</p>
           </div>
 
           {/* Form Actions */}
-          <div className="flex flex-wrap gap-4 justify-center pt-6">
-            <Button type="button" onClick={handleFetchDrafts} className="px-6 bg-cyan-500 hover:bg-cyan-600 text-white font-semibold uppercase">
-              FETCH DRAFTS
+          <div className="flex flex-wrap gap-4 justify-center mt-8">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={handleFetchDrafts}
+              className="bg-blue-500 text-white hover:bg-blue-600"
+            >
+              Fetch Drafts
             </Button>
-            <Button type="button" onClick={handleSaveDraft} className="px-6 bg-green-500 hover:bg-green-600 text-white font-semibold uppercase">
+            <Button
+              type="button"
+              onClick={handleSaveDraft}
+              className="bg-green-500 text-white hover:bg-green-600"
+            >
               SAVE DRAFT
             </Button>
-            <Button type="button" onClick={handleClear} className="px-6 bg-red-500 hover:bg-red-600 text-white font-semibold uppercase">
-              CLEAR
+            <Button
+              type="button"
+              variant="destructive"
+              onClick={handleClear}
+            >
+              Clear
             </Button>
-            <Button type="submit" className="px-6 bg-blue-600 hover:bg-blue-700 text-white font-semibold uppercase">
-              SAVE
+            <Button
+              type="submit"
+              className="bg-blue-600 text-white hover:bg-blue-700"
+            >
+              Save
             </Button>
           </div>
         </form>
