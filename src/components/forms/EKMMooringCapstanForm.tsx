@@ -210,9 +210,9 @@ const EKMMooringCapstanForm = () => {
   ) => (
     <div className="space-y-4">
       <div className="flex items-center space-x-3">
-        <span className="bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">
+        {/* <span className="bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">
           {subsectionTitle.charAt(0)}
-        </span>
+        </span> */}
         <div>
           <div className="text-sm font-medium text-gray-700">{subsectionTitle}</div>
         </div>

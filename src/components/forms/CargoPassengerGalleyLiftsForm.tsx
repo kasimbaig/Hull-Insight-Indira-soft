@@ -2748,7 +2748,7 @@ const CargoPassengerGalleyLiftsForm: React.FC = () => {
           
 
             {/* Section 23: Final Inspection Report */}
-            <div className="space-y-4">
+            {/* <div className="space-y-4">
               <div className="flex items-center gap-2">
                 <span className="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">19</span>
                 <Label className="text-base font-medium">Final Inspection Report</Label>
@@ -2800,12 +2800,12 @@ const CargoPassengerGalleyLiftsForm: React.FC = () => {
                   </div>
                 </div>
               </div>
-            </div>
+            </div> */}
 
             {/* Section 24: Authority Signature */}
             <div className="space-y-4">
               <div className="flex items-center gap-2">
-                <span className="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">20</span>
+                <span className="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">19</span>
                 <Label className="text-base font-medium">Authority Signature <span className="text-red-500">*</span></Label>
               </div>
               <div className="ml-4">
@@ -2835,7 +2835,7 @@ const CargoPassengerGalleyLiftsForm: React.FC = () => {
                 onClick={handleFetchDrafts}
                 className="px-6 bg-cyan-500 hover:bg-cyan-600 text-white font-semibold uppercase"
               >
-                <FileText className="h-4 w-4 mr-2" />
+                {/* <FileText className="h-4 w-4 mr-2" /> */}
                 FETCH DRAFTS
               </Button>
               <Button
@@ -2843,7 +2843,7 @@ const CargoPassengerGalleyLiftsForm: React.FC = () => {
                 onClick={handleSaveDraft}
                 className="px-6 bg-green-500 hover:bg-green-600 text-white font-semibold uppercase"
               >
-                <Save className="h-4 w-4 mr-2" />
+                {/* <Save className="h-4 w-4 mr-2" /> */}
                 SAVE DRAFT
               </Button>
               <Button
