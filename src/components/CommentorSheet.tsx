@@ -448,57 +448,57 @@ const CommentorSheet: React.FC<CommentorSheetProps> = ({
                 </div>
                 
                 {/* Add Comment Form - Fixed at Bottom */}
-                {showCommentForm && (
+              {showCommentForm && (
                   <div className="border-t border-gray-200 pt-4 bg-white">
                     <div className="mb-3">
                       <h3 className="text-sm font-semibold text-gray-800 mb-2">Add New Comment</h3>
                     </div>
                     <form onSubmit={handleAddComment} className="space-y-3">
-                      <div>
-                        <input
-                          type="text"
-                          id="author"
-                          name="author"
-                          value={newComment.author}
-                          onChange={handleCommentInputChange}
+                    <div>
+                      <input
+                        type="text"
+                        id="author"
+                        name="author"
+                        value={newComment.author}
+                        onChange={handleCommentInputChange}
                           placeholder="Your name"
-                          required
+                        required
                           className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 bg-white text-sm"
-                        />
-                      </div>
+                      />
+                    </div>
                       <div className="flex space-x-2">
-                        <textarea
-                          id="text"
-                          name="text"
-                          value={newComment.text}
-                          onChange={handleCommentInputChange}
+                      <textarea
+                        id="text"
+                        name="text"
+                        value={newComment.text}
+                        onChange={handleCommentInputChange}
                           placeholder="Type your message..."
-                          required
+                        required
                           rows={2}
                           className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 resize-none bg-white text-sm"
-                        />
-                        <button
-                          type="submit"
+                      />
+                      <button
+                        type="submit"
                           className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-all duration-300 flex items-center justify-center"
-                        >
+                      >
                           <Send className="w-4 h-4" />
-                        </button>
+                      </button>
                       </div>
                       <div className="flex justify-end">
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setShowCommentForm(false);
-                            setNewComment({ author: '', text: '' });
-                          }}
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setShowCommentForm(false);
+                          setNewComment({ author: '', text: '' });
+                        }}
                           className="text-sm text-gray-500 hover:text-gray-700 transition-colors duration-200"
-                        >
-                          Cancel
-                        </button>
-                      </div>
-                    </form>
-                  </div>
-                )}
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              )}
               </div>
             </section>
           )}
@@ -519,7 +519,7 @@ const CommentorSheet: React.FC<CommentorSheetProps> = ({
           {CustomForm ? (
             <CustomForm />
           ) : (
-            <form onSubmit={handleSubmit} className="space-y-5">
+          <form onSubmit={handleSubmit} className="space-y-5">
             {formFields.showFirstName && (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>

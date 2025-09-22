@@ -424,12 +424,29 @@ const PreliminaryUnderwaterHullInspectionReportForm = () => {
       // OTHER OBSERVATIONS
       addObservations(formData.otherObservationsData, 'other_observations');
 
+      // Convert form date format from "dd-MM-yyyy" to "yyyy-MM-dd" for API
+      const convertDateToApiFormat = (formDate: string) => {
+        if (!formDate) return '';
+        const [day, month, year] = formDate.split('-');
+        return `${year}-${month}-${day}`;
+      };
+
+      // Convert docking version from display format to API format
+      const convertDockingVersionToApiFormat = (displayVersion: string) => {
+        switch (displayVersion) {
+          case 'Version 1': return 'v1';
+          case 'Version 2': return 'v2';
+          case 'Version 3': return 'v3';
+          default: return displayVersion || '';
+        }
+      };
+
       // Prepare the API payload
       const payload = {
         vessel_id: parseInt(formData.vesselId) || 0,
-        dt_inspection: formData.inspectionDate,
+        dt_inspection: convertDateToApiFormat(formData.inspectionDate),
         auth_inspection: formData.authority,
-        docking_version: formData.dockingVersion,
+        docking_version: convertDockingVersionToApiFormat(formData.dockingVersion),
         nature_of_docking: formData.natureOfDocking,
         no_of_dock_blocks_wedged: formData.dockBlocksWedged,
         no_of_dock_blocks_crushed: formData.dockBlocksCrushed,

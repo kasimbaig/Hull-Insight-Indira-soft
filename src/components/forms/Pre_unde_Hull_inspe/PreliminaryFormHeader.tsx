@@ -109,6 +109,17 @@ const PreliminaryFormHeader: React.FC<PreliminaryFormHeaderProps> = ({
     onInputChange('vesselName', selectedVessel?.name || '');
   };
 
+  // Handle inspection date when loaded from API (dd-MM-yyyy format)
+  useEffect(() => {
+    if (formData.inspectionDate && formData.inspectionDate.includes('-')) {
+      const [day, month, year] = formData.inspectionDate.split('-');
+      const date = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+      if (!isNaN(date.getTime())) {
+        setInspectionDate(date);
+      }
+    }
+  }, [formData.inspectionDate]);
+
   return (
     <>
       {/* Header Section */}
@@ -122,7 +133,7 @@ const PreliminaryFormHeader: React.FC<PreliminaryFormHeaderProps> = ({
               onValueChange={handleVesselChange}
               disabled={loadingVessels}
             >
-              <SelectTrigger className="px-3 py-2 border border-gray-300 rounded min-w-[200px]">
+                <SelectTrigger className="px-3 py-2 border border-gray-300 rounded w-auto">
                 <SelectValue placeholder={loadingVessels ? "Loading vessels..." : "--Select Vessel--"} />
               </SelectTrigger>
               <SelectContent>
@@ -207,12 +218,14 @@ const PreliminaryFormHeader: React.FC<PreliminaryFormHeaderProps> = ({
             </div>
             <div className="flex-1 flex justify-end">
               <Select value={formData.dockingVersion} onValueChange={(value) => onInputChange('dockingVersion', value)}>
-                <SelectTrigger className="w-48 border border-gray-300 rounded px-3 py-2">
+                <SelectTrigger className="w-48 h-10 border border-gray-300 rounded px-3 py-2">
                   <SelectValue placeholder="--Select--" />
                 </SelectTrigger>
+                {/* {console.log('PreliminaryFormHeader dockingVersion:', formData.dockingVersion)} */}
                 <SelectContent>
                   <SelectItem value="Version 1">Version 1</SelectItem>
                   <SelectItem value="Version 2">Version 2</SelectItem>
+                  <SelectItem value="Version 3">Version 3</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -224,14 +237,16 @@ const PreliminaryFormHeader: React.FC<PreliminaryFormHeaderProps> = ({
               Nature of docking<span className="text-red-500">*</span>
             </div>
             <div className="flex-1 flex justify-end">
-             <Input
-                type="number"
-                value={formData.dockBlocksWedged}
-                onChange={(e) => onInputChange('dockBlocksWedged', parseInt(e.target.value) || 0)}
-                className="w-24 border border-gray-300 rounded px-3 py-2"
-                placeholder="0"
-                required
-              />
+              <Select value={formData.natureOfDocking} onValueChange={(value) => onInputChange('natureOfDocking', value)}>
+                <SelectTrigger className="w-48 h-10 border border-gray-300 rounded px-3 py-2">
+                  <SelectValue placeholder="--Select--" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Routine Check">Routine Check</SelectItem>
+                  <SelectItem value="Emergency">Emergency</SelectItem>
+                  <SelectItem value="Maintenance">Maintenance</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
           </div>
 
@@ -245,7 +260,7 @@ const PreliminaryFormHeader: React.FC<PreliminaryFormHeaderProps> = ({
                 type="number"
                 value={formData.dockBlocksWedged}
                 onChange={(e) => onInputChange('dockBlocksWedged', parseInt(e.target.value) || 0)}
-                className="w-24 border border-gray-300 rounded px-3 py-2"
+                className="w-48 h-10 border border-gray-300 rounded px-3 py-2"
                 placeholder="0"
                 required
               />
@@ -262,7 +277,7 @@ const PreliminaryFormHeader: React.FC<PreliminaryFormHeaderProps> = ({
                 type="number"
                 value={formData.dockBlocksCrushed}
                 onChange={(e) => onInputChange('dockBlocksCrushed', parseInt(e.target.value) || 0)}
-                className="w-24 border border-gray-300 rounded px-3 py-2"
+                className="w-48 h-10 border border-gray-300 rounded px-3 py-2"
                 placeholder="0"
                 required
               />
@@ -276,7 +291,7 @@ const PreliminaryFormHeader: React.FC<PreliminaryFormHeaderProps> = ({
             </div>
             <div className="flex-1 flex justify-end">
               <Select value={formData.uwOpeningsClear} onValueChange={(value) => onInputChange('uwOpeningsClear', value)}>
-                <SelectTrigger className="w-48 border border-gray-300 rounded px-3 py-2">
+                <SelectTrigger className="w-48 h-10 border border-gray-300 rounded px-3 py-2">
                   <SelectValue placeholder="--Select--" />
                 </SelectTrigger>
                 <SelectContent>
@@ -297,7 +312,7 @@ const PreliminaryFormHeader: React.FC<PreliminaryFormHeaderProps> = ({
                 type="text"
                 value={formData.dockingDuration}
                 onChange={(e) => onInputChange('dockingDuration', e.target.value)}
-                className="w-32 border border-gray-300 rounded px-3 py-2"
+                className="w-48 h-10 border border-gray-300 rounded px-3 py-2"
                 placeholder="Enter duration"
                 required
               />

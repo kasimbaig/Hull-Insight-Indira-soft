@@ -74,6 +74,7 @@ const sidebarItems = [
           { title: "DOCKING REPORT SECTION -1", path: "/app/returns/in379-docking-report-section1" },
           { title: "PARTICULARS OF INTERNAL & ABOVE WATER STRUCTURE", path: "/app/yard/particulars-internal-above-water-structure" },
           { title: "PARTICULARS OF UNDERWATER HULL SURVEY BY YARD", path: "/app/yard/particulars-underwater-hull-survey-by-yard" },
+
         ],
       },
       // { title: "Reports", path: "/app/yard/reports" },
@@ -122,7 +123,7 @@ const sidebarItems = [
           { title: "P-75 Doors and Hatches", path: "/app/forms/p75-doors-hatches" },
           { title: "P-75 FWD Mooring Capstan", path: "/app/forms/p75-fwd-mooring-capstan" },
           { title: "Pre-Wetting System", path: "/app/forms/pre-wetting-system" },
-          { title: "Preliminary Underwater Hull Inspection Report", path: "/app/forms/preliminary-underwater-hull-inspection-report" },
+          { title: "Preliminary Underwater Hull Inspection Report", path: "/app/reports/preliminary-underwater-hull-inspection-report" },
           { title: "RAS Capstan", path: "/app/forms/ras-capstan" },
           { title: "RAS Winch", path: "/app/forms/ras-winch" },
           { title: "RHIB - Ship Borne Boat - Harbour Checks", path: "/app/forms/rhib-harbour-checks" },

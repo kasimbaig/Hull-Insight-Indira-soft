@@ -257,13 +257,38 @@ const PreliminaryFormActions: React.FC<PreliminaryFormActionsProps> = ({
                             variant="outline"
                             size="sm"
                             onClick={() => {
+                              // Convert API date format from "2025-09-17" to "dd-MM-yyyy"
+                              const convertDateFormat = (apiDate: string) => {
+                                if (!apiDate) return '';
+                                const date = new Date(apiDate);
+                                const day = String(date.getDate()).padStart(2, '0');
+                                const month = String(date.getMonth() + 1).padStart(2, '0');
+                                const year = date.getFullYear();
+                                return `${day}-${month}-${year}`;
+                              };
+
+                              // Map docking version from API format to display format
+                              const mapDockingVersion = (apiVersion: string) => {
+                                console.log('API docking version:', apiVersion);
+                                switch (apiVersion) {
+                                  case 'v1': return 'Version 1';
+                                  case 'v2': return 'Version 2';
+                                  case 'v3': return 'Version 3';
+                                  default: return apiVersion || '';
+                                }
+                              };
+
                               // Convert API draft data to form data format
                               const formDataFromApi = {
                                 vesselId: draft.vessel?.id?.toString() || '',
                                 vesselName: draft.vessel?.name || '',
-                                inspectionDate: draft.dt_inspection || '',
+                                inspectionDate: convertDateFormat(draft.dt_inspection),
                                 authority: draft.auth_inspection || '',
-                                dockingVersion: draft.docking_version || '',
+                                dockingVersion: (() => {
+                                  const mappedVersion = mapDockingVersion(draft.docking_version);
+                                  console.log('Mapped docking version:', mappedVersion);
+                                  return mappedVersion;
+                                })(),
                                 natureOfDocking: draft.nature_of_docking || '',
                                 dockBlocksWedged: draft.no_of_dock_blocks_wedged || 0,
                                 dockBlocksCrushed: draft.no_of_dock_blocks_crushed || 0,
@@ -375,6 +400,7 @@ const PreliminaryFormActions: React.FC<PreliminaryFormActionsProps> = ({
                                 refittingAuthSignature: null,
                                 hituInspectorSignature: null,
                               };
+                              console.log('Final formDataFromApi dockingVersion:', formDataFromApi.dockingVersion);
                               setFormData(formDataFromApi as FormData);
                               setIsDraftModalOpen(false);
                               // alert('Draft loaded for editing!');
