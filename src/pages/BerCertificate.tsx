@@ -314,6 +314,7 @@ const BerCertificate = () => {
     setBoatRegistrationOptions([{ label: '--Select--', value: '0' }]);
   };
 
+
   return (
     <div className="ber-certificate p-6">
       <Toast ref={toast} />
@@ -336,7 +337,7 @@ const BerCertificate = () => {
                 id="initiated_by"
                 value={formData.initiated_by}
                 onChange={(e) => handleInputChange('initiated_by', e.target.value)}
-                className="w-full border-2 border-gray-400 rounded-md shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 bg-white"
+                className="w-full h-12 border-2 border-gray-400 rounded-md shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 bg-white"
                 maxLength={20}
               />
             </div>
@@ -351,7 +352,7 @@ const BerCertificate = () => {
                 options={commandOptions}
                 onChange={(e) => handleInputChange('command', e.value)}
                 placeholder="--Select--"
-                className="w-full border-2 border-gray-400 rounded-md shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 bg-white"
+                className="w-full h-12 border-2 border-gray-400 rounded-md shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 bg-white"
               />
             </div>
 
@@ -502,7 +503,7 @@ const BerCertificate = () => {
                 id="remarks"
                 value={formData.remarks}
                 onChange={(e) => handleInputChange('remarks', e.target.value)}
-                className="w-full border-2 border-gray-400 rounded-md shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 bg-white"
+                className="w-full h-12 border-2 border-gray-400 rounded-md shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 bg-white"
                 maxLength={50}
               />
             </div>
@@ -521,7 +522,7 @@ const BerCertificate = () => {
                 />
                 <label 
                   htmlFor="digital_sign" 
-                  className="block w-full px-3 py-2 border-2 border-gray-400 rounded-md shadow-sm bg-white cursor-pointer hover:border-blue-500 transition-colors"
+                  className="block w-full h-12 px-3 py-2 border-2 border-gray-400 rounded-md shadow-sm bg-white cursor-pointer hover:border-blue-500 transition-colors flex items-center"
                 >
                   Choose File
                 </label>
@@ -629,6 +630,15 @@ const BerCertificate = () => {
           <Column field="ber_for_engine" header="BER for Engine" />
           <Column field="dg" header="DG" />
           <Column field="remarks" header="Remarks" />
+          <Column 
+            header="Action" 
+            style={{ width: '120px' }}
+            body={() => (
+              <div className="flex gap-2">
+                {/* Action buttons will be added here later */}
+              </div>
+            )}
+          />
         </DataTable>
       </div>
     </div>

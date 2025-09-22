@@ -259,6 +259,17 @@ const BoatHistorySheet = () => {
     return true;
   };
 
+  // Action handlers
+  const handleEdit = (id) => {
+    console.log('Edit action for ID:', id);
+    // Add edit functionality here
+  };
+
+  const handleDelete = (id) => {
+    console.log('Delete action for ID:', id);
+    // Add delete functionality here
+  };
+
   const columns = [
     { field: 'sr_no', header: 'Sr No.', sortable: true, style: { width: '80px' } },
     { field: 'reg_no', header: 'Registration No.', sortable: true, style: { width: '150px' } },
@@ -283,6 +294,30 @@ const BoatHistorySheet = () => {
     { field: 'details_collar', header: 'Details of Collar', sortable: true, style: { width: '120px' } },
     { field: 'engine_year', header: 'Engine Year', sortable: true, style: { width: '100px' } },
     { field: 'remarks', header: 'Remarks', sortable: true, style: { width: '100px' } },
+    { 
+      field: 'actions', 
+      header: 'Action', 
+      sortable: false, 
+      style: { width: '120px' },
+      body: (rowData) => (
+        <div className="flex gap-2">
+          <button
+            onClick={() => handleEdit(rowData.id)}
+            className="px-2 py-1 bg-blue-500 text-white text-xs rounded hover:bg-blue-600 transition-colors"
+            title="Edit"
+          >
+            Edit
+          </button>
+          <button
+            onClick={() => handleDelete(rowData.id)}
+            className="px-2 py-1 bg-red-500 text-white text-xs rounded hover:bg-red-600 transition-colors"
+            title="Delete"
+          >
+            Delete
+          </button>
+        </div>
+      )
+    },
   ];
 
   return (

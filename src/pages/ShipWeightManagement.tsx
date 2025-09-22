@@ -8,6 +8,7 @@ import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Toast } from 'primereact/toast';
 import { useRef } from 'react';
+import ReusableTable from './ReusableTable';
 
 const ShipWeightManagement = () => {
   const toast = useRef(null);
@@ -577,138 +578,176 @@ const ShipWeightManagement = () => {
             {/* OPS Table - Only show when OPS is selected */}
             {formData.ship_status === 'OPS' && (
               <div className="col-span-2 mt-6" id="ops_table">
-                <div className="overflow-x-auto">
-                  <table className="min-w-full border border-gray-300 bg-white">
-                    <thead>
-                      <tr>
-                        <td colSpan="3"><b>Enter Total Number of Rows.</b></td>
-                        <td colSpan="8">
-                          <input type="hidden" id="hdaddcountinve1" value="1" />
-                          <InputText
-                            id="total_row1"
-                            value={totalRows1}
-                            onChange={(e) => {
-                              const count = parseInt(e.target.value) || 1;
-                              setTotalRows1(count);
-                              updateOpsTableRows(count);
-                            }}
-                            className="border-2 border-gray-400 rounded-md shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 bg-white px-3 py-2"
-                            maxLength={2}
-                          />
-                        </td>
-                      </tr>
-                      <tr align="center">
-                        <th>Ser</th>
-                        <th>Lightship Disp (A)</th>
-                        <th>Reference Loading condition During Audit (B)</th>
-                        <th>Disp in Reference Condition as per Booklet (C)</th>
-                        <th>Disp as read from drafts during Audit (D)</th>
-                        <th>Net Difference in variable loads (E)</th>
-                        <th>Corrected Disp (F)</th>
-                        <th>Net Increase in Disp (G)</th>
-                        <th>% Increase (H)</th>
-                        <th>Net Weight Addition</th>
-                        <th>Net KG of Weight Addition</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {opsTableData.map((row, index) => (
-                        <tr key={row.id}>
-                          <td align="center" id={`sequence_OPS${row.id}`}>{row.id}</td>
-                          <td>
-                            <InputText
-                              id={`lightship${row.id}`}
-                              value={row.lightship}
-                              onChange={(e) => handleOpsTableChange(index, 'lightship', e.target.value)}
-                              className="w-full border border-gray-300 rounded px-2 py-1 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-200"
-                              maxLength={50}
-                            />
-                          </td>
-                          <td>
-                            <InputText
-                              id={`ref_loading${row.id}`}
-                              value={row.ref_loading}
-                              onChange={(e) => handleOpsTableChange(index, 'ref_loading', e.target.value)}
-                              className="store"
-                              maxLength={50}
-                            />
-                          </td>
-                          <td>
-                            <InputText
-                              id={`disp_booklet${row.id}`}
-                              value={row.disp_booklet}
-                              onChange={(e) => handleOpsTableChange(index, 'disp_booklet', e.target.value)}
-                              className="store"
-                              maxLength={50}
-                            />
-                          </td>
-                          <td>
-                            <InputText
-                              id={`disp_audit${row.id}`}
-                              value={row.disp_audit}
-                              onChange={(e) => handleOpsTableChange(index, 'disp_audit', e.target.value)}
-                              className="store"
-                              maxLength={50}
-                            />
-                          </td>
-                          <td>
-                            <InputText
-                              id={`net_diff${row.id}`}
-                              value={row.net_diff}
-                              onChange={(e) => handleOpsTableChange(index, 'net_diff', e.target.value)}
-                              className="store"
-                              maxLength={50}
-                            />
-                          </td>
-                          <td>
-                            <InputText
-                              id={`corrected_disp${row.id}`}
-                              value={row.corrected_disp}
-                              onChange={(e) => handleOpsTableChange(index, 'corrected_disp', e.target.value)}
-                              className="store"
-                              maxLength={50}
-                            />
-                          </td>
-                          <td>
-                            <InputText
-                              id={`net_incr${row.id}`}
-                              value={row.net_incr}
-                              onChange={(e) => handleOpsTableChange(index, 'net_incr', e.target.value)}
-                              className="store"
-                              maxLength={50}
-                            />
-                          </td>
-                          <td>
-                            <InputText
-                              id={`increase${row.id}`}
-                              value={row.increase}
-                              onChange={(e) => handleOpsTableChange(index, 'increase', e.target.value)}
-                              className="store"
-                              maxLength={50}
-                            />
-                          </td>
-                          <td>
-                            <InputText
-                              id={`net_weight${row.id}`}
-                              value={row.net_weight}
-                              onChange={(e) => handleOpsTableChange(index, 'net_weight', e.target.value)}
-                              className="store"
-                              maxLength={50}
-                            />
-                          </td>
-                          <td>
-                            <InputText
-                              id={`net_kg${row.id}`}
-                              value={row.net_kg}
-                              onChange={(e) => handleOpsTableChange(index, 'net_kg', e.target.value)}
-                              className="store"
-                              maxLength={50}
-                            />
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                <div className="mb-4 flex items-center space-x-4">
+                  <label className="text-sm font-medium text-gray-700">
+                    Enter Total Number of Rows:
+                  </label>
+                  <input
+                    type="number"
+                    min="1"
+                    max="99"
+                    value={totalRows1}
+                    onChange={(e) => {
+                      const count = parseInt(e.target.value) || 1;
+                      const validCount = Math.max(1, Math.min(99, count));
+                      setTotalRows1(validCount);
+                      updateOpsTableRows(validCount);
+                    }}
+                    className="w-20 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                </div>
+                
+                <div className={`overflow-x-auto ${totalRows1 > 5 ? 'overflow-y-auto max-h-96' : ''}`}>
+                  <ReusableTable
+                    data={opsTableData}
+                    columns={[
+                    {
+                      field: 'id',
+                      header: 'Ser',
+                      sortable: false,
+                      style: { width: '80px' },
+                      body: (rowData) => (
+                        <div className="text-center font-medium">
+                          {rowData.id}
+                        </div>
+                      )
+                    },
+                    {
+                      field: 'lightship',
+                      header: 'Lightship Disp (A)',
+                      sortable: false,
+                      body: (rowData) => (
+                        <InputText
+                          value={rowData.lightship}
+                          onChange={(e) => handleOpsTableChange(rowData.id - 1, 'lightship', e.target.value)}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          maxLength={50}
+                        />
+                      )
+                    },
+                    {
+                      field: 'ref_loading',
+                      header: 'Reference Loading condition During Audit (B)',
+                      sortable: false,
+                      body: (rowData) => (
+                        <InputText
+                          value={rowData.ref_loading}
+                          onChange={(e) => handleOpsTableChange(rowData.id - 1, 'ref_loading', e.target.value)}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          maxLength={50}
+                        />
+                      )
+                    },
+                    {
+                      field: 'disp_booklet',
+                      header: 'Disp in Reference Condition as per Booklet (C)',
+                      sortable: false,
+                      body: (rowData) => (
+                        <InputText
+                          value={rowData.disp_booklet}
+                          onChange={(e) => handleOpsTableChange(rowData.id - 1, 'disp_booklet', e.target.value)}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          maxLength={50}
+                        />
+                      )
+                    },
+                    {
+                      field: 'disp_audit',
+                      header: 'Disp as read from drafts during Audit (D)',
+                      sortable: false,
+                      body: (rowData) => (
+                        <InputText
+                          value={rowData.disp_audit}
+                          onChange={(e) => handleOpsTableChange(rowData.id - 1, 'disp_audit', e.target.value)}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          maxLength={50}
+                        />
+                      )
+                    },
+                    {
+                      field: 'net_diff',
+                      header: 'Net Difference in variable loads (E)',
+                      sortable: false,
+                      body: (rowData) => (
+                        <InputText
+                          value={rowData.net_diff}
+                          onChange={(e) => handleOpsTableChange(rowData.id - 1, 'net_diff', e.target.value)}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          maxLength={50}
+                        />
+                      )
+                    },
+                    {
+                      field: 'corrected_disp',
+                      header: 'Corrected Disp (F)',
+                      sortable: false,
+                      body: (rowData) => (
+                        <InputText
+                          value={rowData.corrected_disp}
+                          onChange={(e) => handleOpsTableChange(rowData.id - 1, 'corrected_disp', e.target.value)}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          maxLength={50}
+                        />
+                      )
+                    },
+                    {
+                      field: 'net_incr',
+                      header: 'Net Increase in Disp (G)',
+                      sortable: false,
+                      body: (rowData) => (
+                        <InputText
+                          value={rowData.net_incr}
+                          onChange={(e) => handleOpsTableChange(rowData.id - 1, 'net_incr', e.target.value)}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          maxLength={50}
+                        />
+                      )
+                    },
+                    {
+                      field: 'increase',
+                      header: '% Increase (H)',
+                      sortable: false,
+                      body: (rowData) => (
+                        <InputText
+                          value={rowData.increase}
+                          onChange={(e) => handleOpsTableChange(rowData.id - 1, 'increase', e.target.value)}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          maxLength={50}
+                        />
+                      )
+                    },
+                    {
+                      field: 'net_weight',
+                      header: 'Net Weight Addition',
+                      sortable: false,
+                      body: (rowData) => (
+                        <InputText
+                          value={rowData.net_weight}
+                          onChange={(e) => handleOpsTableChange(rowData.id - 1, 'net_weight', e.target.value)}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          maxLength={50}
+                        />
+                      )
+                    },
+                    {
+                      field: 'net_kg',
+                      header: 'Net KG of Weight Addition',
+                      sortable: false,
+                      body: (rowData) => (
+                        <InputText
+                          value={rowData.net_kg}
+                          onChange={(e) => handleOpsTableChange(rowData.id - 1, 'net_kg', e.target.value)}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          maxLength={50}
+                        />
+                      )
+                    }
+                  ]}
+                    pagination={false}
+                    globalFilter={false}
+                    exportable={false}
+                    className="p-datatable-sm"
+                  />
                 </div>
               </div>
             )}
@@ -716,78 +755,98 @@ const ShipWeightManagement = () => {
             {/* REFIT Table - Only show when REFIT is selected */}
             {formData.ship_status === 'REFIT' && (
               <div className="col-span-2 mt-6" id="refit_table">
-                <div className="overflow-x-auto">
-                  <table className="min-w-full border border-gray-300 bg-white">
-                    <thead>
-                      <tr>
-                        <td colSpan="2"><b>Enter Total Number of Rows.</b></td>
-                        <td colSpan="3">
-                          <input type="hidden" id="hdaddcountinve2" value="1" />
-                          <InputText
-                            id="total_row2"
-                            value={totalRows2}
-                            onChange={(e) => {
-                              const count = parseInt(e.target.value) || 1;
-                              setTotalRows2(count);
-                              updateRefitTableRows(count);
-                            }}
-                            className="border-2 border-gray-400 rounded-md shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 bg-white px-3 py-2"
-                            maxLength={2}
-                          />
-                        </td>
-                      </tr>
-                      <tr align="center">
-                        <th>Ser</th>
-                        <th>Lightship Disp(A)</th>
-                        <th>Weight change prior refit</th>
-                        <th>Net weight change during refit</th>
-                        <th>Net KG</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {refitTableData.map((row, index) => (
-                        <tr key={row.id}>
-                          <td align="center" id={`sequence_REF${row.id}`}>{row.id}</td>
-                          <td>
-                            <InputText
-                              id={`ref_lightship${row.id}`}
-                              value={row.lightship}
-                              onChange={(e) => handleRefitTableChange(index, 'lightship', e.target.value)}
-                              className="store"
-                              maxLength={50}
-                            />
-                          </td>
-                          <td>
-                            <InputText
-                              id={`ref_weight_change${row.id}`}
-                              value={row.weight_change}
-                              onChange={(e) => handleRefitTableChange(index, 'weight_change', e.target.value)}
-                              className="store"
-                              maxLength={50}
-                            />
-                          </td>
-                          <td>
-                            <InputText
-                              id={`ref_net_weight${row.id}`}
-                              value={row.net_weight}
-                              onChange={(e) => handleRefitTableChange(index, 'net_weight', e.target.value)}
-                              className="store"
-                              maxLength={50}
-                            />
-                          </td>
-                          <td>
-                            <InputText
-                              id={`ref_net_kg${row.id}`}
-                              value={row.net_kg}
-                              onChange={(e) => handleRefitTableChange(index, 'net_kg', e.target.value)}
-                              className="store"
-                              maxLength={50}
-                            />
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                <div className="mb-4 flex items-center space-x-4">
+                  <label className="text-sm font-medium text-gray-700">
+                    Enter Total Number of Rows:
+                  </label>
+                  <input
+                    type="number"
+                    min="1"
+                    max="99"
+                    value={totalRows2}
+                    onChange={(e) => {
+                      const count = parseInt(e.target.value) || 1;
+                      const validCount = Math.max(1, Math.min(99, count));
+                      setTotalRows2(validCount);
+                      updateRefitTableRows(validCount);
+                    }}
+                    className="w-20 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                </div>
+                
+                <div className={`overflow-x-auto ${totalRows2 > 5 ? 'overflow-y-auto max-h-96' : ''}`}>
+                  <ReusableTable
+                    data={refitTableData}
+                    columns={[
+                    {
+                      field: 'id',
+                      header: 'Ser',
+                      sortable: false,
+                      style: { width: '80px' },
+                      body: (rowData) => (
+                        <div className="text-center font-medium">
+                          {rowData.id}
+                        </div>
+                      )
+                    },
+                    {
+                      field: 'lightship',
+                      header: 'Lightship Disp(A)',
+                      sortable: false,
+                      body: (rowData) => (
+                        <InputText
+                          value={rowData.lightship}
+                          onChange={(e) => handleRefitTableChange(rowData.id - 1, 'lightship', e.target.value)}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          maxLength={50}
+                        />
+                      )
+                    },
+                    {
+                      field: 'weight_change',
+                      header: 'Weight change prior refit',
+                      sortable: false,
+                      body: (rowData) => (
+                        <InputText
+                          value={rowData.weight_change}
+                          onChange={(e) => handleRefitTableChange(rowData.id - 1, 'weight_change', e.target.value)}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          maxLength={50}
+                        />
+                      )
+                    },
+                    {
+                      field: 'net_weight',
+                      header: 'Net weight change during refit',
+                      sortable: false,
+                      body: (rowData) => (
+                        <InputText
+                          value={rowData.net_weight}
+                          onChange={(e) => handleRefitTableChange(rowData.id - 1, 'net_weight', e.target.value)}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          maxLength={50}
+                        />
+                      )
+                    },
+                    {
+                      field: 'net_kg',
+                      header: 'Net KG',
+                      sortable: false,
+                      body: (rowData) => (
+                        <InputText
+                          value={rowData.net_kg}
+                          onChange={(e) => handleRefitTableChange(rowData.id - 1, 'net_kg', e.target.value)}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          maxLength={50}
+                        />
+                      )
+                    }
+                  ]}
+                    pagination={false}
+                    globalFilter={false}
+                    exportable={false}
+                    className="p-datatable-sm"
+                  />
                 </div>
               </div>
             )}

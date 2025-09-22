@@ -379,10 +379,10 @@ const In305Form = () => {
                               placeholder="DD-MM-YYYY"
                               showIcon
                             />
-                            <input
+                            {/* <input
                               type="checkbox"
                               className="w-4 h-4"
-                            />
+                            /> */}
                           </div>
                         </td>
                         <td className="border border-gray-300 px-4 py-2">
@@ -393,10 +393,10 @@ const In305Form = () => {
                               placeholder="DD-MM-YYYY"
                               showIcon
                             />
-                            <input
+                            {/* <input
                               type="checkbox"
                               className="w-4 h-4"
-                            />
+                            /> */}
                           </div>
                         </td>
                         <td className="border border-gray-300 px-4 py-2">
@@ -407,10 +407,10 @@ const In305Form = () => {
                               placeholder="DD-MM-YYYY"
                               showIcon
                             />
-                            <input
+                            {/* <input
                               type="checkbox"
                               className="w-4 h-4"
-                            />
+                            /> */}
                           </div>
                         </td>
                         <td className="border border-gray-300 px-4 py-2">
@@ -490,10 +490,10 @@ const In305Form = () => {
                               placeholder="DD-MM-YYYY"
                               showIcon
                             />
-                            <input
+                            {/* <input
                               type="checkbox"
                               className="w-4 h-4"
-                            />
+                            /> */}
                           </div>
                         </td>
                         <td className="border border-gray-300 px-4 py-2">
@@ -504,10 +504,10 @@ const In305Form = () => {
                               placeholder="DD-MM-YYYY"
                               showIcon
                             />
-                            <input
+                            {/* <input
                               type="checkbox"
                               className="w-4 h-4"
-                            />
+                            /> */}
                           </div>
                         </td>
                         <td className="border border-gray-300 px-4 py-2">

@@ -5,7 +5,6 @@ const HullInspectionReport = () => {
   const [totalRows, setTotalRows] = useState(1);
   const [selectedShip, setSelectedShip] = useState('');
 
-
   const Input = ({ className = "", ...props }) => (
     <input
       className={`w-full p-2 border border-gray-300 text-sm ${className}`}
@@ -39,111 +38,113 @@ const HullInspectionReport = () => {
 
   return (
     <div className="max-w-full mx-auto bg-white shadow-md">
-       {/* Header */}
-       <div className="bg-[#c7d9f0] py-4">
-         <h1 className="text-center text-2xl font-semibold text-gray-800 mb-4">
-           SHIP STAFF REPORT OF HULL INSPECTION INS -
-         </h1>
-         <div className="flex justify-center">
-           <Select 
-             className="w-20" 
-             value={selectedShip}
-             onChange={(e) => setSelectedShip(e.target.value)}
-           >
-          <option value="">--Select--</option>
-          <option value="43">SHIVALIK</option>
-          <option value="84">JAMUNA</option>
-          <option value="23">BANGARAM</option>
-          <option value="56">TARANGINI</option>
-          <option value="99">SARYU</option>
-          <option value="31">KUMBHIR</option>
-          <option value="87">T-83</option>
-          <option value="27">AIRAVAT</option>
-          <option value="48">KHANJAR</option>
-          <option value="57">SHUDERSHINI</option>
-          <option value="59">TRISHUL</option>
-          <option value="62">TEG</option>
-          <option value="55">RANVIJAY</option>
-          <option value="47">KIRPAN</option>
-          <option value="35">DELHI</option>
-          <option value="83">SURVEKSHAK</option>
-          <option value="65">JYOTI</option>
-          <option value="94">SUJATA</option>
-          <option value="76">KABRA</option>
-          <option value="68">CANKARSO</option>
-          <option value="88">T-84</option>
-          <option value="18">VIBHUTI</option>
-          <option value="17">NISHANK</option>
-          <option value="25">MAGAR</option>
-          <option value="42">BEAS</option>
-          <option value="90">SUVERNA</option>
-          <option value="45">SAHYADRI</option>
-          <option value="16">PRALAYA</option>
-          <option value="74">CHERIYAM</option>
-          <option value="44">SATPURA</option>
-          <option value="20">JALASHWA</option>
-          <option value="63">TARKASH</option>
-          <option value="52">KARMUK</option>
-          <option value="82">SUTLEJ</option>
-          <option value="96">SUMEDHA</option>
-          <option value="15">PRABAL</option>
-          <option value="75">CORA DIVH</option>
-          <option value="21">BATTIMALV</option>
-          <option value="38">CHENNAI</option>
-          <option value="97">SUMITRA</option>
-          <option value="86">T-82</option>
-          <option value="46">KUTHAR</option>
-          <option value="69">KONDUL</option>
-          <option value="89">SUBHDRA</option>
-          <option value="80">DARSHAK</option>
-          <option value="24">BITRA</option>
-          <option value="73">CHETLAT</option>
-          <option value="81">NIREEKSHAK</option>
-          <option value="71">KARUVA</option>
-          <option value="67">DEEPAK</option>
-          <option value="123">SHAKTI</option>
-          <option value="36">KOLKATA</option>
-          <option value="85">INVETIGATOR</option>
-          <option value="93">SHARDA</option>
-          <option value="64">SHAKTI</option>
-          <option value="33">MUMBAI</option>
-          <option value="39">GOMTI</option>
-          <option value="41">BETWA</option>
-          <option value="13">NASHAK</option>
-          <option value="70">KOSWARI</option>
-          <option value="30">CHEETAH</option>
-          <option value="58">TALWAR</option>
-          <option value="28">KESARI</option>
-          <option value="66">ADITYA</option>
-          <option value="22">BARATANG</option>
-          <option value="49">KORA</option>
-          <option value="51">KULISH</option>
-          <option value="53">RANA</option>
-          <option value="77">KALPENI</option>
-          <option value="122">SHAKTI</option>
-          <option value="12">VIPUL</option>
-          <option value="60">TABAR</option>
-          <option value="61">TRINKAND</option>
-          <option value="37">KOCHI</option>
-          <option value="91">SUKANYA</option>
-          <option value="92">SAVITRI</option>
-          <option value="29">GULDAR</option>
-          <option value="40">BRAHMAPUTRA</option>
-          <option value="26">GHARIAL</option>
-          <option value="54">RANVIR</option>
-          <option value="79">NIRUPAK</option>
-          <option value="19">VINASH</option>
-          <option value="50">KIRCH</option>
-          <option value="78">SANDHAYAK</option>
-          <option value="14">VIDYUT</option>
-          <option value="95">TIR</option>
-          <option value="32">GAJ</option>
-          <option value="72">CAR NICOBAR</option>
-          <option value="98">SUNAYNA</option>
-           <option value="34">MYSORE</option>
-           </Select>
-         </div>
-       </div>
+      {/* Header - Modified to match the image */}
+      <div className="bg-[#c7d9f0] py-4">
+        <div className="flex items-center justify-center">
+          <h1 className="text-xl font-semibold text-gray-800 mr-2">
+            SHIP STAFF REPORT OF HULL INSPECTION INS -
+          </h1>
+          <div>
+          <Select 
+            className="w-40" 
+            value={selectedShip}
+            onChange={(e) => setSelectedShip(e.target.value)}
+          >
+            <option value="">--Select--</option>
+            <option value="43">SHIVALIK</option>
+            <option value="84">JAMUNA</option>
+            <option value="23">BANGARAM</option>
+            <option value="56">TARANGINI</option>
+            <option value="99">SARYU</option>
+            <option value="31">KUMBHIR</option>
+            <option value="87">T-83</option>
+            <option value="27">AIRAVAT</option>
+            <option value="48">KHANJAR</option>
+            <option value="57">SHUDERSHINI</option>
+            <option value="59">TRISHUL</option>
+            <option value="62">TEG</option>
+            <option value="55">RANVIJAY</option>
+            <option value="47">KIRPAN</option>
+            <option value="35">DELHI</option>
+            <option value="83">SURVEKSHAK</option>
+            <option value="65">JYOTI</option>
+            <option value="94">SUJATA</option>
+            <option value="76">KABRA</option>
+            <option value="68">CANKARSO</option>
+            <option value="88">T-84</option>
+            <option value="18">VIBHUTI</option>
+            <option value="17">NISHANK</option>
+            <option value="25">MAGAR</option>
+            <option value="42">BEAS</option>
+            <option value="90">SUVERNA</option>
+            <option value="45">SAHYADRI</option>
+            <option value="16">PRALAYA</option>
+            <option value="74">CHERIYAM</option>
+            <option value="44">SATPURA</option>
+            <option value="20">JALASHWA</option>
+            <option value="63">TARKASH</option>
+            <option value="52">KARMUK</option>
+            <option value="82">SUTLEJ</option>
+            <option value="96">SUMEDHA</option>
+            <option value="15">PRABAL</option>
+            <option value="75">CORA DIVH</option>
+            <option value="21">BATTIMALV</option>
+            <option value="38">CHENNAI</option>
+            <option value="97">SUMITRA</option>
+            <option value="86">T-82</option>
+            <option value="46">KUTHAR</option>
+            <option value="69">KONDUL</option>
+            <option value="89">SUBHDRA</option>
+            <option value="80">DARSHAK</option>
+            <option value="24">BITRA</option>
+            <option value="73">CHETLAT</option>
+            <option value="81">NIREEKSHAK</option>
+            <option value="71">KARUVA</option>
+            <option value="67">DEEPAK</option>
+            <option value="123">SHAKTI</option>
+            <option value="36">KOLKATA</option>
+            <option value="85">INVETIGATOR</option>
+            <option value="93">SHARDA</option>
+            <option value="64">SHAKTI</option>
+            <option value="33">MUMBAI</option>
+            <option value="39">GOMTI</option>
+            <option value="41">BETWA</option>
+            <option value="13">NASHAK</option>
+            <option value="70">KOSWARI</option>
+            <option value="30">CHEETAH</option>
+            <option value="58">TALWAR</option>
+            <option value="28">KESARI</option>
+            <option value="66">ADITYA</option>
+            <option value="22">BARATANG</option>
+            <option value="49">KORA</option>
+            <option value="51">KULISH</option>
+            <option value="53">RANA</option>
+            <option value="77">KALPENI</option>
+            <option value="122">SHAKTI</option>
+            <option value="12">VIPUL</option>
+            <option value="60">TABAR</option>
+            <option value="61">TRINKAND</option>
+            <option value="37">KOCHI</option>
+            <option value="91">SUKANYA</option>
+            <option value="92">SAVITRI</option>
+            <option value="29">GULDAR</option>
+            <option value="40">BRAHMAPUTRA</option>
+            <option value="26">GHARIAL</option>
+            <option value="54">RANVIR</option>
+            <option value="79">NIRUPAK</option>
+            <option value="19">VINASH</option>
+            <option value="50">KIRCH</option>
+            <option value="78">SANDHAYAK</option>
+            <option value="14">VIDYUT</option>
+            <option value="95">TIR</option>
+            <option value="32">GAJ</option>
+            <option value="72">CAR NICOBAR</option>
+            <option value="98">SUNAYNA</option>
+            <option value="34">MYSORE</option>
+          </Select>
+          </div>
+        </div>
+      </div>
 
       <div className="p-6 bg-gray-50">
         {/* Quarter Ending Input */}
@@ -159,20 +160,20 @@ const HullInspectionReport = () => {
           />
         </div>
 
-         {/* Row Controls */}
-         <div className="mb-4">
-           <div className="flex items-center gap-4">
-             <label className="text-sm font-medium">Enter Total Number of Rows.</label>
-             <input
-               type="number"
-               min="1"
-               max="20"
-               value={totalRows}
-               onChange={(e) => setTotalRows(parseInt(e.target.value) || 1)}
-               className="w-16 px-2 py-1 border border-gray-300 text-sm bg-white"
-             />
-           </div>
-         </div>
+        {/* Row Controls */}
+        <div className="mb-4">
+          <div className="flex items-center gap-4">
+            <label className="text-sm font-medium">Enter Total Number of Rows.</label>
+            <input
+              type="number"
+              min="1"
+              max="20"
+              value={totalRows}
+              onChange={(e) => setTotalRows(parseInt(e.target.value) || 1)}
+              className="w-16 px-2 py-1 border border-gray-300 text-sm bg-white"
+            />
+          </div>
+        </div>
 
         {/* Main Table */}
         <div className={`overflow-x-auto mb-6 ${totalRows > 5 ? 'overflow-y-auto max-h-96' : ''}`}>

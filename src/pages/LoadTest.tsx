@@ -363,63 +363,62 @@ const LoadTest = () => {
                   </h4>
                 </div>
                 
-                {/* Total Rows Input */}
-                <div className="mb-4 flex items-center space-x-4">
-                  <label className="text-sm font-medium text-gray-700">
-                    Enter Total Number of Rows:
-                  </label>
-                  <input
-                    type="number"
-                    name="total_row"
-                    value={formData.total_row}
-                    onChange={(e) => handleTotalRowsChange(e.target.value)}
-                    className="w-20 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    min="1"
-                    max="99"
+                {/* Reusable Table for Repairs */}
+                <div className="max-h-96 overflow-y-auto">
+                  <ReusableTable
+                    data={repairsRows.map((row, index) => ({
+                      id: row.id,
+                      sr_no: row.id,
+                      repairs_undertaken: row.value
+                    }))}
+                    columns={[
+                      {
+                        field: 'sr_no',
+                        header: 'Sr No.',
+                        sortable: false,
+                        style: { width: '100px' },
+                        body: (rowData) => (
+                          <div className="text-center font-medium">
+                            {rowData.sr_no}
+                          </div>
+                        )
+                      },
+                      {
+                        field: 'repairs_undertaken',
+                        header: (
+                          <div className="flex items-center space-x-2">
+                            <span>Enter Total Number of Rows:</span>
+                            <input
+                              type="number"
+                              name="total_row"
+                              value={formData.total_row}
+                              onChange={(e) => handleTotalRowsChange(e.target.value)}
+                              className="w-20 px-2 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm text-black"
+                              min="1"
+                              max="99"
+                            />
+                          </div>
+                        ),
+                        sortable: false,
+                        body: (rowData) => (
+                          <input
+                            type="text"
+                            value={rowData.repairs_undertaken}
+                            onChange={(e) => handleRepairsChange(rowData.id - 1, e.target.value)}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            placeholder="Enter repairs undertaken"
+                            maxLength="100"
+                            required
+                          />
+                        )
+                      }
+                    ]}
+                    pagination={false}
+                    globalFilter={false}
+                    exportable={false}
+                    className="p-datatable-sm"
                   />
                 </div>
-
-                {/* Reusable Table for Repairs */}
-                <ReusableTable
-                  data={repairsRows.map((row, index) => ({
-                    id: row.id,
-                    sr_no: row.id,
-                    repairs_undertaken: row.value
-                  }))}
-                  columns={[
-                    {
-                      field: 'sr_no',
-                      header: 'Sr No.',
-                      sortable: false,
-                      style: { width: '100px' },
-                      body: (rowData) => (
-                        <div className="text-center font-medium">
-                          {rowData.sr_no}
-                        </div>
-                      )
-                    },
-                    {
-                      field: 'repairs_undertaken',
-                      header: 'Repairs Undertaken',
-                      sortable: false,
-                      body: (rowData) => (
-                        <input
-                          type="text"
-                          value={rowData.repairs_undertaken}
-                          onChange={(e) => handleRepairsChange(rowData.id - 1, e.target.value)}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                          placeholder="Enter repairs undertaken"
-                          maxLength="100"
-                          required
-                        />
-                      )
-                    }
-                  ]}
-                  pagination={false}
-                  globalFilter={false}
-                  exportable={false}
-                  className="p-datatable-sm"
-                />
               </div>
 
               {/* Form Actions */}
