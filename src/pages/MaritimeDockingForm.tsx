@@ -39,7 +39,7 @@ const MaritimeDockingForm = () => {
   };
 
   const TableHeader = ({ children, className = "" }) => (
-    <th className={`bg-[#0072a6] text-white p-2 text-sm font-medium border border-gray-300 ${className}`}>
+    <th className={`bg-[#1a2746] text-white p-2 text-sm font-medium border border-gray-300 ${className}`}>
       {children}
     </th>
   );

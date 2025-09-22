@@ -68,7 +68,7 @@ const sidebarItems = [
         title: "Transactions",
         icon: Building2,
         items: [
-          { title: "Docking Plan", path: "/app/yard/docking" },
+          // { title: "Docking Plan", path: "/app/yard/docking" },
           { title: "DOCKING PLAN APPROVAL", path: "/app/returns/docking-plan-approval" },
           { title: "Docking Approval", path: "/app/yard/docking-approval" },
           { title: "DOCKING REPORT SECTION -1", path: "/app/returns/in379-docking-report-section1" },

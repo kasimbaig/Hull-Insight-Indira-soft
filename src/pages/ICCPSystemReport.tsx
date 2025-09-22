@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Download } from 'lucide-react';
+import ReusableTable from './ReusableTable';
 
 const ICCPSystemReport = () => {
   const [tableData, setTableData] = useState([
@@ -65,7 +66,7 @@ const ICCPSystemReport = () => {
 
   const TableHeader = ({ children, className = "", sortable = false, column = "" }) => (
     <th 
-      className={`bg-[#0072a6] text-white p-3 text-sm font-medium border border-gray-300 text-center ${className} ${sortable ? 'cursor-pointer hover:bg-blue-700' : ''}`}
+      className={`bg-[#1a2746] text-white p-3 text-sm font-medium border border-gray-300 text-center ${className} ${sortable ? 'cursor-pointer hover:bg-blue-700' : ''}`}
       onClick={sortable ? () => handleSort(column) : undefined}
     >
       {children}

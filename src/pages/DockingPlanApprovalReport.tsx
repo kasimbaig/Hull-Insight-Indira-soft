@@ -144,7 +144,7 @@ const DockingPlanApprovalReport = () => {
             <div className="overflow-x-auto">
               <table className="w-full border border-gray-300 text-sm">
                 <thead>
-                  <tr className="bg-[#0072a6]">
+                  <tr className="bg-[#1a2746]">
                     <th 
                       className="border border-gray-300 px-3 py-2 text-left font-semibold text-white cursor-pointer hover:bg-blue-700"
                       onClick={() => handleSort('ser')}

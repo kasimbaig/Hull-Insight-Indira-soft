@@ -561,7 +561,7 @@ const RenderPart1 = () => {
 
           {/* Data Table Section */}
           <div className="bg-white rounded-lg shadow-lg">
-            <div className="bg-[#0072a6] text-white px-6 py-4 rounded-t-lg">
+            <div className="bg-[#c7d9f0] text-black text-center px-6 py-4 rounded-t-lg">
               <h5 className="text-xl font-semibold">REPORT RENDER PART-I</h5>
             </div>
             <div className="p-6">

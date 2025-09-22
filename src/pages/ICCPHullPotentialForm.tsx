@@ -345,7 +345,7 @@ const ICCPHullPotentialForm = () => {
           <div className="overflow-x-auto">
             <table className="w-full border-collapse border border-gray-300 text-xs">
               <thead>
-                <tr className="bg-[#0072a6] text-white">
+                <tr className="bg-[#1a2746] text-white">
                   <th className="border border-blue-700 px-2 py-3 text-sm font-medium">
                     Date <span className="text-red-300">*</span>
                   </th>
@@ -518,7 +518,7 @@ const ICCPHullPotentialForm = () => {
           <div className="overflow-x-auto">
             <table className="w-full border-collapse border border-gray-300 text-xs">
               <thead>
-                <tr className="bg-[#0072a6] text-white">
+                <tr className="bg-[#1a2746] text-white">
                   <th className="border border-blue-700 px-2 py-3 text-sm font-medium">
                     Date <span className="text-red-300">*</span>
                   </th>

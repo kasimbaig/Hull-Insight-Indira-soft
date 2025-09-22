@@ -436,11 +436,11 @@ const DockingApproval = () => {
             <div className="overflow-x-auto max-h-96 overflow-y-auto border border-gray-300 rounded-lg">
               <table className="min-w-full border-collapse">
                 <thead className="sticky top-0 z-10">
-                  <tr className="bg-[#0072a6]">
-                    <th className="border border-gray-300 px-4 py-2 text-white font-semibold sticky top-0 bg-[#0072a6]">Sr No.</th>
-                    <th className="border border-gray-300 px-4 py-2 text-white font-semibold sticky top-0 bg-[#0072a6]">Description</th>
-                    <th className="border border-gray-300 px-4 py-2 text-white font-semibold sticky top-0 bg-[#0072a6]">Status (Yes/ No/ NA)</th>
-                    <th className="border border-gray-300 px-4 py-2 text-white font-semibold sticky top-0 bg-[#0072a6]">Remarks (Mandatory if status is No/ NA )</th>
+                  <tr className="bg-[#1a2746]">
+                    <th className="border border-gray-300 px-4 py-2 text-white font-semibold sticky top-0 bg-[#1a2746]">Sr No.</th>
+                    <th className="border border-gray-300 px-4 py-2 text-white font-semibold sticky top-0 bg-[#1a2746]">Description</th>
+                    <th className="border border-gray-300 px-4 py-2 text-white font-semibold sticky top-0 bg-[#1a2746]">Status (Yes/ No/ NA)</th>
+                    <th className="border border-gray-300 px-4 py-2 text-white font-semibold sticky top-0 bg-[#1a2746]">Remarks (Mandatory if status is No/ NA )</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -2057,13 +2057,13 @@ const DockingApproval = () => {
                 <div className={`overflow-x-auto ${rowCounts.offsetsKeelBlock > 5 ? 'max-h-96 overflow-y-auto' : ''}`}>
                   <table className="w-full border-collapse border border-gray-300">
                     <thead>
-                      <tr className="bg-[#0072a6]">
+                      <tr className="bg-[#1a2746]">
                         <th className="border border-gray-300 px-4 py-2 text-white font-semibold">Sr No.</th>
                         <th className="border border-gray-300 px-4 py-2 text-white font-semibold">Keel Block No. <span className="text-red-500">*</span></th>
                         <th className="border border-gray-300 px-4 py-2 text-white font-semibold" colSpan="3">FR.STN No.</th>
                         <th className="border border-gray-300 px-4 py-2 text-white font-semibold" colSpan="3">Height From Dock Floor (in mm)</th>
                       </tr>
-                      <tr className="bg-[#0072a6]">
+                      <tr className="bg-[#1a2746]">
                         <th className="border border-gray-300 px-4 py-2 text-white font-semibold"></th>
                         <th className="border border-gray-300 px-4 py-2 text-white font-semibold"></th>
                         <th className="border border-gray-300 px-4 py-2 text-white font-semibold">P <span className="text-red-500">*</span></th>
@@ -2186,7 +2186,7 @@ const DockingApproval = () => {
                 <div className={`overflow-x-auto ${rowCounts.offsetsShapedSideBlock > 5 ? 'max-h-96 overflow-y-auto' : ''}`}>
                   <table className="w-full border-collapse border border-gray-300">
                     <thead>
-                      <tr className="bg-[#0072a6]">
+                      <tr className="bg-[#1a2746]">
                         <th className="border border-gray-300 px-4 py-2 text-white font-semibold">Sr No.</th>
                         <th className="border border-gray-300 px-4 py-2 text-white font-semibold">Block Details <span className="text-red-500">*</span></th>
                         <th className="border border-gray-300 px-4 py-2 text-white font-semibold">Distance From AFT (in mm) <span className="text-red-500">*</span></th>
@@ -2279,7 +2279,7 @@ const DockingApproval = () => {
                 <div className={`overflow-x-auto ${rowCounts.listUWOpenings > 5 ? 'max-h-96 overflow-y-auto' : ''}`}>
                   <table className="w-full border-collapse border border-gray-300">
                     <thead>
-                      <tr className="bg-[#0072a6]">
+                      <tr className="bg-[#1a2746]">
                         <th className="border border-gray-300 px-4 py-2 text-white font-semibold">Sr No.</th>
                         <th className="border border-gray-300 px-4 py-2 text-white font-semibold">U/W Opening Appendages (P/S/CL) <span className="text-red-500">*</span></th>
                         <th className="border border-gray-300 px-4 py-2 text-white font-semibold">Longitudinal Distance from Nearest FR. <span className="text-red-500">*</span></th>
@@ -2392,7 +2392,7 @@ const DockingApproval = () => {
                 <div className={`overflow-x-auto ${rowCounts.dispositionKeelBlocks > 5 ? 'max-h-96 overflow-y-auto' : ''}`}>
                   <table className="w-full border-collapse border border-gray-300">
                     <thead>
-                      <tr className="bg-[#0072a6]">
+                      <tr className="bg-[#1a2746]">
                         <th className="border border-gray-300 px-4 py-2 text-white font-semibold">Sr No.</th>
                         <th className="border border-gray-300 px-4 py-2 text-white font-semibold">Keel Block No. <span className="text-red-500">*</span></th>
                         <th className="border border-gray-300 px-4 py-2 text-white font-semibold">Distance from FP/AP (in mm) <span className="text-red-500">*</span></th>
@@ -2485,7 +2485,7 @@ const DockingApproval = () => {
                 <div className={`overflow-x-auto ${rowCounts.dispositionSideBlocks > 5 ? 'max-h-96 overflow-y-auto' : ''}`}>
                   <table className="w-full border-collapse border border-gray-300">
                     <thead>
-                      <tr className="bg-[#0072a6]">
+                      <tr className="bg-[#1a2746]">
                         <th className="border border-gray-300 px-4 py-2 text-white font-semibold">Sr No.</th>
                         <th className="border border-gray-300 px-4 py-2 text-white font-semibold">Keel Block No. <span className="text-red-500">*</span></th>
                         <th className="border border-gray-300 px-4 py-2 text-white font-semibold">Reference Point Longitudinal From FP/AP (in mm) <span className="text-red-500">*</span></th>
@@ -2568,7 +2568,7 @@ const DockingApproval = () => {
                 <div className={`overflow-x-auto ${rowCounts.detailsBreastShore > 5 ? 'max-h-96 overflow-y-auto' : ''}`}>
                   <table className="w-full border-collapse border border-gray-300">
                     <thead>
-                      <tr className="bg-[#0072a6]">
+                      <tr className="bg-[#1a2746]">
                         <th className="border border-gray-300 px-4 py-2 text-white font-semibold">Sr No.</th>
                         <th className="border border-gray-300 px-4 py-2 text-white font-semibold">FR. No. <span className="text-red-500">*</span></th>
                         <th className="border border-gray-300 px-4 py-2 text-white font-semibold">Reference Point Longitudinal From FP/AP (in mm) <span className="text-red-500">*</span></th>
@@ -2641,7 +2641,7 @@ const DockingApproval = () => {
                 <div className={`overflow-x-auto ${rowCounts.detailsVerticalShore > 5 ? 'max-h-96 overflow-y-auto' : ''}`}>
                   <table className="w-full border-collapse border border-gray-300">
                     <thead>
-                      <tr className="bg-[#0072a6]">
+                      <tr className="bg-[#1a2746]">
                         <th className="border border-gray-300 px-4 py-2 text-white font-semibold">Sr No.</th>
                         <th className="border border-gray-300 px-4 py-2 text-white font-semibold">Frame Station <span className="text-red-500">*</span></th>
                         <th className="border border-gray-300 px-4 py-2 text-white font-semibold">Cross Section (B X W) (in mm) <span className="text-red-500">*</span></th>

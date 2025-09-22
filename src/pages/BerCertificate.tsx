@@ -558,7 +558,7 @@ const BerCertificate = () => {
        <div className="border border-gray-300 rounded-lg shadow-sm">
          <style jsx>{`
            .ber-table .p-datatable-thead > tr > th {
-             background-color: #0072a6 !important;
+             background-color: #1a2746 !important;
              color: white !important;
              border: 1px solid #0072a6 !important;
              border-right: 1px solid white !important;

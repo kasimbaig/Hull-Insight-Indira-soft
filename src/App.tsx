@@ -118,7 +118,7 @@ import ShipStaffReportHullInspection from "./pages/ShipStaffReportHullInspection
 import FormComments from "./pages/FormComments";
 import TTTest from "./pages/TTTest";
 import ParticularsInternalAboveWaterStructure from "./pages/ParticularsInternalAboveWaterStructure";
-import ParticularsUnderwaterHullSurveyByYard from "./pages/ParticularsUnderwaterHullSurveyByYard";
+import ParticularsUnderwaterHullSurveyByYardReport from "./pages/ParticularsUnderwaterHullSurveyByYardReport";
 // Module imports
 import YardModule from "./pages/yard/YardModule";
 import ShipModule from "./pages/ship/ShipModule";
@@ -168,7 +168,7 @@ const App = () => (
             <Route path="yard/*" element={<YardModule />} />
             <Route path="yard/docking-approval" element={<DockingApproval />} />
             <Route path="yard/particulars-internal-above-water-structure" element={<ParticularsInternalAboveWaterStructure />} />
-            <Route path="yard/particulars-underwater-hull-survey-by-yard" element={<ParticularsUnderwaterHullSurveyByYard />} />
+            <Route path="yard/particulars-underwater-hull-survey-by-yard" element={<ParticularsUnderwaterHullSurveyByYardReport />} />
           
           {/* Ship Operations Module */}
           <Route path="ship/*" element={<ShipModule />} />
@@ -241,7 +241,7 @@ const App = () => (
           <Route path="returns/iccp-hull-potential" element={<ICCPHullPotentialForm />} />
           <Route path="returns/paint-details" element={<PaintDetails />} />
           <Route path="returns/docking-plan-approval" element={<DockingPlanApprovalReport />} />
-          <Route path="returns/in379-docking-report-section1" element={<MaritimeDockingForm />} />
+          <Route path="returns/in379-docking-report-section1" element={<IN379DockingReportSection1Report />} />
           <Route path="returns/in378-render-part2" element={<RenderPart2 />} />
           <Route path="reports/hull-inspection" element={<HullInspectionReport />} />
           <Route path="reports/load-test-report" element={<LoadTestReport />} />

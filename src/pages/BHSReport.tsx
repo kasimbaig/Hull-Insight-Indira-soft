@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Download } from 'lucide-react';
+import ReusableTable from './ReusableTable';
 
 const BHSReport = () => {
   const [tableData, setTableData] = useState([
@@ -63,76 +64,215 @@ const BHSReport = () => {
     }
   ]);
 
-  const [searchTerm, setSearchTerm] = useState('');
-  const [entriesPerPage, setEntriesPerPage] = useState(10);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [sortColumn, setSortColumn] = useState('id');
-  const [sortDirection, setSortDirection] = useState('asc');
-
-  const handleDownload = (id) => {
-    console.log('Downloading BHS data for ID:', id);
+  const handleDownload = (rowData) => {
+    console.log('Downloading BHS data for ID:', rowData.id);
     // Add download functionality here
   };
 
-  const handleSort = (column) => {
-    if (sortColumn === column) {
-      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
-    } else {
-      setSortColumn(column);
-      setSortDirection('asc');
-    }
-  };
-
-  const filteredData = tableData.filter(item =>
-    Object.values(item).some(value =>
-      value.toString().toLowerCase().includes(searchTerm.toLowerCase())
-    )
-  );
-
-  const sortedData = [...filteredData].sort((a, b) => {
-    const aValue = a[sortColumn];
-    const bValue = b[sortColumn];
-    
-    if (sortDirection === 'asc') {
-      return aValue > bValue ? 1 : -1;
-    } else {
-      return aValue < bValue ? 1 : -1;
-    }
-  });
-
-  const startIndex = (currentPage - 1) * entriesPerPage;
-  const endIndex = startIndex + entriesPerPage;
-  const paginatedData = sortedData.slice(startIndex, endIndex);
-  const totalPages = Math.ceil(sortedData.length / entriesPerPage);
-
-  const TableHeader = ({ children, className = "", sortable = false, column = "" }) => (
-    <th 
-      className={`bg-[#0072a6] text-white p-2 text-xs font-medium border border-gray-300 text-center ${className} ${sortable ? 'cursor-pointer hover:bg-blue-700' : ''}`}
-      onClick={sortable ? () => handleSort(column) : undefined}
-    >
-      {children}
-      {sortable && (
-        <span className="ml-1">
-          {sortColumn === column ? (sortDirection === 'asc' ? '↑' : '↓') : '↕'}
+  // Define columns for ReusableTable
+  const columns = [
+    {
+      field: 'id',
+      header: 'Sr No.',
+      style: { width: '60px' },
+      align: 'center'
+    },
+    {
+      field: 'registrationNo',
+      header: 'Registration No.',
+      style: { width: '150px' }
+    },
+    {
+      field: 'yearOfRendering',
+      header: 'Year of Rendering',
+      style: { width: '120px' },
+      align: 'center'
+    },
+    {
+      field: 'berAber',
+      header: 'BER/ ABER',
+      style: { width: '100px' },
+      body: (rowData) => (
+        <span className={`px-2 py-1 rounded text-xs font-medium ${
+          rowData.berAber === 'BER' ? 'bg-green-100 text-green-800' : 'bg-blue-100 text-blue-800'
+        }`}>
+          {rowData.berAber}
         </span>
-      )}
-    </th>
-  );
-
-  const TableCell = ({ children, className = "" }) => (
-    <td className={`p-2 border border-gray-300 text-xs ${className}`}>
-      {children}
-    </td>
-  );
-
-  const getStatusBadge = (status) => {
-    if (status === 'SAT') {
-      return <span className="px-2 py-1 rounded text-xs font-medium bg-green-100 text-green-800">SAT</span>;
-    } else if (status === 'UNSAT') {
-      return <span className="px-2 py-1 rounded text-xs font-medium bg-red-100 text-red-800">UNSAT</span>;
+      )
+    },
+    {
+      field: 'occOfRendering',
+      header: 'OCC of Rendering',
+      style: { width: '120px' }
+    },
+    {
+      field: 'conditionOfHull',
+      header: 'Condition of Hull',
+      style: { width: '120px' }
+    },
+    {
+      field: 'conditionOfDavitLifting',
+      header: 'Condition of Davit Lifting',
+      style: { width: '150px' }
+    },
+    {
+      field: 'conditionOfFittings',
+      header: 'Condition of Fittings',
+      style: { width: '130px' }
+    },
+    {
+      field: 'center1',
+      header: 'Center 1',
+      style: { width: '80px' },
+      body: (rowData) => (
+        <span className={`px-2 py-1 rounded text-xs font-medium ${
+          rowData.center1 === 'SAT' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+        }`}>
+          {rowData.center1}
+        </span>
+      )
+    },
+    {
+      field: 'stbd',
+      header: 'STBD',
+      style: { width: '80px' },
+      body: (rowData) => (
+        <span className={`px-2 py-1 rounded text-xs font-medium ${
+          rowData.stbd === 'SAT' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+        }`}>
+          {rowData.stbd}
+        </span>
+      )
+    },
+    {
+      field: 'port',
+      header: 'Port',
+      style: { width: '80px' },
+      body: (rowData) => (
+        <span className={`px-2 py-1 rounded text-xs font-medium ${
+          rowData.port === 'SAT' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+        }`}>
+          {rowData.port}
+        </span>
+      )
+    },
+    {
+      field: 'auxilliaries',
+      header: 'Auxilliaries',
+      style: { width: '100px' },
+      body: (rowData) => (
+        <span className={`px-2 py-1 rounded text-xs font-medium ${
+          rowData.auxilliaries === 'SAT' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+        }`}>
+          {rowData.auxilliaries}
+        </span>
+      )
+    },
+    {
+      field: 'center2',
+      header: 'Center 2',
+      style: { width: '80px' },
+      align: 'center'
+    },
+    {
+      field: 'stbd2',
+      header: 'STBD 2',
+      style: { width: '80px' },
+      align: 'center'
+    },
+    {
+      field: 'port2',
+      header: 'Port 2',
+      style: { width: '80px' },
+      align: 'center'
+    },
+    {
+      field: 'center3',
+      header: 'Center 3',
+      style: { width: '80px' },
+      align: 'center'
+    },
+    {
+      field: 'stbd3',
+      header: 'STBD 3',
+      style: { width: '80px' },
+      align: 'center'
+    },
+    {
+      field: 'port3',
+      header: 'Port 3',
+      style: { width: '80px' },
+      align: 'center'
+    },
+    {
+      field: 'majorRepairs',
+      header: 'Major Repairs',
+      style: { width: '120px' }
+    },
+    {
+      field: 'hullYear',
+      header: 'Hull Year',
+      style: { width: '80px' },
+      align: 'center'
+    },
+    {
+      field: 'hullMonth',
+      header: 'Hull Month',
+      style: { width: '90px' },
+      align: 'center'
+    },
+    {
+      field: 'detailsOfCollar',
+      header: 'Details of Collar',
+      style: { width: '120px' },
+      align: 'center'
+    },
+    {
+      field: 'engineYear',
+      header: 'Engine Year',
+      style: { width: '90px' },
+      align: 'center'
+    },
+    {
+      field: 'engineMonth',
+      header: 'Engine Month',
+      style: { width: '100px' },
+      align: 'center'
+    },
+    {
+      field: 'remarks',
+      header: 'Remarks',
+      style: { width: '80px' },
+      align: 'center'
+    },
+    {
+      field: 'icYear',
+      header: 'IC Year',
+      style: { width: '80px' },
+      align: 'center'
+    },
+    {
+      field: 'icMonth',
+      header: 'IC Month',
+      style: { width: '80px' },
+      align: 'center'
+    },
+    {
+      field: 'actions',
+      header: 'Action',
+      style: { width: '80px' },
+      body: (rowData) => (
+        <button
+          onClick={() => handleDownload(rowData)}
+          className="text-blue-600 hover:text-blue-800 p-1"
+          title="Download Data"
+        >
+          <Download size={14} />
+        </button>
+      )
     }
-    return <span className="px-2 py-1 rounded text-xs font-medium bg-gray-100 text-gray-800">{status}</span>;
-  };
+  ];
+
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -144,192 +284,16 @@ const BHSReport = () => {
             </div>
             
             <div className="p-6">
-              {/* Search and Filter Controls */}
-              <div className="mb-6 flex flex-col sm:flex-row gap-4 items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <label htmlFor="entries-per-page" className="text-sm font-medium text-gray-700">
-                    Show
-                  </label>
-                  <select
-                    id="entries-per-page"
-                    value={entriesPerPage}
-                    onChange={(e) => setEntriesPerPage(Number(e.target.value))}
-                    className="px-3 py-1 border border-gray-300 rounded text-sm"
-                  >
-                    <option value={10}>10</option>
-                    <option value={25}>25</option>
-                    <option value={50}>50</option>
-                    <option value={100}>100</option>
-                    <option value={-1}>All</option>
-                  </select>
-                  <span className="text-sm text-gray-700">entries per page</span>
-                </div>
-                
-                <div className="flex items-center gap-2">
-                  <label htmlFor="search" className="text-sm font-medium text-gray-700">
-                    Search:
-                  </label>
-                  <input
-                    id="search"
-                    type="text"
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    placeholder="Search..."
-                    className="px-3 py-1 border border-gray-300 rounded text-sm w-64"
-                  />
-                </div>
-              </div>
-
-              {/* Data Table */}
-              <div className="overflow-x-auto mb-6">
-                <table className="w-full border border-gray-300 text-xs">
-                  <thead>
-                    <tr>
-                      <TableHeader sortable={true} column="id">Sr No.</TableHeader>
-                      <TableHeader sortable={true} column="registrationNo">Registration No.</TableHeader>
-                      <TableHeader sortable={true} column="yearOfRendering">Year of Rendering</TableHeader>
-                      <TableHeader sortable={true} column="berAber">BER/ ABER</TableHeader>
-                      <TableHeader sortable={true} column="occOfRendering">OCC of Rendering</TableHeader>
-                      <TableHeader sortable={true} column="conditionOfHull">Condition of Hull</TableHeader>
-                      <TableHeader sortable={true} column="conditionOfDavitLifting">Condition of Davit Lifting</TableHeader>
-                      <TableHeader sortable={true} column="conditionOfFittings">Condition of Fittings</TableHeader>
-                      <TableHeader sortable={true} column="center1">Center 1</TableHeader>
-                      <TableHeader sortable={true} column="stbd">STBD</TableHeader>
-                      <TableHeader sortable={true} column="port">Port</TableHeader>
-                      <TableHeader sortable={true} column="auxilliaries">Auxilliaries</TableHeader>
-                      <TableHeader sortable={true} column="center2">Center 2</TableHeader>
-                      <TableHeader sortable={true} column="stbd2">STBD 2</TableHeader>
-                      <TableHeader sortable={true} column="port2">Port 2</TableHeader>
-                      <TableHeader sortable={true} column="center3">Center 3</TableHeader>
-                      <TableHeader sortable={true} column="stbd3">STBD 3</TableHeader>
-                      <TableHeader sortable={true} column="port3">Port 3</TableHeader>
-                      <TableHeader sortable={true} column="majorRepairs">Major Repairs</TableHeader>
-                      <TableHeader sortable={true} column="hullYear">Hull Year</TableHeader>
-                      <TableHeader sortable={true} column="hullMonth">Hull Month</TableHeader>
-                      <TableHeader sortable={true} column="detailsOfCollar">Details of Collar</TableHeader>
-                      <TableHeader sortable={true} column="engineYear">Engine Year</TableHeader>
-                      <TableHeader sortable={true} column="engineMonth">Engine Month</TableHeader>
-                      <TableHeader sortable={true} column="remarks">Remarks</TableHeader>
-                      <TableHeader sortable={true} column="icYear">IC Year</TableHeader>
-                      <TableHeader sortable={true} column="icMonth">IC Month</TableHeader>
-                      <TableHeader>Action</TableHeader>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {paginatedData.map((item, index) => (
-                      <tr key={item.id} className="hover:bg-gray-50">
-                        <TableCell className="text-center font-medium bg-gray-50">
-                          {startIndex + index + 1}
-                        </TableCell>
-                        <TableCell>{item.registrationNo}</TableCell>
-                        <TableCell className="text-center">{item.yearOfRendering}</TableCell>
-                        <TableCell>
-                          <span className={`px-2 py-1 rounded text-xs font-medium ${
-                            item.berAber === 'BER' 
-                              ? 'bg-green-100 text-green-800' 
-                              : 'bg-yellow-100 text-yellow-800'
-                          }`}>
-                            {item.berAber}
-                          </span>
-                        </TableCell>
-                        <TableCell>{item.occOfRendering}</TableCell>
-                        <TableCell>{item.conditionOfHull}</TableCell>
-                        <TableCell>{item.conditionOfDavitLifting}</TableCell>
-                        <TableCell>{item.conditionOfFittings}</TableCell>
-                        <TableCell>{getStatusBadge(item.center1)}</TableCell>
-                        <TableCell>{getStatusBadge(item.stbd)}</TableCell>
-                        <TableCell>{getStatusBadge(item.port)}</TableCell>
-                        <TableCell>{getStatusBadge(item.auxilliaries)}</TableCell>
-                        <TableCell className="text-center">{item.center2}</TableCell>
-                        <TableCell className="text-center">{item.stbd2}</TableCell>
-                        <TableCell className="text-center">{item.port2}</TableCell>
-                        <TableCell className="text-center">{item.center3}</TableCell>
-                        <TableCell className="text-center">{item.stbd3}</TableCell>
-                        <TableCell className="text-center">{item.port3}</TableCell>
-                        <TableCell>{item.majorRepairs}</TableCell>
-                        <TableCell className="text-center">{item.hullYear}</TableCell>
-                        <TableCell>{item.hullMonth}</TableCell>
-                        <TableCell className="text-center">{item.detailsOfCollar}</TableCell>
-                        <TableCell className="text-center">{item.engineYear}</TableCell>
-                        <TableCell>{item.engineMonth}</TableCell>
-                        <TableCell className="text-center">{item.remarks}</TableCell>
-                        <TableCell className="text-center">{item.icYear}</TableCell>
-                        <TableCell>{item.icMonth}</TableCell>
-                        <TableCell className="text-center">
-                          <button
-                            onClick={() => handleDownload(item.id)}
-                            className="text-blue-600 hover:text-blue-800 p-1"
-                            title="Download Data"
-                          >
-                            <Download size={14} />
-                          </button>
-                        </TableCell>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-
-              {/* Pagination Info */}
-              <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-                <div className="text-sm text-gray-700">
-                  Showing {startIndex + 1} to {Math.min(endIndex, sortedData.length)} of {sortedData.length} entries
-                </div>
-                
-                {/* Pagination Controls */}
-                {totalPages > 1 && (
-                  <div className="flex items-center gap-1">
-                    <button
-                      onClick={() => setCurrentPage(1)}
-                      disabled={currentPage === 1}
-                      className="px-2 py-1 text-sm border border-gray-300 rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
-                    >
-                      ««
-                    </button>
-                    <button
-                      onClick={() => setCurrentPage(currentPage - 1)}
-                      disabled={currentPage === 1}
-                      className="px-2 py-1 text-sm border border-gray-300 rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
-                    >
-                      «
-                    </button>
-                    
-                    {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-                      const pageNum = Math.max(1, currentPage - 2) + i;
-                      if (pageNum > totalPages) return null;
-                      
-                      return (
-                        <button
-                          key={pageNum}
-                          onClick={() => setCurrentPage(pageNum)}
-                          className={`px-3 py-1 text-sm border rounded ${
-                            currentPage === pageNum
-                              ? 'bg-blue-600 text-white border-blue-600'
-                              : 'border-gray-300 hover:bg-gray-50'
-                          }`}
-                        >
-                          {pageNum}
-                        </button>
-                      );
-                    })}
-                    
-                    <button
-                      onClick={() => setCurrentPage(currentPage + 1)}
-                      disabled={currentPage === totalPages}
-                      className="px-2 py-1 text-sm border border-gray-300 rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
-                    >
-                      »
-                    </button>
-                    <button
-                      onClick={() => setCurrentPage(totalPages)}
-                      disabled={currentPage === totalPages}
-                      className="px-2 py-1 text-sm border border-gray-300 rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
-                    >
-                      »»
-                    </button>
-                  </div>
-                )}
-              </div>
+              <ReusableTable
+                data={tableData}
+                columns={columns}
+                title="BOAT HISTORY SHEET"
+                pagination={true}
+                rows={10}
+                globalFilter={true}
+                exportable={true}
+                className="p-datatable-sm"
+              />
             </div>
           </div>
         </div>
