@@ -513,7 +513,7 @@ const CommentorSheet: React.FC<CommentorSheetProps> = ({
           {/* Form Section */}
           <section className={`${viewMode === 'form' ? 'flex-1' : 'flex-1'} min-w-80 bg-white p-8 text-gray-800 max-h-screen overflow-y-auto scrollbar-thin scrollbar-thumb-blue-500 scrollbar-track-blue-100 hover:scrollbar-thumb-blue-600 scrollbar-thumb-rounded-full scrollbar-track-rounded-full`}>
             <h2 className="text-2xl font-semibold mb-6 pb-4 border-b-2 border-blue-500">
-              {CustomForm ? "IN 379 - DOCKING REPORT SECTION -1" : "Data Entry Form"}
+              {CustomForm ? "" : ""}
             </h2>
           
           {CustomForm ? (
