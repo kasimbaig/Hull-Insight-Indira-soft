@@ -335,7 +335,7 @@ const CommentorSheet: React.FC<CommentorSheetProps> = ({
   };
 
   return (
-    <div className={`min-h-screen bg-gray-50 p-5 ${className}`}>
+    <div className={`min-h-screen bg-gray-50  ${className}`}>
       <div className="max-w-full mx-auto shadow-lg rounded-2xl overflow-hidden bg-white">
         {/* Toggle Header */}
         <div className="bg-white border-b border-gray-200 p-6">
