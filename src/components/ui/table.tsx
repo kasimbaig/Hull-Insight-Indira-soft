@@ -107,35 +107,35 @@ interface PaginationProps {
   onPageChange: (page: number) => void;
 }
 
-const TablePagination: React.FC<PaginationProps> = ({
-  currentPage,
-  totalPages,
-  onPageChange,
-}) => (
-  <div className="flex items-center justify-between py-3 px-4 border-t border-gray-300 bg-blue-50 rounded-b-xl">
-    <Button
-      variant="outline"
-      size="sm"
-      disabled={currentPage === 1}
-      onClick={() => onPageChange(currentPage - 1)}
-    >
-      Previous
-    </Button>
+// const TablePagination: React.FC<PaginationProps> = ({
+//   currentPage,
+//   totalPages,
+//   onPageChange,
+// }) => (
+//   <div className="flex items-center justify-between py-3 px-4 border-t border-gray-300 bg-blue-50 rounded-b-xl">
+//     <Button
+//       variant="outline"
+//       size="sm"
+//       disabled={currentPage === 1}
+//       onClick={() => onPageChange(currentPage - 1)}
+//     >
+//       Previous
+//     </Button>
 
-    <span className="text-sm font-medium">
-      Page <b>{currentPage}</b> of {totalPages}
-    </span>
+//     <span className="text-sm font-medium">
+//       Page <b>{currentPage}</b> of {totalPages}
+//     </span>
 
-    <Button
-      variant="outline"
-      size="sm"
-      disabled={currentPage === totalPages}
-      onClick={() => onPageChange(currentPage + 1)}
-    >
-      Next
-    </Button>
-  </div>
-);
+//     <Button
+//       variant="outline"
+//       size="sm"
+//       disabled={currentPage === totalPages}
+//       onClick={() => onPageChange(currentPage + 1)}
+//     >
+//       Next
+//     </Button>
+//   </div>
+// );
 
 // ---------------- Reusable DataTable ----------------
 export interface Column<T> {
@@ -293,13 +293,13 @@ export function DataTable<T extends Record<string, any>>({
         </TableBody>
       </Table>
 
-      {totalPages > 1 && (
+      {/* {totalPages > 1 && (
         <TablePagination
           currentPage={currentPage}
           totalPages={totalPages}
           onPageChange={setCurrentPage}
         />
-      )}
+      )} */}
 
       {/* Delete Confirmation Dialog */}
       <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
@@ -326,3 +326,14 @@ export function DataTable<T extends Record<string, any>>({
     </div>
   );
 }
+
+// Export all table components
+export {
+  Table,
+  TableHeader,
+  TableBody,
+  TableRow,
+  TableHead,
+  TableCell,
+  // TablePagination,
+};

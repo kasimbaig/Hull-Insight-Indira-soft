@@ -108,7 +108,9 @@ All colors MUST be HSL for consistency across light/dark modes.
 
   body {
     @apply bg-background text-foreground;
-    overflow-y: scroll
+    overflow-y: hidden;
+    /* overflow-y: hidden; */
+    overflow-x: hidden;
   }
 }
 
