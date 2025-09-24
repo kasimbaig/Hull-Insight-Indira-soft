@@ -57,6 +57,8 @@ const sidebarItems = [
       { title: "City", path: "/app/masters/city" },
       { title: "Refit", path: "/app/masters/refit" },
       { title: "Cluster", path: "/app/masters/cluster" },
+      { title: "Dynamic Form Fields", path: "/app/masters/dynamic-form-fields" },
+
     ],
   },
   {

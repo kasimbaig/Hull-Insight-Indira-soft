@@ -284,7 +284,7 @@ const DynamicFormFieldsMaster = () => {
   const filteredFormFields = formFields.filter((f) =>
     f.label.toLowerCase().includes(searchTerm.toLowerCase()) ||
     f.form_module.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    f.sub_module.toLowerCase().includes(searchTerm.toLowerCase())
+    f.sub_module_name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   // Custom form fields for the dialog
@@ -347,13 +347,14 @@ const DynamicFormFieldsMaster = () => {
       { name: "position_on_form", label: "Position on Form", type: "number" as const, required: true },
       {
         name: "dropdown_type",
-        label: "Dropdown Type (if field_type is dropdown)",
+        label: "Dropdown Type",
         type: "static-dropdown" as const,
         options: [
           { value: "Static", label: "Static" },
           { value: "Dynamic", label: "Dynamic" }
         ],
         required: false,
+        showWhen: { field: "field_type", value: "dropdown" }
       },
       {
         name: "comma_separated_values",
@@ -404,7 +405,7 @@ const DynamicFormFieldsMaster = () => {
             editingField
               ? {
                   form_module: editingField.form_module,
-                  sub_module: editingField.sub_module,
+                  sub_module: editingField.sub_module_name,
                   label: editingField.label,
                   field_type: editingField.field_type,
                   key: editingField.key,
