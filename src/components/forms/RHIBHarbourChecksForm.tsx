@@ -4,11 +4,10 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { CalendarIcon, Save } from 'lucide-react';
+import { CalendarIcon } from 'lucide-react';
 import { format } from 'date-fns';
 
 interface RHIBHarbourChecksData {
@@ -323,9 +322,9 @@ const RHIBHarbourChecksForm: React.FC = () => {
     section: string; 
     sectionData: { observations: string; remarks: string };
   }> = ({ title, section, sectionData }) => (
-    <div className="space-y-4">
-      <h4 className="font-medium text-gray-900">{title}</h4>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div className="space-y-4 p-4 bg-gray-50 rounded-lg border-l-2 border-blue-400">
+      <h4 className="font-medium text-gray-900 text-sm md:text-base">{title}</h4>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
         <div>
           <Label>Observations *</Label>
           <Select
@@ -362,98 +361,149 @@ const RHIBHarbourChecksForm: React.FC = () => {
   );
 
   return (
-    <div className="max-w-6xl mx-auto p-6 space-y-6">
-      <div className="text-center">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">RHIB - SHIP BORNE BOAT - HARBOUR CHECKS</h1>
-        <p className="text-gray-600">Form for RHIB Ship Borne Boat Harbour Checks</p>
+    <div className="min-h-screen bg-gray-50">
+      {/* Main Content */}
+      <div className="max-w-7xl mx-auto p-4 md:p-6 space-y-6">
+        {/* Form Header */}
+        <div className="bg-blue-100 border border-blue-200 rounded-lg p-4 md:p-6">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div>
+              <h2 className="text-xl md:text-2xl font-bold text-gray-900 underline">RHIB - SHIP BORNE BOAT - HARBOUR CHECKS</h2>
+            </div>
+           
+          </div>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* General Inspection and Documentation Checks */}
-        <Card>
-          <CardHeader>
-            <CardTitle>1. General Inspection and Documentation Checks</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="boatLogBook">(a) Boat Log Book i.a.w Appendix 'C' of NO 03/18 *</Label>
+          <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+            {/* Header with blue accent */}
+            <div className="bg-blue-100 border-l-4 border-blue-500 px-4 py-3">
+              <h3 className="text-lg font-semibold text-gray-800">
+                <span className="text-gray-800 font-bold mr-2">1.</span>
+                General Inspection and Documentation Checks
+              </h3>
+            </div>
+            
+            {/* Content */}
+            <div className="p-4 md:p-6 space-y-4">
+              <div className="space-y-4">
+                {/* Item (a) */}
+                <div className="flex items-center border-l-2 border-blue-400 pl-4 py-2">
+                  <span className="text-gray-800 font-medium mr-3">(a)</span>
+                  <div className="flex-1">
+                    <span className="text-gray-800 font-medium">Boat Log Book i.a.w Appendix 'C' of NO 03/18 *</span>
+                    <div className="mt-2">
                 <Input
                   id="boatLogBook"
                   value={formData.boatLogBook}
                   onChange={(e) => setFormData(prev => ({ ...prev, boatLogBook: e.target.value }))}
-                  placeholder="Enter boat log book details"
+                        placeholder=""
                   maxLength={50}
+                        className="border-gray-300 focus:border-blue-500"
                 />
+                    </div>
                 {errors.boatLogBook && <p className="text-red-500 text-sm mt-1">{errors.boatLogBook}</p>}
+                  </div>
               </div>
 
-              <div>
-                <Label htmlFor="inspectionMaintenanceRecords">(b) Records of Inspection and Maintenance of Boat and Lifting Arrangements i.a.w NO 03/18 *</Label>
+                {/* Item (b) */}
+                <div className="flex items-center border-l-2 border-blue-400 pl-4 py-2">
+                  <span className="text-gray-800 font-medium mr-3">(b)</span>
+                  <div className="flex-1">
+                    <span className="text-gray-800 font-medium">Records of Inspection and Maintenance of Boat and Lifting Arrangements i.a.w NO 03/18 *</span>
+                    <div className="mt-2">
                 <Input
                   id="inspectionMaintenanceRecords"
                   value={formData.inspectionMaintenanceRecords}
                   onChange={(e) => setFormData(prev => ({ ...prev, inspectionMaintenanceRecords: e.target.value }))}
-                  placeholder="Enter inspection and maintenance records"
+                        placeholder=""
                   maxLength={50}
+                        className="border-gray-300 focus:border-blue-500"
                 />
+                    </div>
                 {errors.inspectionMaintenanceRecords && <p className="text-red-500 text-sm mt-1">{errors.inspectionMaintenanceRecords}</p>}
+                  </div>
               </div>
 
-              <div>
-                <Label htmlFor="weighingRecords">(c) Records of Weighing of Boat i.a.w NO 03/18 *</Label>
+                {/* Item (c) */}
+                <div className="flex items-center border-l-2 border-blue-400 pl-4 py-2">
+                  <span className="text-gray-800 font-medium mr-3">(c)</span>
+                  <div className="flex-1">
+                    <span className="text-gray-800 font-medium">Records of Weighing of Boat i.a.w NO 03/18 *</span>
+                    <div className="mt-2">
                 <Input
                   id="weighingRecords"
                   value={formData.weighingRecords}
                   onChange={(e) => setFormData(prev => ({ ...prev, weighingRecords: e.target.value }))}
-                  placeholder="Enter weighing records"
+                        placeholder=""
                   maxLength={50}
+                        className="border-gray-300 focus:border-blue-500"
                 />
+                    </div>
                 {errors.weighingRecords && <p className="text-red-500 text-sm mt-1">{errors.weighingRecords}</p>}
+                  </div>
               </div>
 
-              <div>
-                <Label htmlFor="boatLogFolder">(d) Boat Log Book Folder i.a.w Part II of Appendix 'C' of NO 03/18 *</Label>
+                {/* Item (d) */}
+                <div className="flex items-center border-l-2 border-blue-400 pl-4 py-2">
+                  <span className="text-gray-800 font-medium mr-3">(d)</span>
+                  <div className="flex-1">
+                    <span className="text-gray-800 font-medium">Boat Log Book Folder i.a.w Part II of Appendix 'C' of NO 03/18 *</span>
+                    <div className="mt-2">
                 <Input
                   id="boatLogFolder"
                   value={formData.boatLogFolder}
                   onChange={(e) => setFormData(prev => ({ ...prev, boatLogFolder: e.target.value }))}
-                  placeholder="Enter boat log book folder details"
+                        placeholder=""
                   maxLength={50}
+                        className="border-gray-300 focus:border-blue-500"
                 />
+                    </div>
                 {errors.boatLogFolder && <p className="text-red-500 text-sm mt-1">{errors.boatLogFolder}</p>}
               </div>
             </div>
-          </CardContent>
-        </Card>
+              </div>
+            </div>
+          </div>
 
         {/* Lowering/Hoisting Test */}
-        <Card>
-          <CardHeader>
-            <CardTitle>2. Lowering/Hoisting Test</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-6">
+          <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+            {/* Header with blue accent */}
+            <div className="bg-blue-100 border-l-4 border-blue-500 px-4 py-3">
+              <h3 className="text-lg font-semibold text-gray-800">
+                <span className="text-gray-800 font-bold mr-2">2.</span>
+                Lowering/Hoisting Test
+              </h3>
+            </div>
+            
+            {/* Content */}
+            <div className="p-4 md:p-6 space-y-6">
             {/* Basic Information */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="placeLowering">Place *</Label>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
+                <div className="flex items-center border-l-2 border-blue-400 pl-4 py-2">
+                  <span className="text-gray-800 font-medium">Place:</span>
+                  <div className="flex-1">
                 <Input
                   id="placeLowering"
                   value={formData.placeLowering}
                   onChange={(e) => setFormData(prev => ({ ...prev, placeLowering: e.target.value }))}
-                  placeholder="Enter place"
+                      placeholder=""
                   maxLength={20}
+                      className="border-gray-300 focus:border-blue-500"
                 />
                 {errors.placeLowering && <p className="text-red-500 text-sm mt-1">{errors.placeLowering}</p>}
+                  </div>
               </div>
 
-              <div>
-                <Label htmlFor="loweringDate">Date *</Label>
+                <div className="flex items-center border-l-2 border-blue-400 pl-4 py-2">
+                  <span className="text-gray-800 font-medium">Date:</span>
+                  <div className="flex-1">
                 <Popover>
                   <PopoverTrigger asChild>
                     <Button variant="outline" className="w-full justify-start text-left font-normal">
                       <CalendarIcon className="mr-2 h-4 w-4" />
-                      {formData.loweringDate ? format(formData.loweringDate, 'dd/MM/yyyy') : 'Select date'}
+                          {formData.loweringDate ? format(formData.loweringDate, 'dd-MM-yyyy') : 'DD-MM-YYYY'}
                     </Button>
                   </PopoverTrigger>
                   <PopoverContent className="w-auto p-0">
@@ -466,614 +516,1666 @@ const RHIBHarbourChecksForm: React.FC = () => {
                   </PopoverContent>
                 </Popover>
                 {errors.loweringDate && <p className="text-red-500 text-sm mt-1">{errors.loweringDate}</p>}
+                  </div>
               </div>
 
-              <div>
-                <Label htmlFor="boatType1">Boat Type *</Label>
+                <div className="flex items-center border-l-2 border-blue-400 pl-4 py-2">
+                  <span className="text-gray-800 font-medium">Boat Type:</span>
+                  <div className="flex-1">
                 <Input
                   id="boatType1"
                   value={formData.boatType1}
                   onChange={(e) => setFormData(prev => ({ ...prev, boatType1: e.target.value }))}
-                  placeholder="Enter boat type"
+                      placeholder=""
                   maxLength={20}
+                      className="border-gray-300 focus:border-blue-500"
                 />
                 {errors.boatType1 && <p className="text-red-500 text-sm mt-1">{errors.boatType1}</p>}
+                  </div>
               </div>
 
-              <div>
-                <Label htmlFor="representativesLowering">Representatives *</Label>
+                <div className="flex items-center border-l-2 border-blue-400 pl-4 py-2">
+                  <span className="text-gray-800 font-medium">Representatives:  </span>
+                  <div className="flex-1">
                 <Input
                   id="representativesLowering"
                   value={formData.representativesLowering}
                   onChange={(e) => setFormData(prev => ({ ...prev, representativesLowering: e.target.value }))}
-                  placeholder="Enter representatives"
+                      placeholder=""
                   maxLength={50}
+                      className="border-gray-300 focus:border-blue-500"
                 />
                 {errors.representativesLowering && <p className="text-red-500 text-sm mt-1">{errors.representativesLowering}</p>}
+                  </div>
               </div>
             </div>
 
             {/* Documentation */}
             <div>
-              <h4 className="font-medium text-gray-900 mb-4">Documentation</h4>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="loadTestCrane">(a) Load Test Certificate for Crane *</Label>
+                <h4 className="font-medium text-gray-900 mb-4 text-base md:text-lg">Documentation</h4>
+                <div className="space-y-4">
+                  <div className="flex items-center border-l-2 border-blue-400 pl-4 py-2">
+                    <span className="text-gray-800 font-medium mr-3">(a)</span>
+                    <div className="flex-1">
+                      <span className="text-gray-800 font-medium">Load Test Certificate for Crane *</span>
+                      <div className="mt-2">
                   <Input
                     id="loadTestCrane"
                     value={formData.loadTestCrane}
                     onChange={(e) => setFormData(prev => ({ ...prev, loadTestCrane: e.target.value }))}
-                    placeholder="Enter load test certificate details"
+                          placeholder=""
                     maxLength={50}
+                          className="border-gray-300 focus:border-blue-500"
                   />
+                      </div>
+                    </div>
                 </div>
 
-                <div>
-                  <Label htmlFor="testCertificateArh">(b) Test Certificate for ARH *</Label>
+                  <div className="flex items-center border-l-2 border-blue-400 pl-4 py-2">
+                    <span className="text-gray-800 font-medium mr-3">(b)</span>
+                    <div className="flex-1">
+                      <span className="text-gray-800 font-medium">Test Certificate for ARH *</span>
+                      <div className="mt-2">
                   <Input
                     id="testCertificateArh"
                     value={formData.testCertificateArh}
                     onChange={(e) => setFormData(prev => ({ ...prev, testCertificateArh: e.target.value }))}
-                    placeholder="Enter test certificate details"
+                          placeholder=""
                     maxLength={50}
+                          className="border-gray-300 focus:border-blue-500"
                   />
+                      </div>
+                    </div>
                 </div>
 
-                <div>
-                  <Label htmlFor="liftingSlingLoadTestReport">(c) Lifting Sling Load Test Report and Visual Inspection of Lifting Eyes/Hooks *</Label>
+                  <div className="flex items-center border-l-2 border-blue-400 pl-4 py-2">
+                    <span className="text-gray-800 font-medium mr-3">(c)</span>
+                    <div className="flex-1">
+                      <span className="text-gray-800 font-medium">Lifting Sling Load Test Report and Visual Inspection of Lifting Eyes/Hooks *</span>
+                      <div className="mt-2">
                   <Input
                     id="liftingSlingLoadTestReport"
                     value={formData.liftingSlingLoadTestReport}
                     onChange={(e) => setFormData(prev => ({ ...prev, liftingSlingLoadTestReport: e.target.value }))}
-                    placeholder="Enter lifting sling load test report details"
+                          placeholder=""
                     maxLength={50}
+                          className="border-gray-300 focus:border-blue-500"
                   />
+                      </div>
+                    </div>
                 </div>
               </div>
             </div>
 
             {/* General Inspection Post Hoisting */}
             <div>
-              <h4 className="font-medium text-gray-900 mb-4">General Inspection Post Hoisting of Boat</h4>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="conditionHullAppendages">(a) Condition of Hull Appendages and Rubber Collar *</Label>
+                <h4 className="font-medium text-gray-900 mb-4 text-base md:text-lg">General Inspection Post Hoisting of Boat</h4>
+                <div className="space-y-4">
+                  <div className="flex items-center border-l-2 border-blue-400 pl-4 py-2">
+                    <span className="text-gray-800 font-medium mr-3">(a)</span>
+                    <div className="flex-1">
+                      <span className="text-gray-800 font-medium">Condition of Hull Appendages and Rubber Collar *</span>
+                      <div className="mt-2">
                   <Input
                     id="conditionHullAppendages"
                     value={formData.conditionHullAppendages}
                     onChange={(e) => setFormData(prev => ({ ...prev, conditionHullAppendages: e.target.value }))}
-                    placeholder="Enter condition details"
+                          placeholder=""
                     maxLength={50}
+                          className="border-gray-300 focus:border-blue-500"
                   />
+                      </div>
+                    </div>
                 </div>
 
-                <div>
-                  <Label htmlFor="conditionOfPaint">(b) Condition of Paint *</Label>
+                  <div className="flex items-center border-l-2 border-blue-400 pl-4 py-2">
+                    <span className="text-gray-800 font-medium mr-3">(b)</span>
+                    <div className="flex-1">
+                      <span className="text-gray-800 font-medium">Condition of Paint *</span>
+                      <div className="mt-2">
                   <Input
                     id="conditionOfPaint"
                     value={formData.conditionOfPaint}
                     onChange={(e) => setFormData(prev => ({ ...prev, conditionOfPaint: e.target.value }))}
-                    placeholder="Enter paint condition details"
+                          placeholder=""
                     maxLength={50}
+                          className="border-gray-300 focus:border-blue-500"
                   />
+                      </div>
+                    </div>
                 </div>
 
-                <div>
-                  <Label htmlFor="conditionHullFittings">(c) Condition of Hull Fittings (Loose/Not Secured) *</Label>
+                  <div className="flex items-center border-l-2 border-blue-400 pl-4 py-2">
+                    <span className="text-gray-800 font-medium mr-3">(c)</span>
+                    <div className="flex-1">
+                      <span className="text-gray-800 font-medium">Condition of Hull Fittings (Loose/Not Secured) *</span>
+                      <div className="mt-2">
                   <Input
                     id="conditionHullFittings"
                     value={formData.conditionHullFittings}
                     onChange={(e) => setFormData(prev => ({ ...prev, conditionHullFittings: e.target.value }))}
-                    placeholder="Enter hull fittings condition details"
+                          placeholder=""
                     maxLength={50}
+                          className="border-gray-300 focus:border-blue-500"
                   />
+                      </div>
+                    </div>
                 </div>
 
-                <div>
-                  <Label htmlFor="conditionLiftingArrangement">(d) Condition of Lifting Arrangement Fitted on Boat (Inspect Records on Survey of Metallic Fitting for Lifting Arrangement) *</Label>
+                  <div className="flex items-center border-l-2 border-blue-400 pl-4 py-2">
+                    <span className="text-gray-800 font-medium mr-3">(d)</span>
+                    <div className="flex-1">
+                      <span className="text-gray-800 font-medium">Condition of Lifting Arrangement Fitted on Boat (Inspect Records on Survey of Metallic Fitting for Lifting Arrangement) *</span>
+                      <div className="mt-2">
                   <Input
                     id="conditionLiftingArrangement"
                     value={formData.conditionLiftingArrangement}
                     onChange={(e) => setFormData(prev => ({ ...prev, conditionLiftingArrangement: e.target.value }))}
-                    placeholder="Enter lifting arrangement condition details"
+                          placeholder=""
                     maxLength={50}
+                          className="border-gray-300 focus:border-blue-500"
                   />
+                      </div>
+                    </div>
                 </div>
 
-                <div>
-                  <Label htmlFor="inspectRecordSlings">(e) Inspect Record of Lifting Slings/FSWR *</Label>
+                  <div className="flex items-center border-l-2 border-blue-400 pl-4 py-2">
+                    <span className="text-gray-800 font-medium mr-3">(e)</span>
+                    <div className="flex-1">
+                      <span className="text-gray-800 font-medium">Inspect Record of Lifting Slings/FSWR *</span>
+                      <div className="mt-2">
                   <Input
                     id="inspectRecordSlings"
                     value={formData.inspectRecordSlings}
                     onChange={(e) => setFormData(prev => ({ ...prev, inspectRecordSlings: e.target.value }))}
-                    placeholder="Enter lifting slings inspection record details"
+                          placeholder=""
                     maxLength={50}
+                          className="border-gray-300 focus:border-blue-500"
                   />
+                      </div>
+                    </div>
                 </div>
               </div>
             </div>
 
             {/* Inspection of Webbing Sling */}
             <div>
-              <h4 className="font-medium text-gray-900 mb-4">Inspection of Webbing Sling</h4>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="visualSurveySling">(a) Visual Survey of Webbing Sling *</Label>
+                <h4 className="font-medium text-gray-900 mb-4 text-base md:text-lg">Inspection of Webbing Sling</h4>
+                <div className="space-y-4">
+                  <div className="flex items-center border-l-2 border-blue-400 pl-4 py-2">
+                    <span className="text-gray-800 font-medium mr-3">(a)</span>
+                    <div className="flex-1">
+                      <span className="text-gray-800 font-medium">Visual Survey of Webbing Sling *</span>
+                      <div className="mt-2">
                   <Input
                     id="visualSurveySling"
                     value={formData.visualSurveySling}
                     onChange={(e) => setFormData(prev => ({ ...prev, visualSurveySling: e.target.value }))}
-                    placeholder="Enter visual survey details"
+                          placeholder=""
                     maxLength={50}
+                          className="border-gray-300 focus:border-blue-500"
                   />
+                      </div>
+                    </div>
                 </div>
 
-                <div>
-                  <Label htmlFor="yearOfManufactureSling">(b) Year of Manufacture *</Label>
+                  <div className="flex items-center border-l-2 border-blue-400 pl-4 py-2">
+                    <span className="text-gray-800 font-medium mr-3">(b)</span>
+                    <div className="flex-1">
+                      <span className="text-gray-800 font-medium">Year of Manufacture *</span>
+                      <div className="mt-2">
                   <Input
                     id="yearOfManufactureSling"
                     value={formData.yearOfManufactureSling}
                     onChange={(e) => setFormData(prev => ({ ...prev, yearOfManufactureSling: e.target.value }))}
-                    placeholder="Enter year of manufacture"
+                          placeholder=""
                     maxLength={4}
+                          className="border-gray-300 focus:border-blue-500"
                   />
                 </div>
               </div>
             </div>
-          </CardContent>
-        </Card>
+                </div>
+              </div>
+            </div>
+          </div>
 
         {/* Harbour Checks */}
-        <Card>
-          <CardHeader>
-            <CardTitle>3. Harbour Checks</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            {/* Basic Information */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="place">Place *</Label>
-                <Input
-                  id="place"
-                  value={formData.place}
-                  onChange={(e) => setFormData(prev => ({ ...prev, place: e.target.value }))}
-                  placeholder="Enter place"
-                  maxLength={20}
-                />
-                {errors.place && <p className="text-red-500 text-sm mt-1">{errors.place}</p>}
-              </div>
+          <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+            {/* Header with blue accent */}
+            <div className="bg-blue-100 border-l-4 border-blue-500 px-4 py-3">
+              <h3 className="text-lg font-semibold text-gray-800">
+                <span className="text-gray-800 font-bold mr-2">3.</span>
+                Harbour Checks
+              </h3>
+            </div>
+            
+            {/* Content */}
+            <div className="p-4 md:p-6">
+              <div className="table-responsive">
+                <table className="table table-striped table-bordered w-full">
+                  <tbody>
+                    {/* Row 1: Place and Date */}
+                    <tr>
+                      <td className="p-3">
+                        <label htmlFor="place" className="block text-gray-800 font-medium mb-2">
+                          Place: <strong className="text-red-500">*</strong>
+                        </label>
+                        <Input
+                          id="place"
+                          value={formData.place}
+                          onChange={(e) => setFormData(prev => ({ ...prev, place: e.target.value }))}
+                          placeholder=""
+                          maxLength={20}
+                          className="w-full border border-gray-300 focus:border-blue-500 rounded px-3 py-2"
+                        />
+                        {errors.place && <p className="text-red-500 text-sm mt-1">{errors.place}</p>}
+                      </td>
+                      <td className="p-3">
+                        <label htmlFor="harbourDate" className="block text-gray-800 font-medium mb-2">
+                          Date: <strong className="text-red-500">*</strong>
+                        </label>
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <Button variant="outline" className="w-full justify-start text-left font-normal border border-gray-300 focus:border-blue-500 rounded px-3 py-2">
+                              {formData.harbourDate ? format(formData.harbourDate, 'dd-MM-yyyy') : 'DD-MM-YYYY'}
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-auto p-0">
+                            <Calendar
+                              mode="single"
+                              selected={formData.harbourDate || undefined}
+                              onSelect={(date) => setFormData(prev => ({ ...prev, harbourDate: date || null }))}
+                              initialFocus
+                            />
+                          </PopoverContent>
+                        </Popover>
+                        {errors.harbourDate && <p className="text-red-500 text-sm mt-1">{errors.harbourDate}</p>}
+                      </td>
+                    </tr>
 
-              <div>
-                <Label htmlFor="harbourDate">Date *</Label>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button variant="outline" className="w-full justify-start text-left font-normal">
-                      <CalendarIcon className="mr-2 h-4 w-4" />
-                      {formData.harbourDate ? format(formData.harbourDate, 'dd/MM/yyyy') : 'Select date'}
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0">
-                    <Calendar
-                      mode="single"
-                      selected={formData.harbourDate || undefined}
-                      onSelect={(date) => setFormData(prev => ({ ...prev, harbourDate: date || null }))}
-                      initialFocus
-                    />
-                  </PopoverContent>
-                </Popover>
-                {errors.harbourDate && <p className="text-red-500 text-sm mt-1">{errors.harbourDate}</p>}
-              </div>
+                    {/* Row 2: Boat Type and Boat Regn No */}
+                    <tr>
+                      <td className="p-3">
+                        <label htmlFor="boatType" className="block text-gray-800 font-medium mb-2">
+                          Boat Type: <strong className="text-red-500">*</strong>
+                        </label>
+                        <Input
+                          id="boatType"
+                          value={formData.boatType}
+                          onChange={(e) => setFormData(prev => ({ ...prev, boatType: e.target.value }))}
+                          placeholder=""
+                          maxLength={50}
+                          className="w-full border border-gray-300 focus:border-blue-500 rounded px-3 py-2"
+                        />
+                        {errors.boatType && <p className="text-red-500 text-sm mt-1">{errors.boatType}</p>}
+                      </td>
+                      <td className="p-3">
+                        <label htmlFor="boatRegnNo" className="block text-gray-800 font-medium mb-2">
+                          Boat Regn No: <strong className="text-red-500">*</strong>
+                        </label>
+                        <Input
+                          id="boatRegnNo"
+                          value={formData.boatRegnNo}
+                          onChange={(e) => setFormData(prev => ({ ...prev, boatRegnNo: e.target.value }))}
+                          placeholder=""
+                          maxLength={50}
+                          className="w-full border border-gray-300 focus:border-blue-500 rounded px-3 py-2"
+                        />
+                        {errors.boatRegnNo && <p className="text-red-500 text-sm mt-1">{errors.boatRegnNo}</p>}
+                      </td>
+                    </tr>
 
-              <div>
-                <Label htmlFor="boatType">Boat Type *</Label>
-                <Input
-                  id="boatType"
-                  value={formData.boatType}
-                  onChange={(e) => setFormData(prev => ({ ...prev, boatType: e.target.value }))}
-                  placeholder="Enter boat type"
-                  maxLength={50}
-                />
-                {errors.boatType && <p className="text-red-500 text-sm mt-1">{errors.boatType}</p>}
-              </div>
+                    {/* Row 3: Representatives */}
+                    <tr>
+                      <td className="p-3">
+                        <label className="block text-gray-800 font-medium mb-2">Representatives</label>
+                      </td>
+                      <td className="p-3">
+                        <div className="space-y-3">
+                          <div>
+                            <label htmlFor="shipRepresentative" className="block text-gray-800 font-medium mb-1">
+                              (a) Ship: <strong className="text-red-500">*</strong>
+                            </label>
+                            <Input
+                              id="shipRepresentative"
+                              value={formData.shipRepresentative}
+                              onChange={(e) => setFormData(prev => ({ ...prev, shipRepresentative: e.target.value }))}
+                              placeholder=""
+                              maxLength={20}
+                              className="w-full border border-gray-300 focus:border-blue-500 rounded px-3 py-2"
+                            />
+                            {errors.shipRepresentative && <p className="text-red-500 text-sm mt-1">{errors.shipRepresentative}</p>}
+                          </div>
+                          <div>
+                            <label htmlFor="trialTeamsRepresentative" className="block text-gray-800 font-medium mb-1">
+                              (b) Trial Teams: <strong className="text-red-500">*</strong>
+                            </label>
+                            <Input
+                              id="trialTeamsRepresentative"
+                              value={formData.trialTeamsRepresentative}
+                              onChange={(e) => setFormData(prev => ({ ...prev, trialTeamsRepresentative: e.target.value }))}
+                              placeholder=""
+                              maxLength={50}
+                              className="w-full border border-gray-300 focus:border-blue-500 rounded px-3 py-2"
+                            />
+                            {errors.trialTeamsRepresentative && <p className="text-red-500 text-sm mt-1">{errors.trialTeamsRepresentative}</p>}
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
 
-              <div>
-                <Label htmlFor="boatRegnNo">Boat Registration Number *</Label>
-                <Input
-                  id="boatRegnNo"
-                  value={formData.boatRegnNo}
-                  onChange={(e) => setFormData(prev => ({ ...prev, boatRegnNo: e.target.value }))}
-                  placeholder="Enter boat registration number"
-                  maxLength={50}
-                />
-                {errors.boatRegnNo && <p className="text-red-500 text-sm mt-1">{errors.boatRegnNo}</p>}
+                    {/* Row 4: General Inspection */}
+                    <tr>
+                      <td className="p-3">
+                        <label className="block text-gray-800 font-medium mb-2">General Inspection</label>
+                      </td>
+                      <td className="p-3">
+                        <label htmlFor="conditionHullAppendagesGeneralInspection" className="block text-gray-800 font-medium mb-1">
+                          Condition of Hull, Appendages and Rubber Collar-SAT: <strong className="text-red-500">*</strong>
+                        </label>
+                        <Input
+                          id="conditionHullAppendagesGeneralInspection"
+                          value={formData.conditionHullAppendagesGeneralInspection}
+                          onChange={(e) => setFormData(prev => ({ ...prev, conditionHullAppendagesGeneralInspection: e.target.value }))}
+                          placeholder=""
+                          maxLength={50}
+                          className="w-full border border-gray-300 focus:border-blue-500 rounded px-3 py-2"
+                        />
+                        {errors.conditionHullAppendagesGeneralInspection && <p className="text-red-500 text-sm mt-1">{errors.conditionHullAppendagesGeneralInspection}</p>}
+                      </td>
+                    </tr>
+
+                    {/* Row 5: Machinery Fitted Header */}
+                    <tr>
+                      <td colSpan={2} className="p-3 bg-gray-50">
+                        <strong className="text-gray-800">Machinery Fitted</strong>
+                      </td>
+                    </tr>
+
+                    {/* Row 6: Main Engines */}
+                    <tr>
+                      <td className="p-3">
+                        <span className="text-gray-800 font-medium">(a) Main Engines</span>
+                      </td>
+                      <td className="p-3">
+                        <label htmlFor="mainEnginesPowerSerialNo" className="block text-gray-800 font-medium mb-1">
+                          Power/Serial No: <strong className="text-red-500">*</strong>
+                        </label>
+                        <Input
+                          id="mainEnginesPowerSerialNo"
+                          value={formData.mainEnginesPowerSerialNo}
+                          onChange={(e) => setFormData(prev => ({ ...prev, mainEnginesPowerSerialNo: e.target.value }))}
+                          placeholder=""
+                          maxLength={20}
+                          className="w-full border border-gray-300 focus:border-blue-500 rounded px-3 py-2"
+                        />
+                      </td>
+                    </tr>
+
+                    {/* Row 7: Drive Units */}
+                    <tr>
+                      <td className="p-3">
+                        <span className="text-gray-800 font-medium">(b) Drive Units</span>
+                      </td>
+                      <td className="p-3">
+                        <div className="space-y-3">
+                          <div>
+                            <label htmlFor="driveUnitsMake" className="block text-gray-800 font-medium mb-1">
+                              Make: <strong className="text-red-500">*</strong>
+                            </label>
+                            <Input
+                              id="driveUnitsMake"
+                              value={formData.driveUnitsMake}
+                              onChange={(e) => setFormData(prev => ({ ...prev, driveUnitsMake: e.target.value }))}
+                              placeholder=""
+                              maxLength={20}
+                              className="w-full border border-gray-300 focus:border-blue-500 rounded px-3 py-2"
+                            />
+                          </div>
+                          <div>
+                            <label htmlFor="driveUnitsSerialNo" className="block text-gray-800 font-medium mb-1">
+                              Serial No: <strong className="text-red-500">*</strong>
+                            </label>
+                            <Input
+                              id="driveUnitsSerialNo"
+                              value={formData.driveUnitsSerialNo}
+                              onChange={(e) => setFormData(prev => ({ ...prev, driveUnitsSerialNo: e.target.value }))}
+                              placeholder=""
+                              maxLength={20}
+                              className="w-full border border-gray-300 focus:border-blue-500 rounded px-3 py-2"
+                            />
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+
+                    {/* Row 8: Transom Shield */}
+                    <tr>
+                      <td className="p-3">
+                        <span className="text-gray-800 font-medium">(c) Transom Shield</span>
+                      </td>
+                      <td className="p-3">
+                        <div className="space-y-3">
+                          <div>
+                            <label htmlFor="transomShieldMake" className="block text-gray-800 font-medium mb-1">
+                              Make: <strong className="text-red-500">*</strong>
+                            </label>
+                            <Input
+                              id="transomShieldMake"
+                              value={formData.transomShieldMake}
+                              onChange={(e) => setFormData(prev => ({ ...prev, transomShieldMake: e.target.value }))}
+                              placeholder=""
+                              maxLength={20}
+                              className="w-full border border-gray-300 focus:border-blue-500 rounded px-3 py-2"
+                            />
+                          </div>
+                          <div>
+                            <label htmlFor="transomShieldSerialNo" className="block text-gray-800 font-medium mb-1">
+                              Serial No: <strong className="text-red-500">*</strong>
+                            </label>
+                            <Input
+                              id="transomShieldSerialNo"
+                              value={formData.transomShieldSerialNo}
+                              onChange={(e) => setFormData(prev => ({ ...prev, transomShieldSerialNo: e.target.value }))}
+                              placeholder=""
+                              maxLength={20}
+                              className="w-full border border-gray-300 focus:border-blue-500 rounded px-3 py-2"
+                            />
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+
+                    {/* Row 9: Bilge Pump (Motor Driven) */}
+                    <tr>
+                      <td className="p-3">
+                        <span className="text-gray-800 font-medium">(d) Bilge Pump (Motor Driven)</span>
+                      </td>
+                      <td className="p-3">
+                        <div className="space-y-3">
+                          <div>
+                            <label htmlFor="bilgePumpMotorMake" className="block text-gray-800 font-medium mb-1">
+                              Make: <strong className="text-red-500">*</strong>
+                            </label>
+                            <Input
+                              id="bilgePumpMotorMake"
+                              value={formData.bilgePumpMotorMake}
+                              onChange={(e) => setFormData(prev => ({ ...prev, bilgePumpMotorMake: e.target.value }))}
+                              placeholder=""
+                              maxLength={20}
+                              className="w-full border border-gray-300 focus:border-blue-500 rounded px-3 py-2"
+                            />
+                          </div>
+                          <div>
+                            <label htmlFor="bilgePumpMotorCapacity" className="block text-gray-800 font-medium mb-1">
+                              Capacity: <strong className="text-red-500">*</strong>
+                            </label>
+                            <Input
+                              id="bilgePumpMotorCapacity"
+                              value={formData.bilgePumpMotorCapacity}
+                              onChange={(e) => setFormData(prev => ({ ...prev, bilgePumpMotorCapacity: e.target.value }))}
+                              placeholder=""
+                              maxLength={20}
+                              className="w-full border border-gray-300 focus:border-blue-500 rounded px-3 py-2"
+                            />
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+
+                    {/* Row 10: Bilge Pump (Hand Operated) */}
+                    <tr>
+                      <td className="p-3">
+                        <span className="text-gray-800 font-medium">(e) Bilge Pump (Hand Operated)</span>
+                      </td>
+                      <td className="p-3">
+                        <div className="space-y-3">
+                          <div>
+                            <label htmlFor="bilgePumpHandMake" className="block text-gray-800 font-medium mb-1">
+                              Make: <strong className="text-red-500">*</strong>
+                            </label>
+                            <Input
+                              id="bilgePumpHandMake"
+                              value={formData.bilgePumpHandMake}
+                              onChange={(e) => setFormData(prev => ({ ...prev, bilgePumpHandMake: e.target.value }))}
+                              placeholder=""
+                              maxLength={20}
+                              className="w-full border border-gray-300 focus:border-blue-500 rounded px-3 py-2"
+                            />
+                          </div>
+                          <div>
+                            <label htmlFor="bilgePumpHandCapacity" className="block text-gray-800 font-medium mb-1">
+                              Capacity: <strong className="text-red-500">*</strong>
+                            </label>
+                            <Input
+                              id="bilgePumpHandCapacity"
+                              value={formData.bilgePumpHandCapacity}
+                              onChange={(e) => setFormData(prev => ({ ...prev, bilgePumpHandCapacity: e.target.value }))}
+                              placeholder=""
+                              maxLength={20}
+                              className="w-full border border-gray-300 focus:border-blue-500 rounded px-3 py-2"
+                            />
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+
+                    {/* Row 11: Batteries */}
+                    <tr>
+                      <td className="p-3">
+                        <span className="text-gray-800 font-medium">(f) Batteries</span>
+                      </td>
+                      <td className="p-3">
+                        <div className="space-y-3">
+                          <div>
+                            <label htmlFor="batteriesMake" className="block text-gray-800 font-medium mb-1">
+                              Make: <strong className="text-red-500">*</strong>
+                            </label>
+                            <Input
+                              id="batteriesMake"
+                              value={formData.batteriesMake}
+                              onChange={(e) => setFormData(prev => ({ ...prev, batteriesMake: e.target.value }))}
+                              placeholder=""
+                              maxLength={20}
+                              className="w-full border border-gray-300 focus:border-blue-500 rounded px-3 py-2"
+                            />
+                          </div>
+                          <div>
+                            <label htmlFor="batteriesModel" className="block text-gray-800 font-medium mb-1">
+                              Model: <strong className="text-red-500">*</strong>
+                            </label>
+                            <Input
+                              id="batteriesModel"
+                              value={formData.batteriesModel}
+                              onChange={(e) => setFormData(prev => ({ ...prev, batteriesModel: e.target.value }))}
+                              placeholder=""
+                              maxLength={20}
+                              className="w-full border border-gray-300 focus:border-blue-500 rounded px-3 py-2"
+                            />
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+
+                    {/* Row 12: DG Set */}
+                    <tr>
+                      <td className="p-3">
+                        <span className="text-gray-800 font-medium">(g) DG Set</span>
+                      </td>
+                      <td className="p-3">
+                        <div className="space-y-3">
+                          <div>
+                            <label htmlFor="dgSetMake" className="block text-gray-800 font-medium mb-1">
+                              Make: <strong className="text-red-500">*</strong>
+                            </label>
+                            <Input
+                              id="dgSetMake"
+                              value={formData.dgSetMake}
+                              onChange={(e) => setFormData(prev => ({ ...prev, dgSetMake: e.target.value }))}
+                              placeholder=""
+                              maxLength={20}
+                              className="w-full border border-gray-300 focus:border-blue-500 rounded px-3 py-2"
+                            />
+                          </div>
+                          <div>
+                            <label htmlFor="dgSetModel" className="block text-gray-800 font-medium mb-1">
+                              Model: <strong className="text-red-500">*</strong>
+                            </label>
+                            <Input
+                              id="dgSetModel"
+                              value={formData.dgSetModel}
+                              onChange={(e) => setFormData(prev => ({ ...prev, dgSetModel: e.target.value }))}
+                              placeholder=""
+                              maxLength={20}
+                              className="w-full border border-gray-300 focus:border-blue-500 rounded px-3 py-2"
+                            />
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
             </div>
-
-            {/* Representatives */}
-            <div>
-              <h4 className="font-medium text-gray-900 mb-4">Representatives</h4>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="shipRepresentative">(a) Ship *</Label>
-                  <Input
-                    id="shipRepresentative"
-                    value={formData.shipRepresentative}
-                    onChange={(e) => setFormData(prev => ({ ...prev, shipRepresentative: e.target.value }))}
-                    placeholder="Enter ship representative"
-                    maxLength={20}
-                  />
-                  {errors.shipRepresentative && <p className="text-red-500 text-sm mt-1">{errors.shipRepresentative}</p>}
-                </div>
-
-                <div>
-                  <Label htmlFor="trialTeamsRepresentative">(b) Trial Teams *</Label>
-                  <Input
-                    id="trialTeamsRepresentative"
-                    value={formData.trialTeamsRepresentative}
-                    onChange={(e) => setFormData(prev => ({ ...prev, trialTeamsRepresentative: e.target.value }))}
-                    placeholder="Enter trial teams representative"
-                    maxLength={50}
-                  />
-                  {errors.trialTeamsRepresentative && <p className="text-red-500 text-sm mt-1">{errors.trialTeamsRepresentative}</p>}
-                </div>
-              </div>
-            </div>
-
-            {/* General Inspection */}
-            <div>
-              <h4 className="font-medium text-gray-900 mb-4">General Inspection</h4>
-              <div className="grid grid-cols-1 gap-4">
-                <div>
-                  <Label htmlFor="conditionHullAppendagesGeneralInspection">Condition of Hull, Appendages and Rubber Collar-SAT *</Label>
-                  <Input
-                    id="conditionHullAppendagesGeneralInspection"
-                    value={formData.conditionHullAppendagesGeneralInspection}
-                    onChange={(e) => setFormData(prev => ({ ...prev, conditionHullAppendagesGeneralInspection: e.target.value }))}
-                    placeholder="Enter general inspection details"
-                    maxLength={50}
-                  />
-                  {errors.conditionHullAppendagesGeneralInspection && <p className="text-red-500 text-sm mt-1">{errors.conditionHullAppendagesGeneralInspection}</p>}
-                </div>
-              </div>
-            </div>
-
-            {/* Machinery Fitted */}
-            <div>
-              <h4 className="font-medium text-gray-900 mb-4">Machinery Fitted</h4>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="mainEnginesPowerSerialNo">(a) Main Engines - Power/Serial No. *</Label>
-                  <Input
-                    id="mainEnginesPowerSerialNo"
-                    value={formData.mainEnginesPowerSerialNo}
-                    onChange={(e) => setFormData(prev => ({ ...prev, mainEnginesPowerSerialNo: e.target.value }))}
-                    placeholder="Enter main engines power/serial number"
-                    maxLength={50}
-                  />
-                </div>
-
-                <div>
-                  <Label htmlFor="driveUnitsMake">(b) Drive Units - Make *</Label>
-                  <Input
-                    id="driveUnitsMake"
-                    value={formData.driveUnitsMake}
-                    onChange={(e) => setFormData(prev => ({ ...prev, driveUnitsMake: e.target.value }))}
-                    placeholder="Enter drive units make"
-                    maxLength={50}
-                  />
-                </div>
-
-                <div>
-                  <Label htmlFor="driveUnitsSerialNo">Drive Units - Serial No. *</Label>
-                  <Input
-                    id="driveUnitsSerialNo"
-                    value={formData.driveUnitsSerialNo}
-                    onChange={(e) => setFormData(prev => ({ ...prev, driveUnitsSerialNo: e.target.value }))}
-                    placeholder="Enter drive units serial number"
-                    maxLength={50}
-                  />
-                </div>
-
-                <div>
-                  <Label htmlFor="transomShieldMake">(c) Transom Shield - Make *</Label>
-                  <Input
-                    id="transomShieldMake"
-                    value={formData.transomShieldMake}
-                    onChange={(e) => setFormData(prev => ({ ...prev, transomShieldMake: e.target.value }))}
-                    placeholder="Enter transom shield make"
-                    maxLength={50}
-                  />
-                </div>
-
-                <div>
-                  <Label htmlFor="transomShieldSerialNo">Transom Shield - Serial No. *</Label>
-                  <Input
-                    id="transomShieldSerialNo"
-                    value={formData.transomShieldSerialNo}
-                    onChange={(e) => setFormData(prev => ({ ...prev, transomShieldSerialNo: e.target.value }))}
-                    placeholder="Enter transom shield serial number"
-                    maxLength={50}
-                  />
-                </div>
-
-                <div>
-                  <Label htmlFor="bilgePumpMotorMake">(d) Bilge Pump (Motor Driven) - Make *</Label>
-                  <Input
-                    id="bilgePumpMotorMake"
-                    value={formData.bilgePumpMotorMake}
-                    onChange={(e) => setFormData(prev => ({ ...prev, bilgePumpMotorMake: e.target.value }))}
-                    placeholder="Enter bilge pump motor make"
-                    maxLength={50}
-                  />
-                </div>
-
-                <div>
-                  <Label htmlFor="bilgePumpMotorCapacity">Bilge Pump (Motor Driven) - Capacity *</Label>
-                  <Input
-                    id="bilgePumpMotorCapacity"
-                    value={formData.bilgePumpMotorCapacity}
-                    onChange={(e) => setFormData(prev => ({ ...prev, bilgePumpMotorCapacity: e.target.value }))}
-                    placeholder="Enter bilge pump motor capacity"
-                    maxLength={50}
-                  />
-                </div>
-
-                <div>
-                  <Label htmlFor="bilgePumpHandMake">(e) Bilge Pump (Hand Operated) - Make *</Label>
-                  <Input
-                    id="bilgePumpHandMake"
-                    value={formData.bilgePumpHandMake}
-                    onChange={(e) => setFormData(prev => ({ ...prev, bilgePumpHandMake: e.target.value }))}
-                    placeholder="Enter bilge pump hand make"
-                    maxLength={50}
-                  />
-                </div>
-
-                <div>
-                  <Label htmlFor="bilgePumpHandCapacity">Bilge Pump (Hand Operated) - Capacity *</Label>
-                  <Input
-                    id="bilgePumpHandCapacity"
-                    value={formData.bilgePumpHandCapacity}
-                    onChange={(e) => setFormData(prev => ({ ...prev, bilgePumpHandCapacity: e.target.value }))}
-                    placeholder="Enter bilge pump hand capacity"
-                    maxLength={50}
-                  />
-                </div>
-
-                <div>
-                  <Label htmlFor="batteriesMake">(f) Batteries - Make *</Label>
-                  <Input
-                    id="batteriesMake"
-                    value={formData.batteriesMake}
-                    onChange={(e) => setFormData(prev => ({ ...prev, batteriesMake: e.target.value }))}
-                    placeholder="Enter batteries make"
-                    maxLength={50}
-                  />
-                </div>
-
-                <div>
-                  <Label htmlFor="batteriesModel">Batteries - Model *</Label>
-                  <Input
-                    id="batteriesModel"
-                    value={formData.batteriesModel}
-                    onChange={(e) => setFormData(prev => ({ ...prev, batteriesModel: e.target.value }))}
-                    placeholder="Enter batteries model"
-                    maxLength={50}
-                  />
-                </div>
-
-                <div>
-                  <Label htmlFor="dgSetMake">(g) DG Set - Make *</Label>
-                  <Input
-                    id="dgSetMake"
-                    value={formData.dgSetMake}
-                    onChange={(e) => setFormData(prev => ({ ...prev, dgSetMake: e.target.value }))}
-                    placeholder="Enter DG set make"
-                    maxLength={50}
-                  />
-                </div>
-
-                <div>
-                  <Label htmlFor="dgSetModel">DG Set - Model *</Label>
-                  <Input
-                    id="dgSetModel"
-                    value={formData.dgSetModel}
-                    onChange={(e) => setFormData(prev => ({ ...prev, dgSetModel: e.target.value }))}
-                    placeholder="Enter DG set model"
-                    maxLength={50}
-                  />
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+          </div>
 
         {/* Sub-Components */}
-        <Card>
-          <CardHeader>
-            <CardTitle>4. Sub-Components</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            <ObservationSection
-              title="(a) Main Engine Function Trials"
-              section="mainEngine"
-              sectionData={formData.mainEngine}
-            />
+          <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+            {/* Header with blue accent */}
+            <div className="bg-blue-100 border-l-4 border-blue-500 px-4 py-3">
+              <h3 className="text-lg font-semibold text-gray-800">
+                <span className="text-gray-800 font-bold mr-2">4.</span>
+                Sub-Components
+              </h3>
+            </div>
             
-            <ObservationSection
-              title="(b) Steering System Including Propeller and Rudder Functional Checks"
-              section="steeringSystem"
-              sectionData={formData.steeringSystem}
-            />
-            
-            <ObservationSection
-              title="(c) Main Engine Gauges & Alarms"
-              section="engineGauges"
-              sectionData={formData.engineGauges}
-            />
-            
-            <ObservationSection
-              title="(d) Battery - Terminal voltage (Pre and Post Starting Operation, Specific Gravity, Electrolyte Levels)"
-              section="battery"
-              sectionData={formData.battery}
-            />
-            
-            <ObservationSection
-              title="(e) Battery Charging Mechanism Including Integrity of Connectors/Battery Charging Sockets and Associated Switches"
-              section="batteryCharging"
-              sectionData={formData.batteryCharging}
-            />
-            
-            <ObservationSection
-              title="(f) Fuel System Including Tanks and Associated Piping"
-              section="fuelSystem"
-              sectionData={formData.fuelSystem}
-            />
-            
-            <ObservationSection
-              title="(g) Bilge Pump (Motor Driven)"
-              section="bilgePumpMotor"
-              sectionData={formData.bilgePumpMotor}
-            />
-            
-            <ObservationSection
-              title="(h) Engine Cabinet & Securing Clips"
-              section="engineCabinet"
-              sectionData={formData.engineCabinet}
-            />
-            
-            <ObservationSection
-              title="(i) Bilge Pump (Hand Operated)"
-              section="bilgePumpHand"
-              sectionData={formData.bilgePumpHand}
-            />
-            
-            <ObservationSection
-              title="(j) Status of Bilges"
-              section="statusBilges"
-              sectionData={formData.statusBilges}
-            />
-            
-            <ObservationSection
-              title="(k) Lights"
-              section="lights"
-              sectionData={formData.lights}
-            />
-            
-            <ObservationSection
-              title="(l) Horn"
-              section="horn"
-              sectionData={formData.horn}
-            />
-            
-            <ObservationSection
-              title="(m) Mast Light"
-              section="mastLight"
-              sectionData={formData.mastLight}
-            />
-            
-            <ObservationSection
-              title="(n) Side Light Port"
-              section="sideLightPort"
-              sectionData={formData.sideLightPort}
-            />
-            
-            <ObservationSection
-              title="(o) Side Light Stbd"
-              section="sideLightStbd"
-              sectionData={formData.sideLightStbd}
-            />
-            
-            <ObservationSection
-              title="(p) NUC Lights"
-              section="nucLights"
-              sectionData={formData.nucLights}
-            />
-            
-            <ObservationSection
-              title="(q) Search Light"
-              section="searchLight"
-              sectionData={formData.searchLight}
-            />
-            
-            <ObservationSection
-              title="(r) Fire & Smoke Detector"
-              section="fireSmokeDetector"
-              sectionData={formData.fireSmokeDetector}
-            />
-            
-            <ObservationSection
-              title="(s) Navigation and Communication System"
-              section="navComSystem"
-              sectionData={formData.navComSystem}
-            />
-            
-            <ObservationSection
-              title="(t) Control System/Wiring Including Proper Cleaning, Sealing, Insulation, Continuity etc."
-              section="controlSystem"
-              sectionData={formData.controlSystem}
-            />
-          </CardContent>
-        </Card>
+            {/* Content */}
+            <div className="p-4 md:p-6">
+              <div className="table-responsive">
+                <table className="table table-striped table-bordered w-full">
+                  <tbody>
+                    {/* Row 1: Main Engine Function Trials */}
+                    <tr>
+                      <td className="p-3">
+                        <span className="text-gray-800 font-medium">(a) Main Engine Function Trials</span>
+                      </td>
+                      <td className="p-3">
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                          <div>
+                            <label className="block text-gray-800 font-medium mb-1">
+                              Observations: <strong className="text-red-500">*</strong>
+                            </label>
+                            <Select
+                              value={formData.mainEngine.observations}
+                              onValueChange={(value) => updateSectionData('mainEngine', 'observations', value)}
+                            >
+                              <SelectTrigger className="w-full">
+                                <SelectValue placeholder="Select observation" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {observations.map(obs => (
+                                  <SelectItem key={obs} value={obs}>{obs}</SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                            {errors.mainEngine_observations && (
+                              <p className="text-red-500 text-sm mt-1">{errors.mainEngine_observations}</p>
+                            )}
+                          </div>
+                          <div>
+                            <label className="block text-gray-800 font-medium mb-1">
+                              Remarks: <strong className="text-red-500">*</strong>
+                            </label>
+                            <Textarea
+                              value={formData.mainEngine.remarks}
+                              onChange={(e) => updateSectionData('mainEngine', 'remarks', e.target.value)}
+                              placeholder="Enter remarks"
+                              rows={2}
+                              className="w-full"
+                            />
+                            {errors.mainEngine_remarks && (
+                              <p className="text-red-500 text-sm mt-1">{errors.mainEngine_remarks}</p>
+                            )}
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+
+                    {/* Row 2: Steering System */}
+                    <tr>
+                      <td className="p-3">
+                        <span className="text-gray-800 font-medium">(b) Steering System Including Propeller and Rudder Functional Checks</span>
+                      </td>
+                      <td className="p-3">
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                          <div>
+                            <label className="block text-gray-800 font-medium mb-1">
+                              Observations: <strong className="text-red-500">*</strong>
+                            </label>
+                            <Select
+                              value={formData.steeringSystem.observations}
+                              onValueChange={(value) => updateSectionData('steeringSystem', 'observations', value)}
+                            >
+                              <SelectTrigger className="w-full">
+                                <SelectValue placeholder="Select observation" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {observations.map(obs => (
+                                  <SelectItem key={obs} value={obs}>{obs}</SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                            {errors.steeringSystem_observations && (
+                              <p className="text-red-500 text-sm mt-1">{errors.steeringSystem_observations}</p>
+                            )}
+                          </div>
+                          <div>
+                            <label className="block text-gray-800 font-medium mb-1">
+                              Remarks: <strong className="text-red-500">*</strong>
+                            </label>
+                            <Textarea
+                              value={formData.steeringSystem.remarks}
+                              onChange={(e) => updateSectionData('steeringSystem', 'remarks', e.target.value)}
+                              placeholder="Enter remarks"
+                              rows={2}
+                              className="w-full"
+                            />
+                            {errors.steeringSystem_remarks && (
+                              <p className="text-red-500 text-sm mt-1">{errors.steeringSystem_remarks}</p>
+                            )}
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+
+                    {/* Row 3: Main Engine Gauges & Alarms */}
+                    <tr>
+                      <td className="p-3">
+                        <span className="text-gray-800 font-medium">(c) Main Engine Gauges & Alarms</span>
+                      </td>
+                      <td className="p-3">
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                          <div>
+                            <label className="block text-gray-800 font-medium mb-1">
+                              Observations: <strong className="text-red-500">*</strong>
+                            </label>
+                            <Select
+                              value={formData.engineGauges.observations}
+                              onValueChange={(value) => updateSectionData('engineGauges', 'observations', value)}
+                            >
+                              <SelectTrigger className="w-full">
+                                <SelectValue placeholder="Select observation" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {observations.map(obs => (
+                                  <SelectItem key={obs} value={obs}>{obs}</SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                            {errors.engineGauges_observations && (
+                              <p className="text-red-500 text-sm mt-1">{errors.engineGauges_observations}</p>
+                            )}
+                          </div>
+                          <div>
+                            <label className="block text-gray-800 font-medium mb-1">
+                              Remarks: <strong className="text-red-500">*</strong>
+                            </label>
+                            <Textarea
+                              value={formData.engineGauges.remarks}
+                              onChange={(e) => updateSectionData('engineGauges', 'remarks', e.target.value)}
+                              placeholder="Enter remarks"
+                              rows={2}
+                              className="w-full"
+                            />
+                            {errors.engineGauges_remarks && (
+                              <p className="text-red-500 text-sm mt-1">{errors.engineGauges_remarks}</p>
+                            )}
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+
+                    {/* Row 4: Battery */}
+                    <tr>
+                      <td className="p-3">
+                        <span className="text-gray-800 font-medium">(d) Battery Terminal voltage (Pre and Post Starting Operation, Specific Gravity, Electrolyte Levels)</span>
+                      </td>
+                      <td className="p-3">
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                          <div>
+                            <label className="block text-gray-800 font-medium mb-1">
+                              Observations: <strong className="text-red-500">*</strong>
+                            </label>
+                            <Select
+                              value={formData.battery.observations}
+                              onValueChange={(value) => updateSectionData('battery', 'observations', value)}
+                            >
+                              <SelectTrigger className="w-full">
+                                <SelectValue placeholder="--Select--" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {observations.map(obs => (
+                                  <SelectItem key={obs} value={obs}>{obs}</SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                            {errors.battery_observations && (
+                              <p className="text-red-500 text-sm mt-1">{errors.battery_observations}</p>
+                            )}
+                          </div>
+                          <div>
+                            <label className="block text-gray-800 font-medium mb-1">
+                              Remarks: <strong className="text-red-500">*</strong>
+                            </label>
+                            <Textarea
+                              value={formData.battery.remarks}
+                              onChange={(e) => updateSectionData('battery', 'remarks', e.target.value)}
+                              placeholder="Enter remarks"
+                              rows={2}
+                              className="w-full"
+                            />
+                            {errors.battery_remarks && (
+                              <p className="text-red-500 text-sm mt-1">{errors.battery_remarks}</p>
+                            )}
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+
+                    {/* Row 5: Battery Charging */}
+                    <tr>
+                      <td className="p-3">
+                        <span className="text-gray-800 font-medium">(e) Battery Charging Mechanism Including Integrity of Connectors/Battery Charging Sockets and Associated Switches</span>
+                      </td>
+                      <td className="p-3">
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                          <div>
+                            <label className="block text-gray-800 font-medium mb-1">
+                              Observations: <strong className="text-red-500">*</strong>
+                            </label>
+                            <Select
+                              value={formData.batteryCharging.observations}
+                              onValueChange={(value) => updateSectionData('batteryCharging', 'observations', value)}
+                            >
+                              <SelectTrigger className="w-full">
+                                <SelectValue placeholder="--Select--" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {observations.map(obs => (
+                                  <SelectItem key={obs} value={obs}>{obs}</SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                            {errors.batteryCharging_observations && (
+                              <p className="text-red-500 text-sm mt-1">{errors.batteryCharging_observations}</p>
+                            )}
+                          </div>
+                          <div>
+                            <label className="block text-gray-800 font-medium mb-1">
+                              Remarks: <strong className="text-red-500">*</strong>
+                            </label>
+                            <Textarea
+                              value={formData.batteryCharging.remarks}
+                              onChange={(e) => updateSectionData('batteryCharging', 'remarks', e.target.value)}
+                              placeholder="Enter remarks"
+                              rows={2}
+                              className="w-full"
+                            />
+                            {errors.batteryCharging_remarks && (
+                              <p className="text-red-500 text-sm mt-1">{errors.batteryCharging_remarks}</p>
+                            )}
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+
+                    {/* Row 6: Fuel System */}
+                    <tr>
+                      <td className="p-3">
+                        <span className="text-gray-800 font-medium">(f) Fuel System Including Tanks and Associated Piping</span>
+                      </td>
+                      <td className="p-3">
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                          <div>
+                            <label className="block text-gray-800 font-medium mb-1">
+                              Observations: <strong className="text-red-500">*</strong>
+                            </label>
+                            <Select
+                              value={formData.fuelSystem.observations}
+                              onValueChange={(value) => updateSectionData('fuelSystem', 'observations', value)}
+                            >
+                              <SelectTrigger className="w-full">
+                                <SelectValue placeholder="--Select--" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {observations.map(obs => (
+                                  <SelectItem key={obs} value={obs}>{obs}</SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                            {errors.fuelSystem_observations && (
+                              <p className="text-red-500 text-sm mt-1">{errors.fuelSystem_observations}</p>
+                            )}
+                          </div>
+                          <div>
+                            <label className="block text-gray-800 font-medium mb-1">
+                              Remarks: <strong className="text-red-500">*</strong>
+                            </label>
+                            <Textarea
+                              value={formData.fuelSystem.remarks}
+                              onChange={(e) => updateSectionData('fuelSystem', 'remarks', e.target.value)}
+                              placeholder="Enter remarks"
+                              rows={2}
+                              className="w-full"
+                            />
+                            {errors.fuelSystem_remarks && (
+                              <p className="text-red-500 text-sm mt-1">{errors.fuelSystem_remarks}</p>
+                            )}
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+
+                    {/* Row 7: Bilge Pump (Motor Driven) */}
+                    <tr>
+                      <td className="p-3">
+                        <span className="text-gray-800 font-medium">(g) Bilge Pump (Motor Driven)</span>
+                      </td>
+                      <td className="p-3">
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                          <div>
+                            <label className="block text-gray-800 font-medium mb-1">
+                              Observations: <strong className="text-red-500">*</strong>
+                            </label>
+                            <Select
+                              value={formData.bilgePumpMotor.observations}
+                              onValueChange={(value) => updateSectionData('bilgePumpMotor', 'observations', value)}
+                            >
+                              <SelectTrigger className="w-full">
+                                <SelectValue placeholder="--Select--" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {observations.map(obs => (
+                                  <SelectItem key={obs} value={obs}>{obs}</SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                            {errors.bilgePumpMotor_observations && (
+                              <p className="text-red-500 text-sm mt-1">{errors.bilgePumpMotor_observations}</p>
+                            )}
+                          </div>
+                          <div>
+                            <label className="block text-gray-800 font-medium mb-1">
+                              Remarks: <strong className="text-red-500">*</strong>
+                            </label>
+                            <Textarea
+                              value={formData.bilgePumpMotor.remarks}
+                              onChange={(e) => updateSectionData('bilgePumpMotor', 'remarks', e.target.value)}
+                              placeholder="Enter remarks"
+                              rows={2}
+                              className="w-full"
+                            />
+                            {errors.bilgePumpMotor_remarks && (
+                              <p className="text-red-500 text-sm mt-1">{errors.bilgePumpMotor_remarks}</p>
+                            )}
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+
+                    {/* Row 8: Engine Cabinet & Securing Clips */}
+                    <tr>
+                      <td className="p-3">
+                        <span className="text-gray-800 font-medium">(h) Engine Cabinet & Securing Clips</span>
+                      </td>
+                      <td className="p-3">
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                          <div>
+                            <label className="block text-gray-800 font-medium mb-1">
+                              Observations: <strong className="text-red-500">*</strong>
+                            </label>
+                            <Select
+                              value={formData.engineCabinet.observations}
+                              onValueChange={(value) => updateSectionData('engineCabinet', 'observations', value)}
+                            >
+                              <SelectTrigger className="w-full">
+                                <SelectValue placeholder="--Select--" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {observations.map(obs => (
+                                  <SelectItem key={obs} value={obs}>{obs}</SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                            {errors.engineCabinet_observations && (
+                              <p className="text-red-500 text-sm mt-1">{errors.engineCabinet_observations}</p>
+                            )}
+                          </div>
+                          <div>
+                            <label className="block text-gray-800 font-medium mb-1">
+                              Remarks: <strong className="text-red-500">*</strong>
+                            </label>
+                            <Textarea
+                              value={formData.engineCabinet.remarks}
+                              onChange={(e) => updateSectionData('engineCabinet', 'remarks', e.target.value)}
+                              placeholder="Enter remarks"
+                              rows={2}
+                              className="w-full"
+                            />
+                            {errors.engineCabinet_remarks && (
+                              <p className="text-red-500 text-sm mt-1">{errors.engineCabinet_remarks}</p>
+                            )}
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+
+                    {/* Row 9: Bilge Pump (Hand Operated) */}
+                    <tr>
+                      <td className="p-3">
+                        <span className="text-gray-800 font-medium">(i) Bilge Pump (Hand Operated)</span>
+                      </td>
+                      <td className="p-3">
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                          <div>
+                            <label className="block text-gray-800 font-medium mb-1">
+                              Observations: <strong className="text-red-500">*</strong>
+                            </label>
+                            <Select
+                              value={formData.bilgePumpHand.observations}
+                              onValueChange={(value) => updateSectionData('bilgePumpHand', 'observations', value)}
+                            >
+                              <SelectTrigger className="w-full">
+                                <SelectValue placeholder="--Select--" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {observations.map(obs => (
+                                  <SelectItem key={obs} value={obs}>{obs}</SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                            {errors.bilgePumpHand_observations && (
+                              <p className="text-red-500 text-sm mt-1">{errors.bilgePumpHand_observations}</p>
+                            )}
+                          </div>
+                          <div>
+                            <label className="block text-gray-800 font-medium mb-1">
+                              Remarks: <strong className="text-red-500">*</strong>
+                            </label>
+                            <Textarea
+                              value={formData.bilgePumpHand.remarks}
+                              onChange={(e) => updateSectionData('bilgePumpHand', 'remarks', e.target.value)}
+                              placeholder="Enter remarks"
+                              rows={2}
+                              className="w-full"
+                            />
+                            {errors.bilgePumpHand_remarks && (
+                              <p className="text-red-500 text-sm mt-1">{errors.bilgePumpHand_remarks}</p>
+                            )}
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+
+                    {/* Row 10: Status of Bilges */}
+                    <tr>
+                      <td className="p-3">
+                        <span className="text-gray-800 font-medium">(j) Status of Bilges</span>
+                      </td>
+                      <td className="p-3">
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                          <div>
+                            <label className="block text-gray-800 font-medium mb-1">
+                              Observations: <strong className="text-red-500">*</strong>
+                            </label>
+                            <Select
+                              value={formData.statusBilges.observations}
+                              onValueChange={(value) => updateSectionData('statusBilges', 'observations', value)}
+                            >
+                              <SelectTrigger className="w-full">
+                                <SelectValue placeholder="--Select--" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {observations.map(obs => (
+                                  <SelectItem key={obs} value={obs}>{obs}</SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                            {errors.statusBilges_observations && (
+                              <p className="text-red-500 text-sm mt-1">{errors.statusBilges_observations}</p>
+                            )}
+                          </div>
+                          <div>
+                            <label className="block text-gray-800 font-medium mb-1">
+                              Remarks: <strong className="text-red-500">*</strong>
+                            </label>
+                            <Textarea
+                              value={formData.statusBilges.remarks}
+                              onChange={(e) => updateSectionData('statusBilges', 'remarks', e.target.value)}
+                              placeholder="Enter remarks"
+                              rows={2}
+                              className="w-full"
+                            />
+                            {errors.statusBilges_remarks && (
+                              <p className="text-red-500 text-sm mt-1">{errors.statusBilges_remarks}</p>
+                            )}
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+
+                    {/* Row 11: Lights */}
+                    <tr>
+                      <td className="p-3">
+                        <span className="text-gray-800 font-medium">(k) Lights</span>
+                      </td>
+                      <td className="p-3">
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                          <div>
+                            <label className="block text-gray-800 font-medium mb-1">
+                              Observations: <strong className="text-red-500">*</strong>
+                            </label>
+                            <Select
+                              value={formData.lights.observations}
+                              onValueChange={(value) => updateSectionData('lights', 'observations', value)}
+                            >
+                              <SelectTrigger className="w-full">
+                                <SelectValue placeholder="--Select--" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {observations.map(obs => (
+                                  <SelectItem key={obs} value={obs}>{obs}</SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                            {errors.lights_observations && (
+                              <p className="text-red-500 text-sm mt-1">{errors.lights_observations}</p>
+                            )}
+                          </div>
+                          <div>
+                            <label className="block text-gray-800 font-medium mb-1">
+                              Remarks: <strong className="text-red-500">*</strong>
+                            </label>
+                            <Textarea
+                              value={formData.lights.remarks}
+                              onChange={(e) => updateSectionData('lights', 'remarks', e.target.value)}
+                              placeholder="Enter remarks"
+                              rows={2}
+                              className="w-full"
+                            />
+                            {errors.lights_remarks && (
+                              <p className="text-red-500 text-sm mt-1">{errors.lights_remarks}</p>
+                            )}
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+
+                    {/* Row 12: Horn */}
+                    <tr>
+                      <td className="p-3">
+                        <span className="text-gray-800 font-medium">(l) Horn</span>
+                      </td>
+                      <td className="p-3">
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                          <div>
+                            <label className="block text-gray-800 font-medium mb-1">
+                              Observations: <strong className="text-red-500">*</strong>
+                            </label>
+                            <Select
+                              value={formData.horn.observations}
+                              onValueChange={(value) => updateSectionData('horn', 'observations', value)}
+                            >
+                              <SelectTrigger className="w-full">
+                                <SelectValue placeholder="--Select--" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {observations.map(obs => (
+                                  <SelectItem key={obs} value={obs}>{obs}</SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                            {errors.horn_observations && (
+                              <p className="text-red-500 text-sm mt-1">{errors.horn_observations}</p>
+                            )}
+                          </div>
+                          <div>
+                            <label className="block text-gray-800 font-medium mb-1">
+                              Remarks: <strong className="text-red-500">*</strong>
+                            </label>
+                            <Textarea
+                              value={formData.horn.remarks}
+                              onChange={(e) => updateSectionData('horn', 'remarks', e.target.value)}
+                              placeholder="Enter remarks"
+                              rows={2}
+                              className="w-full"
+                            />
+                            {errors.horn_remarks && (
+                              <p className="text-red-500 text-sm mt-1">{errors.horn_remarks}</p>
+                            )}
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+
+                    {/* Row 13: Mast Light */}
+                    <tr>
+                      <td className="p-3">
+                        <span className="text-gray-800 font-medium">(m) Mast Light</span>
+                      </td>
+                      <td className="p-3">
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                          <div>
+                            <label className="block text-gray-800 font-medium mb-1">
+                              Observations: <strong className="text-red-500">*</strong>
+                            </label>
+                            <Select
+                              value={formData.mastLight.observations}
+                              onValueChange={(value) => updateSectionData('mastLight', 'observations', value)}
+                            >
+                              <SelectTrigger className="w-full">
+                                <SelectValue placeholder="--Select--" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {observations.map(obs => (
+                                  <SelectItem key={obs} value={obs}>{obs}</SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                            {errors.mastLight_observations && (
+                              <p className="text-red-500 text-sm mt-1">{errors.mastLight_observations}</p>
+                            )}
+                          </div>
+                          <div>
+                            <label className="block text-gray-800 font-medium mb-1">
+                              Remarks: <strong className="text-red-500">*</strong>
+                            </label>
+                            <Textarea
+                              value={formData.mastLight.remarks}
+                              onChange={(e) => updateSectionData('mastLight', 'remarks', e.target.value)}
+                              placeholder="Enter remarks"
+                              rows={2}
+                              className="w-full"
+                            />
+                            {errors.mastLight_remarks && (
+                              <p className="text-red-500 text-sm mt-1">{errors.mastLight_remarks}</p>
+                            )}
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+
+                    {/* Row 14: Side Light Port */}
+                    <tr>
+                      <td className="p-3">
+                        <span className="text-gray-800 font-medium">(n) Side Light Port</span>
+                      </td>
+                      <td className="p-3">
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                          <div>
+                            <label className="block text-gray-800 font-medium mb-1">
+                              Observations: <strong className="text-red-500">*</strong>
+                            </label>
+                            <Select
+                              value={formData.sideLightPort.observations}
+                              onValueChange={(value) => updateSectionData('sideLightPort', 'observations', value)}
+                            >
+                              <SelectTrigger className="w-full">
+                                <SelectValue placeholder="--Select--" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {observations.map(obs => (
+                                  <SelectItem key={obs} value={obs}>{obs}</SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                            {errors.sideLightPort_observations && (
+                              <p className="text-red-500 text-sm mt-1">{errors.sideLightPort_observations}</p>
+                            )}
+                          </div>
+                          <div>
+                            <label className="block text-gray-800 font-medium mb-1">
+                              Remarks: <strong className="text-red-500">*</strong>
+                            </label>
+                            <Textarea
+                              value={formData.sideLightPort.remarks}
+                              onChange={(e) => updateSectionData('sideLightPort', 'remarks', e.target.value)}
+                              placeholder="Enter remarks"
+                              rows={2}
+                              className="w-full"
+                            />
+                            {errors.sideLightPort_remarks && (
+                              <p className="text-red-500 text-sm mt-1">{errors.sideLightPort_remarks}</p>
+                            )}
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+
+                    {/* Row 15: Side Light Stbd */}
+                    <tr>
+                      <td className="p-3">
+                        <span className="text-gray-800 font-medium">(o) Side Light Stbd</span>
+                      </td>
+                      <td className="p-3">
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                          <div>
+                            <label className="block text-gray-800 font-medium mb-1">
+                              Observations: <strong className="text-red-500">*</strong>
+                            </label>
+                            <Select
+                              value={formData.sideLightStbd.observations}
+                              onValueChange={(value) => updateSectionData('sideLightStbd', 'observations', value)}
+                            >
+                              <SelectTrigger className="w-full">
+                                <SelectValue placeholder="--Select--" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {observations.map(obs => (
+                                  <SelectItem key={obs} value={obs}>{obs}</SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                            {errors.sideLightStbd_observations && (
+                              <p className="text-red-500 text-sm mt-1">{errors.sideLightStbd_observations}</p>
+                            )}
+                          </div>
+                          <div>
+                            <label className="block text-gray-800 font-medium mb-1">
+                              Remarks: <strong className="text-red-500">*</strong>
+                            </label>
+                            <Textarea
+                              value={formData.sideLightStbd.remarks}
+                              onChange={(e) => updateSectionData('sideLightStbd', 'remarks', e.target.value)}
+                              placeholder="Enter remarks"
+                              rows={2}
+                              className="w-full"
+                            />
+                            {errors.sideLightStbd_remarks && (
+                              <p className="text-red-500 text-sm mt-1">{errors.sideLightStbd_remarks}</p>
+                            )}
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+
+                    {/* Row 16: NUC Lights */}
+                    <tr>
+                      <td className="p-3">
+                        <span className="text-gray-800 font-medium">(p) NUC Lights</span>
+                      </td>
+                      <td className="p-3">
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                          <div>
+                            <label className="block text-gray-800 font-medium mb-1">
+                              Observations: <strong className="text-red-500">*</strong>
+                            </label>
+                            <Select
+                              value={formData.nucLights.observations}
+                              onValueChange={(value) => updateSectionData('nucLights', 'observations', value)}
+                            >
+                              <SelectTrigger className="w-full">
+                                <SelectValue placeholder="--Select--" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {observations.map(obs => (
+                                  <SelectItem key={obs} value={obs}>{obs}</SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                            {errors.nucLights_observations && (
+                              <p className="text-red-500 text-sm mt-1">{errors.nucLights_observations}</p>
+                            )}
+                          </div>
+                          <div>
+                            <label className="block text-gray-800 font-medium mb-1">
+                              Remarks: <strong className="text-red-500">*</strong>
+                            </label>
+                            <Textarea
+                              value={formData.nucLights.remarks}
+                              onChange={(e) => updateSectionData('nucLights', 'remarks', e.target.value)}
+                              placeholder="Enter remarks"
+                              rows={2}
+                              className="w-full"
+                            />
+                            {errors.nucLights_remarks && (
+                              <p className="text-red-500 text-sm mt-1">{errors.nucLights_remarks}</p>
+                            )}
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+
+                    {/* Row 17: Search Light */}
+                    <tr>
+                      <td className="p-3">
+                        <span className="text-gray-800 font-medium">(q) Search Light</span>
+                      </td>
+                      <td className="p-3">
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                          <div>
+                            <label className="block text-gray-800 font-medium mb-1">
+                              Observations: <strong className="text-red-500">*</strong>
+                            </label>
+                            <Select
+                              value={formData.searchLight.observations}
+                              onValueChange={(value) => updateSectionData('searchLight', 'observations', value)}
+                            >
+                              <SelectTrigger className="w-full">
+                                <SelectValue placeholder="--Select--" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {observations.map(obs => (
+                                  <SelectItem key={obs} value={obs}>{obs}</SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                            {errors.searchLight_observations && (
+                              <p className="text-red-500 text-sm mt-1">{errors.searchLight_observations}</p>
+                            )}
+                          </div>
+                          <div>
+                            <label className="block text-gray-800 font-medium mb-1">
+                              Remarks: <strong className="text-red-500">*</strong>
+                            </label>
+                            <Textarea
+                              value={formData.searchLight.remarks}
+                              onChange={(e) => updateSectionData('searchLight', 'remarks', e.target.value)}
+                              placeholder="Enter remarks"
+                              rows={2}
+                              className="w-full"
+                            />
+                            {errors.searchLight_remarks && (
+                              <p className="text-red-500 text-sm mt-1">{errors.searchLight_remarks}</p>
+                            )}
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+
+                    {/* Row 18: Fire & Smoke Detector */}
+                    <tr>
+                      <td className="p-3">
+                        <span className="text-gray-800 font-medium">(r) Fire & Smoke Detector</span>
+                      </td>
+                      <td className="p-3">
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                          <div>
+                            <label className="block text-gray-800 font-medium mb-1">
+                              Observations: <strong className="text-red-500">*</strong>
+                            </label>
+                            <Select
+                              value={formData.fireSmokeDetector.observations}
+                              onValueChange={(value) => updateSectionData('fireSmokeDetector', 'observations', value)}
+                            >
+                              <SelectTrigger className="w-full">
+                                <SelectValue placeholder="--Select--" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {observations.map(obs => (
+                                  <SelectItem key={obs} value={obs}>{obs}</SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                            {errors.fireSmokeDetector_observations && (
+                              <p className="text-red-500 text-sm mt-1">{errors.fireSmokeDetector_observations}</p>
+                            )}
+                          </div>
+                          <div>
+                            <label className="block text-gray-800 font-medium mb-1">
+                              Remarks: <strong className="text-red-500">*</strong>
+                            </label>
+                            <Textarea
+                              value={formData.fireSmokeDetector.remarks}
+                              onChange={(e) => updateSectionData('fireSmokeDetector', 'remarks', e.target.value)}
+                              placeholder="Enter remarks"
+                              rows={2}
+                              className="w-full"
+                            />
+                            {errors.fireSmokeDetector_remarks && (
+                              <p className="text-red-500 text-sm mt-1">{errors.fireSmokeDetector_remarks}</p>
+                            )}
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+
+                    {/* Row 19: Navigation and Communication System */}
+                    <tr>
+                      <td className="p-3">
+                        <span className="text-gray-800 font-medium">(s) Navigation and Communication System</span>
+                      </td>
+                      <td className="p-3">
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                          <div>
+                            <label className="block text-gray-800 font-medium mb-1">
+                              Observations: <strong className="text-red-500">*</strong>
+                            </label>
+                            <Select
+                              value={formData.navComSystem.observations}
+                              onValueChange={(value) => updateSectionData('navComSystem', 'observations', value)}
+                            >
+                              <SelectTrigger className="w-full">
+                                <SelectValue placeholder="--Select--" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {observations.map(obs => (
+                                  <SelectItem key={obs} value={obs}>{obs}</SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                            {errors.navComSystem_observations && (
+                              <p className="text-red-500 text-sm mt-1">{errors.navComSystem_observations}</p>
+                            )}
+                          </div>
+                          <div>
+                            <label className="block text-gray-800 font-medium mb-1">
+                              Remarks: <strong className="text-red-500">*</strong>
+                            </label>
+                            <Textarea
+                              value={formData.navComSystem.remarks}
+                              onChange={(e) => updateSectionData('navComSystem', 'remarks', e.target.value)}
+                              placeholder="Enter remarks"
+                              rows={2}
+                              className="w-full"
+                            />
+                            {errors.navComSystem_remarks && (
+                              <p className="text-red-500 text-sm mt-1">{errors.navComSystem_remarks}</p>
+                            )}
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+
+                    {/* Row 20: Control System/Wiring */}
+                    <tr>
+                      <td className="p-3">
+                        <span className="text-gray-800 font-medium">(t) Control System/Wiring Including Proper Cleaning, Sealing, Insulation, Continuity etc.</span>
+                      </td>
+                      <td className="p-3">
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                          <div>
+                            <label className="block text-gray-800 font-medium mb-1">
+                              Observations: <strong className="text-red-500">*</strong>
+                            </label>
+                            <Select
+                              value={formData.controlSystem.observations}
+                              onValueChange={(value) => updateSectionData('controlSystem', 'observations', value)}
+                            >
+                              <SelectTrigger className="w-full">
+                                <SelectValue placeholder="--Select--" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {observations.map(obs => (
+                                  <SelectItem key={obs} value={obs}>{obs}</SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                            {errors.controlSystem_observations && (
+                              <p className="text-red-500 text-sm mt-1">{errors.controlSystem_observations}</p>
+                            )}
+                          </div>
+                          <div>
+                            <label className="block text-gray-800 font-medium mb-1">
+                              Remarks: <strong className="text-red-500">*</strong>
+                            </label>
+                            <Textarea
+                              value={formData.controlSystem.remarks}
+                              onChange={(e) => updateSectionData('controlSystem', 'remarks', e.target.value)}
+                              placeholder="Enter remarks"
+                              rows={2}
+                              className="w-full"
+                            />
+                            {errors.controlSystem_remarks && (
+                              <p className="text-red-500 text-sm mt-1">{errors.controlSystem_remarks}</p>
+                            )}
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
 
         {/* Result of Harbour Checks */}
-        <Card>
-          <CardHeader>
-            <CardTitle>5. Result of Harbour Checks</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="specificDefects">(a) Specific Defects Observed Periodically *</Label>
+          <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+            {/* Header with blue accent */}
+            <div className="bg-blue-100 border-l-4 border-blue-500 px-4 py-3">
+              <h3 className="text-lg font-semibold text-gray-800">
+                <span className="text-gray-800 font-bold mr-2">5.</span>
+                Result of Harbour Checks
+              </h3>
+            </div>
+            
+            {/* Content */}
+            <div className="p-4 md:p-6 space-y-4">
+              <div className="space-y-4">
+                <div className="flex items-center border-l-2 border-blue-400 pl-4 py-2">
+                  <span className="text-gray-800 font-medium mr-3">(a)</span>
+                  <div className="flex-1">
+                    <span className="text-gray-800 font-medium">Specific Defects Observed Periodically *</span>
+                    <div className="mt-2">
                 <Input
                   id="specificDefects"
                   value={formData.specificDefects}
                   onChange={(e) => setFormData(prev => ({ ...prev, specificDefects: e.target.value }))}
-                  placeholder="Enter specific defects"
+                        placeholder=""
                   maxLength={100}
+                        className="border-gray-300 focus:border-blue-500"
                 />
+                    </div>
                 {errors.specificDefects && <p className="text-red-500 text-sm mt-1">{errors.specificDefects}</p>}
+                  </div>
               </div>
 
-              <div>
-                <Label htmlFor="overallStatus">(b) Overall Status *</Label>
+                <div className="flex items-center border-l-2 border-blue-400 pl-4 py-2">
+                  <span className="text-gray-800 font-medium mr-3">(b)</span>
+                  <div className="flex-1">
+                    <span className="text-gray-800 font-medium">Overall Status *</span>
+                    <div className="mt-2">
                 <Input
                   id="overallStatus"
                   value={formData.overallStatus}
                   onChange={(e) => setFormData(prev => ({ ...prev, overallStatus: e.target.value }))}
-                  placeholder="Enter overall status"
+                        placeholder=""
                   maxLength={100}
+                        className="border-gray-300 focus:border-blue-500"
                 />
+                    </div>
                 {errors.overallStatus && <p className="text-red-500 text-sm mt-1">{errors.overallStatus}</p>}
               </div>
             </div>
-          </CardContent>
-        </Card>
+              </div>
+            </div>
+          </div>
 
         {/* Action Buttons */}
-        <div className="flex justify-center space-x-4">
-          <Button type="button" className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded" onClick={() => setIsDraftModalOpen(true)}>
+          <div className="flex flex-col sm:flex-row justify-center gap-4 p-4 bg-gray-50 rounded-lg">
+            <Button type="button" className="bg-blue-600 hover:bg-blue-700 text-white px-4 md:px-6 py-2 rounded-md text-sm md:text-base" onClick={() => setIsDraftModalOpen(true)}>
             Fetch Drafts
           </Button>
           
-          <Button type="button" className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded" onClick={saveDraft}>
+            <Button type="button" className="bg-green-600 hover:bg-green-700 text-white px-4 md:px-6 py-2 rounded-md text-sm md:text-base" onClick={saveDraft}>
             SAVE DRAFT
           </Button>
           
-          <Button type="button" className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded" onClick={resetForm}>
+            <Button type="button" className="bg-red-600 hover:bg-red-700 text-white px-4 md:px-6 py-2 rounded-md text-sm md:text-base" onClick={resetForm}>
             Clear
           </Button>
           
-          <Button type="submit" className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded">
+            <Button type="submit" className="bg-blue-600 hover:bg-blue-700 text-white px-4 md:px-6 py-2 rounded-md text-sm md:text-base">
             Save
           </Button>
         </div>
 
         {/* Drafts Modal */}
         <Dialog open={isDraftModalOpen} onOpenChange={setIsDraftModalOpen}>
-          <DialogContent className="max-w-4xl">
+            <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden">
             <DialogHeader>
-              <DialogTitle>Saved Drafts</DialogTitle>
+                <DialogTitle className="text-lg md:text-xl">Saved Drafts</DialogTitle>
             </DialogHeader>
             <div className="max-h-96 overflow-y-auto">
               <div className="space-y-4">
@@ -1081,22 +2183,22 @@ const RHIBHarbourChecksForm: React.FC = () => {
                   <p className="text-center text-gray-500">No drafts saved yet</p>
                 ) : (
                   drafts.map((draft) => (
-                    <div key={draft.id} className="border rounded-lg p-4">
-                      <div className="flex justify-between items-start">
-                        <div>
-                          <h3 className="font-medium">{draft.title}</h3>
-                          <p className="text-sm text-gray-500">
+                      <div key={draft.id} className="border rounded-lg p-4 bg-white shadow-sm">
+                        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4">
+                          <div className="flex-1">
+                            <h3 className="font-medium text-sm md:text-base">{draft.title}</h3>
+                            <p className="text-xs md:text-sm text-gray-500">
                             {new Date(draft.timestamp).toLocaleString()}
                           </p>
                         </div>
-                        <div className="flex space-x-2">
+                          <div className="flex flex-col sm:flex-row gap-2">
                           <Button
                             size="sm"
                             onClick={() => {
                               setFormData(draft);
                               setIsDraftModalOpen(false);
                             }}
-                            className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded"
+                              className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-xs md:text-sm"
                           >
                             Edit
                           </Button>
@@ -1107,7 +2209,7 @@ const RHIBHarbourChecksForm: React.FC = () => {
                               setDrafts(updatedDrafts);
                               localStorage.setItem('rhibHarbourChecks_drafts', JSON.stringify(updatedDrafts));
                             }}
-                            className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded"
+                              className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-xs md:text-sm"
                           >
                             Delete
                           </Button>
@@ -1121,6 +2223,7 @@ const RHIBHarbourChecksForm: React.FC = () => {
           </DialogContent>
         </Dialog>
       </form>
+      </div>
     </div>
   );
 };

@@ -58,13 +58,43 @@ const RHIPShipBorneBoatSeaTrialsForm: React.FC = () => {
     distance: '1 Nm (Nautical mile) for each run.',
     shipRepresentative: '',
     trialTeamsRepresentative: '',
-    lightLoad50Power: [],
-    lightLoad85Power: [],
-    lightLoad100Power: [],
+    lightLoad50Power: [
+      { id: '1', srNo: '(i)', run: 'Up', engineSpeedRPM: '', speedByGPS: '', coolantTemp: '', loPressure: '' },
+      { id: '2', srNo: '(ii)', run: 'Down', engineSpeedRPM: '', speedByGPS: '', coolantTemp: '', loPressure: '' },
+      { id: '3', srNo: '(iii)', run: 'Up', engineSpeedRPM: '', speedByGPS: '', coolantTemp: '', loPressure: '' },
+      { id: '4', srNo: '(iv)', run: 'Down', engineSpeedRPM: '', speedByGPS: '', coolantTemp: '', loPressure: '' }
+    ],
+    lightLoad85Power: [
+      { id: '1', srNo: '(i)', run: 'Up', engineSpeedRPM: '', speedByGPS: '', coolantTemp: '', loPressure: '' },
+      { id: '2', srNo: '(ii)', run: 'Down', engineSpeedRPM: '', speedByGPS: '', coolantTemp: '', loPressure: '' },
+      { id: '3', srNo: '(iii)', run: 'Up', engineSpeedRPM: '', speedByGPS: '', coolantTemp: '', loPressure: '' },
+      { id: '4', srNo: '(iv)', run: 'Down', engineSpeedRPM: '', speedByGPS: '', coolantTemp: '', loPressure: '' }
+    ],
+    lightLoad100Power: [
+      { id: '1', srNo: '(i)', run: 'Up', engineSpeedRPM: '', speedByGPS: '', coolantTemp: '', loPressure: '' },
+      { id: '2', srNo: '(ii)', run: 'Down', engineSpeedRPM: '', speedByGPS: '', coolantTemp: '', loPressure: '' },
+      { id: '3', srNo: '(iii)', run: 'Up', engineSpeedRPM: '', speedByGPS: '', coolantTemp: '', loPressure: '' },
+      { id: '4', srNo: '(iv)', run: 'Down', engineSpeedRPM: '', speedByGPS: '', coolantTemp: '', loPressure: '' }
+    ],
     lightLoadRemarks: '',
-    fullLoad50Power: [],
-    fullLoad85Power: [],
-    fullLoad100Power: [],
+    fullLoad50Power: [
+      { id: '1', srNo: '(i)', run: 'Up', engineSpeedRPM: '', speedByGPS: '', coolantTemp: '', loPressure: '' },
+      { id: '2', srNo: '(ii)', run: 'Down', engineSpeedRPM: '', speedByGPS: '', coolantTemp: '', loPressure: '' },
+      { id: '3', srNo: '(iii)', run: 'Up', engineSpeedRPM: '', speedByGPS: '', coolantTemp: '', loPressure: '' },
+      { id: '4', srNo: '(iv)', run: 'Down', engineSpeedRPM: '', speedByGPS: '', coolantTemp: '', loPressure: '' }
+    ],
+    fullLoad85Power: [
+      { id: '1', srNo: '(i)', run: 'Up', engineSpeedRPM: '', speedByGPS: '', coolantTemp: '', loPressure: '' },
+      { id: '2', srNo: '(ii)', run: 'Down', engineSpeedRPM: '', speedByGPS: '', coolantTemp: '', loPressure: '' },
+      { id: '3', srNo: '(iii)', run: 'Up', engineSpeedRPM: '', speedByGPS: '', coolantTemp: '', loPressure: '' },
+      { id: '4', srNo: '(iv)', run: 'Down', engineSpeedRPM: '', speedByGPS: '', coolantTemp: '', loPressure: '' }
+    ],
+    fullLoad100Power: [
+      { id: '1', srNo: '(i)', run: 'Up', engineSpeedRPM: '', speedByGPS: '', coolantTemp: '', loPressure: '' },
+      { id: '2', srNo: '(ii)', run: 'Down', engineSpeedRPM: '', speedByGPS: '', coolantTemp: '', loPressure: '' },
+      { id: '3', srNo: '(iii)', run: 'Up', engineSpeedRPM: '', speedByGPS: '', coolantTemp: '', loPressure: '' },
+      { id: '4', srNo: '(iv)', run: 'Down', engineSpeedRPM: '', speedByGPS: '', coolantTemp: '', loPressure: '' }
+    ],
     fullLoadRemarks: '',
   });
 
@@ -133,41 +163,48 @@ const RHIPShipBorneBoatSeaTrialsForm: React.FC = () => {
       distance: '1 Nm (Nautical mile) for each run.',
       shipRepresentative: '',
       trialTeamsRepresentative: '',
-      lightLoad50Power: [],
-      lightLoad85Power: [],
-      lightLoad100Power: [],
+      lightLoad50Power: [
+        { id: '1', srNo: '(i)', run: 'Up', engineSpeedRPM: '', speedByGPS: '', coolantTemp: '', loPressure: '' },
+        { id: '2', srNo: '(ii)', run: 'Down', engineSpeedRPM: '', speedByGPS: '', coolantTemp: '', loPressure: '' },
+        { id: '3', srNo: '(iii)', run: 'Up', engineSpeedRPM: '', speedByGPS: '', coolantTemp: '', loPressure: '' },
+        { id: '4', srNo: '(iv)', run: 'Down', engineSpeedRPM: '', speedByGPS: '', coolantTemp: '', loPressure: '' }
+      ],
+      lightLoad85Power: [
+        { id: '1', srNo: '(i)', run: 'Up', engineSpeedRPM: '', speedByGPS: '', coolantTemp: '', loPressure: '' },
+        { id: '2', srNo: '(ii)', run: 'Down', engineSpeedRPM: '', speedByGPS: '', coolantTemp: '', loPressure: '' },
+        { id: '3', srNo: '(iii)', run: 'Up', engineSpeedRPM: '', speedByGPS: '', coolantTemp: '', loPressure: '' },
+        { id: '4', srNo: '(iv)', run: 'Down', engineSpeedRPM: '', speedByGPS: '', coolantTemp: '', loPressure: '' }
+      ],
+      lightLoad100Power: [
+        { id: '1', srNo: '(i)', run: 'Up', engineSpeedRPM: '', speedByGPS: '', coolantTemp: '', loPressure: '' },
+        { id: '2', srNo: '(ii)', run: 'Down', engineSpeedRPM: '', speedByGPS: '', coolantTemp: '', loPressure: '' },
+        { id: '3', srNo: '(iii)', run: 'Up', engineSpeedRPM: '', speedByGPS: '', coolantTemp: '', loPressure: '' },
+        { id: '4', srNo: '(iv)', run: 'Down', engineSpeedRPM: '', speedByGPS: '', coolantTemp: '', loPressure: '' }
+      ],
       lightLoadRemarks: '',
-      fullLoad50Power: [],
-      fullLoad85Power: [],
-      fullLoad100Power: [],
+      fullLoad50Power: [
+        { id: '1', srNo: '(i)', run: 'Up', engineSpeedRPM: '', speedByGPS: '', coolantTemp: '', loPressure: '' },
+        { id: '2', srNo: '(ii)', run: 'Down', engineSpeedRPM: '', speedByGPS: '', coolantTemp: '', loPressure: '' },
+        { id: '3', srNo: '(iii)', run: 'Up', engineSpeedRPM: '', speedByGPS: '', coolantTemp: '', loPressure: '' },
+        { id: '4', srNo: '(iv)', run: 'Down', engineSpeedRPM: '', speedByGPS: '', coolantTemp: '', loPressure: '' }
+      ],
+      fullLoad85Power: [
+        { id: '1', srNo: '(i)', run: 'Up', engineSpeedRPM: '', speedByGPS: '', coolantTemp: '', loPressure: '' },
+        { id: '2', srNo: '(ii)', run: 'Down', engineSpeedRPM: '', speedByGPS: '', coolantTemp: '', loPressure: '' },
+        { id: '3', srNo: '(iii)', run: 'Up', engineSpeedRPM: '', speedByGPS: '', coolantTemp: '', loPressure: '' },
+        { id: '4', srNo: '(iv)', run: 'Down', engineSpeedRPM: '', speedByGPS: '', coolantTemp: '', loPressure: '' }
+      ],
+      fullLoad100Power: [
+        { id: '1', srNo: '(i)', run: 'Up', engineSpeedRPM: '', speedByGPS: '', coolantTemp: '', loPressure: '' },
+        { id: '2', srNo: '(ii)', run: 'Down', engineSpeedRPM: '', speedByGPS: '', coolantTemp: '', loPressure: '' },
+        { id: '3', srNo: '(iii)', run: 'Up', engineSpeedRPM: '', speedByGPS: '', coolantTemp: '', loPressure: '' },
+        { id: '4', srNo: '(iv)', run: 'Down', engineSpeedRPM: '', speedByGPS: '', coolantTemp: '', loPressure: '' }
+      ],
       fullLoadRemarks: '',
     });
     setErrors({});
   };
 
-  const addPowerRegimeRow = (powerType: string, powerLevel: string) => {
-    const newRow: PowerRegimeData = {
-      id: Date.now().toString(),
-      srNo: '',
-      run: '',
-      engineSpeedRPM: '',
-      speedByGPS: '',
-      coolantTemp: '',
-      loPressure: '',
-    };
-
-    setFormData(prev => ({
-      ...prev,
-      [`${powerType}${powerLevel}Power`]: [...prev[`${powerType}${powerLevel}Power` as keyof RHIPShipBorneBoatSeaTrialsData] as PowerRegimeData[], newRow]
-    }));
-  };
-
-  const removePowerRegimeRow = (powerType: string, powerLevel: string, id: string) => {
-    setFormData(prev => ({
-      ...prev,
-      [`${powerType}${powerLevel}Power`]: (prev[`${powerType}${powerLevel}Power` as keyof RHIPShipBorneBoatSeaTrialsData] as PowerRegimeData[]).filter(row => row.id !== id)
-    }));
-  };
 
   const updatePowerRegimeRow = (powerType: string, powerLevel: string, id: string, field: keyof PowerRegimeData, value: string) => {
     setFormData(prev => ({
@@ -181,95 +218,72 @@ const RHIPShipBorneBoatSeaTrialsForm: React.FC = () => {
   const renderPowerRegimeTable = (powerType: string, powerLevel: string, title: string) => {
     const powerData = formData[`${powerType}${powerLevel}Power` as keyof RHIPShipBorneBoatSeaTrialsData] as PowerRegimeData[];
     
+    // Initialize with 4 fixed rows if empty
+    const fixedRows = powerData.length === 0 ? [
+      { id: '1', srNo: '(i)', run: 'Up', engineSpeedRPM: '', speedByGPS: '', coolantTemp: '', loPressure: '' },
+      { id: '2', srNo: '(ii)', run: 'Down', engineSpeedRPM: '', speedByGPS: '', coolantTemp: '', loPressure: '' },
+      { id: '3', srNo: '(iii)', run: 'Up', engineSpeedRPM: '', speedByGPS: '', coolantTemp: '', loPressure: '' },
+      { id: '4', srNo: '(iv)', run: 'Down', engineSpeedRPM: '', speedByGPS: '', coolantTemp: '', loPressure: '' }
+    ] : powerData;
+    
     return (
-      <div className="space-y-4">
+      <div className="space-y-4 mb-6">
         <div className="flex items-center justify-between">
           <h4 className="text-md font-medium text-gray-800">{title}</h4>
-          <Button
-            type="button"
-            onClick={() => addPowerRegimeRow(powerType, powerLevel)}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm"
-          >
-            Add Row
-          </Button>
         </div>
         
         <div className="overflow-x-auto">
           <table className="w-full border border-gray-300">
-            <thead className="bg-gray-50">
-              <tr>
+            <thead>
+              <tr className="text-white" style={{ backgroundColor: '#131c2f' }}>
                 <th className="border border-gray-300 px-3 py-2 text-left font-medium">Sr No.</th>
-                <th className="border border-gray-300 px-3 py-2 text-left font-medium">Run*</th>
-                <th className="border border-gray-300 px-3 py-2 text-left font-medium">Engine Speed RPM*</th>
-                <th className="border border-gray-300 px-3 py-2 text-left font-medium">Parameters</th>
-                <th className="border border-gray-300 px-3 py-2 text-left font-medium">Speed by GPS (Knot)*</th>
-                <th className="border border-gray-300 px-3 py-2 text-left font-medium">Coolant Temp (°C)*</th>
-                <th className="border border-gray-300 px-3 py-2 text-left font-medium">LO Pressure (bar)*</th>
-                <th className="border border-gray-300 px-3 py-2 text-left font-medium">Action</th>
+                <th className="border border-gray-300 px-3 py-2 text-left font-medium">Run<strong className="text-red-500">*</strong></th>
+                <th className="border border-gray-300 px-3 py-2 text-left font-medium">Engine Speed RPM<strong className="text-red-500">*</strong></th>
+                <th className="border border-gray-300 px-3 py-2 text-left font-medium">Coolant Temp (°C)<strong className="text-red-500">*</strong></th>
+                <th className="border border-gray-300 px-3 py-2 text-left font-medium">LO Pressure (bar)<strong className="text-red-500">*</strong></th>
+                <th className="border border-gray-300 px-3 py-2 text-left font-medium">Speed by GPS (Knot)<strong className="text-red-500">*</strong></th>
               </tr>
             </thead>
             <tbody>
-              {powerData.map((row, index) => (
-                <tr key={row.id}>
-                  <td className="border border-gray-300 px-3 py-2">
-                    <Input
-                      value={row.srNo}
-                      onChange={(e) => updatePowerRegimeRow(powerType, powerLevel, row.id, 'srNo', e.target.value)}
-                      placeholder={`(${String.fromCharCode(97 + index)})`}
-                      className="border-0 p-1 w-16"
-                    />
+              {fixedRows.map((row, index) => (
+                <tr key={row.id} className={`border-b border-gray-200 ${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}`}>
+                  <td className="border border-gray-300 px-3 py-2 text-center">
+                    <span className="text-gray-800 font-medium">{row.srNo}</span>
                   </td>
                   <td className="border border-gray-300 px-3 py-2">
-                    <Input
-                      value={row.run}
-                      onChange={(e) => updatePowerRegimeRow(powerType, powerLevel, row.id, 'run', e.target.value)}
-                      placeholder="Enter run"
-                      className="border-0 p-1"
-                    />
+                    <span className="text-gray-800 font-medium">{row.run}<strong className="text-red-500">*</strong></span>
                   </td>
                   <td className="border border-gray-300 px-3 py-2">
                     <Input
                       value={row.engineSpeedRPM}
                       onChange={(e) => updatePowerRegimeRow(powerType, powerLevel, row.id, 'engineSpeedRPM', e.target.value)}
-                      placeholder="Enter RPM"
-                      className="border-0 p-1"
+                      placeholder=""
+                      className="border-none border-b border-gray-300 rounded-none bg-transparent px-0 w-full"
                     />
-                  </td>
-                  <td className="border border-gray-300 px-3 py-2">
-                    <div className="text-sm text-gray-600">Parameters</div>
                   </td>
                   <td className="border border-gray-300 px-3 py-2">
                     <Input
                       value={row.speedByGPS}
                       onChange={(e) => updatePowerRegimeRow(powerType, powerLevel, row.id, 'speedByGPS', e.target.value)}
-                      placeholder="Enter speed"
-                      className="border-0 p-1"
+                      placeholder=""
+                      className="border-none border-b border-gray-300 rounded-none bg-transparent px-0 w-full"
                     />
                   </td>
                   <td className="border border-gray-300 px-3 py-2">
                     <Input
                       value={row.coolantTemp}
                       onChange={(e) => updatePowerRegimeRow(powerType, powerLevel, row.id, 'coolantTemp', e.target.value)}
-                      placeholder="Enter temp"
-                      className="border-0 p-1"
+                      placeholder=""
+                      className="border-none border-b border-gray-300 rounded-none bg-transparent px-0 w-full"
                     />
                   </td>
                   <td className="border border-gray-300 px-3 py-2">
                     <Input
                       value={row.loPressure}
                       onChange={(e) => updatePowerRegimeRow(powerType, powerLevel, row.id, 'loPressure', e.target.value)}
-                      placeholder="Enter pressure"
-                      className="border-0 p-1"
+                      placeholder=""
+                      className="border-none border-b border-gray-300 rounded-none bg-transparent px-0 w-full"
                     />
-                  </td>
-                  <td className="border border-gray-300 px-3 py-2">
-                    <Button
-                      type="button"
-                      onClick={() => removePowerRegimeRow(powerType, powerLevel, row.id)}
-                      className="bg-red-600 hover:bg-red-700 text-white px-2 py-1 rounded text-xs"
-                    >
-                      Remove
-                    </Button>
                   </td>
                 </tr>
               ))}
@@ -281,238 +295,299 @@ const RHIPShipBorneBoatSeaTrialsForm: React.FC = () => {
   };
 
   return (
-    <div className="max-w-6xl mx-auto p-6 space-y-6">
-      <div className="text-center">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">RHIB - SHIP BORNE BOAT - SEA TRIALS</h1>
-        <p className="text-gray-600">Form for RHIB Ship Borne Boat Sea Trials</p>
+    <div className="min-h-screen bg-gray-50">
+      <div className="max-w-7xl mx-auto p-4 md:p-6 space-y-6">
+        {/* Header */}
+        <div className="bg-blue-100 border border-blue-200 rounded-lg p-4 md:p-6">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div>
+              <h2 className="text-xl md:text-2xl font-bold text-gray-900 underline">RHIB - SHIP BORNE BOAT - SEA TRIALS</h2>
+            </div>
+           
+          </div>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-6">
+
+        <form onSubmit={handleSubmit} className="space-y-6">
         {/* Basic Information */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Basic Information</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="place">Place *</Label>
-                <Input
-                  id="place"
-                  value={formData.place}
-                  onChange={(e) => setFormData(prev => ({ ...prev, place: e.target.value }))}
-                  placeholder="Enter place"
-                  maxLength={50}
-                />
-                {errors.place && <p className="text-red-500 text-sm mt-1">{errors.place}</p>}
-              </div>
-
-              <div>
-                <Label htmlFor="date">Date *</Label>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button variant="outline" className="w-full justify-start text-left font-normal">
-                      <CalendarIcon className="mr-2 h-4 w-4" />
-                      {formData.date ? format(formData.date, 'dd/MM/yyyy') : 'Select date'}
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0">
-                    <Calendar
-                      mode="single"
-                      selected={formData.date || undefined}
-                      onSelect={(date) => setFormData(prev => ({ ...prev, date: date || null }))}
-                      initialFocus
-                    />
-                  </PopoverContent>
-                </Popover>
-                {errors.date && <p className="text-red-500 text-sm mt-1">{errors.date}</p>}
-              </div>
-
-              <div>
-                <Label htmlFor="wind">Wind *</Label>
-                <Input
-                  id="wind"
-                  value={formData.wind}
-                  onChange={(e) => setFormData(prev => ({ ...prev, wind: e.target.value }))}
-                  placeholder="Enter wind conditions"
-                  maxLength={50}
-                />
-                {errors.wind && <p className="text-red-500 text-sm mt-1">{errors.wind}</p>}
-              </div>
-
-              <div>
-                <Label htmlFor="seaState">Sea State *</Label>
-                <Input
-                  id="seaState"
-                  value={formData.seaState}
-                  onChange={(e) => setFormData(prev => ({ ...prev, seaState: e.target.value }))}
-                  placeholder="Enter sea state"
-                  maxLength={50}
-                />
-                {errors.seaState && <p className="text-red-500 text-sm mt-1">{errors.seaState}</p>}
-              </div>
-
-              <div>
-                <Label htmlFor="boatType">Boat Type *</Label>
-                <Input
-                  id="boatType"
-                  value={formData.boatType}
-                  onChange={(e) => setFormData(prev => ({ ...prev, boatType: e.target.value }))}
-                  placeholder="Enter boat type"
-                  maxLength={50}
-                />
-                {errors.boatType && <p className="text-red-500 text-sm mt-1">{errors.boatType}</p>}
-              </div>
-
-              <div>
-                <Label htmlFor="boatRegnNo">Boat Regn No *</Label>
-                <Input
-                  id="boatRegnNo"
-                  value={formData.boatRegnNo}
-                  onChange={(e) => setFormData(prev => ({ ...prev, boatRegnNo: e.target.value }))}
-                  placeholder="Enter boat registration number"
-                  maxLength={50}
-                />
-                {errors.boatRegnNo && <p className="text-red-500 text-sm mt-1">{errors.boatRegnNo}</p>}
-              </div>
-
-              <div>
-                <Label htmlFor="distance">Distance</Label>
-                <Input
-                  id="distance"
-                  value={formData.distance}
-                  onChange={(e) => setFormData(prev => ({ ...prev, distance: e.target.value }))}
-                  placeholder="Enter distance"
-                  maxLength={50}
-                />
-              </div>
+        <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+          {/* Header with navy blue accent */}
+         
+          {/* Content */}
+          <div className="p-4 md:p-6">
+            <div className="table-responsive overflow-x-auto">
+              <table className="table table-striped table-bordered w-full">
+                <tbody>
+                  <tr>
+                    <td className="p-4">
+                      <label htmlFor="place" className="block text-gray-800 font-bold mb-2">
+                        Place: <strong className="text-red-500">*</strong>
+                      </label>
+                      <Input
+                        id="place"
+                        value={formData.place}
+                        onChange={(e) => setFormData(prev => ({ ...prev, place: e.target.value }))}
+                        placeholder=""
+                        maxLength={20}
+                        className="border-gray-300 focus:border-blue-500"
+                      />
+                      {errors.place && <p className="text-red-500 text-sm mt-1">{errors.place}</p>}
+                    </td>
+                    <td className="p-4">
+                      <label htmlFor="date1" className="block text-gray-800 font-bold mb-2">
+                        Date: <strong className="text-red-500">*</strong>
+                      </label>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <Button variant="outline" className="w-full justify-start text-left font-normal border-gray-300 focus:border-blue-500">
+                            <CalendarIcon className="mr-2 h-4 w-4" />
+                            {formData.date ? format(formData.date, 'dd/MM/yyyy') : 'DD-MM-YYYY'}
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0">
+                          <Calendar
+                            mode="single"
+                            selected={formData.date || undefined}
+                            onSelect={(date) => setFormData(prev => ({ ...prev, date: date || null }))}
+                            initialFocus
+                          />
+                        </PopoverContent>
+                      </Popover>
+                      {errors.date && <p className="text-red-500 text-sm mt-1">{errors.date}</p>}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="p-4">
+                      <label htmlFor="wind" className="block text-gray-800 font-bold mb-2">
+                        Wind: <strong className="text-red-500">*</strong>
+                      </label>
+                      <Input
+                        id="wind"
+                        value={formData.wind}
+                        onChange={(e) => setFormData(prev => ({ ...prev, wind: e.target.value }))}
+                        placeholder=""
+                        maxLength={20}
+                        className="border-gray-300 focus:border-blue-500"
+                      />
+                      {errors.wind && <p className="text-red-500 text-sm mt-1">{errors.wind}</p>}
+                    </td>
+                    <td className="p-4">
+                      <label htmlFor="sea_state" className="block text-gray-800 font-bold mb-2">
+                        Sea State: <strong className="text-red-500">*</strong>
+                      </label>
+                      <Input
+                        id="sea_state"
+                        value={formData.seaState}
+                        onChange={(e) => setFormData(prev => ({ ...prev, seaState: e.target.value }))}
+                        placeholder=""
+                        maxLength={20}
+                        className="border-gray-300 focus:border-blue-500"
+                      />
+                      {errors.seaState && <p className="text-red-500 text-sm mt-1">{errors.seaState}</p>}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="p-4">
+                      <label htmlFor="boat_type" className="block text-gray-800 font-bold mb-2">
+                        Boat Type: <strong className="text-red-500">*</strong>
+                      </label>
+                      <Input
+                        id="boat_type"
+                        value={formData.boatType}
+                        onChange={(e) => setFormData(prev => ({ ...prev, boatType: e.target.value }))}
+                        placeholder=""
+                        maxLength={20}
+                        className="border-gray-300 focus:border-blue-500"
+                      />
+                      {errors.boatType && <p className="text-red-500 text-sm mt-1">{errors.boatType}</p>}
+                    </td>
+                    <td className="p-4">
+                      <label htmlFor="boat_regn_no" className="block text-gray-800 font-bold mb-2">
+                        Boat Regn No: <strong className="text-red-500">*</strong>
+                      </label>
+                      <Input
+                        id="boat_regn_no"
+                        value={formData.boatRegnNo}
+                        onChange={(e) => setFormData(prev => ({ ...prev, boatRegnNo: e.target.value }))}
+                        placeholder=""
+                        maxLength={20}
+                        className="border-gray-300 focus:border-blue-500"
+                      />
+                      {errors.boatRegnNo && <p className="text-red-500 text-sm mt-1">{errors.boatRegnNo}</p>}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td colSpan={2} className="p-4">
+                      <strong className="text-gray-800">Distance:</strong> 1 Nm (Nautical mile) for each run.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="p-4">
+                      <label className="block text-gray-800 font-bold mb-2">Representatives:</label>
+                    </td>
+                    <td className="p-4">
+                      <div className="space-y-4">
+                        <div>
+                          <label className="block text-gray-800 font-bold mb-2">
+                            (a) Ship: <strong className="text-red-500">*</strong>
+                          </label>
+                          <Input
+                            id="ship"
+                            value={formData.shipRepresentative}
+                            onChange={(e) => setFormData(prev => ({ ...prev, shipRepresentative: e.target.value }))}
+                            placeholder=""
+                            maxLength={20}
+                            className="border-gray-300 focus:border-blue-500"
+                          />
+                          {errors.shipRepresentative && <p className="text-red-500 text-sm mt-1">{errors.shipRepresentative}</p>}
+                        </div>
+                        <div>
+                          <label className="block text-gray-800 font-bold mb-2">
+                            (b) Trial Teams: <strong className="text-red-500">*</strong>
+                          </label>
+                          <Input
+                            id="trial_teams"
+                            value={formData.trialTeamsRepresentative}
+                            onChange={(e) => setFormData(prev => ({ ...prev, trialTeamsRepresentative: e.target.value }))}
+                            placeholder=""
+                            maxLength={50}
+                            className="border-gray-300 focus:border-blue-500"
+                          />
+                          {errors.trialTeamsRepresentative && <p className="text-red-500 text-sm mt-1">{errors.trialTeamsRepresentative}</p>}
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
-
-            {/* Representatives */}
-            <div>
-              <h4 className="font-medium text-gray-900 mb-4">Representatives:</h4>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="shipRepresentative">(a) Ship *</Label>
-                  <Input
-                    id="shipRepresentative"
-                    value={formData.shipRepresentative}
-                    onChange={(e) => setFormData(prev => ({ ...prev, shipRepresentative: e.target.value }))}
-                    placeholder="Enter ship representative"
-                    maxLength={50}
-                  />
-                  {errors.shipRepresentative && <p className="text-red-500 text-sm mt-1">{errors.shipRepresentative}</p>}
-                </div>
-
-                <div>
-                  <Label htmlFor="trialTeamsRepresentative">(b) Trial Teams *</Label>
-                  <Input
-                    id="trialTeamsRepresentative"
-                    value={formData.trialTeamsRepresentative}
-                    onChange={(e) => setFormData(prev => ({ ...prev, trialTeamsRepresentative: e.target.value }))}
-                    placeholder="Enter trial teams representative"
-                    maxLength={50}
-                  />
-                  {errors.trialTeamsRepresentative && <p className="text-red-500 text-sm mt-1">{errors.trialTeamsRepresentative}</p>}
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
 
         {/* Light Load Condition Power Regimes */}
-        <Card>
-          <CardHeader>
-            <CardTitle>1. Light Load Condition Power Regimes are as Follows: -</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-6">
+        <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+          {/* Header with navy blue accent */}
+          <div className="bg-blue-100 border-l-4 border-blue-500 px-4 py-3">
+            <h3 className="text-lg font-semibold text-gray-800">
+              <span className="text-gray-800 font-bold mr-2">1.</span>
+              Light Load Condition Power Regimes are as Follows: -
+            </h3>
+          </div>
+          
+          {/* Content */}
+          <div className="p-4 md:p-6">
             {renderPowerRegimeTable('lightLoad', '50', 'a. 50% Power')}
             {renderPowerRegimeTable('lightLoad', '85', 'b. 85% Power')}
             {renderPowerRegimeTable('lightLoad', '100', 'c. 100% Power (Max ERPM Achieved)')}
             
-            <div>
-              <Label htmlFor="lightLoadRemarks">Remarks *</Label>
+            <div className="mt-6">
+              <label className="block text-gray-800 font-medium mb-2">
+                <strong>Remarks: <strong className="text-red-500">*</strong></strong>
+              </label>
               <Textarea
-                id="lightLoadRemarks"
                 value={formData.lightLoadRemarks}
                 onChange={(e) => setFormData(prev => ({ ...prev, lightLoadRemarks: e.target.value }))}
                 placeholder="Enter remarks for light load condition"
                 rows={3}
+                className="w-full border border-gray-300 focus:border-blue-500"
               />
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
 
         {/* Full Load Condition Power Regimes */}
-        <Card>
-          <CardHeader>
-            <CardTitle>2. Full Load Condition Power regimes are as follows: -</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-6">
+        <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+          {/* Header with navy blue accent */}
+          <div className="bg-blue-100 border-l-4 border-blue-500 px-4 py-3">
+            <h3 className="text-lg font-semibold text-gray-800">
+              <span className="text-gray-800 font-bold mr-2">2.</span>
+              Full Load Condition Power regimes are as follows: -
+            </h3>
+          </div>
+          
+          {/* Content */}
+          <div className="p-4 md:p-6">
             {renderPowerRegimeTable('fullLoad', '50', 'a. 50% Power')}
             {renderPowerRegimeTable('fullLoad', '85', 'b. 85% Power')}
             {renderPowerRegimeTable('fullLoad', '100', 'c. 100% Power (Max ERPM Achieved)')}
             
-            <div>
-              <Label htmlFor="fullLoadRemarks">Remarks *</Label>
+            <div className="mt-6">
+              <label className="block text-gray-800 font-medium mb-2">
+                <strong>Remarks: <strong className="text-red-500">*</strong></strong>
+              </label>
               <Textarea
-                id="fullLoadRemarks"
                 value={formData.fullLoadRemarks}
                 onChange={(e) => setFormData(prev => ({ ...prev, fullLoadRemarks: e.target.value }))}
                 placeholder="Enter remarks for full load condition"
                 rows={3}
+                className="w-full border border-gray-300 focus:border-blue-500"
               />
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
 
         {/* Action Buttons */}
-        <div className="flex justify-center space-x-4">
-          <Button type="button" className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded" onClick={() => setIsDraftModalOpen(true)}>
+        <div className="flex flex-col sm:flex-row justify-center gap-4 px-4 md:px-6 py-4">
+          <Button 
+            type="button" 
+            className="bg-blue-600 hover:bg-blue-700 text-white px-4 md:px-6 py-2 rounded-md text-sm md:text-base" 
+            onClick={() => setIsDraftModalOpen(true)}
+          >
             Fetch Drafts
           </Button>
           
-          <Button type="button" className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded" onClick={saveDraft}>
+          <Button 
+            type="button" 
+            className="bg-green-600 hover:bg-green-700 text-white px-4 md:px-6 py-2 rounded-md text-sm md:text-base" 
+            onClick={saveDraft}
+          >
             SAVE DRAFT
           </Button>
           
-          <Button type="button" className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded" onClick={resetForm}>
+          <Button 
+            type="button" 
+            className="bg-red-600 hover:bg-red-700 text-white px-4 md:px-6 py-2 rounded-md text-sm md:text-base" 
+            onClick={resetForm}
+          >
             Clear
           </Button>
           
-          <Button type="submit" className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded">
+          <Button 
+            type="submit" 
+            className="bg-blue-600 hover:bg-blue-700 text-white px-4 md:px-6 py-2 rounded-md text-sm md:text-base"
+          >
             Save
           </Button>
         </div>
 
         {/* Drafts Modal */}
         <Dialog open={isDraftModalOpen} onOpenChange={setIsDraftModalOpen}>
-          <DialogContent className="max-w-4xl">
+          <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden">
             <DialogHeader>
-              <DialogTitle>Saved Drafts</DialogTitle>
+              <DialogTitle className="text-xl font-bold text-gray-800">Saved Drafts</DialogTitle>
             </DialogHeader>
             <div className="max-h-96 overflow-y-auto">
               <div className="space-y-4">
                 {drafts.length === 0 ? (
-                  <p className="text-center text-gray-500">No drafts saved yet</p>
+                  <p className="text-center text-gray-500 py-8">No drafts saved yet</p>
                 ) : (
                   drafts.map((draft) => (
-                    <div key={draft.id} className="border rounded-lg p-4">
-                      <div className="flex justify-between items-start">
-                        <div>
-                          <h3 className="font-medium">{draft.title}</h3>
-                          <p className="text-sm text-gray-500">
+                    <div key={draft.id} className="border border-gray-200 rounded-lg p-4 bg-gray-50 hover:bg-gray-100 transition-colors">
+                      <div className="flex flex-col sm:flex-row justify-between items-start gap-4">
+                        <div className="flex-1">
+                          <h3 className="font-medium text-gray-800">{draft.title}</h3>
+                          <p className="text-xs md:text-sm text-gray-500 mt-1">
                             {new Date(draft.timestamp).toLocaleString()}
                           </p>
                         </div>
-                        <div className="flex space-x-2">
+                        <div className="flex flex-col sm:flex-row gap-2">
                           <Button
                             size="sm"
                             onClick={() => {
                               setFormData(draft);
                               setIsDraftModalOpen(false);
                             }}
-                            className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded"
+                            className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-xs md:text-sm"
                           >
                             Edit
                           </Button>
@@ -523,7 +598,7 @@ const RHIPShipBorneBoatSeaTrialsForm: React.FC = () => {
                               setDrafts(updatedDrafts);
                               localStorage.setItem('rhibSeaTrials_drafts', JSON.stringify(updatedDrafts));
                             }}
-                            className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded"
+                            className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-xs md:text-sm"
                           >
                             Delete
                           </Button>
@@ -536,7 +611,8 @@ const RHIPShipBorneBoatSeaTrialsForm: React.FC = () => {
             </div>
           </DialogContent>
         </Dialog>
-      </form>
+        </form>
+      </div>
     </div>
   );
 };
