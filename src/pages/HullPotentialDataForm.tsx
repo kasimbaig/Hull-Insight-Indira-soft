@@ -337,7 +337,7 @@ const HullPotentialDataForm = () => {
           <div className="overflow-x-auto">
             <table className="w-full border-collapse border border-gray-300">
               <thead>
-                <tr className="bg-[#0072a6] text-white">
+                <tr className="bg-[#1a2746] text-white">
                   <th className="border border-blue-700 px-4 py-3 text-sm font-medium w-20">Sr No.</th>
                   <th className="border border-blue-700 px-4 py-3 text-sm font-medium">
                     Name <span className="text-red-300">*</span>
@@ -420,7 +420,7 @@ const HullPotentialDataForm = () => {
           <div className="overflow-x-auto">
             <table className="w-full border-collapse border border-gray-300 text-xs">
               <thead>
-                <tr className="bg-[#0072a6] text-white">
+                <tr className="bg-[#1a2746] text-white">
                   <th className="border border-blue-700 px-2 py-3 text-xs font-medium">
                     Date <span className="text-red-300">*</span>
                   </th>

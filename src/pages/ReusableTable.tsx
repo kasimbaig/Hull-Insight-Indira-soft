@@ -125,14 +125,14 @@ const ReusableTable: React.FC<ReusableTableProps> = ({
     <div className="border border-gray-300 rounded-lg shadow-sm">
       <style jsx>{`
         .${className} .p-datatable-thead > tr > th {
-          background-color: #0072a6 !important;
+          background-color: #1a2746 !important;
           color: white !important;
-          border: 1px solid #0072a6 !important;
+          border: 1px solid #1a2746 !important;
           border-right: 1px solid white !important;
           font-weight: bold;
         }
         .${className} .p-datatable-thead > tr > th:last-child {
-          border-right: 1px solid #0072a6 !important;
+          border-right: 1px solid #1a2746 !important;
         }
         .${className} .p-datatable-tbody > tr > td {
           border: 1px solid #dee2e6 !important;
@@ -188,7 +188,7 @@ const ReusableTable: React.FC<ReusableTableProps> = ({
               key={index}
               field={column.field}
               header={column.header}
-              sortable={column.sortable || false}
+              sortable={false}
               filter={column.filter || false}
               filterPlaceholder={column.filterPlaceholder || `Search ${column.header}`}
               style={column.style || { width: column.width || 'auto' }}

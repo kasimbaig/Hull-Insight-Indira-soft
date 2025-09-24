@@ -30,7 +30,7 @@ const PaintDetails = () => {
 
   const TableHeader = ({ children, className = "", ...props }) => (
     <th 
-      className={`bg-[#0072a6] text-white p-2 text-sm font-medium border border-gray-300 text-center ${className}`}
+      className={`bg-[#1a2746] text-white p-2 text-sm font-medium border border-gray-300 text-center ${className}`}
       {...props}
     >
       {children}

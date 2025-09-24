@@ -915,69 +915,69 @@ const ParticularsInternalAboveWaterStructure = () => {
               <table className="w-full border border-gray-300 text-sm">
                 <thead>
                   <tr>
-                    <th className="bg-[#0072a6] text-white p-3 text-sm font-medium border border-gray-300 text-center">
+                    <th className="bg-[#1a2746] text-white p-3 text-sm font-medium border border-gray-300 text-center">
                       Sr No.
                     </th>
-                    <th className="bg-[#0072a6] text-white p-3 text-sm font-medium border border-gray-300 text-center">
+                    <th className="bg-[#1a2746] text-white p-3 text-sm font-medium border border-gray-300 text-center">
                       Strake/Deck No. etc. <span className="text-red-500">*</span>
                     </th>
-                    <th className="bg-[#0072a6] text-white p-3 text-sm font-medium border border-gray-300 text-center" colSpan={2}>
+                    <th className="bg-[#1a2746] text-white p-3 text-sm font-medium border border-gray-300 text-center" colSpan={2}>
                       Frame Station
                     </th>
-                    <th className="bg-[#0072a6] text-white p-3 text-sm font-medium border border-gray-300 text-center">
+                    <th className="bg-[#1a2746] text-white p-3 text-sm font-medium border border-gray-300 text-center">
                       Original Thickness (mm) <span className="text-red-500">*</span>
                     </th>
-                    <th className="bg-[#0072a6] text-white p-3 text-sm font-medium border border-gray-300 text-center">
+                    <th className="bg-[#1a2746] text-white p-3 text-sm font-medium border border-gray-300 text-center">
                       Extent of Corrosion <span className="text-red-500">*</span>
                     </th>
-                    <th className="bg-[#0072a6] text-white p-3 text-sm font-medium border border-gray-300 text-center">
+                    <th className="bg-[#1a2746] text-white p-3 text-sm font-medium border border-gray-300 text-center">
                       Extent of Pitting <span className="text-red-500">*</span>
                     </th>
-                    <th className="bg-[#0072a6] text-white p-3 text-sm font-medium border border-gray-300 text-center">
+                    <th className="bg-[#1a2746] text-white p-3 text-sm font-medium border border-gray-300 text-center">
                       Mean Thickness (mm) <span className="text-red-500">*</span>
                     </th>
-                    <th className="bg-[#0072a6] text-white p-3 text-sm font-medium border border-gray-300 text-center">
+                    <th className="bg-[#1a2746] text-white p-3 text-sm font-medium border border-gray-300 text-center">
                       % Reduction in Thickness <span className="text-red-500">*</span>
                     </th>
-                    <th className="bg-[#0072a6] text-white p-3 text-sm font-medium border border-gray-300 text-center">
+                    <th className="bg-[#1a2746] text-white p-3 text-sm font-medium border border-gray-300 text-center">
                       Grading <span className="text-red-500">*</span>
                     </th>
-                    <th className="bg-[#0072a6] text-white p-3 text-sm font-medium border border-gray-300 text-center">
+                    <th className="bg-[#1a2746] text-white p-3 text-sm font-medium border border-gray-300 text-center">
                       Action Taken <span className="text-red-500">*</span>
                     </th>
                   </tr>
                   <tr>
-                    <th className="bg-[#0072a6] text-white p-2 text-xs font-medium border border-gray-300 text-center">
+                    <th className="bg-[#1a2746] text-white p-2 text-xs font-medium border border-gray-300 text-center">
                       {/* Empty cell for Sr No. */}
                     </th>
-                    <th className="bg-[#0072a6] text-white p-2 text-xs font-medium border border-gray-300 text-center">
+                    <th className="bg-[#1a2746] text-white p-2 text-xs font-medium border border-gray-300 text-center">
                       {/* Empty cell for Strake/Deck No. */}
                     </th>
-                    <th className="bg-[#0072a6] text-white p-2 text-xs font-medium border border-gray-300 text-center">
+                    <th className="bg-[#1a2746] text-white p-2 text-xs font-medium border border-gray-300 text-center">
                       From <span className="text-red-500">*</span>
                     </th>
-                    <th className="bg-[#0072a6] text-white p-2 text-xs font-medium border border-gray-300 text-center">
+                    <th className="bg-[#1a2746] text-white p-2 text-xs font-medium border border-gray-300 text-center">
                       To <span className="text-red-500">*</span>
                     </th>
-                    <th className="bg-[#0072a6] text-white p-2 text-xs font-medium border border-gray-300 text-center">
+                    <th className="bg-[#1a2746] text-white p-2 text-xs font-medium border border-gray-300 text-center">
                       {/* Empty cell for Original Thickness */}
                     </th>
-                    <th className="bg-[#0072a6] text-white p-2 text-xs font-medium border border-gray-300 text-center">
+                    <th className="bg-[#1a2746] text-white p-2 text-xs font-medium border border-gray-300 text-center">
                       {/* Empty cell for Extent of Corrosion */}
                     </th>
-                    <th className="bg-[#0072a6] text-white p-2 text-xs font-medium border border-gray-300 text-center">
+                    <th className="bg-[#1a2746] text-white p-2 text-xs font-medium border border-gray-300 text-center">
                       {/* Empty cell for Extent of Pitting */}
                     </th>
-                    <th className="bg-[#0072a6] text-white p-2 text-xs font-medium border border-gray-300 text-center">
+                    <th className="bg-[#1a2746] text-white p-2 text-xs font-medium border border-gray-300 text-center">
                       {/* Empty cell for Mean Thickness */}
                     </th>
-                    <th className="bg-[#0072a6] text-white p-2 text-xs font-medium border border-gray-300 text-center">
+                    <th className="bg-[#1a2746] text-white p-2 text-xs font-medium border border-gray-300 text-center">
                       {/* Empty cell for % Reduction */}
                     </th>
-                    <th className="bg-[#0072a6] text-white p-2 text-xs font-medium border border-gray-300 text-center">
+                    <th className="bg-[#1a2746] text-white p-2 text-xs font-medium border border-gray-300 text-center">
                       {/* Empty cell for Grading */}
                     </th>
-                    <th className="bg-[#0072a6] text-white p-2 text-xs font-medium border border-gray-300 text-center">
+                    <th className="bg-[#1a2746] text-white p-2 text-xs font-medium border border-gray-300 text-center">
                       {/* Empty cell for Action Taken */}
                     </th>
                   </tr>
@@ -1142,13 +1142,13 @@ const ParticularsInternalAboveWaterStructure = () => {
               <table className="w-full border border-gray-300 text-sm">
                 <thead>
                   <tr>
-                    <th className="bg-[#0072a6] text-white p-3 text-sm font-medium border border-gray-300 text-center">
+                    <th className="bg-[#1a2746] text-white p-3 text-sm font-medium border border-gray-300 text-center">
                       Timestamp
                     </th>
-                    <th className="bg-[#0072a6] text-white p-3 text-sm font-medium border border-gray-300 text-center">
+                    <th className="bg-[#1a2746] text-white p-3 text-sm font-medium border border-gray-300 text-center">
                       Ship
                     </th>
-                    <th className="bg-[#0072a6] text-white p-3 text-sm font-medium border border-gray-300 text-center">
+                    <th className="bg-[#1a2746] text-white p-3 text-sm font-medium border border-gray-300 text-center">
                       Actions
                     </th>
                   </tr>

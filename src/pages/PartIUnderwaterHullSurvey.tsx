@@ -371,19 +371,19 @@ const PartIUnderwaterHullSurvey = () => {
             <table className="w-full border border-gray-300 text-sm">
               <thead>
                 <tr>
-                  <th className="bg-[#0072a6] text-white p-3 text-sm font-medium border border-gray-300 text-center">
+                  <th className="bg-[#1a2746] text-white p-3 text-sm font-medium border border-gray-300 text-center">
                     Sr No.
                   </th>
-                  <th className="bg-[#0072a6] text-white p-3 text-sm font-medium border border-gray-300 text-center">
+                  <th className="bg-[#1a2746] text-white p-3 text-sm font-medium border border-gray-300 text-center">
                     Place <span className="text-red-500">*</span>
                   </th>
-                  <th className="bg-[#0072a6] text-white p-3 text-sm font-medium border border-gray-300 text-center">
+                  <th className="bg-[#1a2746] text-white p-3 text-sm font-medium border border-gray-300 text-center">
                     Docked on <span className="text-red-500">*</span>
                   </th>
-                  <th className="bg-[#0072a6] text-white p-3 text-sm font-medium border border-gray-300 text-center">
+                  <th className="bg-[#1a2746] text-white p-3 text-sm font-medium border border-gray-300 text-center">
                     Undocked on <span className="text-red-500">*</span>
                   </th>
-                  <th className="bg-[#0072a6] text-white p-3 text-sm font-medium border border-gray-300 text-center">
+                  <th className="bg-[#1a2746] text-white p-3 text-sm font-medium border border-gray-300 text-center">
                     Version Of Docking
                   </th>
                 </tr>
@@ -737,7 +737,7 @@ const PartIUnderwaterHullSurvey = () => {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="px-8 py-3 bg-[#0072a6] text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-8 py-3 bg-[#1a2746] text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isSubmitting ? 'Submitting...' : 'SUBMIT FORM'}
             </button>

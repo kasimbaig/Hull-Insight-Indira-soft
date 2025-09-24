@@ -72,7 +72,7 @@ import P75BollardsFairleadsPage from "./pages/forms/P75BollardsFairleadsPage";
 import P75DoorsAndHatchesPage from "./pages/forms/P75DoorsAndHatchesPage";
 import P75FWDMooringCapstanPage from "./pages/forms/P75FWDMooringCapstanPage";
 import PreWettingSystemPage from "./pages/forms/PreWettingSystemPage";
-import PreliminaryUnderwaterHullInspectionReportPage from "./pages/forms/PreliminaryUnderwaterHullInspectionReportPage";
+import PreliminaryUnderwaterHullInspectionReportPage from "./pages/Pre_unde_Hull_inspe/PreliminaryUnderwaterHullInspectionReportPage";
 import RasCapstanPage from "./pages/forms/RasCapstanPage";
 import RasWinchPage from "./pages/forms/RasWinchPage";
 import RHIBHarbourChecksPage from "./pages/forms/RHIBHarbourChecksPage";
@@ -118,7 +118,8 @@ import ShipStaffReportHullInspection from "./pages/ShipStaffReportHullInspection
 import FormComments from "./pages/FormComments";
 import TTTest from "./pages/TTTest";
 import ParticularsInternalAboveWaterStructure from "./pages/ParticularsInternalAboveWaterStructure";
-import ParticularsUnderwaterHullSurveyByYard from "./pages/ParticularsUnderwaterHullSurveyByYard";
+import ParticularsUnderwaterHullSurveyByYardReport from "./pages/ParticularsUnderwaterHullSurveyByYardReport";
+import PreliminaryUnderwaterHullInspectionReport from "./pages/Pre_unde_Hull_inspe/PreliminaryUnderwaterHullInspectionReport";
 // Module imports
 import YardModule from "./pages/yard/YardModule";
 import ShipModule from "./pages/ship/ShipModule";
@@ -168,7 +169,8 @@ const App = () => (
             <Route path="yard/*" element={<YardModule />} />
             <Route path="yard/docking-approval" element={<DockingApproval />} />
             <Route path="yard/particulars-internal-above-water-structure" element={<ParticularsInternalAboveWaterStructure />} />
-            <Route path="yard/particulars-underwater-hull-survey-by-yard" element={<ParticularsUnderwaterHullSurveyByYard />} />
+            <Route path="yard/particulars-underwater-hull-survey-by-yard" element={<ParticularsUnderwaterHullSurveyByYardReport />} />
+            <Route path="yard/preliminary-underwater-hull-inspection-ins" element={<PreliminaryUnderwaterHullInspectionReport />} />
           
           {/* Ship Operations Module */}
           <Route path="ship/*" element={<ShipModule />} />
@@ -241,7 +243,7 @@ const App = () => (
           <Route path="returns/iccp-hull-potential" element={<ICCPHullPotentialForm />} />
           <Route path="returns/paint-details" element={<PaintDetails />} />
           <Route path="returns/docking-plan-approval" element={<DockingPlanApprovalReport />} />
-          <Route path="returns/in379-docking-report-section1" element={<MaritimeDockingForm />} />
+          <Route path="returns/in379-docking-report-section1" element={<IN379DockingReportSection1Report />} />
           <Route path="returns/in378-render-part2" element={<RenderPart2 />} />
           <Route path="reports/hull-inspection" element={<HullInspectionReport />} />
           <Route path="reports/load-test-report" element={<LoadTestReport />} />
@@ -254,6 +256,7 @@ const App = () => (
           <Route path="reports/docking-report-section-2" element={<IN379DockingReportSection2Report />} />
           <Route path="reports/docking-report-section-3" element={<IN379DockingReportSection3Report />} />
           <Route path="reports/ship-staff-report-hull-inspection" element={<ShipStaffReportHullInspection />} />
+          <Route path="reports/preliminary-underwater-hull-inspection-report" element={<PreliminaryUnderwaterHullInspectionReport />} />
           <Route path="in378/render-part1" element={<RenderPart1 />} />
         </Route>
         {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

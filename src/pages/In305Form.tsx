@@ -198,7 +198,7 @@ const In305Form = () => {
               <div className="overflow-x-auto">
                 <table className="min-w-full border-collapse border border-gray-300">
                   <thead>
-                    <tr className="bg-[#0072a6]">
+                    <tr className="bg-[#1a2746]">
                       <th className="border border-gray-300 px-4 py-2 text-white font-semibold">Sr No.</th>
                       <th className="border border-gray-300 px-4 py-2 text-white font-semibold">Chain Cable and Gera Para vane Towing Chains and Fitting</th>
                       <th className="border border-gray-300 px-4 py-2 text-white font-semibold">Quntity in Fathomas</th>
@@ -323,7 +323,7 @@ const In305Form = () => {
                 `}</style>
                 <table className="min-w-full border-collapse">
                   <thead>
-                    <tr className="bg-[#0072a6]">
+                    <tr className="bg-[#1a2746]">
                       <th className="border border-gray-300 px-4 py-2 text-white font-semibold">Sr No.</th>
                       <th className="border border-gray-300 px-4 py-2 text-white font-semibold">Description</th>
                       <th className="border border-gray-300 px-4 py-2 text-white font-semibold">Circumference Inches</th>
@@ -432,7 +432,7 @@ const In305Form = () => {
               <div className="overflow-x-auto">
                 <table className="min-w-full border-collapse border border-gray-300">
                   <thead>
-                    <tr className="bg-[#0072a6]">
+                    <tr className="bg-[#1a2746]">
                       <th className="border border-gray-300 px-4 py-2 text-white font-semibold">Sr No.</th>
                       <th className="border border-gray-300 px-4 py-2 text-white font-semibold">Screws and Eye plates</th>
                       <th className="border border-gray-300 px-4 py-2 text-white font-semibold">No</th>
@@ -601,7 +601,7 @@ const In305Form = () => {
               <div className="overflow-x-auto">
                 <table className="min-w-full border-collapse border border-gray-300">
                   <thead>
-                    <tr className="bg-[#0072a6]">
+                    <tr className="bg-[#1a2746]">
                       <th className="border border-gray-300 px-4 py-2 text-white font-semibold">Sr No.</th>
                       <th className="border border-gray-300 px-4 py-2 text-white font-semibold">Whether swivels, shakle bolts, pains etc have been cleaned and lubricated</th>
                       <th className="border border-gray-300 px-4 py-2 text-white font-semibold">Whether links have been sounded</th>
