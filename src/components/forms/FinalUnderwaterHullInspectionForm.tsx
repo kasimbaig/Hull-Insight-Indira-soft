@@ -1,8 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
   SelectContent,
@@ -16,6 +15,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import ObservationsTable from './HullMaintenanceInspectionforShipsForm/ObservationsTable';
+import ComplexTable from './HullMaintenanceInspectionforShipsForm/ComplexTable';
 import {
   Table,
   TableBody,
@@ -24,15 +25,47 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Edit, Trash2, Plus, Minus } from "lucide-react";
+import { get, post } from "@/lib/api";
+import DeleteDialog from "@/components/ui/delete-dialog";
+import { useDeleteDialog } from "@/hooks/use-delete-dialog";
+
+interface Vessel {
+  id: number;
+  name: string;
+  code: string;
+  classofvessel: {
+    id: number;
+    name: string;
+    code: string;
+  };
+  vesseltype: {
+    id: number;
+    name: string;
+    code: string;
+  };
+  yard: {
+    id: number;
+    name: string;
+    code: string;
+  };
+  command: {
+    id: number;
+    name: string;
+    code: string;
+  };
+  year_of_build: number;
+  year_of_delivery: number;
+}
 
 const FinalUnderwaterHullInspectionForm = () => {
   const [formData, setFormData] = useState({
     final_inspection: "",
     dt_inspection: "",
     auth_inspection: "",
+    report_no: "",
     ship_not_cleared_for_undocking: "",
     reoffer_inspection: "",
+    final_observation: "",
     refit_authority: "",
     name_ship_staff: "",
     rank_ship_staff: "",
@@ -43,11 +76,48 @@ const FinalUnderwaterHullInspectionForm = () => {
     name_hitu_inspector: "",
     rank_hitu_inspector: "",
     dsg_hitu_inspector: "",
+    
+    // Defects/Observations - Section (a)
+    defectsObservationsARows: 0,
+    defectsObservationsAData: [],
+    
+    // Defects/Observations - Section (b)
+    defectsObservationsBRows: 0,
+    defectsObservationsBData: [],
+    
+    // Defects/Observations - Section (c)
+    defectsObservationsCRows: 0,
+    defectsObservationsCData: [],
+    
+    // Defects/Observations - Section (i)
+    defectsObservationsIRows: 0,
+    defectsObservationsIData: [],
+    
+    // Defects/Observations - Section (ii)
+    defectsObservationsIIRows: 0,
+    defectsObservationsIIData: [],
+    
+    // Defects/Observations - Section (d) - Text input
+    refitAuthorityConfirmation: "",
+    
+    // Defects/Observations - Section (e)
+    defectsObservationsERows: 0,
+    defectsObservationsEData: [],
   });
 
   const [inspectors, setInspectors] = useState([
     { name: "", rank: "", designation: "" }
   ]);
+
+  // Vessel API state
+  const [vessels, setVessels] = useState<Vessel[]>([]);
+  const [loadingVessels, setLoadingVessels] = useState(false);
+  const [vesselError, setVesselError] = useState<string | null>(null);
+
+  // Station API state
+  const [stations, setStations] = useState<any[]>([]);
+  const [loadingStations, setLoadingStations] = useState(false);
+  const [stationError, setStationError] = useState<string | null>(null);
 
   const [doiData, setDoiData] = useState([
     { location: "", frame_station_from: "", frame_station_to: "", observation: "", remarks: "" }
@@ -75,282 +145,565 @@ const FinalUnderwaterHullInspectionForm = () => {
   const [isDraftModalOpen, setIsDraftModalOpen] = useState(false);
   const [drafts, setDrafts] = useState<any[]>([]);
   const [hidDraftId, setHidDraftId] = useState("");
+  const [isLoadingDrafts, setIsLoadingDrafts] = useState(false);
+  const [isSavingDraft, setIsSavingDraft] = useState(false);
+  const [apiDrafts, setApiDrafts] = useState<any[]>([]);
+  const [editingRecord, setEditingRecord] = useState<any>(null);
 
-  const shipOptions = [
-    { value: "43", label: "SHIVALIK" },
-    { value: "84", label: "JAMUNA" },
-    { value: "23", label: "BANGARAM" },
-    { value: "56", label: "TARANGINI" },
-    { value: "99", label: "SARYU" },
-    { value: "31", label: "KUMBHIR" },
-    { value: "87", label: "T-83" },
-    { value: "27", label: "AIRAVAT" },
-    { value: "48", label: "KHANJAR" },
-    { value: "57", label: "SHUDERSHINI" },
-    { value: "59", label: "TRISHUL" },
-    { value: "62", label: "TEG" },
-    { value: "55", label: "RANVIJAY" },
-    { value: "47", label: "KIRPAN" },
-    { value: "35", label: "DELHI" },
-    { value: "83", label: "SURVEKSHAK" },
-    { value: "65", label: "JYOTI" },
-    { value: "94", label: "SUJATA" },
-    { value: "76", label: "KABRA" },
-    { value: "68", label: "CANKARSO" },
-    { value: "88", label: "T-84" },
-    { value: "18", label: "VIBHUTI" },
-    { value: "17", label: "NISHANK" },
-    { value: "25", label: "MAGAR" },
-    { value: "42", label: "BEAS" },
-    { value: "90", label: "SUVERNA" },
-    { value: "45", label: "SAHYADRI" },
-    { value: "16", label: "PRALAYA" },
-    { value: "74", label: "CHERIYAM" },
-    { value: "44", label: "SATPURA" },
-    { value: "20", label: "JALASHWA" },
-    { value: "63", label: "TARKASH" },
-    { value: "52", label: "KARMUK" },
-    { value: "82", label: "SUTLEJ" },
-    { value: "96", label: "SUMEDHA" },
-    { value: "15", label: "PRABAL" },
-    { value: "75", label: "CORA DIVH" },
-    { value: "21", label: "BATTIMALV" },
-    { value: "38", label: "CHENNAI" },
-    { value: "97", label: "SUMITRA" },
-    { value: "86", label: "T-82" },
-    { value: "46", label: "KUTHAR" },
-    { value: "69", label: "KONDUL" },
-    { value: "89", label: "SUBHDRA" },
-    { value: "80", label: "DARSHAK" },
-    { value: "24", label: "BITRA" },
-    { value: "73", label: "CHETLAT" },
-    { value: "81", label: "NIREEKSHAK" },
-    { value: "71", label: "KARUVA" },
-    { value: "67", label: "DEEPAK" },
-    { value: "123", label: "SHAKTI" },
-    { value: "36", label: "KOLKATA" },
-    { value: "85", label: "INVETIGATOR" },
-    { value: "93", label: "SHARDA" },
-    { value: "64", label: "SHAKTI" },
-    { value: "33", label: "MUMBAI" },
-    { value: "39", label: "GOMTI" },
-    { value: "41", label: "BETWA" },
-    { value: "13", label: "NASHAK" },
-    { value: "70", label: "KOSWARI" },
-    { value: "30", label: "CHEETAH" },
-    { value: "58", label: "TALWAR" },
-    { value: "28", label: "KESARI" },
-    { value: "66", label: "ADITYA" },
-    { value: "22", label: "BARATANG" },
-    { value: "49", label: "KORA" },
-    { value: "51", label: "KULISH" },
-    { value: "53", label: "RANA" },
-    { value: "77", label: "KALPENI" },
-    { value: "122", label: "SHAKTI" },
-    { value: "12", label: "VIPUL" },
-    { value: "60", label: "TABAR" },
-    { value: "61", label: "TRINKAND" },
-    { value: "37", label: "KOCHI" },
-    { value: "91", label: "SUKANYA" },
-    { value: "92", label: "SAVITRI" },
-    { value: "29", label: "GULDAR" },
-    { value: "40", label: "BRAHMAPUTRA" },
-    { value: "26", label: "GHARIAL" },
-    { value: "54", label: "RANVIR" },
-    { value: "79", label: "NIRUPAK" },
-    { value: "19", label: "VINASH" },
-    { value: "50", label: "KIRCH" },
-    { value: "78", label: "SANDHAYAK" },
-    { value: "14", label: "VIDYUT" },
-    { value: "95", label: "TIR" },
-    { value: "32", label: "GAJ" },
-    { value: "72", label: "CAR NICOBAR" },
-    { value: "98", label: "SUNAYNA" },
-    { value: "34", label: "MYSORE" },
-  ];
+  // Delete dialog hook
+  const deleteDialog = useDeleteDialog({
+    onConfirm: async (itemId) => {
+      if (itemId) {
+        await handleDelete(itemId as number);
+      }
+    },
+    title: "Delete Record",
+    description: "Are you sure you want to delete this record? This action cannot be undone.",
+    confirmText: "Delete Record",
+    cancelText: "Cancel"
+  });
+
+  // Fetch vessels from API
+  useEffect(() => {
+    const fetchVessels = async () => {
+      setLoadingVessels(true);
+      setVesselError(null);
+      try {
+        const response = await get('master/vessels/');
+        // Handle the API response structure
+        if (response && response.data && Array.isArray(response.data)) {
+          setVessels(response.data);
+        } else if (Array.isArray(response)) {
+          setVessels(response);
+        } else {
+          console.warn('Unexpected vessels response structure:', response);
+          setVessels([]);
+          setVesselError('Invalid data format received');
+        }
+      } catch (error) {
+        console.error('Error fetching vessels:', error);
+        setVesselError('Failed to load vessels data');
+        setVessels([]);
+      } finally {
+        setLoadingVessels(false);
+      }
+    };
+
+    fetchVessels();
+  }, []);
+
+  // Fetch stations from API
+  useEffect(() => {
+    const fetchStations = async () => {
+      setLoadingStations(true);
+      setStationError(null);
+      try {
+        const response = await get('master/stations/');
+        // Handle the API response structure
+        if (response && response.data && Array.isArray(response.data)) {
+          setStations(response.data);
+        } else if (response && response.results && Array.isArray(response.results)) {
+          setStations(response.results);
+        } else if (Array.isArray(response)) {
+          setStations(response);
+        } else {
+          console.warn('Unexpected stations response structure:', response);
+          setStations([]);
+          setStationError('Invalid data format received');
+        }
+      } catch (error) {
+        console.error('Error fetching stations:', error);
+        setStationError('Failed to load stations data');
+        setStations([]);
+      } finally {
+        setLoadingStations(false);
+      }
+    };
+
+    fetchStations();
+  }, []);
+
+  const handleVesselChange = (vesselId: string) => {
+    const selectedVessel = vessels.find(vessel => vessel.id.toString() === vesselId);
+    handleInputChange("final_inspection", vesselId);
+    // You can also store vessel name if needed
+    // handleInputChange("vesselName", selectedVessel?.name || '');
+  };
+
+  // Transform stations data for dropdowns
+  const getStationOptions = () => {
+    if (loadingStations) {
+      return [{ value: '', label: 'Loading stations...' }];
+    }
+    if (stationError) {
+      return [{ value: '', label: 'Error loading stations' }];
+    }
+    return stations.map(station => ({
+      value: station.id.toString(),
+      label: `${station.name} (${station.command_name})`
+    }));
+  };
+
 
   const handleInputChange = (field: string, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    setFormData(prev => {
+      const newData = { ...prev, [field]: value };
+      
+      // If this is a row count field, adjust the corresponding data array
+      const rowCountFields = [
+        'defectsObservationsARows', 'defectsObservationsBRows', 'defectsObservationsCRows',
+        'defectsObservationsIRows', 'defectsObservationsIIRows', 'defectsObservationsERows'
+      ];
+      
+      if (rowCountFields.includes(field)) {
+        const newRowCount = parseInt(value) || 0;
+        const dataField = field.replace('Rows', 'Data');
+        const currentData = Array.isArray(prev[dataField as keyof typeof prev]) ? prev[dataField as keyof typeof prev] as any[] : [];
+        
+        if (field === 'defectsObservationsERows') {
+          // Section (e) uses simple observation field
+          if (newRowCount > currentData.length) {
+            const newRows = Array.from({ length: newRowCount - currentData.length }, () => ({
+              observation: ''
+            }));
+            (newData as any)[dataField] = [...currentData, ...newRows];
+          } else if (newRowCount < currentData.length) {
+            (newData as any)[dataField] = currentData.slice(0, newRowCount);
+          }
+        } else {
+          // Other sections use full table structure
+          if (newRowCount > currentData.length) {
+            const newRows = Array.from({ length: newRowCount - currentData.length }, () => ({
+              location: '',
+              frameStationFrom: '',
+              frameStationTo: '',
+              observation: '',
+              finalRemarks: ''
+            }));
+            (newData as any)[dataField] = [...currentData, ...newRows];
+          } else if (newRowCount < currentData.length) {
+            (newData as any)[dataField] = currentData.slice(0, newRowCount);
+          }
+        }
+      }
+      
+      return newData;
+    });
+    
     if (errors[field]) {
       setErrors(prev => ({ ...prev, [field]: "" }));
     }
   };
 
-  const handleSpecialCharValidation = (value: string) => {
-    if (/[^a-zA-Z0-9\s]/.test(value)) {
-      alert("Special characters are not allowed.");
-      return value.replace(/[^a-zA-Z0-9\s]/g, '');
-    }
-    return value;
+  const handleDataChange = (field: string, index: number, dataField: 'location' | 'frameStationFrom' | 'frameStationTo' | 'observation' | 'finalRemarks', value: string) => {
+    setFormData(prev => {
+      const fieldData = prev[field as keyof typeof prev];
+      if (Array.isArray(fieldData)) {
+        return {
+          ...prev,
+          [field]: fieldData.map((item: any, i: number) => 
+            i === index ? { ...item, [dataField]: value } : item
+          )
+        };
+      }
+      return prev;
+    });
   };
 
-  const handleNumberValidation = (value: string) => {
-    if (/[^0-9]/.test(value)) {
-      alert("Only numbers are allowed.");
-      return value.replace(/[^0-9]/g, '');
-    }
-    return value;
-  };
 
-  const addInspector = () => {
-    setInspectors([...inspectors, { name: "", rank: "", designation: "" }]);
-  };
-
-  const removeInspector = (index: number) => {
-    if (inspectors.length > 1) {
-      setInspectors(inspectors.filter((_, i) => i !== index));
-    }
-  };
-
-  const updateInspector = (index: number, field: string, value: string) => {
-    const updatedInspectors = inspectors.map((inspector, i) => 
-      i === index ? { ...inspector, [field]: handleSpecialCharValidation(value) } : inspector
-    );
-    setInspectors(updatedInspectors);
-  };
-
-  const addDoiRow = () => {
-    setDoiData([...doiData, { location: "", frame_station_from: "", frame_station_to: "", observation: "", remarks: "" }]);
-  };
-
-  const removeDoiRow = (index: number) => {
-    if (doiData.length > 1) {
-      setDoiData(doiData.filter((_, i) => i !== index));
-    }
-  };
-
-  const updateDoiRow = (index: number, field: string, value: string) => {
-    const updatedData = doiData.map((row, i) => 
-      i === index ? { 
-        ...row, 
-        [field]: field.includes('frame_station') ? handleNumberValidation(value) : handleSpecialCharValidation(value)
-      } : row
-    );
-    setDoiData(updatedData);
-  };
-
-  const addSsIntRow = () => {
-    setSsIntData([...ssIntData, { location: "", frame_station_from: "", frame_station_to: "", observation: "", remarks: "" }]);
-  };
-
-  const removeSsIntRow = (index: number) => {
-    if (ssIntData.length > 1) {
-      setSsIntData(ssIntData.filter((_, i) => i !== index));
-    }
-  };
-
-  const updateSsIntRow = (index: number, field: string, value: string) => {
-    const updatedData = ssIntData.map((row, i) => 
-      i === index ? { 
-        ...row, 
-        [field]: field.includes('frame_station') ? handleNumberValidation(value) : handleSpecialCharValidation(value)
-      } : row
-    );
-    setSsIntData(updatedData);
-  };
-
-  const addSsConfirmRow = () => {
-    setSsConfirmData([...ssConfirmData, { location: "", frame_station_from: "", frame_station_to: "", observation: "", remarks: "" }]);
-  };
-
-  const removeSsConfirmRow = (index: number) => {
-    if (ssConfirmData.length > 1) {
-      setSsConfirmData(ssConfirmData.filter((_, i) => i !== index));
-    }
-  };
-
-  const updateSsConfirmRow = (index: number, field: string, value: string) => {
-    const updatedData = ssConfirmData.map((row, i) => 
-      i === index ? { 
-        ...row, 
-        [field]: field.includes('frame_station') ? handleNumberValidation(value) : handleSpecialCharValidation(value)
-      } : row
-    );
-    setSsConfirmData(updatedData);
-  };
-
-  const addFitmentRow = () => {
-    setFitmentData([...fitmentData, { location: "", frame_station_from: "", frame_station_to: "", observation: "", remarks: "" }]);
-  };
-
-  const removeFitmentRow = (index: number) => {
-    if (fitmentData.length > 1) {
-      setFitmentData(fitmentData.filter((_, i) => i !== index));
-    }
-  };
-
-  const updateFitmentRow = (index: number, field: string, value: string) => {
-    const updatedData = fitmentData.map((row, i) => 
-      i === index ? { 
-        ...row, 
-        [field]: field.includes('frame_station') ? handleNumberValidation(value) : handleSpecialCharValidation(value)
-      } : row
-    );
-    setFitmentData(updatedData);
-  };
-
-  const addSstRow = () => {
-    setSstData([...sstData, { location: "", frame_station_from: "", frame_station_to: "", observation: "", remarks: "" }]);
-  };
-
-  const removeSstRow = (index: number) => {
-    if (sstData.length > 1) {
-      setSstData(sstData.filter((_, i) => i !== index));
-    }
-  };
-
-  const updateSstRow = (index: number, field: string, value: string) => {
-    const updatedData = sstData.map((row, i) => 
-      i === index ? { 
-        ...row, 
-        [field]: field.includes('frame_station') ? handleNumberValidation(value) : handleSpecialCharValidation(value)
-      } : row
-    );
-    setSstData(updatedData);
-  };
-
-  const addFreshDefect = () => {
-    setFreshDefects([...freshDefects, ""]);
-  };
-
-  const removeFreshDefect = (index: number) => {
-    if (freshDefects.length > 1) {
-      setFreshDefects(freshDefects.filter((_, i) => i !== index));
-    }
-  };
-
-  const updateFreshDefect = (index: number, value: string) => {
-    const updatedDefects = freshDefects.map((defect, i) => 
-      i === index ? handleSpecialCharValidation(value) : defect
-    );
-    setFreshDefects(updatedDefects);
-  };
-
-  const handleSaveDraft = () => {
+  const handleSaveDraft = async () => {
     if (!formData.final_inspection || !formData.dt_inspection || !formData.auth_inspection) {
-      alert("Please fill in INS, Date of Inspection, and Authority for Inspection before saving draft.");
+      // alert("Please fill in INS, Date of Inspection, and Authority for Inspection before saving draft.");
       return;
     }
-    console.log("Saving draft:", { formData, inspectors, doiData, ssIntData, ssConfirmData, fitmentData, sstData, freshDefects });
-    alert("Draft saved successfully!");
+    
+    setIsSavingDraft(true);
+    try {
+      // Prepare observations array from dynamic table data
+      const observations = [];
+      
+      // Add DOI observations
+      doiData.forEach((item, index) => {
+        if (item.location || item.frame_station_from || item.frame_station_to || item.observation || item.remarks) {
+          observations.push({
+            section: "DOI",
+            sr_no: index + 1,
+            compartment_id: 1, // Default compartment ID
+            location: item.location || "",
+            frame_station_from_id: parseInt(item.frame_station_from) || 0,
+            frame_station_to_id: parseInt(item.frame_station_to) || 0,
+            observation: item.observation || "",
+            remarks: item.remarks || ""
+          });
+        }
+      });
+
+      // Add SS INT observations
+      ssIntData.forEach((item, index) => {
+        if (item.location || item.frame_station_from || item.frame_station_to || item.observation || item.remarks) {
+          observations.push({
+            section: "SS_INT",
+            sr_no: index + 1,
+            compartment_id: 2,
+            location: item.location || "",
+            frame_station_from_id: parseInt(item.frame_station_from) || 0,
+            frame_station_to_id: parseInt(item.frame_station_to) || 0,
+            observation: item.observation || "",
+            remarks: item.remarks || ""
+          });
+        }
+      });
+
+      // Add SS CONFIRM observations
+      ssConfirmData.forEach((item, index) => {
+        if (item.location || item.frame_station_from || item.frame_station_to || item.observation || item.remarks) {
+          observations.push({
+            section: "SS_CONFIRM",
+            sr_no: index + 1,
+            compartment_id: 3,
+            location: item.location || "",
+            frame_station_from_id: parseInt(item.frame_station_from) || 0,
+            frame_station_to_id: parseInt(item.frame_station_to) || 0,
+            observation: item.observation || "",
+            remarks: item.remarks || ""
+          });
+        }
+      });
+
+      // Add FITMENT observations
+      fitmentData.forEach((item, index) => {
+        if (item.location || item.frame_station_from || item.frame_station_to || item.observation || item.remarks) {
+          observations.push({
+            section: "FITMENT",
+            sr_no: index + 1,
+            compartment_id: 4,
+            location: item.location || "",
+            frame_station_from_id: parseInt(item.frame_station_from) || 0,
+            frame_station_to_id: parseInt(item.frame_station_to) || 0,
+            observation: item.observation || "",
+            remarks: item.remarks || ""
+          });
+        }
+      });
+
+      // Add SST observations
+      sstData.forEach((item, index) => {
+        if (item.location || item.frame_station_from || item.frame_station_to || item.observation || item.remarks) {
+          observations.push({
+            section: "SST",
+            sr_no: index + 1,
+            compartment_id: 5,
+            location: item.location || "",
+            frame_station_from_id: parseInt(item.frame_station_from) || 0,
+            frame_station_to_id: parseInt(item.frame_station_to) || 0,
+            observation: item.observation || "",
+            remarks: item.remarks || ""
+          });
+        }
+      });
+
+      // Add Fresh Defects observations
+      freshDefects.forEach((defect, index) => {
+        if (defect.trim()) {
+          observations.push({
+            section: "FRESH_DEFECTS",
+            sr_no: index + 1,
+            compartment_id: 6,
+            location: "",
+            frame_station_from_id: 0,
+            frame_station_to_id: 0,
+            observation: defect,
+            remarks: ""
+          });
+        }
+      });
+
+      // Add REFIT_AUTHORITY_CONFIRMATION to observations
+      if (formData.refitAuthorityConfirmation && formData.refitAuthorityConfirmation.trim()) {
+        observations.push({
+          section: "REFIT_AUTHORITY_CONFIRMATION",
+          remarks: formData.refitAuthorityConfirmation
+        });
+      }
+
+      // Prepare the API payload
+      const payload = {
+        vessel_id: parseInt(formData.final_inspection) || 0,
+        dt_inspection: convertDateForAPI(formData.dt_inspection),
+        report_no: formData.report_no || `FUHIR-${new Date().getFullYear()}-${String(Date.now()).slice(-3)}`,
+        ship_not_cleaerd_for_undocking: formData.ship_not_cleared_for_undocking === "YES",
+        final_observation: formData.final_observation || "",
+        reoffer_date: formData.reoffer_inspection || "",
+        draft_status: "draft",
+        observations: observations
+      };
+
+      // Make API call
+      const response = await post('hitumodule/final-underwater-hull-inspection-reports/', payload);
+      
+      // Also save to localStorage for local draft management
+      const draftData = {
+        id: Date.now().toString(),
+        title: `Draft - ${formData.final_inspection || 'Untitled'} - ${new Date().toLocaleDateString()}`,
+        data: formData,
+        createdAt: new Date().toISOString(),
+        apiResponse: response
+      };
+
+      const existingDrafts = JSON.parse(localStorage.getItem('finalUnderwaterHullInspectionDrafts') || '[]');
+      const updatedDrafts = [...existingDrafts, draftData];
+      localStorage.setItem('finalUnderwaterHullInspectionDrafts', JSON.stringify(updatedDrafts));
+      setDrafts(updatedDrafts);
+      
+      // alert('Draft saved successfully to server and locally!');
+      
+    } catch (error) {
+      console.error('Error saving draft:', error);
+      // alert('Error saving draft. Please try again.');
+    } finally {
+      setIsSavingDraft(false);
+    }
   };
 
-  const handleFetchDrafts = () => {
+  const handleFetchDrafts = async () => {
+    setIsLoadingDrafts(true);
+    try {
+      const response = await get('hitumodule/final-underwater-hull-inspection-reports/');
+      
+      // Handle the API response structure
+      if (response && response.data && Array.isArray(response.data)) {
+        setApiDrafts(response.data);
+      } else if (Array.isArray(response)) {
+        setApiDrafts(response);
+      } else {
+        console.warn('Unexpected drafts response structure:', response);
+        setApiDrafts([]);
+      }
+      
     setIsDraftModalOpen(true);
-    // Mock draft data
-    setDrafts([
-      { id: 1, ins: "SHIVALIK", address: "Sample Address 1", created_date: "2024-01-15" },
-      { id: 2, ins: "JAMUNA", address: "Sample Address 2", created_date: "2024-01-14" },
-    ]);
+    } catch (error) {
+      console.error('Error fetching drafts:', error);
+      // alert('Error fetching drafts. Please try again.');
+    } finally {
+      setIsLoadingDrafts(false);
+    }
+  };
+
+  const handleEdit = (record: any) => {
+    console.log('=== HANDLE EDIT DEBUG ===');
+    console.log('handleEdit called with record:', record);
+    console.log('record.id:', record.id);
+    console.log('record.pk:', record.pk);
+    console.log('record.ID:', record.ID);
+    console.log('All record keys:', Object.keys(record));
+    setEditingRecord(record);
+    
+    // Convert API date format from "2025-09-17" to "dd-MM-yyyy"
+    const convertDateFormat = (apiDate: string) => {
+      if (!apiDate) return '';
+      const date = new Date(apiDate);
+      const day = String(date.getDate()).padStart(2, '0');
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const year = date.getFullYear();
+      return `${day}-${month}-${year}`;
+    };
+
+    // Convert API record data to form data format
+    const formDataFromApi = {
+      final_inspection: record.vessel?.id?.toString() || '',
+      dt_inspection: convertDateFormat(record.dt_inspection),
+      auth_inspection: record.auth_inspection || '',
+      report_no: record.report_no || '',
+      ship_not_cleared_for_undocking: record.ship_not_cleaerd_for_undocking ? 'YES' : 'NO',
+      reoffer_inspection: record.reoffer_date || '',
+      final_observation: record.final_observation || '',
+      refit_authority: record.refit_authority_confirmation || '',
+      name_ship_staff: record.name_ship_staff || '',
+      rank_ship_staff: record.rank_ship_staff || '',
+      dsg_ship_staff: record.dsg_ship_staff || '',
+      name_refitting_auth: record.name_refitting_auth || '',
+      rank_refitting_auth: record.rank_refitting_auth || '',
+      dsg_refitting_auth: record.dsg_refitting_auth || '',
+      name_hitu_inspector: record.name_hitu_inspector || '',
+      rank_hitu_inspector: record.rank_hitu_inspector || '',
+      dsg_hitu_inspector: record.dsg_hitu_inspector || '',
+      
+      // Defects/Observations - Section (a)
+      defectsObservationsARows: 0,
+      defectsObservationsAData: [],
+      
+      // Defects/Observations - Section (b)
+      defectsObservationsBRows: 0,
+      defectsObservationsBData: [],
+      
+      // Defects/Observations - Section (c)
+      defectsObservationsCRows: 0,
+      defectsObservationsCData: [],
+      
+      // Defects/Observations - Section (i)
+      defectsObservationsIRows: 0,
+      defectsObservationsIData: [],
+      
+      // Defects/Observations - Section (ii)
+      defectsObservationsIIRows: 0,
+      defectsObservationsIIData: [],
+      
+      // Defects/Observations - Section (d) - Text input
+      refitAuthorityConfirmation: "",
+      
+      // Defects/Observations - Section (e)
+      defectsObservationsERows: 0,
+      defectsObservationsEData: [],
+    };
+
+    // Set inspectors data
+    const inspectorsData = [
+      {
+        name: record.name_hitu_inspector || '',
+        rank: record.rank_hitu_inspector || '',
+        designation: record.dsg_hitu_inspector || ''
+      }
+    ];
+    setInspectors(inspectorsData);
+    
+    // Process observations data
+    console.log('Record observations:', record.observations);
+    if (record.observations && Array.isArray(record.observations)) {
+      const doiObs = record.observations.filter((obs: any) => obs.section === 'DOI');
+      const ssIntObs = record.observations.filter((obs: any) => obs.section === 'SS_INT');
+      const ssConfirmObs = record.observations.filter((obs: any) => obs.section === 'SS_CONFIRM');
+      const fitmentObs = record.observations.filter((obs: any) => obs.section === 'FITMENT');
+      const sstObs = record.observations.filter((obs: any) => obs.section === 'SST');
+      const freshDefectsObs = record.observations.filter((obs: any) => obs.section === 'FRESH_DEFECTS');
+      
+      // Handle DEFECTS_OBS sections
+      const defectsObsA = record.observations.filter((obs: any) => obs.section === 'DEFECTS_OBS_A');
+      const defectsObsB = record.observations.filter((obs: any) => obs.section === 'DEFECTS_OBS_B');
+      const defectsObsC = record.observations.filter((obs: any) => obs.section === 'DEFECTS_OBS_C');
+      const defectsObsI = record.observations.filter((obs: any) => obs.section === 'DEFECTS_OBS_I');
+      const defectsObsII = record.observations.filter((obs: any) => obs.section === 'DEFECTS_OBS_II');
+      
+      // Handle REFIT_AUTHORITY_CONFIRMATION
+      const refitAuthorityObs = record.observations.filter((obs: any) => obs.section === 'REFIT_AUTHORITY_CONFIRMATION');
+
+      setDoiData(doiObs.length > 0 ? doiObs.map((obs: any) => ({
+        location: obs.location || '',
+        frame_station_from: obs.frame_station_from_id?.toString() || '',
+        frame_station_to: obs.frame_station_to_id?.toString() || '',
+        observation: obs.observation || '',
+        remarks: obs.remarks || ''
+      })) : [{ location: "", frame_station_from: "", frame_station_to: "", observation: "", remarks: "" }]);
+
+      setSsIntData(ssIntObs.length > 0 ? ssIntObs.map((obs: any) => ({
+        location: obs.location || '',
+        frame_station_from: obs.frame_station_from_id?.toString() || '',
+        frame_station_to: obs.frame_station_to_id?.toString() || '',
+        observation: obs.observation || '',
+        remarks: obs.remarks || ''
+      })) : [{ location: "", frame_station_from: "", frame_station_to: "", observation: "", remarks: "" }]);
+
+      setSsConfirmData(ssConfirmObs.length > 0 ? ssConfirmObs.map((obs: any) => ({
+        location: obs.location || '',
+        frame_station_from: obs.frame_station_from_id?.toString() || '',
+        frame_station_to: obs.frame_station_to_id?.toString() || '',
+        observation: obs.observation || '',
+        remarks: obs.remarks || ''
+      })) : [{ location: "", frame_station_from: "", frame_station_to: "", observation: "", remarks: "" }]);
+
+      setFitmentData(fitmentObs.length > 0 ? fitmentObs.map((obs: any) => ({
+        location: obs.location || '',
+        frame_station_from: obs.frame_station_from_id?.toString() || '',
+        frame_station_to: obs.frame_station_to_id?.toString() || '',
+        observation: obs.observation || '',
+        remarks: obs.remarks || ''
+      })) : [{ location: "", frame_station_from: "", frame_station_to: "", observation: "", remarks: "" }]);
+
+      setSstData(sstObs.length > 0 ? sstObs.map((obs: any) => ({
+        location: obs.location || '',
+        frame_station_from: obs.frame_station_from_id?.toString() || '',
+        frame_station_to: obs.frame_station_to_id?.toString() || '',
+        observation: obs.observation || '',
+        remarks: obs.remarks || ''
+      })) : [{ location: "", frame_station_from: "", frame_station_to: "", observation: "", remarks: "" }]);
+
+      setFreshDefects(freshDefectsObs.length > 0 ? freshDefectsObs.map((obs: any) => obs.observation) : [""]);
+      
+      // Process DEFECTS_OBS sections
+      const processDefectsObs = (observations: any[]) => {
+        return observations.map((obs: any) => ({
+          location: obs.location || '',
+          frameStationFrom: obs.frame_station_from?.id?.toString() || '',
+          frameStationTo: obs.frame_station_to?.id?.toString() || '',
+          observation: obs.observation || '',
+          finalRemarks: obs.remarks || ''
+        }));
+      };
+      
+      // Update form data with DEFECTS_OBS sections
+      const updatedFormData = {
+        ...formDataFromApi,
+        defectsObservationsARows: defectsObsA.length,
+        defectsObservationsAData: processDefectsObs(defectsObsA),
+        defectsObservationsBRows: defectsObsB.length,
+        defectsObservationsBData: processDefectsObs(defectsObsB),
+        defectsObservationsCRows: defectsObsC.length,
+        defectsObservationsCData: processDefectsObs(defectsObsC),
+        defectsObservationsIRows: defectsObsI.length,
+        defectsObservationsIData: processDefectsObs(defectsObsI),
+        defectsObservationsIIRows: defectsObsII.length,
+        defectsObservationsIIData: processDefectsObs(defectsObsII),
+        refitAuthorityConfirmation: refitAuthorityObs.length > 0 ? refitAuthorityObs[0].remarks || '' : ''
+      };
+      
+      setFormData(updatedFormData);
+      
+    } else {
+      // No observations data, set default empty values
+      console.log('No observations data found, setting default values');
+      setDoiData([{ location: "", frame_station_from: "", frame_station_to: "", observation: "", remarks: "" }]);
+      setSsIntData([{ location: "", frame_station_from: "", frame_station_to: "", observation: "", remarks: "" }]);
+      setSsConfirmData([{ location: "", frame_station_from: "", frame_station_to: "", observation: "", remarks: "" }]);
+      setFitmentData([{ location: "", frame_station_from: "", frame_station_to: "", observation: "", remarks: "" }]);
+      setSstData([{ location: "", frame_station_from: "", frame_station_to: "", observation: "", remarks: "" }]);
+      setFreshDefects([""]);
+    }
+    
+    setIsDraftModalOpen(false);
+  };
+
+  const handleDelete = async (id: number) => {
+    try {
+      // Make API call to delete - same pattern as preliminary form
+      const payload = { id: id, delete: true };
+      await post('hitumodule/final-underwater-hull-inspection-reports/', payload);
+      
+      // Remove from local state
+      setApiDrafts(prev => prev.filter(draft => draft.id !== id));
+      
+      // If we're editing this record, clear the form
+      if (editingRecord && editingRecord.id === id) {
+        setEditingRecord(null);
+        handleClear();
+      }
+      
+      // alert('Record deleted successfully!');
+    } catch (error) {
+      console.error('Error deleting record:', error);
+      // alert('Error deleting record. Please try again.');
+      throw error; // Re-throw to let the dialog handle the error state
+    }
   };
 
   const handleClear = () => {
+    setEditingRecord(null);
     setFormData({
       final_inspection: "",
       dt_inspection: "",
       auth_inspection: "",
+      report_no: "",
       ship_not_cleared_for_undocking: "",
       reoffer_inspection: "",
+      final_observation: "",
       refit_authority: "",
       name_ship_staff: "",
       rank_ship_staff: "",
@@ -361,6 +714,33 @@ const FinalUnderwaterHullInspectionForm = () => {
       name_hitu_inspector: "",
       rank_hitu_inspector: "",
       dsg_hitu_inspector: "",
+      
+      // Defects/Observations - Section (a)
+      defectsObservationsARows: 0,
+      defectsObservationsAData: [],
+      
+      // Defects/Observations - Section (b)
+      defectsObservationsBRows: 0,
+      defectsObservationsBData: [],
+      
+      // Defects/Observations - Section (c)
+      defectsObservationsCRows: 0,
+      defectsObservationsCData: [],
+      
+      // Defects/Observations - Section (i)
+      defectsObservationsIRows: 0,
+      defectsObservationsIData: [],
+      
+      // Defects/Observations - Section (ii)
+      defectsObservationsIIRows: 0,
+      defectsObservationsIIData: [],
+      
+      // Defects/Observations - Section (d) - Text input
+      refitAuthorityConfirmation: "",
+      
+      // Defects/Observations - Section (e)
+      defectsObservationsERows: 0,
+      defectsObservationsEData: [],
     });
     setInspectors([{ name: "", rank: "", designation: "" }]);
     setDoiData([{ location: "", frame_station_from: "", frame_station_to: "", observation: "", remarks: "" }]);
@@ -372,370 +752,606 @@ const FinalUnderwaterHullInspectionForm = () => {
     setErrors({});
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // Convert date from DD-MM-YYYY to YYYY-MM-DD format
+  const convertDateForAPI = (dateString: string) => {
+    if (!dateString) return '';
+    const parts = dateString.split('-');
+    if (parts.length === 3) {
+      const [day, month, year] = parts;
+      return `${year}-${month}-${day}`;
+    }
+    return dateString;
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const newErrors: Record<string, string> = {};
+    console.log('handleSubmit called, editingRecord:', editingRecord);
+    
+    // Skip all validation - make all fields non-mandatory
+    console.log('Skipping validation, proceeding with API call');
+    
+    try {
+        // Prepare observations array from dynamic table data
+        const observations = [];
+        
+        // Add DOI observations
+        doiData.forEach((item, index) => {
+          if (item.location || item.frame_station_from || item.frame_station_to || item.observation || item.remarks) {
+            observations.push({
+              section: "DOI",
+              sr_no: index + 1,
+              compartment_id: 1,
+              location: item.location || "",
+              frame_station_from_id: parseInt(item.frame_station_from) || 0,
+              frame_station_to_id: parseInt(item.frame_station_to) || 0,
+              observation: item.observation || "",
+              remarks: item.remarks || ""
+            });
+          }
+        });
 
-    // Basic validation
-    if (!formData.final_inspection) {
-      newErrors.final_inspection = "Please Select Final Underwater Hull Inspection - INS";
-    }
-    if (!formData.dt_inspection) {
-      newErrors.dt_inspection = "Please Select the Date of Inspection";
-    }
-    if (!formData.auth_inspection) {
-      newErrors.auth_inspection = "Please Enter Authority for Inspection";
-    }
+        // Add SS INT observations
+        ssIntData.forEach((item, index) => {
+          if (item.location || item.frame_station_from || item.frame_station_to || item.observation || item.remarks) {
+            observations.push({
+              section: "SS_INT",
+              sr_no: index + 1,
+              compartment_id: 2,
+              location: item.location || "",
+              frame_station_from_id: parseInt(item.frame_station_from) || 0,
+              frame_station_to_id: parseInt(item.frame_station_to) || 0,
+              observation: item.observation || "",
+              remarks: item.remarks || ""
+            });
+          }
+        });
 
-    // Inspectors validation
-    inspectors.forEach((inspector, index) => {
-      if (!inspector.name) {
-        newErrors[`inspector_name_${index}`] = `Please Enter HITU's Inspectors Name ${index + 1}`;
-      }
-      if (!inspector.rank) {
-        newErrors[`inspector_rank_${index}`] = `Please Enter HITU's Inspectors Rank ${index + 1}`;
-      }
-      if (!inspector.designation) {
-        newErrors[`inspector_designation_${index}`] = `Please Enter HITU's Inspectors Designation ${index + 1}`;
-      }
-    });
+        // Add SS CONFIRM observations
+        ssConfirmData.forEach((item, index) => {
+          if (item.location || item.frame_station_from || item.frame_station_to || item.observation || item.remarks) {
+            observations.push({
+              section: "SS_CONFIRM",
+              sr_no: index + 1,
+              compartment_id: 3,
+              location: item.location || "",
+              frame_station_from_id: parseInt(item.frame_station_from) || 0,
+              frame_station_to_id: parseInt(item.frame_station_to) || 0,
+              observation: item.observation || "",
+              remarks: item.remarks || ""
+            });
+          }
+        });
 
-    // DOI validation
-    doiData.forEach((row, index) => {
-      if (!row.location) {
-        newErrors[`doi_location_${index}`] = `Please Enter Defect Location ${index + 1}`;
-      }
-      if (!row.frame_station_from) {
-        newErrors[`doi_frame_station_from_${index}`] = `Please Enter Frame Station From ${index + 1}`;
-      }
-      if (!row.frame_station_to) {
-        newErrors[`doi_frame_station_to_${index}`] = `Please Enter Frame Station To ${index + 1}`;
-      }
-      if (!row.observation) {
-        newErrors[`doi_observation_${index}`] = `Please Enter Observation ${index + 1}`;
-      }
-      if (!row.remarks) {
-        newErrors[`doi_remarks_${index}`] = `Please Enter Final Remarks ${index + 1}`;
-      }
-    });
+        // Add FITMENT observations
+        fitmentData.forEach((item, index) => {
+          if (item.location || item.frame_station_from || item.frame_station_to || item.observation || item.remarks) {
+            observations.push({
+              section: "FITMENT",
+              sr_no: index + 1,
+              compartment_id: 4,
+              location: item.location || "",
+              frame_station_from_id: parseInt(item.frame_station_from) || 0,
+              frame_station_to_id: parseInt(item.frame_station_to) || 0,
+              observation: item.observation || "",
+              remarks: item.remarks || ""
+            });
+          }
+        });
 
-    // Additional validations for other sections...
-    if (!formData.refit_authority) {
-      newErrors.refit_authority = "Please Enter Refit authority to confirm no doublers existing on the U/W hull";
-    }
+        // Add SST observations
+        sstData.forEach((item, index) => {
+          if (item.location || item.frame_station_from || item.frame_station_to || item.observation || item.remarks) {
+            observations.push({
+              section: "SST",
+              sr_no: index + 1,
+              compartment_id: 5,
+              location: item.location || "",
+              frame_station_from_id: parseInt(item.frame_station_from) || 0,
+              frame_station_to_id: parseInt(item.frame_station_to) || 0,
+              observation: item.observation || "",
+              remarks: item.remarks || ""
+            });
+          }
+        });
 
-    freshDefects.forEach((defect, index) => {
-      if (!defect) {
-        newErrors[`fresh_defect_${index}`] = `Please Enter Fresh defects / observations ${index + 1}`;
-      }
-    });
+        // Add Fresh Defects observations
+        freshDefects.forEach((defect, index) => {
+          if (defect.trim()) {
+            observations.push({
+              section: "FRESH_DEFECTS",
+              sr_no: index + 1,
+              compartment_id: 6,
+              location: "",
+              frame_station_from_id: 0,
+              frame_station_to_id: 0,
+              observation: defect,
+              remarks: ""
+            });
+          }
+        });
 
-    if (!formData.ship_not_cleared_for_undocking) {
-      newErrors.ship_not_cleared_for_undocking = "Please Select Ship not cleared for Undocking";
-    }
+        // Add DEFECTS/OBSERVATIONS Section (a) - Confirmation on observations / defects of intermediate U/W hull inspection
+        formData.defectsObservationsAData.forEach((item, index) => {
+          if (item.location || item.frameStationFrom || item.frameStationTo || item.observation || item.finalRemarks) {
+            observations.push({
+              section: "DEFECTS_OBS_A",
+              sr_no: index + 1,
+              compartment_id: 7,
+              location: item.location || "",
+              frame_station_from_id: parseInt(item.frameStationFrom) || 0,
+              frame_station_to_id: parseInt(item.frameStationTo) || 0,
+              observation: item.observation || "",
+              remarks: item.finalRemarks || ""
+            });
+          }
+        });
 
-    if (formData.ship_not_cleared_for_undocking === "NO" && !formData.reoffer_inspection) {
-      newErrors.reoffer_inspection = "Please Select Date Re-offer for inspection on";
-    }
+        // Add DEFECTS/OBSERVATIONS Section (b)
+        formData.defectsObservationsBData.forEach((item, index) => {
+          if (item.location || item.frameStationFrom || item.frameStationTo || item.observation || item.finalRemarks) {
+            observations.push({
+              section: "DEFECTS_OBS_B",
+              sr_no: index + 1,
+              compartment_id: 8,
+              location: item.location || "",
+              frame_station_from_id: parseInt(item.frameStationFrom) || 0,
+              frame_station_to_id: parseInt(item.frameStationTo) || 0,
+              observation: item.observation || "",
+              remarks: item.finalRemarks || ""
+            });
+          }
+        });
 
-    // Signature validations
-    if (!formData.name_ship_staff) {
-      newErrors.name_ship_staff = "Please Enter Name Ship Staff";
-    }
-    if (!formData.rank_ship_staff) {
-      newErrors.rank_ship_staff = "Please Enter Rank Ship Staff";
-    }
-    if (!formData.dsg_ship_staff) {
-      newErrors.dsg_ship_staff = "Please Enter Designation Ship Staff";
-    }
+        // Add DEFECTS/OBSERVATIONS Section (c)
+        formData.defectsObservationsCData.forEach((item, index) => {
+          if (item.location || item.frameStationFrom || item.frameStationTo || item.observation || item.finalRemarks) {
+            observations.push({
+              section: "DEFECTS_OBS_C",
+              sr_no: index + 1,
+              compartment_id: 9,
+              location: item.location || "",
+              frame_station_from_id: parseInt(item.frameStationFrom) || 0,
+              frame_station_to_id: parseInt(item.frameStationTo) || 0,
+              observation: item.observation || "",
+              remarks: item.finalRemarks || ""
+            });
+          }
+        });
 
-    setErrors(newErrors);
+        // Add DEFECTS/OBSERVATIONS Section (i)
+        formData.defectsObservationsIData.forEach((item, index) => {
+          if (item.location || item.frameStationFrom || item.frameStationTo || item.observation || item.finalRemarks) {
+            observations.push({
+              section: "DEFECTS_OBS_I",
+              sr_no: index + 1,
+              compartment_id: 10,
+              location: item.location || "",
+              frame_station_from_id: parseInt(item.frameStationFrom) || 0,
+              frame_station_to_id: parseInt(item.frameStationTo) || 0,
+              observation: item.observation || "",
+              remarks: item.finalRemarks || ""
+            });
+          }
+        });
 
-    if (Object.keys(newErrors).length === 0) {
-      console.log("Form submitted:", { formData, inspectors, doiData, ssIntData, ssConfirmData, fitmentData, sstData, freshDefects });
-      alert("Form submitted successfully!");
+        // Add DEFECTS/OBSERVATIONS Section (ii)
+        formData.defectsObservationsIIData.forEach((item, index) => {
+          if (item.location || item.frameStationFrom || item.frameStationTo || item.observation || item.finalRemarks) {
+            observations.push({
+              section: "DEFECTS_OBS_II",
+              sr_no: index + 1,
+              compartment_id: 11,
+              location: item.location || "",
+              frame_station_from_id: parseInt(item.frameStationFrom) || 0,
+              frame_station_to_id: parseInt(item.frameStationTo) || 0,
+              observation: item.observation || "",
+              remarks: item.finalRemarks || ""
+            });
+          }
+        });
+
+        // Add DEFECTS/OBSERVATIONS Section (e) - Fresh defects / observations
+        formData.defectsObservationsEData.forEach((item, index) => {
+          if (item.observation) {
+            observations.push({
+              section: "DEFECTS_OBS_E",
+              sr_no: index + 1,
+              compartment_id: 12,
+              observation: item.observation || ""
+            });
+          }
+        });
+
+        // Add REFIT_AUTHORITY_CONFIRMATION to observations
+        if (formData.refitAuthorityConfirmation && formData.refitAuthorityConfirmation.trim()) {
+          observations.push({
+            section: "REFIT_AUTHORITY_CONFIRMATION",
+            remarks: formData.refitAuthorityConfirmation
+          });
+        }
+
+        // Prepare the API payload
+        const payload = {
+          vessel_id: parseInt(formData.final_inspection) || 0,
+          dt_inspection: convertDateForAPI(formData.dt_inspection),
+          report_no: formData.report_no || `FUHIR-${new Date().getFullYear()}-${String(Date.now()).slice(-3)}`,
+          ship_not_cleaerd_for_undocking: formData.ship_not_cleared_for_undocking === "YES",
+          final_observation: formData.final_observation || "",
+          reoffer_date: formData.reoffer_inspection || "",
+          draft_status: editingRecord ? "save" : "draft",
+          observations: observations
+        };
+
+        let response;
+        console.log('About to make API call, editingRecord:', editingRecord);
+        console.log('Payload:', payload);
+        
+        if (editingRecord) {
+          // Update existing record - only send changed fields with ID
+          console.log('=== UPDATE DEBUG INFO ===');
+          console.log('editingRecord:', editingRecord);
+          console.log('editingRecord.id:', editingRecord.id);
+          console.log('editingRecord.id type:', typeof editingRecord.id);
+          console.log('editingRecord.id value:', editingRecord.id);
+          
+          // Ensure ID is always included
+          const recordId = editingRecord.id || editingRecord.pk || editingRecord.ID;
+          console.log('Final recordId to use:', recordId);
+          
+          // Create base payload with ID - always include ID
+          const updatePayload: any = {
+            id: recordId
+          };
+          
+          console.log('Base payload with ID:', updatePayload);
+          
+          // Only add fields that have changed or are essential
+          if (formData.final_inspection !== editingRecord.vessel?.id?.toString()) {
+            updatePayload.vessel_id = parseInt(formData.final_inspection) || 0;
+          }
+          
+          if (formData.dt_inspection !== editingRecord.dt_inspection) {
+            updatePayload.dt_inspection = convertDateForAPI(formData.dt_inspection);
+          }
+          
+          if (formData.auth_inspection !== editingRecord.auth_inspection) {
+            updatePayload.auth_inspection = formData.auth_inspection || "";
+          }
+          
+          if (formData.report_no !== editingRecord.report_no) {
+            updatePayload.report_no = formData.report_no || `FUHIR-${new Date().getFullYear()}-${String(Date.now()).slice(-3)}`;
+          }
+          
+          if (formData.ship_not_cleared_for_undocking !== (editingRecord.ship_not_cleaerd_for_undocking ? 'YES' : 'NO')) {
+            updatePayload.ship_not_cleaerd_for_undocking = formData.ship_not_cleared_for_undocking === "YES";
+          }
+          
+          if (formData.reoffer_inspection !== editingRecord.reoffer_date) {
+            updatePayload.reoffer_date = formData.reoffer_inspection || "";
+          }
+          
+          if (formData.final_observation !== editingRecord.final_observation) {
+            updatePayload.final_observation = formData.final_observation || "";
+          }
+          
+          
+          // Always include observations if they exist
+          if (observations.length > 0) {
+            updatePayload.observations = observations;
+          }
+          
+          // Always set draft_status for updates
+          updatePayload.draft_status = "save";
+          
+          console.log('=== FINAL PAYLOAD DEBUG ===');
+          console.log('Final updatePayload:', updatePayload);
+          console.log('Final payload ID:', updatePayload.id);
+          console.log('Final payload keys:', Object.keys(updatePayload));
+          console.log('Making UPDATE call with payload:', updatePayload);
+          response = await post('hitumodule/final-underwater-hull-inspection-reports/', updatePayload);
+          console.log('Update API response:', response);
+          // alert('Record updated successfully!');
+        } else {
+          // Create new record
+          console.log('Making CREATE call with payload:', payload);
+          response = await post('hitumodule/final-underwater-hull-inspection-reports/', payload);
+          console.log('Create API response:', response);
+          // alert('Record saved successfully!');
+        }
+
+        // Clear form after successful submission
+        handleClear();
+        
+      } catch (error) {
+        console.error('Error submitting form:', error);
+        // alert('Error submitting form. Please try again.');
     }
   };
 
-  const renderDynamicTable = (
-    data: any[],
-    headers: string[],
-    onAdd: () => void,
-    onRemove: (index: number) => void,
-    onUpdate: (index: number, field: string, value: string) => void,
-    fields: string[]
-  ) => (
-    <div className="space-y-4">
-      <div className="flex justify-between items-center">
-        <span className="text-sm font-medium text-gray-700">Enter Total Number of Rows: {data.length}</span>
-        <div className="flex space-x-2">
-          <Button type="button" size="sm" variant="outline" onClick={onAdd}>
-            <Plus className="h-4 w-4" />
-          </Button>
-        </div>
-      </div>
-      <div className="overflow-x-auto">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Sr No.</TableHead>
-              {headers.map((header, index) => (
-                <TableHead key={index}>{header}</TableHead>
-              ))}
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {data.map((row, index) => (
-              <TableRow key={index}>
-                <TableCell>{index + 1}</TableCell>
-                {fields.map((field) => (
-                  <TableCell key={field}>
-                    <Input
-                      value={row[field]}
-                      onChange={(e) => onUpdate(index, field, e.target.value)}
-                      className={errors[`${field}_${index}`] ? "border-red-500" : ""}
-                      maxLength={field.includes('frame_station') ? 4 : field.includes('observation') || field.includes('remarks') ? 50 : 20}
-                    />
-                    {errors[`${field}_${index}`] && (
-                      <p className="text-red-500 text-xs mt-1">{errors[`${field}_${index}`]}</p>
-                    )}
-                  </TableCell>
-                ))}
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </div>
-    </div>
-  );
 
   return (
-    <div className="w-full min-h-screen bg-gray-50">
-      <div className="container mx-auto p-6">
+    <div className="max-w-full min-h-screen">
+      <div className=" mx-auto">
         <div className="bg-white shadow-lg rounded-lg">
           <div className="p-8">
             {/* Form Header */}
-            <div className="text-center mb-8">
-              <h4 className="text-xl font-bold text-blue-600 mb-2">FINAL UNDERWATER HULL INSPECTION</h4>
-              <div className="flex justify-center items-center space-x-4">
-                <span className="text-lg font-medium">INS</span>
+            <div className="bg-[#c7d9f0] text-black px-6 py-4">
+              <div className="flex items-center justify-center gap-4">
+                <h2 className="text-3xl font-semibold underline">FINAL UNDERWATER HULL INSPECTION - INS</h2>
+                
+                {/* Vessel Selection */}
                 <Select
                   value={formData.final_inspection}
-                  onValueChange={(value) => handleInputChange("final_inspection", value)}
+                  onValueChange={handleVesselChange}
+                  disabled={loadingVessels}
                 >
-                  <SelectTrigger className={errors.final_inspection ? "border-red-500 w-64" : "w-64"}>
-                    <SelectValue placeholder="--Select--" />
+                  <SelectTrigger className="px-3 py-2 border border-gray-300 rounded w-auto">
+                    <SelectValue placeholder={loadingVessels ? "Loading vessels..." : "--Select Vessel--"} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="0">--Select--</SelectItem>
-                    {shipOptions.map((option) => (
-                      <SelectItem key={option.value} value={option.value}>
-                        {option.label}
+                    {vesselError ? (
+                      <SelectItem value="" disabled>
+                        Error loading vessels
                       </SelectItem>
-                    ))}
+                    ) : (
+                      vessels.map((vessel) => (
+                        <SelectItem key={vessel.id} value={vessel.id.toString()}>
+                          {vessel.name}
+                        </SelectItem>
+                      ))
+                    )}
                   </SelectContent>
                 </Select>
-                {errors.final_inspection && (
-                  <p className="text-red-500 text-xs">{errors.final_inspection}</p>
-                )}
               </div>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-8">
-              {/* Basic Information */}
-              <div className="border border-gray-200 rounded-lg p-6">
-                <h5 className="text-lg font-bold text-gray-900 mb-6">Basic Information</h5>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <Label htmlFor="dt_inspection" className="text-sm font-medium">
-                      Date of Inspection <span className="text-red-500">*</span>
-                    </Label>
+            {/* Header Information Section */}
+            <div className="p-3 border-b border-gray-200">
+              {/* Date of Inspection */}
+              <div className="flex items-center bg-white p-3 border-b border-gray-300">
+                <div className="w-48 text-sm font-medium text-gray-700">
+                  Date of Inspection<span className="text-red-500">*</span>
+                </div>
+                <div className="flex-1">
                     <Input
-                      id="dt_inspection"
-                      type="date"
+                    type="text"
                       value={formData.dt_inspection}
                       onChange={(e) => handleInputChange("dt_inspection", e.target.value)}
-                      className={errors.dt_inspection ? "border-red-500" : ""}
+                    className="border border-gray-300 rounded px-3 py-2 w-full"
+                    placeholder="DD-MM-YYYY"
+                    required
                     />
-                    {errors.dt_inspection && (
-                      <p className="text-red-500 text-xs mt-1">{errors.dt_inspection}</p>
-                    )}
+                </div>
                   </div>
                   
-                  <div>
-                    <Label htmlFor="auth_inspection" className="text-sm font-medium">
-                      Authority for Inspection <span className="text-red-500">*</span>
-                    </Label>
+              {/* Authority for Inspection */}
+              <div className="flex items-center bg-[#f2f2f2] p-3">
+                <div className="w-48 text-sm font-medium text-gray-700">
+                  Authority for Inspection<span className="text-red-500">*</span>
+                </div>
+                <div className="flex-1">
                     <Input
-                      id="auth_inspection"
+                    type="text"
                       value={formData.auth_inspection}
-                      onChange={(e) => {
-                        const validatedValue = handleSpecialCharValidation(e.target.value);
-                        handleInputChange("auth_inspection", validatedValue);
-                      }}
-                      className={errors.auth_inspection ? "border-red-500" : ""}
-                      maxLength={40}
-                    />
-                    {errors.auth_inspection && (
-                      <p className="text-red-500 text-xs mt-1">{errors.auth_inspection}</p>
-                    )}
-                  </div>
-                </div>
-              </div>
-
-              {/* HITU's Inspectors */}
-              <div className="border border-gray-200 rounded-lg p-6">
-                <h5 className="text-lg font-bold text-gray-900 mb-6">HITU's Inspectors</h5>
-                {renderDynamicTable(
-                  inspectors,
-                  ["Name", "Rank", "Designation"],
-                  addInspector,
-                  removeInspector,
-                  updateInspector,
-                  ["name", "rank", "designation"]
-                )}
-              </div>
-
-              {/* DEFECTS/OBSERVATIONS */}
-              <div className="border border-gray-200 rounded-lg p-6">
-                <h5 className="text-lg font-bold text-gray-900 mb-6">DEFECTS/OBSERVATIONS</h5>
-                
-                {/* (a) Confirmation on observations / defects */}
-                <div className="space-y-4 mb-8">
-                  <h6 className="text-md font-semibold text-gray-800">
-                    (a) Confirmation on observations / defects of intermediate U/W hull inspection - List attached
-                  </h6>
-                  {renderDynamicTable(
-                    doiData,
-                    ["Location", "Frame Station From", "Frame Station To", "Observation", "Final Remarks"],
-                    addDoiRow,
-                    removeDoiRow,
-                    updateDoiRow,
-                    ["location", "frame_station_from", "frame_station_to", "observation", "remarks"]
-                  )}
-                </div>
-
-                {/* (b) SS to confirm all internal U/W compartments */}
-                <div className="space-y-4 mb-8">
-                  <h6 className="text-md font-semibold text-gray-800">
-                    (b) SS to confirm all internal U/W compartments defects have been liquidated
-                  </h6>
-                  {renderDynamicTable(
-                    ssIntData,
-                    ["Location", "Frame Station From", "Frame Station To", "Observation", "Final Remarks"],
-                    addSsIntRow,
-                    removeSsIntRow,
-                    updateSsIntRow,
-                    ["location", "frame_station_from", "frame_station_to", "observation", "remarks"]
-                  )}
-                </div>
-
-                {/* (c) SS to confirm */}
-                <div className="space-y-4 mb-8">
-                  <h6 className="text-md font-semibold text-gray-800">
-                    (c) SS to confirm
-                  </h6>
-                  {renderDynamicTable(
-                    ssConfirmData,
-                    ["Location", "Frame Station From", "Frame Station To", "Observation", "Final Remarks"],
-                    addSsConfirmRow,
-                    removeSsConfirmRow,
-                    updateSsConfirmRow,
-                    ["location", "frame_station_from", "frame_station_to", "observation", "remarks"]
-                  )}
-                </div>
-
-                {/* (i) Fitment of all U/W and overboard discharge valves */}
-                <div className="space-y-4 mb-8">
-                  <h6 className="text-md font-semibold text-gray-800">
-                    (i) Fitment of all U/W and overboard discharge valves
-                  </h6>
-                  {renderDynamicTable(
-                    fitmentData,
-                    ["Location", "Frame Station From", "Frame Station To", "Observation", "Final Remarks"],
-                    addFitmentRow,
-                    removeFitmentRow,
-                    updateFitmentRow,
-                    ["location", "frame_station_from", "frame_station_to", "observation", "remarks"]
-                  )}
-                </div>
-
-                {/* (ii) Ship is in the same trim condition */}
-                <div className="space-y-4 mb-8">
-                  <h6 className="text-md font-semibold text-gray-800">
-                    (ii) Ship is in the same trim condition as at the time of docking
-                  </h6>
-                  {renderDynamicTable(
-                    sstData,
-                    ["Location", "Frame Station From", "Frame Station To", "Observation", "Final Remarks"],
-                    addSstRow,
-                    removeSstRow,
-                    updateSstRow,
-                    ["location", "frame_station_from", "frame_station_to", "observation", "remarks"]
-                  )}
-                </div>
-
-                {/* (d) Refit authority */}
-                <div className="space-y-4 mb-8">
-                  <h6 className="text-md font-semibold text-gray-800">
-                    (d) Refit authority to confirm no doublers existing on the U/W hull <span className="text-red-500">*</span>
-                  </h6>
-                  <Input
-                    value={formData.refit_authority}
-                    onChange={(e) => {
-                      const validatedValue = handleSpecialCharValidation(e.target.value);
-                      handleInputChange("refit_authority", validatedValue);
-                    }}
-                    className={errors.refit_authority ? "border-red-500" : ""}
-                    maxLength={50}
+                    onChange={(e) => handleInputChange("auth_inspection", e.target.value)}
+                    className="border border-gray-300 rounded px-3 py-2 w-full"
+                    placeholder="Enter authority"
+                    required
                   />
-                  {errors.refit_authority && (
-                    <p className="text-red-500 text-xs mt-1">{errors.refit_authority}</p>
-                  )}
-                </div>
-
-                {/* (e) Fresh defects / observations */}
-                <div className="space-y-4 mb-8">
-                  <h6 className="text-md font-semibold text-gray-800">
-                    (e) Fresh defects / observations <span className="text-red-500">*</span>
-                  </h6>
-                  <div className="space-y-4">
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm font-medium text-gray-700">Enter Total Number of Rows: {freshDefects.length}</span>
-                      <Button type="button" size="sm" variant="outline" onClick={addFreshDefect}>
-                        <Plus className="h-4 w-4" />
-                      </Button>
-                    </div>
-                    <div className="space-y-2">
-                      {freshDefects.map((defect, index) => (
-                        <div key={index} className="flex items-center space-x-2">
-                          <span className="w-8 text-sm font-medium">{index + 1}</span>
-                          <Input
-                            value={defect}
-                            onChange={(e) => updateFreshDefect(index, e.target.value)}
-                            className={errors[`fresh_defect_${index}`] ? "border-red-500" : ""}
-                            maxLength={50}
-                          />
-                        </div>
-                      ))}
-                    </div>
                   </div>
                 </div>
               </div>
 
-              {/* Ship Status */}
+            <form onSubmit={handleSubmit} className="space-y-8">
+            
+
+              {/* DEFECTS/OBSERVATIONS Section */}
+              <div className="bg-white border-b border-gray-200">
+                <div className="bg-[#c7d9f0] text-black px-6 py-4">
+                  <h3 className="text-lg font-bold border-b-2 border-purple-500 pb-2">DEFECTS/OBSERVATIONS</h3>
+              </div>
+
+                <div className="pt-4 bg-gray-100 max-h-96 overflow-y-auto">
+                  <table className="min-w-full border-collapse border border-gray-300 rounded-lg">
+                    <tbody>
+                      {/* Section (a) */}
+                      <tr className="bg-[#f2f2f2]">
+                        <td className="border-l border-r border-t border-gray-300 px-4 py-3 bg-gray-50 w-1/3">
+                          <span className="text-sm font-medium text-gray-700">(a) Confirmation on observations / defects of intermediate U/W hull inspection - List attached<span className="text-red-500">*</span></span>
+                        </td>
+                        <td className="border-r border-t border-gray-300 px-4 py-3" colSpan={2}>
+                          <ComplexTable
+                            formData={formData}
+                            onInputChange={handleInputChange}
+                            onDataChange={handleDataChange}
+                            rowsField="defectsObservationsARows"
+                            dataField="defectsObservationsAData"
+                            columns={[
+                              { field: 'location', label: 'Location*', placeholder: 'Enter location', required: true },
+                              { 
+                                label: 'Frame Station', 
+                                subColumns: [
+                                  { field: 'frameStationFrom', label: 'From*', placeholder: 'Select Station', required: true, type: 'dropdown', options: getStationOptions() },
+                                  { field: 'frameStationTo', label: 'To*', placeholder: 'Select Station', required: true, type: 'dropdown', options: getStationOptions() }
+                                ]
+                              },
+                              { field: 'observation', label: 'Observation*', placeholder: 'Enter observation', required: true },
+                              { field: 'finalRemarks', label: 'Final Remarks*', placeholder: 'Enter final remarks', required: true }
+                            ]}
+                          />
+                        </td>
+                      </tr>
+                      
+                      {/* Section (b) */}
+                      <tr className="bg-white">
+                        <td className="border-l border-r border-b border-gray-300 px-4 py-3 bg-gray-50 w-1/3">
+                          <span className="text-sm font-medium text-gray-700">(b) SS to confirm all internal U/W compartments defects have been liquidated<span className="text-red-500">*</span></span>
+                        </td>
+                        <td className="border-r border-b border-gray-300 px-4 py-3" colSpan={2}>
+                          <ComplexTable
+                            formData={formData}
+                            onInputChange={handleInputChange}
+                            onDataChange={handleDataChange}
+                            rowsField="defectsObservationsBRows"
+                            dataField="defectsObservationsBData"
+                            columns={[
+                              { field: 'location', label: 'Location*', placeholder: 'Enter location', required: true },
+                              { 
+                                label: 'Frame Station', 
+                                subColumns: [
+                                  { field: 'frameStationFrom', label: 'From*', placeholder: 'Select Station', required: true, type: 'dropdown', options: getStationOptions() },
+                                  { field: 'frameStationTo', label: 'To*', placeholder: 'Select Station', required: true, type: 'dropdown', options: getStationOptions() }
+                                ]
+                              },
+                              { field: 'observation', label: 'Observation*', placeholder: 'Enter observation', required: true },
+                              { field: 'finalRemarks', label: 'Final Remarks*', placeholder: 'Enter final remarks', required: true }
+                            ]}
+                          />
+                        </td>
+                      </tr>
+
+                      {/* Section (c) */}
+                      <tr className="bg-[#f2f2f2]">
+                        <td className="border-l border-r border-b border-gray-300 px-4 py-3 bg-gray-50 w-1/3">
+                          <span className="text-sm font-medium text-gray-700">(c) SS to confirm<span className="text-red-500">*</span></span>
+                        </td>
+                        <td className="border-r border-b border-gray-300 px-4 py-3" colSpan={2}>
+                          <ComplexTable
+                            formData={formData}
+                            onInputChange={handleInputChange}
+                            onDataChange={handleDataChange}
+                            rowsField="defectsObservationsCRows"
+                            dataField="defectsObservationsCData"
+                            columns={[
+                              { field: 'location', label: 'Location*', placeholder: 'Enter location', required: true },
+                              { 
+                                label: 'Frame Station', 
+                                subColumns: [
+                                  { field: 'frameStationFrom', label: 'From*', placeholder: 'Select Station', required: true, type: 'dropdown', options: getStationOptions() },
+                                  { field: 'frameStationTo', label: 'To*', placeholder: 'Select Station', required: true, type: 'dropdown', options: getStationOptions() }
+                                ]
+                              },
+                              { field: 'observation', label: 'Observation*', placeholder: 'Enter observation', required: true },
+                              { field: 'finalRemarks', label: 'Final Remarks*', placeholder: 'Enter final remarks', required: true }
+                            ]}
+                          />
+                        </td>
+                      </tr>
+
+                      {/* Section (i) */}
+                      <tr className="bg-white">
+                        <td className="border-l border-r border-b border-gray-300 px-4 py-3 bg-gray-50 w-1/3">
+                          <span className="text-sm font-medium text-gray-700">(i) Fitment of all U/W and overboard discharge valves<span className="text-red-500">*</span></span>
+                        </td>
+                        <td className="border-r border-b border-gray-300 px-4 py-3" colSpan={2}>
+                          <ComplexTable
+                            formData={formData}
+                            onInputChange={handleInputChange}
+                            onDataChange={handleDataChange}
+                            rowsField="defectsObservationsIRows"
+                            dataField="defectsObservationsIData"
+                            columns={[
+                              { field: 'location', label: 'Location*', placeholder: 'Enter location', required: true },
+                              { 
+                                label: 'Frame Station', 
+                                subColumns: [
+                                  { field: 'frameStationFrom', label: 'From*', placeholder: 'Select Station', required: true, type: 'dropdown', options: getStationOptions() },
+                                  { field: 'frameStationTo', label: 'To*', placeholder: 'Select Station', required: true, type: 'dropdown', options: getStationOptions() }
+                                ]
+                              },
+                              { field: 'observation', label: 'Observation*', placeholder: 'Enter observation', required: true },
+                              { field: 'finalRemarks', label: 'Final Remarks*', placeholder: 'Enter final remarks', required: true }
+                            ]}
+                          />
+                        </td>
+                      </tr>
+
+                      {/* Section (ii) */}
+                      <tr className="bg-[#f2f2f2]">
+                        <td className="border-l border-r border-b border-gray-300 px-4 py-3 bg-gray-50 w-1/3">
+                          <span className="text-sm font-medium text-gray-700">(ii) Ship is in the same trim condition as at the time of docking<span className="text-red-500">*</span></span>
+                        </td>
+                        <td className="border-r border-b border-gray-300 px-4 py-3" colSpan={2}>
+                          <ComplexTable
+                            formData={formData}
+                            onInputChange={handleInputChange}
+                            onDataChange={handleDataChange}
+                            rowsField="defectsObservationsIIRows"
+                            dataField="defectsObservationsIIData"
+                            columns={[
+                              { field: 'location', label: 'Location*', placeholder: 'Enter location', required: true },
+                              { 
+                                label: 'Frame Station', 
+                                subColumns: [
+                                  { field: 'frameStationFrom', label: 'From*', placeholder: 'Select Station', required: true, type: 'dropdown', options: getStationOptions() },
+                                  { field: 'frameStationTo', label: 'To*', placeholder: 'Select Station', required: true, type: 'dropdown', options: getStationOptions() }
+                                ]
+                              },
+                              { field: 'observation', label: 'Observation*', placeholder: 'Enter observation', required: true },
+                              { field: 'finalRemarks', label: 'Final Remarks*', placeholder: 'Enter final remarks', required: true }
+                            ]}
+                          />
+                        </td>
+                      </tr>
+
+                      {/* Section (d) - Text Input */}
+                      <tr className="bg-white">
+                        <td className="border-l border-r border-b border-gray-300 px-4 py-3 bg-gray-50 w-1/3">
+                          <span className="text-sm font-medium text-gray-700">(d) Refit authority to confirm no doublers existing on the U/W hull</span>
+                        </td>
+                        <td className="border-r border-b border-gray-300 px-4 py-3" colSpan={2}>
+                          <Input
+                            type="text"
+                            value={formData.refitAuthorityConfirmation}
+                            onChange={(e) => handleInputChange('refitAuthorityConfirmation', e.target.value)}
+                            className="border border-gray-300 rounded px-3 py-2 w-full"
+                            placeholder="Enter remarks"
+                            required
+                          />
+                        </td>
+                      </tr>
+
+                      {/* Section (e) */}
+                      <tr className="bg-[#f2f2f2]">
+                        <td className="border-l border-r border-b border-gray-300 px-4 py-3 bg-gray-50 w-1/3">
+                          <span className="text-sm font-medium text-gray-700">(e) Fresh defects / observations<span className="text-red-500">*</span></span>
+                        </td>
+                        <td className="border-r border-b border-gray-300 px-4 py-3" colSpan={2}>
+                          <ObservationsTable
+                            formData={formData}
+                            onInputChange={handleInputChange}
+                            onDataChange={(field, index, dataField, value) => {
+                              const updatedData = [...formData[field as keyof typeof formData] as any[]];
+                              updatedData[index] = {
+                                ...updatedData[index],
+                                [dataField]: value
+                              };
+                              setFormData(prev => ({ ...prev, [field]: updatedData }));
+                            }}
+                            rowsField="defectsObservationsERows"
+                            dataField="defectsObservationsEData"
+                            placeholder="Enter observation"
+                          />
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              {/* Ship Status and Signatures */}
               <div className="border border-gray-200 rounded-lg p-6">
-                <h5 className="text-lg font-bold text-gray-900 mb-6">Ship Status</h5>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Ship Status */}
+                <div className="mb-8">
                   <div>
-                    <Label htmlFor="ship_not_cleared_for_undocking" className="text-sm font-medium">
-                      Ship not cleared for Undocking <span className="text-red-500">*</span>
+                    <Label htmlFor="ship_not_cleared_for_undocking" className="text-sm font-bold text-gray-900">
+                      Ship not cleared for Undocking<span className="text-red-500">*</span>
                     </Label>
                     <Select
                       value={formData.ship_not_cleared_for_undocking}
                       onValueChange={(value) => handleInputChange("ship_not_cleared_for_undocking", value)}
                     >
-                      <SelectTrigger className={errors.ship_not_cleared_for_undocking ? "border-red-500" : ""}>
+                      <SelectTrigger className={`mt-2 w-60 border border-black ${errors.ship_not_cleared_for_undocking ? "border-red-500" : ""}`}>
                         <SelectValue placeholder="--Select--" />
                       </SelectTrigger>
                       <SelectContent>
@@ -749,194 +1365,105 @@ const FinalUnderwaterHullInspectionForm = () => {
                     )}
                   </div>
                   
-                  {formData.ship_not_cleared_for_undocking === "NO" && (
-                    <div>
-                      <Label htmlFor="reoffer_inspection" className="text-sm font-medium">
-                        Re-offer inspection on <span className="text-red-500">*</span>
+                    <div className="mt-4">
+                      <Label htmlFor="reoffer_inspection" className="text-sm font-bold text-gray-900">
+                        Re-offer inspection on<span className="text-red-500">*</span>
                       </Label>
                       <Input
                         id="reoffer_inspection"
                         type="date"
                         value={formData.reoffer_inspection}
                         onChange={(e) => handleInputChange("reoffer_inspection", e.target.value)}
-                        className={errors.reoffer_inspection ? "border-red-500" : ""}
+                        className={`mt-2 w-auto ${errors.reoffer_inspection ? "border-red-500" : ""}`}
                       />
                       {errors.reoffer_inspection && (
                         <p className="text-red-500 text-xs mt-1">{errors.reoffer_inspection}</p>
                       )}
                     </div>
-                  )}
-                </div>
+                  {/* {formData.ship_not_cleared_for_undocking === "NO" && (
+                  )} */}
               </div>
 
               {/* Signatures */}
-              <div className="border border-gray-200 rounded-lg p-6">
-                <h5 className="text-lg font-bold text-gray-900 mb-6">Signatures</h5>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  <div className="text-center">
-                    <Label htmlFor="sign_ship_staff" className="text-sm font-medium">
-                      Signature of Ship Staff <span className="text-red-500">*</span>
-                    </Label>
+                  <div>
+                    <div className="relative">
                     <Input
                       id="sign_ship_staff"
                       type="file"
                       accept=".jpg,.jpeg,.png"
-                      className="mt-2"
-                    />
-                    <div className="mt-4 space-y-2">
-                      <Input
-                        placeholder="Name"
-                        value={formData.name_ship_staff}
-                        onChange={(e) => {
-                          const validatedValue = handleSpecialCharValidation(e.target.value);
-                          handleInputChange("name_ship_staff", validatedValue);
-                        }}
-                        className={errors.name_ship_staff ? "border-red-500" : ""}
-                        maxLength={20}
-                      />
-                      <Input
-                        placeholder="Rank"
-                        value={formData.rank_ship_staff}
-                        onChange={(e) => {
-                          const validatedValue = handleSpecialCharValidation(e.target.value);
-                          handleInputChange("rank_ship_staff", validatedValue);
-                        }}
-                        className={errors.rank_ship_staff ? "border-red-500" : ""}
-                        maxLength={10}
-                      />
-                      <Input
-                        placeholder="Designation"
-                        value={formData.dsg_ship_staff}
-                        onChange={(e) => {
-                          const validatedValue = handleSpecialCharValidation(e.target.value);
-                          handleInputChange("dsg_ship_staff", validatedValue);
-                        }}
-                        className={errors.dsg_ship_staff ? "border-red-500" : ""}
-                        maxLength={10}
+                        className="block w-full text-sm text-gray-500 border border-black file:mr-4 file:py-0 file:px-4 file:rounded-md file:border file:border-black file:text-sm file:font-semibold file:bg-gray-100 file:text-gray-700 hover:file:bg-gray-200"
                       />
                     </div>
+                    <Label htmlFor="sign_ship_staff" className="text-sm font-bold text-gray-900 mt-2 block">
+                      Signature of Ship Staff<span className="text-red-500">*</span>
+                    </Label>
                   </div>
                   
-                  <div className="text-center">
-                    <Label htmlFor="sign_refitting_auth" className="text-sm font-medium">
-                      Signature of Refitting Authority <span className="text-red-500">*</span>
-                    </Label>
+                  <div>
+                    <div className="relative">
                     <Input
                       id="sign_refitting_auth"
                       type="file"
                       accept=".jpg,.jpeg,.png"
-                      className="mt-2"
-                    />
-                    <div className="mt-4 space-y-2">
-                      <Input
-                        placeholder="Name"
-                        value={formData.name_refitting_auth}
-                        onChange={(e) => {
-                          const validatedValue = handleSpecialCharValidation(e.target.value);
-                          handleInputChange("name_refitting_auth", validatedValue);
-                        }}
-                        className={errors.name_refitting_auth ? "border-red-500" : ""}
-                        maxLength={20}
-                      />
-                      <Input
-                        placeholder="Rank"
-                        value={formData.rank_refitting_auth}
-                        onChange={(e) => {
-                          const validatedValue = handleSpecialCharValidation(e.target.value);
-                          handleInputChange("rank_refitting_auth", validatedValue);
-                        }}
-                        className={errors.rank_refitting_auth ? "border-red-500" : ""}
-                        maxLength={10}
-                      />
-                      <Input
-                        placeholder="Designation"
-                        value={formData.dsg_refitting_auth}
-                        onChange={(e) => {
-                          const validatedValue = handleSpecialCharValidation(e.target.value);
-                          handleInputChange("dsg_refitting_auth", validatedValue);
-                        }}
-                        className={errors.dsg_refitting_auth ? "border-red-500" : ""}
-                        maxLength={10}
+                        className="block w-full text-sm text-gray-500 border border-black file:mr-4 file:py-0 file:px-4 file:rounded-md file:border file:border-black file:text-sm file:font-semibold file:bg-gray-100 file:text-gray-700 hover:file:bg-gray-200"
                       />
                     </div>
+                    <Label htmlFor="sign_refitting_auth" className="text-sm font-bold text-gray-900 mt-2 block">
+                      Signature of Refitting Authority<span className="text-red-500">*</span>
+                    </Label>
                   </div>
                   
-                  <div className="text-center">
-                    <Label htmlFor="sign_hitu_inspector" className="text-sm font-medium">
-                      Signature of HITU Inspector <span className="text-red-500">*</span>
-                    </Label>
+                  <div>
+                    <div className="relative">
                     <Input
                       id="sign_hitu_inspector"
                       type="file"
                       accept=".jpg,.jpeg,.png"
-                      className="mt-2"
-                    />
-                    <div className="mt-4 space-y-2">
-                      <Input
-                        placeholder="Name"
-                        value={formData.name_hitu_inspector}
-                        onChange={(e) => {
-                          const validatedValue = handleSpecialCharValidation(e.target.value);
-                          handleInputChange("name_hitu_inspector", validatedValue);
-                        }}
-                        className={errors.name_hitu_inspector ? "border-red-500" : ""}
-                        maxLength={20}
-                      />
-                      <Input
-                        placeholder="Rank"
-                        value={formData.rank_hitu_inspector}
-                        onChange={(e) => {
-                          const validatedValue = handleSpecialCharValidation(e.target.value);
-                          handleInputChange("rank_hitu_inspector", validatedValue);
-                        }}
-                        className={errors.rank_hitu_inspector ? "border-red-500" : ""}
-                        maxLength={10}
-                      />
-                      <Input
-                        placeholder="Designation"
-                        value={formData.dsg_hitu_inspector}
-                        onChange={(e) => {
-                          const validatedValue = handleSpecialCharValidation(e.target.value);
-                          handleInputChange("dsg_hitu_inspector", validatedValue);
-                        }}
-                        className={errors.dsg_hitu_inspector ? "border-red-500" : ""}
-                        maxLength={10}
+                        className="block w-full text-sm text-gray-500 border border-black file:mr-4 file:py-0 file:px-4 file:rounded-md file:border file:border-black file:text-sm file:font-semibold file:bg-gray-100 file:text-gray-700 hover:file:bg-gray-200"
                       />
                     </div>
+                    <Label htmlFor="sign_hitu_inspector" className="text-sm font-bold text-gray-900 mt-2 block">
+                      Signature of HITU Inspector<span className="text-red-500">*</span>
+                    </Label>
                   </div>
                 </div>
               </div>
 
               {/* Form Actions */}
-              <div className="flex flex-wrap gap-4 justify-center mt-8">
-                <Button
+              <div className="bg-white p-6 mt-8">
+                <div className="flex justify-center space-x-4">
+                  <button
                   type="button"
-                  variant="outline"
+                    className="px-6 py-2 bg-blue-400 text-white font-bold rounded hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   onClick={handleFetchDrafts}
-                  className="bg-blue-500 text-white hover:bg-blue-600"
-                >
-                  Fetch Drafts
-                </Button>
-                <Button
+                    disabled={isLoadingDrafts}
+                  >
+                    {isLoadingDrafts ? 'Loading...' : 'Fetch Drafts'}
+                  </button>
+                  <button
                   type="button"
+                    className="px-6 py-2 bg-green-600 text-white font-bold rounded hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   onClick={handleSaveDraft}
-                  className="bg-green-500 text-white hover:bg-green-600"
-                >
-                  SAVE DRAFT
-                </Button>
-                <Button
+                    disabled={isSavingDraft || editingRecord}
+                  >
+                    {isSavingDraft ? 'Saving...' : 'Save Draft'}
+                  </button>
+                  <button
                   type="button"
-                  variant="destructive"
+                    className="px-6 py-2 bg-red-500 text-white font-bold rounded hover:bg-red-700 transition-colors"
                   onClick={handleClear}
                 >
                   Clear
-                </Button>
-                <Button
+                  </button>
+                  <button
                   type="submit"
-                  className="bg-blue-600 text-white hover:bg-blue-700"
+                    className="px-6 py-2 bg-blue-700 text-white font-bold rounded hover:bg-blue-600 transition-colors"
+                    onClick={() => console.log('Update/Save button clicked, editingRecord:', editingRecord)}
                 >
-                  Save
-                </Button>
+                    {editingRecord ? 'Update' : 'Save'}
+                  </button>
+                </div>
               </div>
             </form>
           </div>
@@ -945,35 +1472,50 @@ const FinalUnderwaterHullInspectionForm = () => {
 
       {/* Draft Modal */}
       <Dialog open={isDraftModalOpen} onOpenChange={setIsDraftModalOpen}>
-        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle>Draft Data</DialogTitle>
+        <DialogContent className="max-w-4xl shadow-xl border-0 bg-white p-0 rounded-1xl">
+          <DialogHeader className="bg-gradient-to-r from-[#1a2746] to-[#223366] p-4 text-white">
+            <DialogTitle className="text-lg font-semibold">Draft Data</DialogTitle>
           </DialogHeader>
-          <div className="mt-4">
+          
+          <div className="space-y-4 p-4">
+            {apiDrafts.length === 0 ? (
+              <p className="text-gray-500 text-center py-8">No drafts found.</p>
+            ) : (
             <Table>
               <TableHeader>
-                <TableRow>
-                  <TableHead>Sr No.</TableHead>
-                  <TableHead>INS</TableHead>
-                  <TableHead>Address</TableHead>
-                  <TableHead>Created Date</TableHead>
-                  <TableHead>Action</TableHead>
+                  <TableRow className="bg-[#1a2746] text-white">
+                    <TableHead className="text-white font-bold">Sr No.</TableHead>
+                    <TableHead className="text-white font-bold">INS</TableHead>
+                    <TableHead className="text-white font-bold">Address</TableHead>
+                    <TableHead className="text-white font-bold">Created Date</TableHead>
+                    <TableHead className="text-white font-bold">Action</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {drafts.map((draft, index) => (
-                  <TableRow key={draft.id}>
+                  {apiDrafts.map((draft, index) => (
+                    <TableRow key={draft.id} className={index % 2 === 0 ? "bg-[#f2f2f2]" : "bg-white"}>
                     <TableCell>{index + 1}</TableCell>
-                    <TableCell>{draft.ins}</TableCell>
-                    <TableCell>{draft.address}</TableCell>
-                    <TableCell>{draft.created_date}</TableCell>
+                      <TableCell>{draft.vessel?.name || 'N/A'}</TableCell>
+                      <TableCell>{draft.auth_inspection || 'No Date Provided'}</TableCell>
+                      <TableCell>{new Date(draft.created_on).toLocaleString()}</TableCell>
                     <TableCell>
                       <div className="flex space-x-2">
-                        <Button size="sm" variant="outline">
-                          <Edit className="h-4 w-4" />
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleEdit(draft)}
+                          >
+                            Edit
                         </Button>
-                        <Button size="sm" variant="outline">
-                          <Trash2 className="h-4 w-4" />
+                          <Button
+                            variant="destructive"
+                            size="sm"
+                            onClick={() => deleteDialog.openDialog({ 
+                              id: draft.id, 
+                              name: `Record ${draft.id}` 
+                            })}
+                          >
+                            Delete
                         </Button>
                       </div>
                     </TableCell>
@@ -981,9 +1523,32 @@ const FinalUnderwaterHullInspectionForm = () => {
                 ))}
               </TableBody>
             </Table>
+            )}
+          </div>
+          <div className="flex justify-end gap-3 p-4 border-t">
+            <Button
+              variant="outline"
+              onClick={() => setIsDraftModalOpen(false)}
+              className="rounded-lg"
+            >
+              Close
+            </Button>
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* Delete Dialog */}
+      <DeleteDialog
+        isOpen={deleteDialog.isOpen}
+        onClose={deleteDialog.closeDialog}
+        onConfirm={deleteDialog.handleConfirm}
+        title={deleteDialog.title}
+        description={deleteDialog.description}
+        itemName={deleteDialog.itemToDelete?.name}
+        isLoading={deleteDialog.isLoading}
+        confirmText={deleteDialog.confirmText}
+        cancelText={deleteDialog.cancelText}
+      />
     </div>
   );
 };

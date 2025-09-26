@@ -2,6 +2,8 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import DeleteDialog from "@/components/ui/delete-dialog";
+import { useDeleteDialog } from "@/hooks/use-delete-dialog";
 
 interface FormData {
   // Header
@@ -156,10 +158,13 @@ interface PreliminaryFormActionsProps {
   isSavingDraft: boolean;
   isLoadingDrafts: boolean;
   apiDrafts: any[];
+  editingRecord: any;
   onFetchDrafts: () => void;
   onSaveDraft: () => void;
   onClear: () => void;
   onSubmit: (e: React.FormEvent) => void;
+  onEdit: (record: any) => void;
+  onDelete: (id: number) => void;
 }
 
 const PreliminaryFormActions: React.FC<PreliminaryFormActionsProps> = ({
@@ -170,11 +175,26 @@ const PreliminaryFormActions: React.FC<PreliminaryFormActionsProps> = ({
   isSavingDraft,
   isLoadingDrafts,
   apiDrafts,
+  editingRecord,
   onFetchDrafts,
   onSaveDraft,
   onClear,
-  onSubmit
+  onSubmit,
+  onEdit,
+  onDelete
 }) => {
+  // Delete dialog hook
+  const deleteDialog = useDeleteDialog({
+    onConfirm: async (itemId) => {
+      if (itemId) {
+        await onDelete(itemId as number);
+      }
+    },
+    title: "Delete Record",
+    description: "Are you sure you want to delete this record? This action cannot be undone.",
+    confirmText: "Delete Record",
+    cancelText: "Cancel"
+  });
   return (
     <>
       {/* Form Action Buttons */}
@@ -206,9 +226,8 @@ const PreliminaryFormActions: React.FC<PreliminaryFormActionsProps> = ({
           <button
             type="submit"
             className="px-6 py-2 bg-blue-700 text-white font-bold rounded hover:bg-blue-600 transition-colors"
-            onClick={onSubmit}
           >
-            Save
+            {editingRecord ? 'Update' : 'Save'}
           </button>
         </div>
       </div>
@@ -256,164 +275,17 @@ const PreliminaryFormActions: React.FC<PreliminaryFormActionsProps> = ({
                           <Button
                             variant="outline"
                             size="sm"
-                            onClick={() => {
-                              // Convert API date format from "2025-09-17" to "dd-MM-yyyy"
-                              const convertDateFormat = (apiDate: string) => {
-                                if (!apiDate) return '';
-                                const date = new Date(apiDate);
-                                const day = String(date.getDate()).padStart(2, '0');
-                                const month = String(date.getMonth() + 1).padStart(2, '0');
-                                const year = date.getFullYear();
-                                return `${day}-${month}-${year}`;
-                              };
-
-                              // Map docking version from API format to display format
-                              const mapDockingVersion = (apiVersion: string) => {
-                                console.log('API docking version:', apiVersion);
-                                switch (apiVersion) {
-                                  case 'v1': return 'Version 1';
-                                  case 'v2': return 'Version 2';
-                                  case 'v3': return 'Version 3';
-                                  default: return apiVersion || '';
-                                }
-                              };
-
-                              // Convert API draft data to form data format
-                              const formDataFromApi = {
-                                vesselId: draft.vessel?.id?.toString() || '',
-                                vesselName: draft.vessel?.name || '',
-                                inspectionDate: convertDateFormat(draft.dt_inspection),
-                                authority: draft.auth_inspection || '',
-                                dockingVersion: (() => {
-                                  const mappedVersion = mapDockingVersion(draft.docking_version);
-                                  console.log('Mapped docking version:', mappedVersion);
-                                  return mappedVersion;
-                                })(),
-                                natureOfDocking: draft.nature_of_docking || '',
-                                dockBlocksWedged: draft.no_of_dock_blocks_wedged || 0,
-                                dockBlocksCrushed: draft.no_of_dock_blocks_crushed || 0,
-                                uwOpeningsClear: draft.uw_openings_clear ? 'Yes' : 'No',
-                                dockingDuration: draft.duration_of_docking || '',
-                                extentOfHullSurvey: draft.extent_of_survey || '',
-                                insName: draft.vessel?.name || '',
-                                marineGrowthRows: 0,
-                                marineGrowthData: [],
-                                propellerCleaningRows: 0,
-                                propellerCleaningData: [],
-                                foreignObjectsRows: 0,
-                                foreignObjectsData: [],
-                                outerBottomRows: 0,
-                                outerBottomData: [],
-                                sternAftRows: 0,
-                                sternAftData: [],
-                                bootTopRows: 0,
-                                bootTopData: [],
-                                ruddersRows: 0,
-                                ruddersData: [],
-                                stabilizersRows: 0,
-                                stabilizersData: [],
-                                dockBlockRows: 0,
-                                dockBlockData: [],
-                                otherObservationsRows: 0,
-                                otherObservationsData: [],
-                                paintSchemeRows: 0,
-                                paintSchemeData: [],
-                                rustCorrosionAreasRows: 0,
-                                rustCorrosionAreasData: [],
-                                rustGeneralOuterBottomRows: 0,
-                                rustGeneralOuterBottomData: [],
-                                rustBootTopRows: 0,
-                                rustBootTopData: [],
-                                rustSternAftRows: 0,
-                                rustSternAftData: [],
-                                rustRuddersRows: 0,
-                                rustRuddersData: [],
-                                rustBilgeKeelRows: 0,
-                                rustBilgeKeelData: [],
-                                rustDockBlockRows: 0,
-                                rustDockBlockData: [],
-                                rustOtherObservationsRows: 0,
-                                rustOtherObservationsData: [],
-                                structureHullSurveyRows: 0,
-                                structureHullSurveyData: [],
-                                structureDentsRows: 0,
-                                structureDentsData: [],
-                                structureCracksRows: 0,
-                                structureCracksData: [],
-                                structureScratchRows: 0,
-                                structureScratchData: [],
-                                structureHolesRows: 0,
-                                structureHolesData: [],
-                                structureOtherObservationsRows: 0,
-                                structureOtherObservationsData: [],
-                                structureDefectsRows: 0,
-                                structureDefectsData: [],
-                                structureStabilizersRows: 0,
-                                structureStabilizersData: [],
-                                sonarDomeCleanShipObservation: '',
-                                sonarDomeCleanShipRemarks: '',
-                                sonarDomeCracksObservation: '',
-                                sonarDomeCracksRemarks: '',
-                                sonarDomeGrpObservation: '',
-                                sonarDomeGrpRemarks: '',
-                                sonarDomeFairingObservation: '',
-                                sonarDomeFairingRemarks: '',
-                                cathodicProtectionIccpServiceability: '',
-                                cathodicProtectionIccpServiceabilityRemarks: '',
-                                cathodicProtectionSacrificialAnodes: '',
-                                cathodicProtectionSacrificialAnodesRemarks: '',
-                                cathodicProtectionIccpAnodes: '',
-                                cathodicProtectionIccpAnodesRemarks: '',
-                                cathodicProtectionIccpReferenceElectrode: '',
-                                cathodicProtectionIccpReferenceElectrodeRemarks: '',
-                                cathodicProtectionDielectricShields: '',
-                                cathodicProtectionDielectricShieldsRemarks: '',
-                                cathodicProtectionPreDockingChecks: '',
-                                cathodicProtectionPreDockingChecksRemarks: '',
-                                rudderCracksDentsRows: 0,
-                                rudderCracksDentsData: [],
-                                rudderMisalignmentRows: 0,
-                                rudderMisalignmentData: [],
-                                propellerEdgesRows: 0,
-                                propellerEdgesData: [],
-                                propellerHubsRows: 0,
-                                propellerHubsData: [],
-                                propellerPittingRows: 0,
-                                propellerPittingData: [],
-                                propellerEpoxyCoatingRows: 0,
-                                propellerEpoxyCoatingData: [],
-                                miscellaneousEddyConeRows: 0,
-                                miscellaneousEddyConeData: [],
-                                miscellaneousWaterSeepageRows: 0,
-                                miscellaneousWaterSeepageData: [],
-                                miscellaneousMissingPartsRows: 0,
-                                miscellaneousMissingPartsData: [],
-                                miscellaneousBlankingRows: 0,
-                                miscellaneousBlankingData: [],
-                                miscellaneousScupperLipsRows: 0,
-                                miscellaneousScupperLipsData: [],
-                                miscellaneousAralditeFairingRows: 0,
-                                miscellaneousAralditeFairingData: [],
-                                miscellaneousAngleOfListRows: 0,
-                                miscellaneousAngleOfListData: [],
-                                shipStaffSignature: null,
-                                refittingAuthSignature: null,
-                                hituInspectorSignature: null,
-                              };
-                              console.log('Final formDataFromApi dockingVersion:', formDataFromApi.dockingVersion);
-                              setFormData(formDataFromApi as FormData);
-                              setIsDraftModalOpen(false);
-                              // alert('Draft loaded for editing!');
-                            }}
+                            onClick={() => onEdit(draft)}
                           >
                             Edit
                           </Button>
                           <Button
                             variant="destructive"
                             size="sm"
-                            onClick={() => {
-                              alert('Delete functionality not implemented for API drafts');
-                            }}
+                            onClick={() => deleteDialog.openDialog({ 
+                              id: draft.id, 
+                              name: `Record ${draft.id}` 
+                            })}
                           >
                             Delete
                           </Button>
@@ -436,6 +308,19 @@ const PreliminaryFormActions: React.FC<PreliminaryFormActionsProps> = ({
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* Delete Dialog */}
+      <DeleteDialog
+        isOpen={deleteDialog.isOpen}
+        onClose={deleteDialog.closeDialog}
+        onConfirm={deleteDialog.handleConfirm}
+        title={deleteDialog.title}
+        description={deleteDialog.description}
+        itemName={deleteDialog.itemToDelete?.name}
+        isLoading={deleteDialog.isLoading}
+        confirmText={deleteDialog.confirmText}
+        cancelText={deleteDialog.cancelText}
+      />
     </>
   );
 };

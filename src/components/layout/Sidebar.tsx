@@ -24,16 +24,7 @@ import { FileText } from "lucide-react";
 // Sidebar items (supports nested menus)
 const sidebarItems = [
   { title: "Dashboards", icon: BarChart3, path: "/app/dashboard" },
-  {
-    title: "User",
-    icon: Users,
-    items: [
-      { title: "User", path: "/app/masters/user" },
-      { title: "Route Config", path: "/app/masters/rootconfig" },
-      { title: "Role", path: "/app/masters/role" },
-      { title: "Role Access", path: "/app/masters/roleaccess" },
-    ],
-  },
+  { title: "Setup", icon: Users, path: "/app/setup" },
   {
     title: "Global Masters",
     icon: Database,
@@ -123,7 +114,7 @@ const sidebarItems = [
           { title: "P-75 Doors and Hatches", path: "/app/forms/p75-doors-hatches" },
           { title: "P-75 FWD Mooring Capstan", path: "/app/forms/p75-fwd-mooring-capstan" },
           { title: "Pre-Wetting System", path: "/app/forms/pre-wetting-system" },
-          { title: "Preliminary Underwater Hull Inspection Report", path: "/app/reports/preliminary-underwater-hull-inspection-report" },
+          { title: "Preliminary Underwater Hull Inspection Report", path: "/app/reports/preliminary-underwater-hull-inspection-report-page" },
           { title: "RAS Capstan", path: "/app/forms/ras-capstan" },
           { title: "RAS Winch", path: "/app/forms/ras-winch" },
           { title: "RHIB - Ship Borne Boat - Harbour Checks", path: "/app/forms/rhib-harbour-checks" },
@@ -156,7 +147,7 @@ const sidebarItems = [
         title: "Transactions",
         icon: Building2,
         items: [
-          { title: "Quarterly Hull Survey", path: "/app/ship/survey" },
+          // { title: "Quarterly Hull Survey", path: "/app/ship/survey" },
           { title: "HVAC Trial", path: "/app/ship/hvac" },
           { title: "SHIP WEIGHT MANAGEMENT", path: "/app/returns/ship-weight-management" },
           { title: "BER CERTIFICATE", path: "/app/returns/ber-certificate" },

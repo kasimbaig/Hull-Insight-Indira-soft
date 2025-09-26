@@ -1,38 +1,99 @@
 import React, { useState, useEffect } from 'react';
-import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { CalendarIcon, Save, FileText, Trash2, Edit, Plus, Minus } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import { format } from 'date-fns';
+import { get, post } from '@/lib/api';
+import MultiColumnTable from './HullMaintenanceInspectionforShipsForm/MultiColumnTable';
+import DeleteDialog from '@/components/ui/delete-dialog';
+import { useDeleteDialog } from '@/hooks/use-delete-dialog';
 
-interface TankCompartmentData {
-  tank: string;
+interface Vessel {
+  id: number;
+  name: string;
+  code: string;
+  classofvessel: {
+    id: number;
+    name: string;
+    code: string;
+  };
+  vesseltype: {
+    id: number;
+    name: string;
+    code: string;
+  };
+  yard: {
+    id: number;
+    name: string;
+    code: string;
+  };
+  command: {
+    id: number;
+    name: string;
+    code: string;
+  };
+  year_of_build: number;
+  year_of_delivery: number;
+}
+
+interface Compartment {
+  id: number;
+  code: string;
+  name: string;
+  active: number;
+  created_on: string;
+  created_ip: string;
+  modified_on: string;
+  modified_ip: string | null;
+  remark: string | null;
+  ser: string | null;
+  numbers: string | null;
+  location: string | null;
+  equipment: string | null;
+  features: string | null;
+  layout: string | null;
+  special_requirements: string | null;
+  standards: string | null;
+  created_by: number;
+  modified_by: number | null;
+}
+
+interface CompartmentInspectionData {
+  tankCompartment: string;
   observation: string;
   recommendation: string;
-  remark: string;
+  remarks: string;
 }
 
-interface InspectorData {
-  name: string;
-  rank: string;
-  designation: string;
+interface ObservationData {
+  section: string;
+  sr_no: number;
+  observation?: string;
+  remarks?: string;
+  compartment_id?: number;
+  recommendation?: string;
+  name?: string;
+  rank?: string;
+  designation?: string;
 }
+
 
 interface UWCompartmentsData {
   // Basic Information
+  vesselId: string;
   inspectionIns: string;
   dateOfInspection: Date | null;
+  authority: string;
+  
+  // Reusable Table Data
+  compartmentInspectionRows: number;
+  compartmentInspectionData: CompartmentInspectionData[];
   
   // Dynamic Tables
-  tankCompartments: TankCompartmentData[];
-  inspectors: InspectorData[];
   
   // Summary Data
   totalNumberOfUWCompartment: string;
@@ -47,6 +108,9 @@ interface UWCompartmentsData {
   totalNoOfTanksSat: string;
   totalNoOfTanksUnsat: string;
   totalNoOfTanksSatStar: string;
+  
+  // Observations array for API
+  observations: ObservationData[];
 }
 
 interface FormErrors {
@@ -62,10 +126,12 @@ interface DraftData {
 
 const UWCompartmentsHullInspectionReportForm: React.FC = () => {
   const [formData, setFormData] = useState<UWCompartmentsData>({
+    vesselId: '',
     inspectionIns: '',
     dateOfInspection: null,
-    tankCompartments: [{ tank: '', observation: '', recommendation: '', remark: '' }],
-    inspectors: [{ name: '', rank: '', designation: '' }],
+    authority: '',
+    compartmentInspectionRows: 0,
+    compartmentInspectionData: [],
     totalNumberOfUWCompartment: '',
     noOfUWCompartmentOffered: '',
     noOfCompartmentInspected: '',
@@ -77,135 +143,138 @@ const UWCompartmentsHullInspectionReportForm: React.FC = () => {
     totalNoOfTanksSat: '',
     totalNoOfTanksUnsat: '',
     totalNoOfTanksSatStar: '',
+    observations: [],
   });
 
   const [errors, setErrors] = useState<FormErrors>({});
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [drafts, setDrafts] = useState<DraftData[]>([]);
-  const [showDraftModal, setShowDraftModal] = useState(false);
-  const [selectedDraftId, setSelectedDraftId] = useState<string>('');
+  
+  // Vessel API state
+  const [vessels, setVessels] = useState<Vessel[]>([]);
+  const [loadingVessels, setLoadingVessels] = useState(false);
+  const [vesselError, setVesselError] = useState<string | null>(null);
+  
+  const [compartments, setCompartments] = useState<Compartment[]>([]);
+  const [loadingCompartments, setLoadingCompartments] = useState(false);
+  const [compartmentError, setCompartmentError] = useState<string | null>(null);
+  
+  // Draft and API states
+  const [isDraftModalOpen, setIsDraftModalOpen] = useState(false);
+  const [isSavingDraft, setIsSavingDraft] = useState(false);
+  const [isLoadingDrafts, setIsLoadingDrafts] = useState(false);
+  const [apiDrafts, setApiDrafts] = useState<any[]>([]);
+  const [editingRecord, setEditingRecord] = useState<any>(null);
 
-  const shipOptions = [
-    { value: '43', label: 'SHIVALIK' },
-    { value: '84', label: 'JAMUNA' },
-    { value: '23', label: 'BANGARAM' },
-    { value: '56', label: 'TARANGINI' },
-    { value: '99', label: 'SARYU' },
-    { value: '31', label: 'KUMBHIR' },
-    { value: '87', label: 'T-83' },
-    { value: '27', label: 'AIRAVAT' },
-    { value: '48', label: 'KHANJAR' },
-    { value: '57', label: 'SHUDERSHINI' },
-    { value: '59', label: 'TRISHUL' },
-    { value: '62', label: 'TEG' },
-    { value: '55', label: 'RANVIJAY' },
-    { value: '47', label: 'KIRPAN' },
-    { value: '35', label: 'DELHI' },
-    { value: '83', label: 'SURVEKSHAK' },
-    { value: '65', label: 'JYOTI' },
-    { value: '94', label: 'SUJATA' },
-    { value: '76', label: 'KABRA' },
-    { value: '68', label: 'CANKARSO' },
-    { value: '88', label: 'T-84' },
-    { value: '18', label: 'VIBHUTI' },
-    { value: '17', label: 'NISHANK' },
-    { value: '25', label: 'MAGAR' },
-    { value: '42', label: 'BEAS' },
-    { value: '90', label: 'SUVERNA' },
-    { value: '45', label: 'SAHYADRI' },
-    { value: '16', label: 'PRALAYA' },
-    { value: '74', label: 'CHERIYAM' },
-    { value: '44', label: 'SATPURA' },
-    { value: '20', label: 'JALASHWA' },
-    { value: '63', label: 'TARKASH' },
-    { value: '52', label: 'KARMUK' },
-    { value: '82', label: 'SUTLEJ' },
-    { value: '96', label: 'SUMEDHA' },
-    { value: '15', label: 'PRABAL' },
-    { value: '75', label: 'CORA DIVH' },
-    { value: '21', label: 'BATTIMALV' },
-    { value: '38', label: 'CHENNAI' },
-    { value: '97', label: 'SUMITRA' },
-    { value: '86', label: 'T-82' },
-    { value: '46', label: 'KUTHAR' },
-    { value: '69', label: 'KONDUL' },
-    { value: '89', label: 'SUBHDRA' },
-    { value: '80', label: 'DARSHAK' },
-    { value: '24', label: 'BITRA' },
-    { value: '73', label: 'CHETLAT' },
-    { value: '81', label: 'NIREEKSHAK' },
-    { value: '71', label: 'KARUVA' },
-    { value: '67', label: 'DEEPAK' },
-    { value: '123', label: 'SHAKTI' },
-    { value: '36', label: 'KOLKATA' },
-    { value: '85', label: 'INVETIGATOR' },
-    { value: '93', label: 'SHARDA' },
-    { value: '64', label: 'SHAKTI' },
-    { value: '33', label: 'MUMBAI' },
-    { value: '39', label: 'GOMTI' },
-    { value: '41', label: 'BETWA' },
-    { value: '13', label: 'NASHAK' },
-    { value: '70', label: 'KOSWARI' },
-    { value: '30', label: 'CHEETAH' },
-    { value: '58', label: 'TALWAR' },
-    { value: '28', label: 'KESARI' },
-    { value: '66', label: 'ADITYA' },
-    { value: '22', label: 'BARATANG' },
-    { value: '49', label: 'KORA' },
-    { value: '51', label: 'KULISH' },
-    { value: '53', label: 'RANA' },
-    { value: '77', label: 'KALPENI' },
-    { value: '122', label: 'SHAKTI' },
-    { value: '12', label: 'VIPUL' },
-    { value: '60', label: 'TABAR' },
-    { value: '61', label: 'TRINKAND' },
-    { value: '37', label: 'KOCHI' },
-    { value: '91', label: 'SUKANYA' },
-    { value: '92', label: 'SAVITRI' },
-    { value: '29', label: 'GULDAR' },
-    { value: '40', label: 'BRAHMAPUTRA' },
-    { value: '26', label: 'GHARIAL' },
-    { value: '54', label: 'RANVIR' },
-    { value: '79', label: 'NIRUPAK' },
-    { value: '19', label: 'VINASH' },
-    { value: '50', label: 'KIRCH' },
-    { value: '78', label: 'SANDHAYAK' },
-    { value: '14', label: 'VIDYUT' },
-    { value: '95', label: 'TIR' },
-    { value: '32', label: 'GAJ' },
-    { value: '72', label: 'CAR NICOBAR' },
-    { value: '98', label: 'SUNAYNA' },
-    { value: '34', label: 'MYSORE' },
-  ];
-
-  // Load draft from localStorage on component mount
-  useEffect(() => {
-    const savedDraft = localStorage.getItem('uw-compartments-draft');
-    if (savedDraft) {
-      try {
-        const parsedDraft = JSON.parse(savedDraft);
-        // Convert date strings back to Date objects
-        if (parsedDraft.dateOfInspection) parsedDraft.dateOfInspection = new Date(parsedDraft.dateOfInspection);
-        setFormData(parsedDraft);
-      } catch (error) {
-        console.error('Error parsing saved draft:', error);
+  // Delete dialog hook
+  const deleteDialog = useDeleteDialog({
+    onConfirm: async (itemId) => {
+      if (itemId) {
+        await handleDelete(itemId as number);
       }
-    }
+    },
+    title: "Delete Record",
+    description: "Are you sure you want to delete this record? This action cannot be undone.",
+    confirmText: "Delete Record",
+    cancelText: "Cancel"
+  });
+  const [inspectionDate, setInspectionDate] = useState<Date | undefined>();
+
+  // Fetch vessels from API
+  useEffect(() => {
+    const fetchVessels = async () => {
+      setLoadingVessels(true);
+      setVesselError(null);
+      try {
+        const response = await get('master/vessels/');
+        // Handle the API response structure
+        if (response && response.data && Array.isArray(response.data)) {
+          setVessels(response.data);
+        } else if (Array.isArray(response)) {
+          setVessels(response);
+        } else {
+          console.warn('Unexpected vessels response structure:', response);
+          setVessels([]);
+          setVesselError('Invalid data format received');
+        }
+      } catch (error) {
+        console.error('Error fetching vessels:', error);
+        setVesselError('Failed to load vessels data');
+        setVessels([]);
+      } finally {
+        setLoadingVessels(false);
+      }
+    };
+
+    fetchVessels();
   }, []);
 
-  // Save draft to localStorage whenever formData changes
+  // Fetch compartments from API
   useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      localStorage.setItem('uw-compartments-draft', JSON.stringify(formData));
-    }, 500);
-    return () => clearTimeout(timeoutId);
-  }, [formData]);
+    const fetchCompartments = async () => {
+      setLoadingCompartments(true);
+      setCompartmentError(null);
+      try {
+        const response = await get('master/compartments/');
+        console.log('Compartments API response:', response);
+        
+        if (response && response.data && Array.isArray(response.data)) {
+          setCompartments(response.data);
+        } else if (Array.isArray(response)) {
+          setCompartments(response);
+        } else {
+          console.warn('Unexpected compartments response structure:', response);
+          setCompartments([]);
+          setCompartmentError('Invalid data format received');
+        }
+      } catch (error) {
+        console.error('Error fetching compartments:', error);
+        setCompartmentError('Failed to load compartments data');
+        setCompartments([]);
+      } finally {
+        setLoadingCompartments(false);
+      }
+    };
+
+    fetchCompartments();
+  }, []);
+
+  const handleVesselChange = (vesselId: string) => {
+    handleInputChange('vesselId', vesselId);
+  };
+
+  // Get compartment options for dropdown
+  const getCompartmentOptions = () => {
+    return compartments.map(compartment => ({
+      value: compartment.id.toString(),
+      label: `${compartment.name} (${compartment.code})`
+    }));
+  };
 
   const handleInputChange = (field: keyof UWCompartmentsData, value: any) => {
-    setFormData(prev => ({
-      ...prev,
-      [field]: value
-    }));
+    setFormData(prev => {
+      const newData = { ...prev, [field]: value };
+      
+      // If this is a row count field, adjust the corresponding data array
+      if (field === 'compartmentInspectionRows') {
+        const newRowCount = value as number;
+        const currentData = prev.compartmentInspectionData || [];
+        
+        if (newRowCount > currentData.length) {
+          // Add new empty rows
+          const newRows = Array.from({ length: newRowCount - currentData.length }, () => ({
+            tankCompartment: '',
+            observation: '',
+            recommendation: '',
+            remarks: ''
+          }));
+          newData.compartmentInspectionData = [...currentData, ...newRows];
+        } else if (newRowCount < currentData.length) {
+          // Remove excess rows
+          newData.compartmentInspectionData = currentData.slice(0, newRowCount);
+        }
+      }
+      
+      return newData;
+    });
     
     // Clear error when user starts typing
     if (errors[field]) {
@@ -216,225 +285,92 @@ const UWCompartmentsHullInspectionReportForm: React.FC = () => {
     }
   };
 
-  const handleTankCompartmentChange = (index: number, field: keyof TankCompartmentData, value: string) => {
-    const updatedTanks = [...formData.tankCompartments];
-    updatedTanks[index] = { ...updatedTanks[index], [field]: value };
-    setFormData(prev => ({
-      ...prev,
-      tankCompartments: updatedTanks
-    }));
-  };
-
-  const handleInspectorChange = (index: number, field: keyof InspectorData, value: string) => {
-    const updatedInspectors = [...formData.inspectors];
-    updatedInspectors[index] = { ...updatedInspectors[index], [field]: value };
-    setFormData(prev => ({
-      ...prev,
-      inspectors: updatedInspectors
-    }));
-  };
-
-  const addTankCompartmentRow = () => {
-    setFormData(prev => ({
-      ...prev,
-      tankCompartments: [...prev.tankCompartments, { tank: '', observation: '', recommendation: '', remark: '' }]
-    }));
-  };
-
-  const removeTankCompartmentRow = (index: number) => {
-    if (formData.tankCompartments.length > 1) {
-      const updatedTanks = formData.tankCompartments.filter((_, i) => i !== index);
-      setFormData(prev => ({
-        ...prev,
-        tankCompartments: updatedTanks
-      }));
-    }
-  };
-
-  const addInspectorRow = () => {
-    setFormData(prev => ({
-      ...prev,
-      inspectors: [...prev.inspectors, { name: '', rank: '', designation: '' }]
-    }));
-  };
-
-  const removeInspectorRow = (index: number) => {
-    if (formData.inspectors.length > 1) {
-      const updatedInspectors = formData.inspectors.filter((_, i) => i !== index);
-      setFormData(prev => ({
-        ...prev,
-        inspectors: updatedInspectors
-      }));
-    }
-  };
-
-  const validateForm = (): boolean => {
-    const newErrors: FormErrors = {};
-
-    // Basic Information validation
-    if (!formData.inspectionIns || formData.inspectionIns === '0') {
-      newErrors.inspectionIns = 'Please select U/W Compartments Inspection Report - INS';
-    }
-    if (!formData.dateOfInspection) {
-      newErrors.dateOfInspection = 'Please select Date of Inspection';
-    }
-
-    // Tank/Compartment validation
-    formData.tankCompartments.forEach((tank, index) => {
-      if (!tank.tank.trim()) {
-        newErrors[`tank_${index}`] = `Please enter Tanks/Compartment ${index + 1}`;
-      }
-      if (!tank.observation.trim()) {
-        newErrors[`observation_${index}`] = `Please enter Observation ${index + 1}`;
-      }
-      if (!tank.recommendation.trim()) {
-        newErrors[`recommendation_${index}`] = `Please enter Recommendation ${index + 1}`;
-      }
-      if (!tank.remark.trim()) {
-        newErrors[`remark_${index}`] = `Please enter Remarks ${index + 1}`;
-      }
-    });
-
-    // Summary validation
-    if (!formData.totalNumberOfUWCompartment.trim()) {
-      newErrors.totalNumberOfUWCompartment = 'Please enter Total Number of U/W Compartments';
-    }
-    if (!formData.noOfUWCompartmentOffered.trim()) {
-      newErrors.noOfUWCompartmentOffered = 'Please enter No. of U/W Compartments Offered';
-    }
-    if (!formData.noOfCompartmentInspected.trim()) {
-      newErrors.noOfCompartmentInspected = 'Please enter No. of Compartments Inspected';
-    }
-    if (!formData.totalNoOfCompartmentSat.trim()) {
-      newErrors.totalNoOfCompartmentSat = 'Please enter Total Number of Compartment SAT/ SAT*';
-    }
-    if (!formData.totalNoOfCompartmentUnsat.trim()) {
-      newErrors.totalNoOfCompartmentUnsat = 'Please enter Total Number of Compartment UNSAT';
-    }
-    if (!formData.totalNoOfTanks.trim()) {
-      newErrors.totalNoOfTanks = 'Please enter Total Number of Tanks';
-    }
-    if (!formData.noOfTanksOffered.trim()) {
-      newErrors.noOfTanksOffered = 'Please enter No. of Tanks Offered';
-    }
-    if (!formData.noOfTanksInspected.trim()) {
-      newErrors.noOfTanksInspected = 'Please enter No. of Tanks Inspected';
-    }
-    if (!formData.totalNoOfTanksSat.trim()) {
-      newErrors.totalNoOfTanksSat = 'Please enter Total Number of Tanks SAT/ SAT*';
-    }
-    if (!formData.totalNoOfTanksUnsat.trim()) {
-      newErrors.totalNoOfTanksUnsat = 'Please enter Total Number of Tanks UNSAT';
-    }
-    if (!formData.totalNoOfTanksSatStar.trim()) {
-      newErrors.totalNoOfTanksSatStar = 'Please enter Total Number of Tanks SAT*';
-    }
-
-    // Inspector validation
-    formData.inspectors.forEach((inspector, index) => {
-      if (!inspector.name.trim()) {
-        newErrors[`inspector_name_${index}`] = `Please enter Name ${index + 1}`;
-      }
-      if (!inspector.rank.trim()) {
-        newErrors[`inspector_rank_${index}`] = `Please enter Rank ${index + 1}`;
-      }
-      if (!inspector.designation.trim()) {
-        newErrors[`inspector_designation_${index}`] = `Please enter Designation ${index + 1}`;
-      }
-    });
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!validateForm()) {
-      return;
-    }
-
-    setIsSubmitting(true);
-    
+  // API handlers for buttons and popup
+  const handleFetchDrafts = async () => {
+    setIsLoadingDrafts(true);
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      const response = await get('hitumodule/uw-compartments-hull-inspection-reports/');
       
-      // Clear draft after successful submission
-      localStorage.removeItem('uw-compartments-draft');
+      // Handle the API response structure
+      if (response && response.data && Array.isArray(response.data)) {
+        setApiDrafts(response.data);
+      } else if (Array.isArray(response)) {
+        setApiDrafts(response);
+      } else {
+        console.warn('Unexpected drafts response structure:', response);
+        setApiDrafts([]);
+      }
       
-      alert('Form submitted successfully!');
-      // Reset form
-      setFormData({
-        inspectionIns: '',
-        dateOfInspection: null,
-        tankCompartments: [{ tank: '', observation: '', recommendation: '', remark: '' }],
-        inspectors: [{ name: '', rank: '', designation: '' }],
-        totalNumberOfUWCompartment: '',
-        noOfUWCompartmentOffered: '',
-        noOfCompartmentInspected: '',
-        totalNoOfCompartmentSat: '',
-        totalNoOfCompartmentUnsat: '',
-        totalNoOfTanks: '',
-        noOfTanksOffered: '',
-        noOfTanksInspected: '',
-        totalNoOfTanksSat: '',
-        totalNoOfTanksUnsat: '',
-        totalNoOfTanksSatStar: '',
-      });
-      setErrors({});
+      setIsDraftModalOpen(true);
     } catch (error) {
-      console.error('Error submitting form:', error);
-      alert('Error submitting form. Please try again.');
+      console.error('Error fetching drafts:', error);
+      alert('Error fetching drafts. Please try again.');
     } finally {
-      setIsSubmitting(false);
+      setIsLoadingDrafts(false);
     }
   };
 
-  const saveDraft = () => {
-    if (!formData.inspectionIns || formData.inspectionIns === '0') {
-      alert('Please select U/W Compartments Inspection Report - INS before saving draft');
-      return;
+  const handleSaveDraft = async () => {
+    setIsSavingDraft(true);
+    try {
+      // Prepare observations array from compartment inspection data
+      const observations: ObservationData[] = [];
+      
+      
+      // Add compartment observations
+      formData.compartmentInspectionData.forEach((compartment, index) => {
+        if (compartment.tankCompartment || compartment.observation) {
+          observations.push({
+            section: 'UW_COMPARTMENTS',
+            sr_no: index + 1,
+            compartment_id: index + 1,
+            observation: compartment.observation,
+            remarks: compartment.remarks,
+            recommendation: compartment.recommendation
+          });
+        }
+      });
+
+      const payload = {
+        vessel_id: parseInt(formData.vesselId),
+        dt_inspection: inspectionDate ? format(inspectionDate, 'yyyy-MM-dd') : '',
+        total_uw_compartments: parseInt(formData.totalNumberOfUWCompartment) || 0,
+        no_of_uw_compartments_offered: parseInt(formData.noOfUWCompartmentOffered) || 0,
+        no_of_uw_compartments_inspected: parseInt(formData.noOfCompartmentInspected) || 0,
+        toal_compartment_sat: parseInt(formData.totalNoOfCompartmentSat) || 0,
+        total_compartment_unsat: parseInt(formData.totalNoOfCompartmentUnsat) || 0,
+        total_tanks: parseInt(formData.totalNoOfTanks) || 0,
+        no_of_tanks_offered: parseInt(formData.noOfTanksOffered) || 0,
+        no_of_tanks_inspected: parseInt(formData.noOfTanksInspected) || 0,
+        total_tanks_sat: parseInt(formData.totalNoOfTanksSat) || 0,
+        total_tanks_unsat: parseInt(formData.totalNoOfTanksUnsat) || 0,
+        total_tanks_sat_unmapped: parseInt(formData.totalNoOfTanksSatStar) || 0,
+        draft_status: 'draft',
+        observations: observations
+      };
+
+      const response = await post('hitumodule/uw-compartments-hull-inspection-reports/', payload);
+      if (response.success) {
+        alert('Draft saved successfully!');
+      } else {
+        alert('Error saving draft: ' + (response.message || 'Unknown error'));
+      }
+    } catch (error) {
+      console.error('Error saving draft:', error);
+      alert('Error saving draft. Please try again.');
+    } finally {
+      setIsSavingDraft(false);
     }
-
-    const draftData: DraftData = {
-      id: Date.now().toString(),
-      title: `U/W Compartments - ${shipOptions.find(s => s.value === formData.inspectionIns)?.label || 'Draft'}`,
-      data: { ...formData },
-      timestamp: new Date().toISOString()
-    };
-
-    const existingDrafts = JSON.parse(localStorage.getItem('uw-compartments-drafts') || '[]');
-    existingDrafts.push(draftData);
-    localStorage.setItem('uw-compartments-drafts', JSON.stringify(existingDrafts));
-    
-    alert('Draft saved successfully!');
   };
 
-  const loadDrafts = () => {
-    const existingDrafts = JSON.parse(localStorage.getItem('uw-compartments-drafts') || '[]');
-    setDrafts(existingDrafts);
-    setShowDraftModal(true);
-  };
-
-  const loadDraft = (draft: DraftData) => {
-    setFormData(draft.data);
-    setSelectedDraftId(draft.id);
-    setShowDraftModal(false);
-  };
-
-  const deleteDraft = (draftId: string) => {
-    const updatedDrafts = drafts.filter(draft => draft.id !== draftId);
-    localStorage.setItem('uw-compartments-drafts', JSON.stringify(updatedDrafts));
-    setDrafts(updatedDrafts);
-  };
-
-  const clearForm = () => {
+  const handleClear = () => {
     setFormData({
+      vesselId: '',
       inspectionIns: '',
       dateOfInspection: null,
-      tankCompartments: [{ tank: '', observation: '', recommendation: '', remark: '' }],
-      inspectors: [{ name: '', rank: '', designation: '' }],
+      authority: '',
+      compartmentInspectionRows: 0,
+      compartmentInspectionData: [],
       totalNumberOfUWCompartment: '',
       noOfUWCompartmentOffered: '',
       noOfCompartmentInspected: '',
@@ -446,23 +382,97 @@ const UWCompartmentsHullInspectionReportForm: React.FC = () => {
       totalNoOfTanksSat: '',
       totalNoOfTanksUnsat: '',
       totalNoOfTanksSatStar: '',
+      observations: []
     });
+    setInspectionDate(undefined);
+    setEditingRecord(null);
     setErrors({});
-    setSelectedDraftId('');
   };
 
-  const handleTextValidation = (value: string) => {
-    if (/[^a-zA-Z0-9\s]/.test(value)) {
-      alert('Special characters are not allowed');
+  const handleEdit = (record: any) => {
+    console.log('=== HANDLE EDIT DEBUG ===');
+    console.log('handleEdit called with record:', record);
+    console.log('record.observations:', record.observations);
+    
+    setEditingRecord(record);
+    
+    // Process observations data to extract compartment inspection data
+    let compartmentInspectionData: CompartmentInspectionData[] = [];
+    let compartmentInspectionRows = 0;
+    
+    if (record.observations && Array.isArray(record.observations)) {
+      // Filter observations for UW_COMPARTMENTS section (excluding inspector data)
+      const uwCompartmentsObs = record.observations.filter((obs: any) => 
+        obs.section === 'UW_COMPARTMENTS' && !(obs.name || obs.rank || obs.designation)
+      );
+      
+      if (uwCompartmentsObs.length > 0) {
+        compartmentInspectionData = uwCompartmentsObs.map((obs: any) => ({
+          tankCompartment: obs.compartment?.id?.toString() || '',
+          observation: obs.observation || '',
+          recommendation: obs.recommendation || '',
+          remarks: obs.remarks || ''
+        }));
+        compartmentInspectionRows = uwCompartmentsObs.length;
+      }
+      
+      // Filter observations for inspector data (UW_COMPARTMENTS section with specific pattern)
+      // We need to identify which observations are inspector data vs compartment data
+      // For now, we'll look for observations that have name/rank/designation fields
     }
-    return value.replace(/[^a-zA-Z0-9\s]/g, '');
+    
+    console.log('Processed compartment inspection data:', compartmentInspectionData);
+    console.log('Compartment inspection rows:', compartmentInspectionRows);
+    
+    setFormData({
+      vesselId: record.vessel?.id?.toString() || '',
+      inspectionIns: record.inspection_ins || '',
+      dateOfInspection: record.dt_inspection ? new Date(record.dt_inspection) : null,
+      authority: record.authority || '',
+      compartmentInspectionRows: compartmentInspectionRows,
+      compartmentInspectionData: compartmentInspectionData,
+      totalNumberOfUWCompartment: record.total_uw_compartments?.toString() || '',
+      noOfUWCompartmentOffered: record.no_of_uw_compartments_offered?.toString() || '',
+      noOfCompartmentInspected: record.no_of_uw_compartments_inspected?.toString() || '',
+      totalNoOfCompartmentSat: record.toal_compartment_sat?.toString() || '',
+      totalNoOfCompartmentUnsat: record.total_compartment_unsat?.toString() || '',
+      totalNoOfTanks: record.total_tanks?.toString() || '',
+      noOfTanksOffered: record.no_of_tanks_offered?.toString() || '',
+      noOfTanksInspected: record.no_of_tanks_inspected?.toString() || '',
+      totalNoOfTanksSat: record.total_tanks_sat?.toString() || '',
+      totalNoOfTanksUnsat: record.total_tanks_unsat?.toString() || '',
+      totalNoOfTanksSatStar: record.total_tanks_sat_unmapped?.toString() || '',
+      observations: record.observations || []
+    });
+    
+    if (record.dt_inspection) {
+      setInspectionDate(new Date(record.dt_inspection));
+    }
+    
+    setIsDraftModalOpen(false);
   };
 
-  const handleNumberValidation = (value: string) => {
-    if (/[^0-9]/.test(value)) {
-      alert('Only numbers are allowed');
+  const handleDelete = async (id: number) => {
+    try {
+      // Make API call to delete - same pattern as final form
+      const payload = { id: id, delete: true };
+      await post('hitumodule/uw-compartments-hull-inspection-reports/', payload);
+      
+      // Remove from local state
+      setApiDrafts(prev => prev.filter(draft => draft.id !== id));
+      
+      // If we're editing this record, clear the form
+      if (editingRecord && editingRecord.id === id) {
+        setEditingRecord(null);
+        handleClear();
+      }
+      
+      // alert('Record deleted successfully!');
+    } catch (error) {
+      console.error('Error deleting record:', error);
+      // alert('Error deleting record. Please try again.');
+      throw error; // Re-throw to let the dialog handle the error state
     }
-    return value.replace(/[^0-9]/g, '');
   };
 
   const formatDate = (dateString: string) => {
@@ -478,480 +488,484 @@ const UWCompartmentsHullInspectionReportForm: React.FC = () => {
     return day + '-' + month + '-' + year + ' ' + hours + ':' + minutes + ':' + seconds + '.' + milliseconds;
   };
 
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    console.log('handleSubmit called, editingRecord:', editingRecord);
+    
+    try {
+      // Prepare observations array from compartment inspection data
+      const observations: ObservationData[] = [];
+      
+      
+      // Add compartment observations
+      formData.compartmentInspectionData.forEach((compartment, index) => {
+        if (compartment.tankCompartment || compartment.observation) {
+          observations.push({
+            section: 'UW_COMPARTMENTS',
+            sr_no: index + 1,
+            compartment_id: index + 1,
+            observation: compartment.observation,
+            remarks: compartment.remarks,
+            recommendation: compartment.recommendation
+          });
+        }
+      });
+
+      const payload = {
+        vessel_id: parseInt(formData.vesselId),
+        dt_inspection: inspectionDate ? format(inspectionDate, 'yyyy-MM-dd') : '',
+        total_uw_compartments: parseInt(formData.totalNumberOfUWCompartment) || 0,
+        no_of_uw_compartments_offered: parseInt(formData.noOfUWCompartmentOffered) || 0,
+        no_of_uw_compartments_inspected: parseInt(formData.noOfCompartmentInspected) || 0,
+        toal_compartment_sat: parseInt(formData.totalNoOfCompartmentSat) || 0,
+        total_compartment_unsat: parseInt(formData.totalNoOfCompartmentUnsat) || 0,
+        total_tanks: parseInt(formData.totalNoOfTanks) || 0,
+        no_of_tanks_offered: parseInt(formData.noOfTanksOffered) || 0,
+        no_of_tanks_inspected: parseInt(formData.noOfTanksInspected) || 0,
+        total_tanks_sat: parseInt(formData.totalNoOfTanksSat) || 0,
+        total_tanks_unsat: parseInt(formData.totalNoOfTanksUnsat) || 0,
+        total_tanks_sat_unmapped: parseInt(formData.totalNoOfTanksSatStar) || 0,
+        draft_status: 'save',
+        observations: observations
+      };
+
+      let response;
+      
+      if (editingRecord) {
+        // Update existing record
+        const updatePayload = {
+          ...payload,
+          id: editingRecord.id
+        };
+        console.log('Making UPDATE call with payload:', updatePayload);
+        response = await post('hitumodule/uw-compartments-hull-inspection-reports/', updatePayload);
+        console.log('Update API response:', response);
+        alert('Record updated successfully!');
+      } else {
+        // Create new record
+        console.log('Making CREATE call with payload:', payload);
+        response = await post('hitumodule/uw-compartments-hull-inspection-reports/', payload);
+        console.log('Create API response:', response);
+        alert('Record saved successfully!');
+      }
+
+      // Clear form after successful submission
+      handleClear();
+      
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      alert('Error submitting form. Please try again.');
+    }
+  };
+
   return (
-    <div className="w-full min-h-screen bg-gray-50">
-      <div className="container mx-auto p-6">
+    <div className="max-w-full min-h-screen">
+      
         <div className="bg-white shadow-lg rounded-lg">
-          <div className="p-8">
-            {/* Form Header */}
-            <div className="text-center mb-8">
-              <h2 className="text-3xl font-bold text-gray-900 mb-4">
-                <u>U/W COMPARTMENTS INSPECTION REPORT - INS</u>
-              </h2>
-              <div className="flex justify-center">
+          {/* Header Section */}
+          <div className="bg-[#c7d9f0] text-black px-6 py-4">
+            <div className="flex items-center justify-center gap-4">
+              <h2 className="text-3xl font-semibold underline">U/W COMPARTMENTS INSPECTION REPORT - INS</h2>
+              
+              {/* Vessel Selection */}
                 <Select
-                  value={formData.inspectionIns}
-                  onValueChange={(value) => handleInputChange('inspectionIns', value)}
+                value={formData.vesselId} 
+                onValueChange={handleVesselChange}
+                disabled={loadingVessels}
                 >
-                  <SelectTrigger className="w-64">
-                    <SelectValue placeholder="--Select--" />
+                <SelectTrigger className="px-3 py-2 border border-gray-300 rounded w-auto">
+                  <SelectValue placeholder={loadingVessels ? "Loading vessels..." : "--Select Vessel--"} />
                   </SelectTrigger>
                   <SelectContent>
-                    {shipOptions.map((option) => (
-                      <SelectItem key={option.value} value={option.value}>
-                        {option.label}
+                  {vesselError ? (
+                    <SelectItem value="" disabled>
+                      Error loading vessels
                       </SelectItem>
-                    ))}
+                  ) : (
+                    vessels.map((vessel) => (
+                      <SelectItem key={vessel.id} value={vessel.id.toString()}>
+                        {vessel.name}
+                      </SelectItem>
+                    ))
+                  )}
                   </SelectContent>
                 </Select>
               </div>
-              {errors.inspectionIns && <p className="text-red-500 text-sm mt-1">{errors.inspectionIns}</p>}
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-6">
-              {/* Basic Information */}
-              <div className="border border-gray-200 rounded-lg p-6">
-                <h3 className="text-lg font-semibold mb-4 text-blue-600">Basic Information</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <Label className="text-sm font-medium">
-                      Date of Inspection: <span className="text-red-500">*</span>
-                    </Label>
+          {/* Header Information Section */}
+          <div className="p-3 border-b border-gray-200">
+            <div className="flex items-center bg-white p-3 border-b border-gray-300">
+              <div className="w-48 text-sm font-medium text-gray-700">
+                Date of Inspection<span className="text-red-500">*</span>
+              </div>
+              <div className="flex-1">
                     <Popover>
                       <PopoverTrigger asChild>
-                        <Button
-                          variant="outline"
-                          className="w-full justify-start text-left font-normal"
+                        <button
+                          type="button"
+                          className={`w-full justify-start text-left font-normal border border-gray-300 rounded px-3 py-2 hover:bg-white hover:text-gray-900 hover:border-gray-300 ${
+                            !inspectionDate && "text-muted-foreground"
+                          }`}
                         >
-                          <CalendarIcon className="mr-2 h-4 w-4" />
-                          {formData.dateOfInspection ? format(formData.dateOfInspection, 'dd-MM-yyyy') : 'DD-MM-YYYY'}
-                        </Button>
+                        
+                          {inspectionDate ? format(inspectionDate, "dd-MM-yyyy") : "DD-MM-YYYY"}
+                        </button>
                       </PopoverTrigger>
-                      <PopoverContent className="w-auto p-0">
+                  <PopoverContent className="w-auto p-0" align="start">
                         <Calendar
                           mode="single"
-                          selected={formData.dateOfInspection || undefined}
-                          onSelect={(date) => handleInputChange('dateOfInspection', date)}
+                          selected={inspectionDate || undefined}
+                          onSelect={(date) => {
+                            setInspectionDate(date);
+                            handleInputChange('dateOfInspection', date);
+                          }}
                           initialFocus
                         />
                       </PopoverContent>
                     </Popover>
-                    {errors.dateOfInspection && <p className="text-red-500 text-sm mt-1">{errors.dateOfInspection}</p>}
                   </div>
                 </div>
               </div>
 
-              {/* Tank/Compartment Table */}
-              <div className="border border-gray-200 rounded-lg p-6">
-                <div className="flex justify-between items-center mb-4">
-                  <h3 className="text-lg font-semibold text-blue-600">Tanks/Compartment Details</h3>
-                  <div className="flex space-x-2">
-                    <Button
-                      type="button"
-                      onClick={addTankCompartmentRow}
-                      size="sm"
-                      variant="outline"
-                    >
-                      <Plus className="h-4 w-4 mr-1" />
-                      Add Row
-                    </Button>
-                  </div>
-                </div>
-                
-                <div className="overflow-x-auto">
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead className="w-16">Sr No.</TableHead>
-                        <TableHead>Tanks/Compartment <span className="text-red-500">*</span></TableHead>
-                        <TableHead>Observation <span className="text-red-500">*</span></TableHead>
-                        <TableHead>Recommendation <span className="text-red-500">*</span></TableHead>
-                        <TableHead>Remarks <span className="text-red-500">*</span></TableHead>
-                        <TableHead className="w-20">Action</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {formData.tankCompartments.map((tank, index) => (
-                        <TableRow key={index}>
-                          <TableCell className="text-center">{index + 1}</TableCell>
-                          <TableCell>
-                            <Input
-                              value={tank.tank}
-                              onChange={(e) => handleTankCompartmentChange(index, 'tank', handleTextValidation(e.target.value))}
-                              maxLength={20}
-                              placeholder="Enter tank/compartment"
-                            />
-                            {errors[`tank_${index}`] && <p className="text-red-500 text-xs mt-1">{errors[`tank_${index}`]}</p>}
-                          </TableCell>
-                          <TableCell>
-                            <Input
-                              value={tank.observation}
-                              onChange={(e) => handleTankCompartmentChange(index, 'observation', handleTextValidation(e.target.value))}
-                              maxLength={50}
-                              placeholder="Enter observation"
-                            />
-                            {errors[`observation_${index}`] && <p className="text-red-500 text-xs mt-1">{errors[`observation_${index}`]}</p>}
-                          </TableCell>
-                          <TableCell>
-                            <Input
-                              value={tank.recommendation}
-                              onChange={(e) => handleTankCompartmentChange(index, 'recommendation', handleTextValidation(e.target.value))}
-                              maxLength={50}
-                              placeholder="Enter recommendation"
-                            />
-                            {errors[`recommendation_${index}`] && <p className="text-red-500 text-xs mt-1">{errors[`recommendation_${index}`]}</p>}
-                          </TableCell>
-                          <TableCell>
-                            <Input
-                              value={tank.remark}
-                              onChange={(e) => handleTankCompartmentChange(index, 'remark', handleTextValidation(e.target.value))}
-                              maxLength={50}
-                              placeholder="Enter remarks"
-                            />
-                            {errors[`remark_${index}`] && <p className="text-red-500 text-xs mt-1">{errors[`remark_${index}`]}</p>}
-                          </TableCell>
-                          <TableCell>
-                            {formData.tankCompartments.length > 1 && (
-                              <Button
-                                type="button"
-                                onClick={() => removeTankCompartmentRow(index)}
-                                size="sm"
-                                variant="destructive"
-                              >
-                                <Minus className="h-4 w-4" />
-                              </Button>
-                            )}
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </div>
-              </div>
+          {/* Compartment Inspection Section */}
+          <div className="bg-white border-b border-gray-200 p-6">
+            <MultiColumnTable
+              formData={formData}
+              onInputChange={handleInputChange}
+              onDataChange={(field, index, dataField, value) => {
+                const updatedData = [...formData[field as keyof typeof formData] as any[]];
+                updatedData[index] = {
+                  ...updatedData[index],
+                  [dataField]: value
+                };
+                setFormData(prev => ({ ...prev, [field]: updatedData }));
+              }}
+              rowsField="compartmentInspectionRows"
+              dataField="compartmentInspectionData"
+              columns={[
+                { 
+                  field: 'tankCompartment', 
+                  label: 'Tanks/Compartment*', 
+                  placeholder: 'Select compartment', 
+                  required: true,
+                  type: 'dropdown',
+                  options: getCompartmentOptions()
+                },
+                { field: 'observation', label: 'Observation*', placeholder: 'Enter observation', required: true },
+                { field: 'recommendation', label: 'Recommendation*', placeholder: 'Enter recommendation', required: true },
+                { field: 'remarks', label: 'Remarks*', placeholder: 'Enter remarks', required: true }
+              ]}
+            />
+          </div>
 
-              {/* Summary Section */}
-              <div className="border border-gray-200 rounded-lg p-6">
-                <h3 className="text-lg font-semibold mb-4 text-blue-600">Summary of Inspection of U/W Compartments and Tanks</h3>
+          {/* Summary of Inspection Section */}
+          <div className="bg-white border-b border-gray-200 pt-2 pb-6 px-6">
+            <div className="mb-3">
+              <h3 className="text-xl font-bold text-black underline decoration-purple-500 decoration-2 underline-offset-2">
+                SUMMARY OF INSPECTION OF U/W COMPARTMENTS AND TANKS
+              </h3>
+            </div>
+            
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              {/* Internal U/W Compartments Section */}
+              <div className="">
+                  <h4 className="text-lg font-bold text-black mb-4">INTERNAL U/W COMPARTMENTS</h4>
                 
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                  {/* Internal U/W Compartments */}
-                  <div>
-                    <Label className="text-sm font-medium mb-3 block">INTERNAL U/W COMPARTMENTS</Label>
-                    <div className="space-y-3">
-                      <div className="flex items-center space-x-3">
-                        <span className="bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">(a)</span>
-                        <Label className="text-sm font-medium flex-1">Total Number of U/W Compartments <span className="text-red-500">*</span></Label>
+                <div className="space-y-0 border  rounded-lg p-0">
+                  <div className="flex items-center justify-between p-3 border-b border-gray-200" style={{ backgroundColor: '#f2f2f2' }}>
+                    <div className="flex items-center">
+                      <span className="text-sm font-medium text-gray-700">(a)</span>
+                      <div className="mx-3 h-4 w-px bg-gray-400"></div>
+                      <span className="text-sm font-medium text-gray-700">Total Number of U/W Compartments<span className="text-red-500">*</span></span>
+                    </div>
                         <Input
+                       type="text"
                           value={formData.totalNumberOfUWCompartment}
-                          onChange={(e) => handleInputChange('totalNumberOfUWCompartment', handleNumberValidation(e.target.value))}
-                          maxLength={5}
-                          className="w-24"
+                       onChange={(e) => handleInputChange('totalNumberOfUWCompartment', e.target.value)}
+                       className="w-32 border border-gray-300 rounded-lg px-3 py-2"
+                       
                         />
                       </div>
-                      {errors.totalNumberOfUWCompartment && <p className="text-red-500 text-xs mt-1">{errors.totalNumberOfUWCompartment}</p>}
-                      
-                      <div className="flex items-center space-x-3">
-                        <span className="bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">(b)</span>
-                        <Label className="text-sm font-medium flex-1">No. of U/W Compartments offered <span className="text-red-500">*</span></Label>
+                  
+                  <div className="flex items-center justify-between bg-white p-3 border-b border-gray-200">
+                    <div className="flex items-center">
+                      <span className="text-sm font-medium text-gray-700">(b)</span>
+                      <div className="mx-3 h-4 w-px bg-gray-400"></div>
+                      <span className="text-sm font-medium text-gray-700">No. of U/W Compartments offered<span className="text-red-500">*</span></span>
+                    </div>
                         <Input
+                       type="text"
                           value={formData.noOfUWCompartmentOffered}
-                          onChange={(e) => handleInputChange('noOfUWCompartmentOffered', handleNumberValidation(e.target.value))}
-                          maxLength={5}
-                          className="w-24"
+                       onChange={(e) => handleInputChange('noOfUWCompartmentOffered', e.target.value)}
+                       className="w-32 border border-gray-300 rounded-lg px-3 py-2"
+                       
                         />
                       </div>
-                      {errors.noOfUWCompartmentOffered && <p className="text-red-500 text-xs mt-1">{errors.noOfUWCompartmentOffered}</p>}
-                      
-                      <div className="flex items-center space-x-3">
-                        <span className="bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">(c)</span>
-                        <Label className="text-sm font-medium flex-1">No. of Compartments inspected <span className="text-red-500">*</span></Label>
+                  
+                  <div className="flex items-center justify-between p-3 border-b border-gray-200" style={{ backgroundColor: '#f2f2f2' }}>
+                    <div className="flex items-center">
+                      <span className="text-sm font-medium text-gray-700">(c)</span>
+                      <div className="mx-3 h-4 w-px bg-gray-400"></div>
+                      <span className="text-sm font-medium text-gray-700">No. of Compartments inspected<span className="text-red-500">*</span></span>
+                    </div>
                         <Input
+                       type="text"
                           value={formData.noOfCompartmentInspected}
-                          onChange={(e) => handleInputChange('noOfCompartmentInspected', handleNumberValidation(e.target.value))}
-                          maxLength={5}
-                          className="w-24"
+                       onChange={(e) => handleInputChange('noOfCompartmentInspected', e.target.value)}
+                       className="w-32 border border-gray-300 rounded-lg px-3 py-2"
+                       
                         />
                       </div>
-                      {errors.noOfCompartmentInspected && <p className="text-red-500 text-xs mt-1">{errors.noOfCompartmentInspected}</p>}
-                      
-                      <div className="flex items-center space-x-3">
-                        <span className="bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">(d)</span>
-                        <Label className="text-sm font-medium flex-1">Total number of Compartments-SAT/ SAT* <span className="text-red-500">*</span></Label>
+                  
+                  <div className="flex items-center justify-between bg-white p-3 border-b border-gray-200">
+                    <div className="flex items-center">
+                      <span className="text-sm font-medium text-gray-700">(d)</span>
+                      <div className="mx-3 h-4 w-px bg-gray-400"></div>
+                      <span className="text-sm font-medium text-gray-700">Total number of Compartments-SAT/ SAT<span className="text-red-500">**</span></span>
+                    </div>
                         <Input
+                       type="text"
                           value={formData.totalNoOfCompartmentSat}
-                          onChange={(e) => handleInputChange('totalNoOfCompartmentSat', handleNumberValidation(e.target.value))}
-                          maxLength={5}
-                          className="w-24"
+                       onChange={(e) => handleInputChange('totalNoOfCompartmentSat', e.target.value)}
+                       className="w-32 border border-gray-300 rounded-lg px-3 py-2"
+                      
                         />
                       </div>
-                      {errors.totalNoOfCompartmentSat && <p className="text-red-500 text-xs mt-1">{errors.totalNoOfCompartmentSat}</p>}
-                      
-                      <div className="flex items-center space-x-3">
-                        <span className="bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">(e)</span>
-                        <Label className="text-sm font-medium flex-1">Total number of Compartments-UNSAT <span className="text-red-500">*</span></Label>
+                  
+                  <div className="flex items-center justify-between p-3" style={{ backgroundColor: '#f2f2f2' }}>
+                    <div className="flex items-center">
+                      <span className="text-sm font-medium text-gray-700">(e)</span>
+                      <div className="mx-3 h-4 w-px bg-gray-400"></div>
+                      <span className="text-sm font-medium text-gray-700">Total number of Compartments-UNSAT<span className="text-red-500">*</span></span>
+                    </div>
                         <Input
+                       type="text"
                           value={formData.totalNoOfCompartmentUnsat}
-                          onChange={(e) => handleInputChange('totalNoOfCompartmentUnsat', handleNumberValidation(e.target.value))}
-                          maxLength={5}
-                          className="w-24"
+                       onChange={(e) => handleInputChange('totalNoOfCompartmentUnsat', e.target.value)}
+                       className="w-32 border border-gray-300 rounded-lg px-3 py-2"
+                      
                         />
                       </div>
-                      {errors.totalNoOfCompartmentUnsat && <p className="text-red-500 text-xs mt-1">{errors.totalNoOfCompartmentUnsat}</p>}
                     </div>
                   </div>
 
-                  {/* Tanks */}
-                  <div>
-                    <Label className="text-sm font-medium mb-3 block">TANKS</Label>
-                    <div className="space-y-3">
-                      <div className="flex items-center space-x-3">
-                        <span className="bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">(a)</span>
-                        <Label className="text-sm font-medium flex-1">Total Number of tanks <span className="text-red-500">*</span></Label>
-                        <Input
-                          value={formData.totalNoOfTanks}
-                          onChange={(e) => handleInputChange('totalNoOfTanks', handleNumberValidation(e.target.value))}
-                          maxLength={5}
-                          className="w-24"
-                        />
-                      </div>
-                      {errors.totalNoOfTanks && <p className="text-red-500 text-xs mt-1">{errors.totalNoOfTanks}</p>}
-                      
-                      <div className="flex items-center space-x-3">
-                        <span className="bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">(b)</span>
-                        <Label className="text-sm font-medium flex-1">No. of tanks offered <span className="text-red-500">*</span></Label>
-                        <Input
-                          value={formData.noOfTanksOffered}
-                          onChange={(e) => handleInputChange('noOfTanksOffered', handleNumberValidation(e.target.value))}
-                          maxLength={5}
-                          className="w-24"
-                        />
-                      </div>
-                      {errors.noOfTanksOffered && <p className="text-red-500 text-xs mt-1">{errors.noOfTanksOffered}</p>}
-                      
-                      <div className="flex items-center space-x-3">
-                        <span className="bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">(c)</span>
-                        <Label className="text-sm font-medium flex-1">No. of tanks inspected <span className="text-red-500">*</span></Label>
-                        <Input
-                          value={formData.noOfTanksInspected}
-                          onChange={(e) => handleInputChange('noOfTanksInspected', handleNumberValidation(e.target.value))}
-                          maxLength={5}
-                          className="w-24"
-                        />
-                      </div>
-                      {errors.noOfTanksInspected && <p className="text-red-500 text-xs mt-1">{errors.noOfTanksInspected}</p>}
-                      
-                      <div className="flex items-center space-x-3">
-                        <span className="bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">(d)</span>
-                        <Label className="text-sm font-medium flex-1">Total number of tanks-SAT/ SAT* <span className="text-red-500">*</span></Label>
-                        <Input
-                          value={formData.totalNoOfTanksSat}
-                          onChange={(e) => handleInputChange('totalNoOfTanksSat', handleNumberValidation(e.target.value))}
-                          maxLength={5}
-                          className="w-24"
-                        />
-                      </div>
-                      {errors.totalNoOfTanksSat && <p className="text-red-500 text-xs mt-1">{errors.totalNoOfTanksSat}</p>}
-                      
-                      <div className="flex items-center space-x-3">
-                        <span className="bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">(e)</span>
-                        <Label className="text-sm font-medium flex-1">Total number of tanks-UNSAT <span className="text-red-500">*</span></Label>
-                        <Input
-                          value={formData.totalNoOfTanksUnsat}
-                          onChange={(e) => handleInputChange('totalNoOfTanksUnsat', handleNumberValidation(e.target.value))}
-                          maxLength={5}
-                          className="w-24"
-                        />
-                      </div>
-                      {errors.totalNoOfTanksUnsat && <p className="text-red-500 text-xs mt-1">{errors.totalNoOfTanksUnsat}</p>}
-                      
-                      <div className="flex items-center space-x-3">
-                        <span className="bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">(f)</span>
-                        <Label className="text-sm font-medium flex-1">Total number of tanks-SAT* <span className="text-red-500">*</span></Label>
-                        <Input
-                          value={formData.totalNoOfTanksSatStar}
-                          onChange={(e) => handleInputChange('totalNoOfTanksSatStar', handleNumberValidation(e.target.value))}
-                          maxLength={5}
-                          className="w-24"
-                        />
-                      </div>
-                      {errors.totalNoOfTanksSatStar && <p className="text-red-500 text-xs mt-1">{errors.totalNoOfTanksSatStar}</p>}
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Inspector Table */}
-              <div className="border border-gray-200 rounded-lg p-6">
-                <div className="flex justify-between items-center mb-4">
-                  <h3 className="text-lg font-semibold text-blue-600">Inspector Details</h3>
-                  <div className="flex space-x-2">
-                    <Button
-                      type="button"
-                      onClick={addInspectorRow}
-                      size="sm"
-                      variant="outline"
-                    >
-                      <Plus className="h-4 w-4 mr-1" />
-                      Add Row
-                    </Button>
-                  </div>
-                </div>
+              {/* Tanks Section */}
+              <div className="">
+                <h4 className="text-lg font-bold text-black mb-4">TANKS</h4>
                 
-                <div className="overflow-x-auto">
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead className="w-16">Sr No.</TableHead>
-                        <TableHead>Name <span className="text-red-500">*</span></TableHead>
-                        <TableHead>Rank <span className="text-red-500">*</span></TableHead>
-                        <TableHead>Designation <span className="text-red-500">*</span></TableHead>
-                        <TableHead className="w-20">Action</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {formData.inspectors.map((inspector, index) => (
-                        <TableRow key={index}>
-                          <TableCell className="text-center">{index + 1}</TableCell>
-                          <TableCell>
-                            <Input
-                              value={inspector.name}
-                              onChange={(e) => handleInspectorChange(index, 'name', handleTextValidation(e.target.value))}
-                              maxLength={20}
-                              placeholder="Enter name"
-                            />
-                            {errors[`inspector_name_${index}`] && <p className="text-red-500 text-xs mt-1">{errors[`inspector_name_${index}`]}</p>}
-                          </TableCell>
-                          <TableCell>
-                            <Input
-                              value={inspector.rank}
-                              onChange={(e) => handleInspectorChange(index, 'rank', handleTextValidation(e.target.value))}
-                              maxLength={10}
-                              placeholder="Enter rank"
-                            />
-                            {errors[`inspector_rank_${index}`] && <p className="text-red-500 text-xs mt-1">{errors[`inspector_rank_${index}`]}</p>}
-                          </TableCell>
-                          <TableCell>
-                            <Input
-                              value={inspector.designation}
-                              onChange={(e) => handleInspectorChange(index, 'designation', handleTextValidation(e.target.value))}
-                              maxLength={10}
-                              placeholder="Enter designation"
-                            />
-                            {errors[`inspector_designation_${index}`] && <p className="text-red-500 text-xs mt-1">{errors[`inspector_designation_${index}`]}</p>}
-                          </TableCell>
-                          <TableCell>
-                            {formData.inspectors.length > 1 && (
-                              <Button
-                                type="button"
-                                onClick={() => removeInspectorRow(index)}
-                                size="sm"
-                                variant="destructive"
-                              >
-                                <Minus className="h-4 w-4" />
-                              </Button>
-                            )}
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
+                <div className="space-y-0 border p-0 rounded-lg">
+                  <div className="flex items-center justify-between p-3 border-b border-gray-200" style={{ backgroundColor: '#f2f2f2' }}>
+                    <div className="flex items-center">
+                      <span className="text-sm font-medium text-gray-700">(a)</span>
+                      <div className="mx-3 h-4 w-px bg-gray-400"></div>
+                      <span className="text-sm font-medium text-gray-700">Total Number of tanks<span className="text-red-500">*</span></span>
+                    </div>
+                        <Input
+                       type="text"
+                          value={formData.totalNoOfTanks}
+                       onChange={(e) => handleInputChange('totalNoOfTanks', e.target.value)}
+                       className="w-32 border border-gray-300 rounded-lg px-3 py-2"
+                      
+                        />
+                      </div>
+                  
+                  <div className="flex items-center justify-between bg-white p-3 border-b border-gray-200">
+                    <div className="flex items-center">
+                      <span className="text-sm font-medium text-gray-700">(b)</span>
+                      <div className="mx-3 h-4 w-px bg-gray-400"></div>
+                      <span className="text-sm font-medium text-gray-700">No. of tanks offered<span className="text-red-500">*</span></span>
+                    </div>
+                        <Input
+                       type="text"
+                          value={formData.noOfTanksOffered}
+                       onChange={(e) => handleInputChange('noOfTanksOffered', e.target.value)}
+                       className="w-32 border border-gray-300 rounded-lg px-3 py-2"
+                       
+                        />
+                      </div>
+                  
+                  <div className="flex items-center justify-between p-3 border-b border-gray-200" style={{ backgroundColor: '#f2f2f2' }}>
+                    <div className="flex items-center">
+                      <span className="text-sm font-medium text-gray-700">(c)</span>
+                      <div className="mx-3 h-4 w-px bg-gray-400"></div>
+                      <span className="text-sm font-medium text-gray-700">No. of tanks inspected<span className="text-red-500">*</span></span>
+                    </div>
+                        <Input
+                       type="text"
+                          value={formData.noOfTanksInspected}
+                       onChange={(e) => handleInputChange('noOfTanksInspected', e.target.value)}
+                       className="w-32 border border-gray-300 rounded-lg px-3 py-2"
+                      
+                        />
+                      </div>
+                  
+                  <div className="flex items-center justify-between bg-white p-3 border-b border-gray-200">
+                    <div className="flex items-center">
+                      <span className="text-sm font-medium text-gray-700">(d)</span>
+                      <div className="mx-3 h-4 w-px bg-gray-400"></div>
+                      <span className="text-sm font-medium text-gray-700">Total number of tanks-SAT/ SAT<span className="text-red-500">**</span></span>
+                    </div>
+                        <Input
+                       type="text"
+                          value={formData.totalNoOfTanksSat}
+                       onChange={(e) => handleInputChange('totalNoOfTanksSat', e.target.value)}
+                       className="w-32 border border-gray-300 rounded-lg px-3 py-2"
+                      
+                        />
+                      </div>
+                  
+                  <div className="flex items-center justify-between p-3 border-b border-gray-200" style={{ backgroundColor: '#f2f2f2' }}>
+                    <div className="flex items-center">
+                      <span className="text-sm font-medium text-gray-700">(e)</span>
+                      <div className="mx-3 h-4 w-px bg-gray-400"></div>
+                      <span className="text-sm font-medium text-gray-700">Total number of tanks-UNSAT<span className="text-red-500">*</span></span>
+                    </div>
+                        <Input
+                       type="text"
+                          value={formData.totalNoOfTanksUnsat}
+                       onChange={(e) => handleInputChange('totalNoOfTanksUnsat', e.target.value)}
+                       className="w-32 border border-gray-300 rounded-lg px-3 py-2"
+                       
+                        />
+                      </div>
+                  
+                  <div className="flex items-center justify-between bg-white p-3">
+                    <div className="flex items-center">
+                      <span className="text-sm font-medium text-gray-700">(f)</span>
+                      <div className="mx-3 h-4 w-px bg-gray-400"></div>
+                      <span className="text-sm font-medium text-gray-700">Total number of tanks-SAT<span className="text-red-500">**</span></span>
+                    </div>
+                        <Input
+                       type="text"
+                          value={formData.totalNoOfTanksSatStar}
+                       onChange={(e) => handleInputChange('totalNoOfTanksSatStar', e.target.value)}
+                       className="w-32 border border-gray-300 rounded-lg px-3 py-2"
+                       
+                        />
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
 
-              {/* Action Buttons */}
-              <div className="flex flex-col sm:flex-row gap-4 pt-6 border-t">
-                <Button
-                  type="button"
-                  onClick={loadDrafts}
-                  className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded"
-                >
-                  Fetch Drafts
-                </Button>
 
-                <Button
+        {/* Form Action Buttons */}
+        <div className="bg-white border border-t-0 p-6 mt-0">
+          <div className="flex justify-center space-x-4">
+            <button
                   type="button"
-                  onClick={saveDraft}
-                  className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded"
-                >
-                  SAVE DRAFT
-                </Button>
-
-                <Button
+              className="px-6 py-2 bg-blue-400 text-white font-bold rounded hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              onClick={handleFetchDrafts}
+              disabled={isLoadingDrafts}
+            >
+              {isLoadingDrafts ? 'Loading...' : 'Fetch Drafts'}
+            </button>
+            <button
                   type="button"
-                  onClick={clearForm}
-                  className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded"
+              className="px-6 py-2 bg-green-600 text-white font-bold rounded hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              onClick={handleSaveDraft}
+              disabled={isSavingDraft || editingRecord}
+            >
+              {isSavingDraft ? 'Saving...' : 'Save Draft'}
+            </button>
+            <button
+                  type="button"
+              className="px-6 py-2 bg-red-500 text-white font-bold rounded hover:bg-red-700 transition-colors"
+              onClick={handleClear}
                 >
                   Clear
-                </Button>
-
-                <Button
+            </button>
+            <button
                   type="submit"
-                  disabled={isSubmitting}
-                  className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded"
-                >
-                  {isSubmitting ? 'Saving...' : 'Save'}
-                </Button>
-              </div>
-            </form>
-          </div>
+              className="px-6 py-2 bg-blue-700 text-white font-bold rounded hover:bg-blue-600 transition-colors"
+              onClick={handleSubmit}
+            >
+              {editingRecord ? 'Update' : 'Save'}
+            </button>
         </div>
       </div>
 
       {/* Draft Modal */}
-      <Dialog open={showDraftModal} onOpenChange={setShowDraftModal}>
-        <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle>Draft Data</DialogTitle>
+      <Dialog open={isDraftModalOpen} onOpenChange={setIsDraftModalOpen}>
+        <DialogContent className="max-w-4xl shadow-xl border-0 bg-white p-0 rounded-1xl">
+          <DialogHeader className="bg-gradient-to-r from-[#1a2746] to-[#223366] p-4 text-white">
+            <DialogTitle className="text-lg font-semibold">Draft Data</DialogTitle>
           </DialogHeader>
-          <div className="space-y-4">
-            {drafts.length === 0 ? (
-              <p className="text-center text-gray-500 py-8">No drafts found</p>
+          
+          <div className="space-y-4 p-4">
+            {apiDrafts.length === 0 ? (
+              <p className="text-gray-500 text-center py-8">No drafts found.</p>
             ) : (
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Sr No.</TableHead>
-                    <TableHead>INS</TableHead>
-                    <TableHead>Date of Inspection</TableHead>
-                    <TableHead>Created Date</TableHead>
-                    <TableHead>Action</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {drafts.map((draft, index) => (
-                    <TableRow key={draft.id}>
-                      <TableCell>{index + 1}</TableCell>
-                      <TableCell>{shipOptions.find(s => s.value === draft.data.inspectionIns)?.label || 'No Inspection Data'}</TableCell>
-                      <TableCell>{draft.data.dateOfInspection ? format(draft.data.dateOfInspection, 'dd-MM-yyyy') : 'No Date Provided'}</TableCell>
-                      <TableCell>{formatDate(draft.timestamp)}</TableCell>
-                      <TableCell>
-                        <div className="flex space-x-2">
+            <Table>
+              <TableHeader>
+                  <TableRow className="bg-[#1a2746] text-white">
+                    <TableHead className="text-white font-bold">Sr No.</TableHead>
+                    <TableHead className="text-white font-bold">INS</TableHead>
+                    {/* <TableHead className="text-white font-bold">Address</TableHead> */}
+                    <TableHead className="text-white font-bold">Created Date</TableHead>
+                    <TableHead className="text-white font-bold">Action</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                  {apiDrafts.map((draft, index) => (
+                    <TableRow key={draft.id} className={index % 2 === 0 ? "bg-[#f2f2f2]" : "bg-white"}>
+                    <TableCell>{index + 1}</TableCell>
+                      <TableCell>{draft.vessel?.name || 'N/A'}</TableCell>
+                      {/* <TableCell>{draft.auth_inspection || 'No Date Provided'}</TableCell> */}
+                      <TableCell>{new Date(draft.created_on).toLocaleString()}</TableCell>
+                    <TableCell>
+                      <div className="flex space-x-2">
                           <Button
+                            variant="outline"
                             size="sm"
-                            onClick={() => loadDraft(draft)}
-                            className="bg-blue-600 hover:bg-blue-700 text-white"
+                            onClick={() => handleEdit(draft)}
                           >
-                            <Edit className="h-3 w-3 mr-1" />
                             Edit
-                          </Button>
+                        </Button>
                           <Button
+                            variant="destructive"
                             size="sm"
-                            onClick={() => deleteDraft(draft.id)}
-                            className="bg-red-600 hover:bg-red-700 text-white"
+                            onClick={() => deleteDialog.openDialog({ 
+                              id: draft.id, 
+                              name: `Record ${draft.id}` 
+                            })}
                           >
-                            <Trash2 className="h-3 w-3 mr-1" />
                             Delete
-                          </Button>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+                        </Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
             )}
+          </div>
+          <div className="flex justify-end gap-3 p-4 border-t">
+            <Button
+              variant="outline"
+              onClick={() => setIsDraftModalOpen(false)}
+              className="rounded-lg"
+            >
+              Close
+            </Button>
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* Delete Dialog */}
+      <DeleteDialog
+        isOpen={deleteDialog.isOpen}
+        onClose={deleteDialog.closeDialog}
+        onConfirm={deleteDialog.handleConfirm}
+        title={deleteDialog.title}
+        description={deleteDialog.description}
+        itemName={deleteDialog.itemToDelete?.name}
+        isLoading={deleteDialog.isLoading}
+        confirmText={deleteDialog.confirmText}
+        cancelText={deleteDialog.cancelText}
+      />
+    </div>
     </div>
   );
 };

@@ -1,41 +1,113 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { DataTable, Column } from "@/components/ui/table";
-import { Edit, Plus, Search, Trash2 } from "lucide-react";
+import { DataTable, Column, TablePagination } from "@/components/ui/table";
+import { Edit, Trash2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { DynamicFormDialog } from "@/components/DynamicFormDialog";
-import { get, post, put, del } from "@/lib/api";
+import { get, post, put, del, getUnitId } from "@/lib/api";
 import { Badge } from "@/components/ui/badge";
 
-interface RootConfig {
+interface RouteConfig {
   id: number;
-  key: string;
-  value: string;
-  active: number; // 1 = Active, 2 = Inactive
+  vessel: number;
+  sub_module: number;
+  level: number;
+  route_type: "internal" | "external";
+  directorate: number;
+  user: number;
+  description: string;
+  permissions: {
+    permission_type: "edit" | "comment";
+    is_granted: boolean;
+  }[];
+  active: number;
+  module?: string;
+  subModule?: string;
+  ship?: string;
+  unit?: string;
+  userName?: string;
 }
 
-const RootConfigMaster = () => {
+interface DropdownOption {
+  value: string;
+  label: string;
+}
+
+interface Module {
+  id: number;
+  name: string;
+}
+
+interface SubModule {
+  id: number;
+  name: string;
+  module: {
+    id: number;
+    name: string;
+  };
+}
+
+interface Vessel {
+  id: number;
+  name: string;
+}
+
+interface Unit {
+  id: number;
+  name: string;
+}
+
+interface User {
+  id: number;
+  loginname: string;
+}
+
+const RouteConfigMaster = () => {
   const { toast } = useToast();
-  const [configs, setConfigs] = useState<RootConfig[]>([]);
+  const [configs, setConfigs] = useState<RouteConfig[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [editingConfig, setEditingConfig] = useState<RootConfig | null>(null);
+  const [editingConfig, setEditingConfig] = useState<RouteConfig | null>(null);
+
+  const [modules, setModules] = useState<DropdownOption[]>([]);
+  const [subModules, setSubModules] = useState<DropdownOption[]>([]);
+  const [ships, setShips] = useState<DropdownOption[]>([]);
+  const [units, setUnits] = useState<DropdownOption[]>([]);
+  const [users, setUsers] = useState<DropdownOption[]>([]);
+  
+  const [dropdownsLoading, setDropdownsLoading] = useState(false);
+  const [dropdownsLoaded, setDropdownsLoaded] = useState(false);
+  const [subModulesLoading, setSubModulesLoading] = useState(false);
+  const [selectedModule, setSelectedModule] = useState<string>("");
+  const [selectedUnit, setSelectedUnit] = useState<string>("");
 
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [loading, setLoading] = useState(true);
 
-  const columns: Column<RootConfig>[] = [
-    { header: "Key", accessor: "key" },
-    { header: "Value", accessor: "value" },
+  const localUnitId = getUnitId();
+
+  const columns: Column<RouteConfig>[] = [
+    { header: "Module", accessor: "module" },
+    { header: "Sub Module", accessor: "subModule" },
+    { header: "Vessel", accessor: "ship" },
+    { header: "Directorate", accessor: "unit" },
+    { header: "User", accessor: "userName" },
+    { header: "Level", accessor: "level" },
+    { header: "Route Type", accessor: "route_type" },
+    { header: "Description", accessor: "description" },
     {
-      header: "Status",
-      accessor: "active",
+      header: "Permissions",
+      accessor: "permissions",
       render: (row) => (
-        <Badge variant={row.active === 1 ? "default" : "secondary"}>
-          {row.active === 1 ? "Active" : "Inactive"}
-        </Badge>
+        <div>
+          {row.permissions?.map((perm, index) => (
+            <Badge key={index} variant={perm.is_granted ? "default" : "secondary"} className="mr-1">
+              {perm.permission_type}: {perm.is_granted ? "Granted" : "Denied"}
+            </Badge>
+          ))}
+        </div>
       ),
     },
     {
@@ -58,17 +130,166 @@ const RootConfigMaster = () => {
     },
   ];
 
-  const fetchConfigs = async (pageNum: number = 1) => {
+  const fetchDropdownData = async () => {
+    if (dropdownsLoaded) return;
+    
     try {
-      const res = await get(`/config/root-configs/?page=${pageNum}`); // <-- updated endpoint
-      setConfigs(res.results || []);
-      setTotalPages(Math.ceil((res.count || 0) / 10));
-    } catch (err) {
+      setDropdownsLoading(true);
+      
+      const modulesRes = await get(`/master/modules/`);
+      let modulesData = [];
+      
+      if (Array.isArray(modulesRes)) {
+        modulesData = modulesRes;
+      } else if (modulesRes && Array.isArray(modulesRes.results)) {
+        modulesData = modulesRes.results;
+      } else if (modulesRes && Array.isArray(modulesRes.data)) {
+        modulesData = modulesRes.data;
+      }
+      
+      const modulesOptions = modulesData.map((module: Module) => ({
+        value: module.id.toString(),
+        label: module.name || `Module ${module.id}`
+      }));
+      setModules(modulesOptions);
+
+      const vesselsRes = await get(`/master/vessels/`);
+      let vesselsData = [];
+      
+      if (Array.isArray(vesselsRes)) {
+        vesselsData = vesselsRes;
+      } else if (vesselsRes && Array.isArray(vesselsRes.results)) {
+        vesselsData = vesselsRes.results;
+      } else if (vesselsRes && Array.isArray(vesselsRes.data)) {
+        vesselsData = vesselsRes.data;
+      }
+      
+      const vesselsOptions = vesselsData.map((vessel: Vessel) => ({
+        value: vessel.id.toString(),
+        label: vessel.name || `Vessel ${vessel.id}`
+      }));
+      setShips(vesselsOptions);
+
+      const unitsRes = await get(`master/units/`);
+      let unitsData = [];
+      
+      if (Array.isArray(unitsRes)) {
+        unitsData = unitsRes;
+      } else if (unitsRes && Array.isArray(unitsRes.results)) {
+        unitsData = unitsRes.results;
+      } else if (unitsRes && Array.isArray(unitsRes.data)) {
+        unitsData = unitsRes.data;
+      }
+      
+      const unitsOptions = unitsData.map((unit: Unit) => ({
+        value: unit.id.toString(),
+        label: unit.name || `Unit ${unit.id}`
+      }));
+      setUnits(unitsOptions);
+
+      setDropdownsLoaded(true);
+      
+    } catch (err: any) {
+      console.error('Error fetching dropdown data:', err);
       toast({
         title: "Error",
-        description: "Failed to fetch root configs",
+        description: err.message || "Failed to fetch dropdown data",
         variant: "destructive",
       });
+    } finally {
+      setDropdownsLoading(false);
+    }
+  };
+
+  const fetchUsersByUnit = async (unitId: string) => {
+    if (!unitId) {
+      setUsers([]);
+      return;
+    }
+
+    try {
+      const usersRes = await get(`/api/auth/users/?unit_id=${unitId}`);
+      let usersData = [];
+      
+      if (usersRes && usersRes.results && Array.isArray(usersRes.results.data)) {
+        usersData = usersRes.results.data;
+      } else if (Array.isArray(usersRes)) {
+        usersData = usersRes;
+      } else if (usersRes && Array.isArray(usersRes.results)) {
+        usersData = usersRes.results;
+      } else if (usersRes && Array.isArray(usersRes.data)) {
+        usersData = usersRes.data;
+      }
+      
+      const usersOptions = usersData.map((user: User) => ({
+        value: user.id.toString(),
+        label: user.loginname || `User ${user.id}`
+      }));
+      
+      setUsers(usersOptions);
+    } catch (err: any) {
+      console.error('Error fetching users:', err);
+      toast({
+        title: "Error",
+        description: err.message || "Failed to fetch users",
+        variant: "destructive",
+      });
+      setUsers([]);
+    }
+  };
+
+  const fetchSubModules = async (moduleId: string) => {
+    if (!moduleId) {
+      setSubModules([]);
+      return;
+    }
+
+    try {
+      setSubModulesLoading(true);
+      const subModulesRes = await get(`/master/submodules/?module_id=${moduleId}`);
+      let subModulesData = [];
+      
+      if (Array.isArray(subModulesRes)) {
+        subModulesData = subModulesRes;
+      } else if (subModulesRes && Array.isArray(subModulesRes.data)) {
+        subModulesData = subModulesRes.data;
+      } else if (subModulesRes && Array.isArray(subModulesRes.results)) {
+        subModulesData = subModulesRes.results;
+      }
+      
+      const subModulesOptions = subModulesData.map((subModule: SubModule) => ({
+        value: subModule.id.toString(),
+        label: subModule.name || `Sub Module ${subModule.id}`
+      }));
+      
+      setSubModules(subModulesOptions);
+    } catch (err: any) {
+      console.error('Error fetching submodules:', err);
+      toast({
+        title: "Error",
+        description: err.message || "Failed to fetch submodules",
+        variant: "destructive",
+      });
+      setSubModules([]);
+    } finally {
+      setSubModulesLoading(false);
+    }
+  };
+
+  const fetchConfigs = async (pageNum: number = 1) => {
+    try {
+      setLoading(true);
+      const res = await get(`/config/route-configs/?page=${pageNum}`);
+      setConfigs(res.results || []);
+      setTotalPages(Math.ceil((res.count || 0) / 10));
+    } catch (err: any) {
+      toast({
+        title: "Error",
+        description: err.message || "Failed to fetch route configs",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -76,46 +297,76 @@ const RootConfigMaster = () => {
     fetchConfigs(page);
   }, [page]);
 
-  const handleSave = async (formData: any) => {
-    if (!formData.key?.trim()) {
-      toast({
-        title: "Validation Error",
-        description: "Key is required",
-        variant: "destructive",
-      });
-      return;
-    }
+  useEffect(() => {
+    fetchDropdownData();
+  }, []);
 
+  useEffect(() => {
+    if (isDialogOpen && !dropdownsLoaded) {
+      fetchDropdownData();
+    }
+  }, [isDialogOpen, dropdownsLoaded]);
+
+  useEffect(() => {
+    if (selectedModule) {
+      fetchSubModules(selectedModule);
+    } else {
+      setSubModules([]);
+    }
+  }, [selectedModule]);
+
+  useEffect(() => {
+    if (selectedUnit) {
+      fetchUsersByUnit(selectedUnit);
+    } else {
+      setUsers([]);
+    }
+  }, [selectedUnit]);
+
+  const handleSave = async (formData: any) => {
     const payload = {
-      key: formData.key,
-      value: formData.value,
-      active: formData.status === "Active" ? 1 : 2,
+      vessel: parseInt(formData.ship),
+      sub_module: parseInt(formData.subModule),
+      level: parseInt(formData.level) || 1,
+      route_type: formData.routeType,
+      directorate: parseInt(formData.unit),
+      user: formData.user ? parseInt(formData.user) : null,
+      description: formData.description || "Route configuration",
+      permissions: [
+        {
+          permission_type: formData.permissionType || "edit",
+          is_granted: true
+        }
+      ]
     };
 
     try {
       if (editingConfig) {
-        const payloadWithId = { ...payload, id: editingConfig.id };
-        await put(`/config/root-configs/`, payloadWithId); // <-- updated endpoint
-        toast({ title: "Success", description: "Root Config updated successfully" });
+        await put(`/config/route-configs/`, { ...payload, id: editingConfig.id });
+        toast({ title: "Success", description: "Route Config updated successfully" });
       } else {
-        await post(`/config/root-configs/`, payload); // <-- updated endpoint
-        toast({ title: "Success", description: "Root Config created successfully" });
+        await post(`/config/route-configs/`, payload);
+        toast({ title: "Success", description: "Route Config created successfully" });
       }
 
       fetchConfigs(page);
       setIsDialogOpen(false);
       setEditingConfig(null);
-    } catch (err) {
+      setSelectedModule("");
+      setSelectedUnit("");
+    } catch (err: any) {
       toast({
         title: "Error",
-        description: "Failed to save root config",
+        description: err.message || "Failed to save route config",
         variant: "destructive",
       });
     }
   };
 
-  const handleEdit = (config: RootConfig) => {
+  const handleEdit = (config: RouteConfig) => {
     setEditingConfig(config);
+    setSelectedModule(config.module || "");
+    setSelectedUnit(config.unit || "");
     setIsDialogOpen(true);
   };
 
@@ -123,115 +374,190 @@ const RootConfigMaster = () => {
     if (confirm("Are you sure you want to delete this config?")) {
       try {
         const payload = { id: id, delete: true };
-        await del(`/config/root-configs/`, payload); // <-- updated endpoint
+        await del(`/config/route-configs/`, payload);
         setConfigs((prev) => prev.filter((c) => c.id !== id));
         toast({
           title: "Success",
-          description: "Root Config deleted successfully",
+          description: "Route Config deleted successfully",
         });
-      } catch (err) {
+      } catch (err: any) {
         toast({
           title: "Error",
-          description: "Failed to delete root config",
+          description: err.message || "Failed to delete route config",
           variant: "destructive",
         });
       }
     }
   };
 
+  const handleAddButtonClick = () => {
+    setEditingConfig(null);
+    setSelectedModule("");
+    setSelectedUnit("");
+    setIsDialogOpen(true);
+  };
+
+  const handleModuleChange = (moduleId: string) => {
+    setSelectedModule(moduleId);
+    setSubModules([]);
+  };
+
+  const handleUnitChange = (unitId: string) => {
+    setSelectedUnit(unitId);
+  };
+
   const filteredConfigs = configs.filter((c) =>
-    c.key.toLowerCase().includes(searchTerm.toLowerCase())
+    c.description.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const formFields = [
+    {
+      name: "module",
+      label: "Module",
+      type: "searchable-dropdown",
+      options: modules,
+      placeholder: "Select module",
+      loading: dropdownsLoading,
+      onChange: handleModuleChange,
+      required: true
+    },
+    {
+      name: "subModule",
+      label: "Sub Module",
+      type: "searchable-dropdown",
+      options: subModules,
+      placeholder: selectedModule ? "Select sub module" : "Please select module first",
+      loading: subModulesLoading,
+      disabled: !selectedModule,
+      clearable: true,
+      required: true
+    },
+    {
+      name: "ship",
+      label: "Vessel",
+      type: "searchable-dropdown",
+      options: ships,
+      placeholder: "Select vessel",
+      loading: dropdownsLoading,
+      required: true
+    },
+    {
+      name: "level",
+      label: "Level",
+      type: "number",
+      placeholder: "Enter level (e.g., 1)",
+      min: 1,
+      required: true
+    },
+    {
+      name: "unit",
+      label: "Directorate",
+      type: "searchable-dropdown",
+      options: units,
+      placeholder: "Select directorate",
+      loading: dropdownsLoading,
+      onChange: handleUnitChange,
+      required: true
+    },
+    {
+      name: "user",
+      label: "User",
+      type: "searchable-dropdown",
+      options: users,
+      placeholder: selectedUnit ? "Select user" : "Please select directorate first",
+      loading: dropdownsLoading,
+      disabled: !selectedUnit,
+      clearable: true
+    },
+    {
+      name: "routeType",
+      label: "Route Type",
+      type: "radio",
+      options: [
+        { value: "internal", label: "Internal" },
+        { value: "external", label: "External" }
+      ],
+      required: true
+    },
+    {
+      name: "permissionType",
+      label: "Permission Type",
+      type: "radio",
+      options: [
+        { value: "edit", label: "Edit" },
+        { value: "comment", label: "Comment" }
+      ],
+      required: true
+    },
+    {
+      name: "description",
+      label: "Description",
+      type: "textarea",
+      placeholder: "Enter description",
+      rows: 3
+    }
+  ];
+
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-3xl font-bold text-primary">Root Config Master</h1>
-          <p className="text-muted-foreground">
-            Manage root configuration settings
-          </p>
-        </div>
-        <DynamicFormDialog
-          open={isDialogOpen}
-          onOpenChange={setIsDialogOpen}
-          title={editingConfig ? "Edit Root Config" : "Add Root Config"}
-          description="Fill out the details below"
-          fields={[
-            { name: "key", label: "Key", type: "text", required: true },
-            { name: "value", label: "Value", type: "text" },
-            {
-              name: "status",
-              label: "Active",
-              type: "checkbox",
-              required: false,
-            },
-          ]}
-          onSubmit={handleSave}
-          initialValues={
-            editingConfig
-              ? {
-                  key: editingConfig.key,
-                  value: editingConfig.value,
-                  status: editingConfig.active === 1 ? "Active" : "Inactive",
-                }
-              : {}
-          }
-          trigger={
-            <Button
-              onClick={() => {
-                setEditingConfig(null);
-                setIsDialogOpen(true);
-              }}
-            >
-              <Plus className="mr-2 h-4 w-4" />
-              Add Root Config
-            </Button>
-          }
+    <div className="">
+      <Card>
+        <CardContent className="p-6">
+          <DataTable
+            columns={columns}
+            data={filteredConfigs}
+            rowsPerPage={10}
+            showImport={false}
+            showExport={false}
+            title="Route Config Master"
+            description="Manage route configuration settings"
+            showSearch={true}
+            searchValue={searchTerm}
+            onSearchChange={setSearchTerm}
+            searchPlaceholder="Search configs..."
+            showAddButton={true}
+            addButtonText="Add Route Config"
+            onAddButtonClick={handleAddButtonClick}
+          />
+        </CardContent>
+        <TablePagination
+          currentPage={page}
+          totalPages={totalPages}
+          onPageChange={(newPage) => setPage(newPage)}
         />
-      </div>
-      <Card>
-        <CardContent className="p-4">
-          <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input
-              placeholder="Search configs..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10"
-            />
-          </div>
-        </CardContent>
       </Card>
-      <Card>
-        <CardHeader>
-          <CardTitle>Root Configs</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <DataTable columns={columns} data={filteredConfigs} rowsPerPage={10} />
-        </CardContent>
-      </Card>
-      <div className="flex justify-center gap-2 mt-4">
-        <Button
-          variant="outline"
-          disabled={page === 1}
-          onClick={() => setPage((p) => p - 1)}
-        >
-          Previous
-        </Button>
-        <span className="text-sm">
-          Page {page} of {totalPages}
-        </span>
-        <Button
-          variant="outline"
-          disabled={page === totalPages}
-          onClick={() => setPage((p) => p + 1)}
-        >
-          Next
-        </Button>
-      </div>
+
+      <DynamicFormDialog
+        open={isDialogOpen}
+        onOpenChange={(open) => {
+          setIsDialogOpen(open);
+          if (!open) {
+            setEditingConfig(null);
+            setSelectedModule("");
+            setSelectedUnit("");
+          }
+        }}
+        title={editingConfig ? "Edit Route Config" : "Add Route Config"}
+        description="Fill out the details below"
+        fields={formFields}
+        onSubmit={handleSave}
+        initialValues={
+          editingConfig
+            ? {
+                module: editingConfig.module,
+                subModule: editingConfig.subModule,
+                ship: editingConfig.ship,
+                level: editingConfig.level,
+                unit: editingConfig.unit,
+                user: editingConfig.user,
+                routeType: editingConfig.route_type,
+                permissionType: editingConfig.permissions?.[0]?.permission_type,
+                description: editingConfig.description,
+              }
+            : {}
+        }
+      />
     </div>
   );
 };
 
-export default RootConfigMaster;
+export default RouteConfigMaster;

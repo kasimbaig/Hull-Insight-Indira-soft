@@ -26,6 +26,7 @@ import RootConfigMaster from "@/pages/masters/RootConfigMaster";
 import RoleMaster from "@/pages/masters/RoleMaster";
 import RoleAccess from "./pages/masters/RoleAccess";
 import VesselClassMaster from "./pages/masters/VesselClassMaster";
+import TileLayout from "./components/TileLayout";
 import DynamicFormFieldsMaster from "./pages/masters/DynamicFormFieldsMaster";
 import StationMaster from "./pages/masters/StationMaster";
 import CountryMaster from "./pages/masters/CountryMaster";
@@ -120,6 +121,7 @@ import TTTest from "./pages/TTTest";
 import ParticularsInternalAboveWaterStructure from "./pages/ParticularsInternalAboveWaterStructure";
 import ParticularsUnderwaterHullSurveyByYardReport from "./pages/ParticularsUnderwaterHullSurveyByYardReport";
 import PreliminaryUnderwaterHullInspectionReport from "./pages/Pre_unde_Hull_inspe/PreliminaryUnderwaterHullInspectionReport";
+import PreliminaryUnderwaterHullInspectionReportAdd from "./pages/Pre_unde_Hull_inspe/PreliminaryUnderwaterHullInspectionReportAdd";
 // Module imports
 import YardModule from "./pages/yard/YardModule";
 import ShipModule from "./pages/ship/ShipModule";
@@ -137,6 +139,7 @@ const App = () => (
         <Route path="/app" element={<MainLayout />}>
           <Route index element={<Navigate to="/app/dashboard" replace />} />
           <Route path="dashboard" element={<Dashboard />} />
+          <Route path="setup" element={<TileLayout />} />
           <Route path="masters/fleet" element={<FleetMaster />} />
           <Route path="masters/unit" element={<UnitMaster />} />
           <Route path="masters/command" element={<CommandMaster />} />
@@ -257,6 +260,8 @@ const App = () => (
           <Route path="reports/docking-report-section-3" element={<IN379DockingReportSection3Report />} />
           <Route path="reports/ship-staff-report-hull-inspection" element={<ShipStaffReportHullInspection />} />
           <Route path="reports/preliminary-underwater-hull-inspection-report" element={<PreliminaryUnderwaterHullInspectionReport />} />
+          <Route path="reports/preliminary-underwater-hull-inspection-report-add" element={<PreliminaryUnderwaterHullInspectionReportAdd />} />
+          <Route path="reports/preliminary-underwater-hull-inspection-report-page" element={<PreliminaryUnderwaterHullInspectionReportPage />} />
           <Route path="in378/render-part1" element={<RenderPart1 />} />
         </Route>
         {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

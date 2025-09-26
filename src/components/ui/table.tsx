@@ -1,6 +1,7 @@
 import * as React from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Dialog,
   DialogContent,
@@ -8,6 +9,7 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog";
+import { Search, Plus, ChevronLeft, ChevronRight } from "lucide-react";
 
 // ---------------- Table Components ----------------
 const Table = React.forwardRef<
@@ -100,42 +102,48 @@ const TableCell = React.forwardRef<
 ));
 TableCell.displayName = "TableCell";
 
-// ---------------- Pagination ----------------
-interface PaginationProps {
+// ---------------- Pagination Component ----------------
+interface TablePaginationProps {
   currentPage: number;
   totalPages: number;
   onPageChange: (page: number) => void;
+  className?: string;
 }
 
-// const TablePagination: React.FC<PaginationProps> = ({
-//   currentPage,
-//   totalPages,
-//   onPageChange,
-// }) => (
-//   <div className="flex items-center justify-between py-3 px-4 border-t border-gray-300 bg-blue-50 rounded-b-xl">
-//     <Button
-//       variant="outline"
-//       size="sm"
-//       disabled={currentPage === 1}
-//       onClick={() => onPageChange(currentPage - 1)}
-//     >
-//       Previous
-//     </Button>
-
-//     <span className="text-sm font-medium">
-//       Page <b>{currentPage}</b> of {totalPages}
-//     </span>
-
-//     <Button
-//       variant="outline"
-//       size="sm"
-//       disabled={currentPage === totalPages}
-//       onClick={() => onPageChange(currentPage + 1)}
-//     >
-//       Next
-//     </Button>
-//   </div>
-// );
+const TablePagination: React.FC<TablePaginationProps> = ({
+  currentPage,
+  totalPages,
+  onPageChange,
+  className,
+}) => (
+  <div className={cn("flex justify-center items-center gap-4 mt-4", className)}>
+    <Button
+      variant="outline"
+      size="sm"
+      disabled={currentPage === 1}
+      onClick={() => onPageChange(currentPage - 1)}
+      className="flex items-center gap-1"
+    >
+      <ChevronLeft className="h-4 w-4" />
+      Previous
+    </Button>
+    
+    <span className="text-sm font-medium">
+      Page <b>{currentPage}</b> of {totalPages}
+    </span>
+    
+    <Button
+      variant="outline"
+      size="sm"
+      disabled={currentPage === totalPages || totalPages === 0}
+      onClick={() => onPageChange(currentPage + 1)}
+      className="flex items-center gap-1"
+    >
+      Next
+      <ChevronRight className="h-4 w-4" />
+    </Button>
+  </div>
+);
 
 // ---------------- Reusable DataTable ----------------
 export interface Column<T> {
@@ -151,6 +159,25 @@ interface DataTableProps<T> {
   onEdit?: (row: T) => void;
   onDelete?: (row: T) => void;
   className?: string;
+  showImport?: boolean;
+  showExport?: boolean;
+  // New props for header, search, and add button
+  title?: string;
+  description?: string;
+  showSearch?: boolean;
+  searchValue?: string;
+  onSearchChange?: (value: string) => void;
+  searchPlaceholder?: string;
+  showAddButton?: boolean;
+  addButtonText?: string;
+  onAddButtonClick?: () => void;
+  // Pagination props
+  showPagination?: boolean;
+  currentPage?: number;
+  totalPages?: number;
+  onPageChange?: (page: number) => void;
+  // Custom header content
+  customHeader?: React.ReactNode;
 }
 
 export function DataTable<T extends Record<string, any>>({
@@ -160,17 +187,49 @@ export function DataTable<T extends Record<string, any>>({
   onEdit,
   onDelete,
   className,
+  showImport = true,
+  showExport = true,
+  // New props with defaults
+  title,
+  description,
+  showSearch = false,
+  searchValue = "",
+  onSearchChange,
+  searchPlaceholder = "Search...",
+  showAddButton = false,
+  addButtonText = "Add New",
+  onAddButtonClick,
+  // Pagination props
+  showPagination = false,
+  currentPage = 1,
+  totalPages = 1,
+  onPageChange,
+  customHeader,
 }: DataTableProps<T>) {
-  const [currentPage, setCurrentPage] = React.useState(1);
+  const [internalPage, setInternalPage] = React.useState(1);
   const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false);
   const [rowToDelete, setRowToDelete] = React.useState<T | null>(null);
 
-  const totalPages = Math.max(1, Math.ceil(data.length / rowsPerPage));
+  // Use external pagination if provided, otherwise use internal
+  const page = showPagination ? (currentPage || internalPage) : 1;
+  const totalPagesCount = showPagination ? (totalPages || 1) : 1;
+  
+  const handlePageChange = (newPage: number) => {
+    if (showPagination) {
+      if (onPageChange) {
+        onPageChange(newPage);
+      } else {
+        setInternalPage(newPage);
+      }
+    }
+  };
 
-  const paginatedData = data.slice(
-    (currentPage - 1) * rowsPerPage,
-    currentPage * rowsPerPage
-  );
+  // For internal pagination (when showPagination is true but no external control)
+  const paginatedData = showPagination && !onPageChange
+    ? data.slice((page - 1) * rowsPerPage, page * rowsPerPage)
+    : data;
+
+  const displayData = showPagination && !onPageChange ? paginatedData : data;
 
   const handleDeleteClick = (row: T) => {
     setRowToDelete(row);
@@ -222,25 +281,79 @@ export function DataTable<T extends Record<string, any>>({
     document.body.removeChild(link);
   };
 
+  // Check if we need to show any header elements
+  const showHeaderSection = title || description || showSearch || showAddButton || customHeader || showImport || showExport;
+
   return (
     <div className="space-y-4">
-      {/* <Table className={className}> */}
-      {/* Toolbar with Import / Export */}
-      <div className="flex justify-end gap-2">
-        <Button
-          className="bg-[#1a2746] text-white hover:bg-[#223366] rounded-lg shadow-sm"
-          onClick={handleImport}
-        >
-          Import
-        </Button>
-        <Button
-          className="bg-green-600 text-white hover:bg-green-700 rounded-lg shadow-sm"
-          onClick={handleExport}
-        >
-          Export
-        </Button>
-      </div>
+      {/* Header Section */}
+      {showHeaderSection && (
+        <div className="space-y-4">
+          {/* Title and Description */}
+          {(title || description) && (
+            <div>
+              {title && <h1 className="text-3xl font-bold text-primary">{title}</h1>}
+              {description && (
+                <p className="text-muted-foreground">{description}</p>
+              )}
+            </div>
+          )}
 
+          {/* Custom Header Content */}
+          {customHeader}
+
+          {/* Toolbar with Search, Add Button, Import/Export */}
+          <div className="flex flex-col sm:flex-row justify-between gap-4">
+            {/* Left side: Search */}
+            {showSearch && (
+              <div className="relative flex-1 max-w-md">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  placeholder={searchPlaceholder}
+                  value={searchValue}
+                  onChange={(e) => onSearchChange?.(e.target.value)}
+                  className="pl-10"
+                />
+              </div>
+            )}
+
+            {/* Right side: Buttons */}
+            <div className="flex flex-wrap gap-2 justify-end">
+              {/* Add Button */}
+              {showAddButton && (
+                <Button onClick={onAddButtonClick}>
+                  <Plus className="mr-2 h-4 w-4" />
+                  {addButtonText}
+                </Button>
+              )}
+
+              {/* Import/Export Buttons */}
+              {(showImport || showExport) && (
+                <>
+                  {showImport && (
+                    <Button
+                      className="bg-[#1a2746] text-white hover:bg-[#223366] rounded-lg shadow-sm"
+                      onClick={handleImport}
+                    >
+                      Import
+                    </Button>
+                  )}
+                  {showExport && (
+                    <Button
+                      className="bg-green-600 text-white hover:bg-green-700 rounded-lg shadow-sm"
+                      onClick={handleExport}
+                    >
+                      Export
+                    </Button>
+                  )}
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Table */}
       <Table className={className}>
         <TableHeader>
           <TableRow>
@@ -250,7 +363,7 @@ export function DataTable<T extends Record<string, any>>({
           </TableRow>
         </TableHeader>
         <TableBody>
-          {paginatedData.map((row, i) => (
+          {displayData.map((row, i) => (
             <TableRow key={i}>
               {columns.map((col) => (
                 <TableCell key={col.header}>
@@ -293,13 +406,14 @@ export function DataTable<T extends Record<string, any>>({
         </TableBody>
       </Table>
 
-      {/* {totalPages > 1 && (
+      {/* Pagination */}
+      {showPagination && totalPagesCount > 1 && (
         <TablePagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          onPageChange={setCurrentPage}
+          currentPage={page}
+          totalPages={totalPagesCount}
+          onPageChange={handlePageChange}
         />
-      )} */}
+      )}
 
       {/* Delete Confirmation Dialog */}
       <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
@@ -335,5 +449,5 @@ export {
   TableRow,
   TableHead,
   TableCell,
-  // TablePagination,
+  TablePagination,
 };
