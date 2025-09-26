@@ -1,15 +1,26 @@
 const API_URL = import.meta.env.VITE_API_URL;
 
-// Store token in memory (or you can use localStorage if you want persistence)
+// Store token and unit_id in memory and localStorage
 let authToken: string | null = null;
+let unitId: number | null = null;
 
 export function setAuthToken(token: string) {
   authToken = token;
-  localStorage.setItem("authToken", token); // Optional: persist token
+  localStorage.setItem("authToken", token);
 }
 
 export function getAuthToken() {
   return authToken || localStorage.getItem("authToken");
+}
+
+export function setUnitId(id: number) {
+  unitId = id;
+  localStorage.setItem("unitId", id.toString());
+}
+
+export function getUnitId() {
+  const storedUnitId = localStorage.getItem("unitId");
+  return unitId || (storedUnitId ? parseInt(storedUnitId, 10) : null);
 }
 
 async function request(method: string, endpoint: string, data?: any) {
@@ -58,22 +69,22 @@ export async function del(endpoint: string) {
     method: "DELETE",
     headers,
   });
-  
+
   if (!response.ok) {
     throw new Error("API error: " + response.statusText);
   }
-  
+
   // Handle 204 No Content response
   if (response.status === 204) {
     return { status: 204, message: "Successfully deleted" };
   }
-  
+
   // For other successful responses, try to parse JSON
   const contentType = response.headers.get("content-type");
   if (contentType && contentType.includes("application/json")) {
     return response.json();
   }
-  
+
   return { status: response.status, message: "Success" };
 }
 
@@ -90,6 +101,7 @@ export async function loginUser(loginname: string, password: string) {
     throw new Error("Login failed: " + response.statusText);
   }
   const data = await response.json();
-  setAuthToken(data.access); // Save token for future requests
+  setAuthToken(data.access); // Save access token
+  setUnitId(data.unit_id); // Save unit_id
   return data;
 }

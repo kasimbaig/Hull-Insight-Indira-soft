@@ -214,7 +214,7 @@ const UnitMaster = () => {
       {/* Units Table */}
       <Card>
         <CardHeader>
-          <CardTitle>Units</CardTitle>
+
         </CardHeader>
         <CardContent>
           <DataTable
@@ -229,7 +229,28 @@ const UnitMaster = () => {
         </CardContent>
       </Card>
 
-      {/* Pagination is now handled by DataTable */}
+      {/* Pagination */}
+      <div className="flex justify-center items-center gap-4 mt-4">
+        <Button
+          variant="outline"
+          disabled={page === 1}
+          onClick={() => setPage((p) => p - 1)}
+          className="border-2 border-black text-black"
+        >
+          Previous
+        </Button>
+        <span className="text-sm font-medium">
+          Page {page} of {totalPages}
+        </span>
+        <Button
+          variant="outline"
+          disabled={page === totalPages}
+          onClick={() => setPage((p) => p + 1)}
+          className="border-2 border-black"
+        >
+          Next
+        </Button>
+      </div>
     </div>
   );
 };

@@ -81,16 +81,23 @@ const PreliminaryFormHeader: React.FC<PreliminaryFormHeaderProps> = ({
       setVesselError(null);
       try {
         const response = await get('master/vessels/');
-        // Handle the API response structure
-        if (response && response.data && Array.isArray(response.data)) {
-          setVessels(response.data);
+        console.log('Vessels API response:', response);
+        
+        // Handle different API response structures
+        let vesselsData = [];
+        if (response && response.results && Array.isArray(response.results)) {
+          vesselsData = response.results;
+        } else if (response && response.data && Array.isArray(response.data)) {
+          vesselsData = response.data;
         } else if (Array.isArray(response)) {
-          setVessels(response);
+          vesselsData = response;
         } else {
           console.warn('Unexpected vessels response structure:', response);
-          setVessels([]);
           setVesselError('Invalid data format received');
         }
+        
+        setVessels(vesselsData);
+        console.log('Vessels loaded:', vesselsData.length);
       } catch (error) {
         console.error('Error fetching vessels:', error);
         setVesselError('Failed to load vessels data');
@@ -120,6 +127,44 @@ const PreliminaryFormHeader: React.FC<PreliminaryFormHeaderProps> = ({
     }
   }, [formData.inspectionDate]);
 
+  // Handle vessel selection when vessels are loaded and vesselId is set
+  useEffect(() => {
+    if (formData.vesselId && vessels.length > 0) {
+      const selectedVessel = vessels.find(vessel => vessel.id.toString() === formData.vesselId);
+      console.log('Looking for vessel with ID:', formData.vesselId);
+      console.log('Available vessels:', vessels.map(v => ({ id: v.id, name: v.name })));
+      console.log('Found vessel:', selectedVessel);
+      
+      if (selectedVessel) {
+        // Update vessel name if it's not set or different
+        if (!formData.vesselName || formData.vesselName !== selectedVessel.name) {
+          onInputChange('vesselName', selectedVessel.name);
+          console.log('Auto-setting vessel name:', selectedVessel.name);
+        }
+      } else {
+        console.log('Vessel not found! Available IDs:', vessels.map(v => v.id.toString()));
+        console.log('Form vesselId:', formData.vesselId, 'Type:', typeof formData.vesselId);
+      }
+    }
+  }, [formData.vesselId, vessels, formData.vesselName, onInputChange]);
+
+  // Additional effect to handle vessel selection when vessels load after form data is set
+  useEffect(() => {
+    if (vessels.length > 0 && formData.vesselId && !formData.vesselName) {
+      console.log('Vessels loaded, trying to set vessel name for ID:', formData.vesselId);
+      const selectedVessel = vessels.find(vessel => vessel.id.toString() === formData.vesselId);
+      if (selectedVessel) {
+        onInputChange('vesselName', selectedVessel.name);
+        console.log('Setting vessel name after vessels loaded:', selectedVessel.name);
+      }
+    }
+  }, [vessels, formData.vesselId, formData.vesselName, onInputChange]);
+
+  // Force re-render when vesselId changes (for debugging)
+  useEffect(() => {
+    console.log('VesselId changed in PreliminaryFormHeader:', formData.vesselId);
+  }, [formData.vesselId]);
+
   return (
     <>
       {/* Header Section */}
@@ -129,13 +174,17 @@ const PreliminaryFormHeader: React.FC<PreliminaryFormHeaderProps> = ({
             
             {/* Vessel Selection */}
             <Select 
-              value={formData.vesselId} 
+              value={formData.vesselId || undefined} 
               onValueChange={handleVesselChange}
               disabled={loadingVessels}
             >
                 <SelectTrigger className="px-3 py-2 border border-gray-300 rounded w-auto">
                 <SelectValue placeholder={loadingVessels ? "Loading vessels..." : "--Select Vessel--"} />
               </SelectTrigger>
+              {/* Debug logging */}
+              {console.log('PreliminaryFormHeader vesselId:', formData.vesselId)}
+              {console.log('PreliminaryFormHeader vesselName:', formData.vesselName)}
+              {console.log('PreliminaryFormHeader vessels loaded:', vessels.length)}
               <SelectContent>
                 {vesselError ? (
                   <SelectItem value="" disabled>

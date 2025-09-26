@@ -13,14 +13,7 @@ import DynamicTable from './DynamicTable';
 import MaterialState from '@/components/forms/HullMaintenanceInspectionforShipsForm/MaterialState';
 import Preservation from '@/components/forms/HullMaintenanceInspectionforShipsForm/Preservation';
 import Documentation from '@/components/forms/HullMaintenanceInspectionforShipsForm/Documentation';
-import WaterTightGasTightIntegrity from '@/components/forms/HullMaintenanceInspectionforShipsForm/WaterTightGasTightIntegrity';
-import LiftingAppliances from '@/components/forms/HullMaintenanceInspectionforShipsForm/LiftingAppliances';
-import Systems from '@/components/forms/HullMaintenanceInspectionforShipsForm/Systems';
-import HullEquipment from '@/components/forms/HullMaintenanceInspectionforShipsForm/HullEquipment';
-import LifeSavingAppliances from '@/components/forms/HullMaintenanceInspectionforShipsForm/LifeSavingAppliances';
-import Habitability from '@/components/forms/HullMaintenanceInspectionforShipsForm/Habitability';
-import ShipsHusbandryTools from '@/components/forms/HullMaintenanceInspectionforShipsForm/ShipsHusbandryTools';
-import ObservationsTable from '@/components/forms/HullMaintenanceInspectionforShipsForm/ObservationsTable';
+import WaterTight from '@/components/forms/HullMaintenanceInspectionforShipsForm/WaterTight';
 
 interface Vessel {
   id: number;
@@ -106,7 +99,6 @@ interface FormData {
   superStructureDefectsRows: number;
   superStructureDefectsData: Array<{ type: string; location: string; remarks: string }>;
   // Deck covering
-  deckCoveringInput: string;
   deckCoveringPresentScheme: string;
   deckCoveringCracksPeelingRows: number;
   deckCoveringCracksPeelingData: Array<{ observation: string }>;
@@ -397,7 +389,6 @@ const HullMaintenanceInspectionforShipsForm = () => {
     superStructureDefectsRows: 0,
     superStructureDefectsData: [],
     // Deck covering
-    deckCoveringInput: '',
     deckCoveringPresentScheme: '',
     deckCoveringCracksPeelingRows: 0,
     deckCoveringCracksPeelingData: [],
@@ -740,31 +731,14 @@ const HullMaintenanceInspectionforShipsForm = () => {
   const handleFetchDrafts = async () => {
     setIsLoadingDrafts(true);
     try {
-      const response = await get('hitumodule/hull-maintenance-inspection-reports/');
-      console.log('API Response:', response);
-      
-      let draftsData: any[] = [];
-      
-      // Check different possible response structures
-      if (response && response.data && Array.isArray(response.data)) {
-        console.log('Found data in response.data:', response.data);
-        draftsData = response.data;
-      } else if (response && response.results && Array.isArray(response.results)) {
-        console.log('Found data in response.results:', response.results);
-        draftsData = response.results;
-      } else if (Array.isArray(response)) {
-        console.log('Response is direct array:', response);
-        draftsData = response;
+      const response = await get('hitumodule/hull-maintenance-inspection-for-ships/');
+      if (response && Array.isArray(response)) {
+        setApiDrafts(response);
+        setIsDraftModalOpen(true);
       } else {
-        console.log('No data found. Response structure:', response);
-        draftsData = [];
+        setApiDrafts([]);
+        setIsDraftModalOpen(true);
       }
-      
-      console.log('Final draftsData:', draftsData);
-      console.log('Drafts count:', draftsData.length);
-      
-      setApiDrafts(draftsData);
-      setIsDraftModalOpen(true);
     } catch (error) {
       console.error('Error fetching drafts:', error);
       setApiDrafts([]);
@@ -852,7 +826,6 @@ const HullMaintenanceInspectionforShipsForm = () => {
       superStructureDefectsRows: 0,
       superStructureDefectsData: [],
       // Deck covering
-      deckCoveringInput: '',
       deckCoveringPresentScheme: '',
       deckCoveringCracksPeelingRows: 0,
       deckCoveringCracksPeelingData: [],
@@ -903,125 +876,11 @@ const HullMaintenanceInspectionforShipsForm = () => {
 
   const handleEdit = (record: any) => {
     setEditingRecord(record);
-    
-    // Handle date conversion
-    let dateObj: Date | undefined;
-    if (record.dt_inspection) {
-      // Convert API date format to Date object
-      const dateStr = record.dt_inspection;
-      if (dateStr.includes('-')) {
-        // Handle YYYY-MM-DD format
-        dateObj = new Date(dateStr);
-      } else {
-        // Handle DD-MM-YYYY format
-        const [day, month, year] = dateStr.split('-');
-        dateObj = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
-      }
-    }
-    
-    // Set the date picker state
-    setInspectionDate(dateObj);
-    
     // Populate form with record data
     setFormData(prev => ({
       ...prev,
       vesselId: record.vessel?.id?.toString() || '',
-      inspectionDate: record.dt_inspection || '',
-      // OPDEFs
-      opdefsSinceLastInspection: record.no_of_opdefs?.toString() || '',
-      // Machinery Compartments
-      presentPaintScheme: record.mc_present_paint_scheme || '',
-      dateOfLastRenewal: record.mc_date_of_last100_renewal || '',
-      presentPaintCondition: record.mc_present_paint_condition || '',
-      generalBilgesHygiene: record.mc_general_bilges_hygiene || '',
-      presenceOfWaterOilInBilges: record.mc_presence_of_water || '',
-      // Weather Decks
-      weatherDecksPresentPaintScheme: record.wd_present_paint_scheme || '',
-      weatherDecksDateOfLastRenewal: record.wd_date_of_last100_renewal || '',
-      weatherDecksPresentPaintCondition: record.wd_present_paint_condition || '',
-      weatherDecksMaintenanceStandard: record.wd_main_standard || '',
-      weatherDecksOtherObservations: record.wd_other_observations || '',
-      // Helo/Flight Deck
-      heloFlightDeckPresentPaintScheme: record.hfd_present_paint_scheme || '',
-      heloFlightDeckDateOfLastRenewal: record.hfd_date_of_last100_renewal || '',
-      heloFlightDeckPresentPaintCondition: record.hfd_present_paint_condition || '',
-      heloFlightDeckMaintenanceStandard: record.hfd_maintenance_standard || '',
-      heloFlightDeckLastDateOfFrictionTest: record.hfd_last_date_of_friction_test || '',
-      // Deck Covering
-      deckCoveringInput: record.deck_covering || '',
-      deckCoveringPresentScheme: record.dc_present_system || '',
-      // Documentation
-      hullSurveyRecord: record.record_of_hull_survey || '',
-      hullPotentialMeasurements: record.record_of_hull_potential || '',
-      emap: record.emap || '',
-      boatLogBook: record.boat_logbook || '',
-      recordOfDefects: record.record_of_defects || '',
-      hmpVmpLogBook: record.hmp_logbook || '',
-      // Returns
-      in378: record.in_378 || '',
-      quarterlyHullSurvey: record.quarterly_hull_survey || '',
-      hullPotentialIccp: record.hull_potential || '',
-      boatReturnsHistory: record.boat_returns || '',
-      // Miscellaneous Records
-      policyFile: record.policy_file || '',
-      maintops: record.maintops || '',
-      in305AnchorChain: record.in_305 || '',
-      in379DockingForm: record.in_379 || '',
-      hullSurveyReportYard: record.hull_survey_report_by_yard || '',
-      // HMP/VMP
-      regularHmpVmp: record.hmp || '',
-      hmpVmpAdequate: record.whether_hmp || '',
-      employedIawMaintops: record.whether_employed_iaw || '',
-      // Lifting Appliances
-      rasPointsOps: record.ras_ops_nonops || '',
-      rasPointsLastLoadTest: record.ras_last_loadtest_date || '',
-      rasPointsDueLoadTest: record.ras_due_loadtest_date || '',
-      rasPointsRemarks: record.ras_remarks || '',
-      accommodationLadderOps: record.sn_ops_nonops || '',
-      accommodationLadderLastLoadTest: record.sn_last_loadtest_date || '',
-      accommodationLadderDueLoadTest: record.sn_due_loadtest_date || '',
-      accommodationLadderRemarks: record.sn_remarks || '',
-      // Systems
-      iccpSystemOperational: record.iccp_operational || '',
-      iccpSystemDetails: record.iccp_set_potential || '',
-      setPotentialWrtZincRE: record.iccp_set_potential || '',
-      readingInPanelWrtZincRE: record.iccp_reading_panel || '',
-      externalReadingWrtPortableZincRE: record.iccp_external_reading || '',
-      lastCalibrationDateForZincRE: record.iccp_last_calibration || '',
-      knownDefectsOfICCP: record.iccp_known_defects || '',
-      // Ventilation System
-      ventilationSystemOperational: record.vs_operational || '',
-      detailsOfDefects: record.vs_state_of_atu || '',
-      stateOfATUOps: record.vs_state_of_atu || '',
-      stateOfATUNonOps: record.vs_state_of_atu_nonops || '',
-      atuRoutines: record.vs_atu_routines || '',
-      stateOfHEs: record.vs_state_of_hes || '',
-      chokingOfTrunkings: record.vs_state_of_hes || '',
-      // Fresh Water Systems
-      freshWaterSystemsOperational: record.fws_ops_nonops || '',
-      // Sewage Treatment Plant
-      sewagePlantNameMakeType: record.stp_name || '',
-      sewagePlantOperational: record.stp_operational || '',
-      sewagePlantDefects: record.stp_whether_routine || '',
-      sewagePlantRoutineIAWManual: record.stp_whether_routine || '',
-      sewagePlantEffluentTestResult: record.stp_last_effluent_test_d || '',
-      // Life Saving Appliances
-      boatsAuthorisation: record.boats_authorisation || '',
-      boatsHeldDeficiency: record.boats_held || '',
-      boatsBer: record.boats_ber || '',
-      boatsLandedForRepairs: record.boats_landed_for_repairs || '',
-      boatsMaintenanceTwoPointLifting: record.boats_maintenance || '',
-      boatsVisualExaminationHooks: record.availability_of_apt || '',
-      boatsDPTestAdapter: record.availability_of_apt || '',
-      boatsPeriodicInspection: record.availability_of_apt || '',
-      boatsVisualSurveyStrongBack: record.availability_of_apt || '',
-      // Life Rafts
-      lifeRaftsAuthorisation: record.lr_ber || '',
-      lifeRaftsHeldDeficiency: record.landed_for_survey || '',
-      lifeRaftsBer: record.lr_ber || '',
-      lifeRaftsLandedForSurvey: record.landed_for_survey || '',
-      lifeRaftsStowageArrangements: record.hydrostatic_releasing_gear || '',
-      lifeRaftsHydrostaticReleasingGear: record.hydrostatic_releasing_gear || '',
+      inspectionDate: record.auth_inspection || '',
     }));
     setIsDraftModalOpen(false);
   };
@@ -1056,34 +915,6 @@ const HullMaintenanceInspectionforShipsForm = () => {
         {/* Date and Vessel Section */}
         <div className="p-3 border-b border-gray-200">
           <div className="flex items-center bg-white p-3 gap-6">
-             {/* Inspection for Ships INS */}
-            <div className="flex-1">
-              <div className="text-sm font-bold text-gray-700 mb-2">
-                INSPECTION FOR SHIPS INS:<span className="text-red-500">*</span>
-              </div>
-              <Select
-                value={formData.vesselId}
-                onValueChange={handleVesselChange}
-                disabled={loadingVessels}
-              >
-                <SelectTrigger className="border border-gray-300 rounded px-3 py-2 w-full">
-                  <SelectValue placeholder={loadingVessels ? "Loading vessels..." : "--Select--"} />
-                </SelectTrigger>
-                <SelectContent>
-                  {vesselError ? (
-                    <SelectItem value="" disabled>
-                      Error loading vessels
-                    </SelectItem>
-                  ) : (
-                    vessels.map((vessel) => (
-                      <SelectItem key={vessel.id} value={vessel.id.toString()}>
-                        {vessel.name}
-                      </SelectItem>
-                    ))
-                  )}
-                </SelectContent>
-              </Select>
-            </div>
             {/* Date of Inspection */}
             <div className="flex-1">
               <div className="text-sm font-bold text-gray-700 mb-2">
@@ -1111,6 +942,35 @@ const HullMaintenanceInspectionforShipsForm = () => {
                 </PopoverContent>
               </Popover>
             </div>
+
+            {/* Inspection for Ships INS */}
+            <div className="flex-1">
+              <div className="text-sm font-bold text-gray-700 mb-2">
+                INSPECTION FOR SHIPS INS:<span className="text-red-500">*</span>
+              </div>
+              <Select
+                value={formData.vesselId}
+                onValueChange={handleVesselChange}
+                disabled={loadingVessels}
+              >
+                <SelectTrigger className="border border-gray-300 rounded px-3 py-2 w-full">
+                  <SelectValue placeholder={loadingVessels ? "Loading vessels..." : "--Select--"} />
+                </SelectTrigger>
+                <SelectContent>
+                  {vesselError ? (
+                    <SelectItem value="" disabled>
+                      Error loading vessels
+                    </SelectItem>
+                  ) : (
+                    vessels.map((vessel) => (
+                      <SelectItem key={vessel.id} value={vessel.id.toString()}>
+                        {vessel.name}
+                      </SelectItem>
+                    ))
+                  )}
+                </SelectContent>
+              </Select>
+            </div>
           </div>
         </div>
 
@@ -1128,6 +988,8 @@ const HullMaintenanceInspectionforShipsForm = () => {
           }}
         />
 
+
+
         {/* Preservation Component */}
         <Preservation 
           formData={formData} 
@@ -1140,18 +1002,24 @@ const HullMaintenanceInspectionforShipsForm = () => {
             };
             setFormData(prev => ({ ...prev, [field]: updatedData }));
           }}
-          setIsDatePickerOpen={setIsDatePickerOpen}
-          isDatePickerOpen={isDatePickerOpen}
         />
 
         {/* Documentation Component */}
         <Documentation 
           formData={formData} 
           onInputChange={handleInputChange}
+          onDataChange={(field, index, dataField, value) => {
+            const updatedData = [...formData[field as keyof typeof formData] as any[]];
+            updatedData[index] = {
+              ...updatedData[index],
+              [dataField]: value
+            };
+            setFormData(prev => ({ ...prev, [field]: updatedData }));
+          }}
         />
 
-        {/* Water Tight and Gas Tight Integrity Component */}
-        <WaterTightGasTightIntegrity 
+        {/* WaterTight Component */}
+        <WaterTight 
           formData={formData} 
           onInputChange={handleInputChange}
           onDataChange={(field, index, dataField, value) => {
@@ -1164,216 +1032,4 @@ const HullMaintenanceInspectionforShipsForm = () => {
           }}
         />
 
-        {/* Lifting Appliances Component */}
-        <LiftingAppliances 
-          formData={formData} 
-          onInputChange={handleInputChange}
-          onDataChange={(field, index, dataField, value) => {
-            const updatedData = [...formData[field as keyof typeof formData] as any[]];
-            updatedData[index] = {
-              ...updatedData[index],
-              [dataField]: value
-            };
-            setFormData(prev => ({ ...prev, [field]: updatedData }));
-          }}
-          setIsDatePickerOpen={setIsDatePickerOpen}
-          isDatePickerOpen={isDatePickerOpen}
-        />
-
-        {/* Systems Component */}
-        <Systems 
-          formData={formData} 
-          onInputChange={handleInputChange}
-          onDataChange={(field, index, dataField, value) => {
-            const updatedData = [...formData[field as keyof typeof formData] as any[]];
-            updatedData[index] = {
-              ...updatedData[index],
-              [dataField]: value
-            };
-            setFormData(prev => ({ ...prev, [field]: updatedData }));
-          }}
-        />
-
-        {/* Hull Equipment Component */}
-        <HullEquipment 
-          formData={formData} 
-          onInputChange={handleInputChange}
-          onDataChange={(field, index, dataField, value) => {
-            const updatedData = [...formData[field as keyof typeof formData] as any[]];
-            updatedData[index] = {
-              ...updatedData[index],
-              [dataField]: value
-            };
-            setFormData(prev => ({ ...prev, [field]: updatedData }));
-          }}
-        />
-
-        {/* Life Saving Appliances Component */}
-        <LifeSavingAppliances 
-          formData={formData} 
-          onInputChange={handleInputChange}
-          setIsDatePickerOpen={setIsDatePickerOpen}
-          isDatePickerOpen={isDatePickerOpen}
-        />
-
-        {/* Habitability Component */}
-        <Habitability 
-          formData={formData} 
-          onInputChange={handleInputChange}
-        />
-
-        {/* Ships Husbandry Tools Component */}
-        <ShipsHusbandryTools 
-          formData={formData} 
-          onInputChange={handleInputChange}
-        />
-
-
-
-        {/* Recommendations Section */}
-        <div className="bg-white border-b border-gray-200">
-          <div className="bg-[#c7d9f0] text-black px-6 py-4">
-            <h3 className="text-lg font-bold border-b-2 border-purple-500 pb-2">Recommendations</h3>
-          </div>
-          
-          <div className="pt-4 bg-gray-100 max-h-96 overflow-y-auto">
-            <table className="min-w-full border-collapse border border-gray-300 rounded-lg">
-              <tbody>
-                {/* 11.1 SS Recommendations */}
-                <tr style={{ backgroundColor: '#f2f2f2' }}>
-                  <td className="border-l border-r border-t border-gray-300 px-4 py-3 w-1/12">
-                    <span className="text-sm font-medium text-gray-700">11.1</span>
-                  </td>
-                  <td className="border-r border-t border-gray-300 px-4 py-3">
-                    <span className="text-sm font-medium text-gray-700">
-                      SS Recommendations :-<span className="text-red-500">*</span>
-                    </span>
-                  </td>
-                  <td className="border-r border-t border-gray-300 px-4 py-3" colSpan={2}>
-                    <ObservationsTable
-                      formData={formData}
-                      onInputChange={handleInputChange}
-                      onDataChange={(field, index, dataField, value) => {
-                        const updatedData = [...formData[field as keyof typeof formData] as any[]];
-                        updatedData[index] = {
-                          ...updatedData[index],
-                          [dataField]: value
-                        };
-                        setFormData(prev => ({ ...prev, [field]: updatedData }));
-                      }}
-                      rowsField="ssRecommendationsRows"
-                      dataField="ssRecommendationsData"
-                      placeholder="Enter recommendation"
-                    />
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        {/* Form Action Buttons */}
-        <div className="bg-white p-6 mt-8">
-          <div className="flex justify-center space-x-4">
-            <button
-              type="button"
-              className="px-6 py-2 bg-blue-400 text-white font-bold rounded hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-              onClick={handleFetchDrafts}
-              disabled={isLoadingDrafts}
-            >
-              {isLoadingDrafts ? 'Loading...' : 'Fetch Drafts'}
-            </button>
-            <button
-              type="button"
-              className="px-6 py-2 bg-green-600 text-white font-bold rounded hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-              onClick={handleSaveDraft}
-              disabled={isSavingDraft}
-            >
-              {isSavingDraft ? 'Saving...' : 'Save Draft'}
-            </button>
-            <button
-              type="button"
-              className="px-6 py-2 bg-red-500 text-white font-bold rounded hover:bg-red-700 transition-colors"
-              onClick={handleClear}
-            >
-              Clear
-            </button>
-            <button
-              type="submit"
-              className="px-6 py-2 bg-blue-700 text-white font-bold rounded hover:bg-blue-600 transition-colors"
-              onClick={handleSubmit}
-            >
-              {editingRecord ? 'Update' : 'Save'}
-            </button>
-          </div>
-        </div>
-
-        {/* Drafts Modal */}
-        <Dialog open={isDraftModalOpen} onOpenChange={setIsDraftModalOpen}>
-          <DialogContent className="max-w-4xl shadow-xl border-0 bg-white p-0 rounded-1xl">
-            <DialogHeader className="bg-gradient-to-r from-[#1a2746] to-[#223366] p-4 text-white">
-              <DialogTitle className="text-lg font-semibold">Draft Data</DialogTitle>
-            </DialogHeader>
-            
-            <div className="space-y-4 p-4">
-              {apiDrafts.length === 0 ? (
-                <p className="text-gray-500 text-center py-8">No drafts found.</p>
-              ) : (
-                <Table>
-                  <TableHeader>
-                    <TableRow className="bg-[#1a2746] text-white">
-                      <TableHead className="text-white font-bold">Sr No.</TableHead>
-                      <TableHead className="text-white font-bold">Inspection For Ships INS</TableHead>
-                      <TableHead className="text-white font-bold">Date Of Inspection</TableHead>
-                      <TableHead className="text-white font-bold">Created Date</TableHead>
-                      <TableHead className="text-white font-bold">Action</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {apiDrafts.map((draft, index) => (
-                      <TableRow key={draft.id} className={index % 2 === 0 ? "bg-[#f2f2f2]" : "bg-white"}>
-                        <TableCell>{index + 1}</TableCell>
-                        <TableCell>{draft.ins || 'N/A'}</TableCell>
-                        <TableCell>{draft.dt_inspection || 'No Date Provided'}</TableCell>
-                        <TableCell>{new Date(draft.created_on).toLocaleString()}</TableCell>
-                        <TableCell>
-                          <div className="flex space-x-2">
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() => handleEdit(draft)}
-                            >
-                              Edit
-                            </Button>
-                            <Button
-                              variant="destructive"
-                              size="sm"
-                              onClick={() => handleDelete(draft.id)}
-                            >
-                              Delete
-                            </Button>
-                          </div>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              )}
-            </div>
-            <div className="flex justify-end gap-3 p-4 border-t">
-              <Button
-                variant="outline"
-                onClick={() => setIsDraftModalOpen(false)}
-                className="rounded-lg"
-              >
-                Close
-              </Button>
-            </div>
-          </DialogContent>
-        </Dialog>
-      </div>
-    </div>
-  );
-};
-
-export default HullMaintenanceInspectionforShipsForm; 
+        {/* Lifting Appliances Section */}

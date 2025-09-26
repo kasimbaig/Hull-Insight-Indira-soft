@@ -42,6 +42,9 @@ export interface CommentorSheetProps {
   departments?: string[];
   onSubmit?: (formData: FormData) => void;
   onAddComment?: (comment: Comment) => void;
+  onBack?: () => void;
+  mode?: 'add' | 'edit' | 'view';
+  record?: any;
   className?: string;
   customForm?: React.ComponentType<any>;
 }
@@ -63,6 +66,9 @@ const CommentorSheet: React.FC<CommentorSheetProps> = ({
   departments = ["Sales", "Marketing", "Information Technology", "Human Resources", "Finance"],
   onSubmit,
   onAddComment,
+  onBack,
+  mode = 'add',
+  record,
   className = "",
   customForm: CustomForm,
 }) => {
@@ -339,6 +345,18 @@ const CommentorSheet: React.FC<CommentorSheetProps> = ({
       <div className="max-w-full mx-auto shadow-lg rounded-2xl overflow-hidden bg-white">
         {/* Toggle Header */}
         <div className="bg-white border-b border-gray-200 p-6">
+          <div className="flex justify-between items-center mb-4">
+            {onBack && (
+              <button
+                onClick={onBack}
+                className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors"
+              >
+                <ArrowDown className="w-4 h-4 rotate-90" />
+                Back to List
+              </button>
+            )}
+            <div className="flex-1"></div>
+          </div>
           <div className="flex justify-center">
             <div className="bg-gray-100 rounded-full p-1 flex">
               <button
@@ -517,7 +535,7 @@ const CommentorSheet: React.FC<CommentorSheetProps> = ({
             </h2>
           
           {CustomForm ? (
-            <CustomForm />
+            <CustomForm mode={mode} record={record} />
           ) : (
           <form onSubmit={handleSubmit} className="space-y-5">
             {formFields.showFirstName && (

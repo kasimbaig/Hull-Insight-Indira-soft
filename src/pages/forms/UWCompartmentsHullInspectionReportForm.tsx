@@ -3,7 +3,7 @@ import UWCompartmentsHullInspectionReportForm from '@/components/forms/UWCompart
 
 const UWCompartmentsHullInspectionReportFormPage: React.FC = () => {
   return (
-    <div className="container mx-auto p-4">
+    <div className="mx-auto p-0">
       <UWCompartmentsHullInspectionReportForm />
     </div>
   );

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import {
   Dialog,
   DialogContent,
@@ -17,7 +17,7 @@ import { get } from "@/lib/api";
 export interface FieldConfig {
   name: string;
   label: string;
-  type: "text" | "textarea" | "number" | "dropdown" | "date" | "checkbox" | "static-dropdown" | "comma-dropdown";
+  type: "text" | "textarea" | "number" | "dropdown" | "date" | "checkbox" | "static-dropdown" | "comma-dropdown" | "searchable-dropdown";
   placeholder?: string;
   apiEndpoint?: string; // optional: fetch options from API
   options?: { value: string | number; label: string }[]; // static options
@@ -37,7 +37,131 @@ interface DynamicFormDialogProps {
   onSubmit: (values: Record<string, any>) => Promise<void> | void;
 }
 
-// ---------------- Component ----------------
+// ---------------- Searchable Dropdown Component ----------------
+interface SearchableDropdownProps {
+  value: any;
+  options: any[];
+  placeholder?: string;
+  required?: boolean;
+  onChange: (value: any) => void;
+  onCustomChange?: (value: string) => void;
+}
+
+function SearchableDropdown({ 
+  value, 
+  options, 
+  placeholder, 
+  required, 
+  onChange, 
+  onCustomChange 
+}: SearchableDropdownProps) {
+  const [isOpen, setIsOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Filter options based on search term
+  const filteredOptions = options.filter(option => {
+    const label = option.label || option.name || String(option.value || option.id);
+    return label.toLowerCase().includes(searchTerm.toLowerCase());
+  });
+
+  // Get selected option label
+  const selectedOption = options.find(opt => 
+    (opt.value || opt.id) === value
+  );
+  const displayValue = selectedOption ? (selectedOption.label || selectedOption.name) : "";
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+        setSearchTerm("");
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const handleSelect = (option: any) => {
+    const optionValue = option.value || option.id;
+    onChange(optionValue);
+    if (onCustomChange) {
+      onCustomChange(optionValue);
+    }
+    setIsOpen(false);
+    setSearchTerm("");
+  };
+
+  return (
+    <div className="relative" ref={dropdownRef}>
+      {/* Dropdown Trigger */}
+      <div
+        className="w-full rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring focus:ring-indigo-200 p-2 cursor-pointer bg-white flex justify-between items-center"
+        onClick={() => setIsOpen(!isOpen)}
+      >
+        <span className={value ? "text-gray-900" : "text-gray-500"}>
+          {displayValue || placeholder || "Select an option"}
+        </span>
+        <svg 
+          className={`w-4 h-4 transform transition-transform ${isOpen ? "rotate-180" : ""}`} 
+          fill="none" 
+          stroke="currentColor" 
+          viewBox="0 0 24 24"
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+        </svg>
+      </div>
+
+      {/* Dropdown Menu */}
+      {isOpen && (
+        <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-hidden">
+          {/* Search Bar */}
+          <div className="p-2 border-b border-gray-200">
+            <Input
+              type="text"
+              placeholder="Search..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full rounded-md border-gray-300 focus:border-indigo-500"
+              onClick={(e) => e.stopPropagation()}
+              autoFocus
+            />
+          </div>
+          
+          {/* Options List */}
+          <div className="max-h-48 overflow-y-auto">
+            {filteredOptions.length === 0 ? (
+              <div className="p-3 text-center text-gray-500 text-sm">
+                No options found
+              </div>
+            ) : (
+              filteredOptions.map((option, idx) => {
+                const optionValue = option.value || option.id;
+                const optionLabel = option.label || option.name || String(optionValue);
+                
+                return (
+                  <div
+                    key={idx}
+                    className={`p-3 cursor-pointer hover:bg-gray-100 transition-colors ${
+                      value === optionValue ? "bg-indigo-50 text-indigo-700" : "text-gray-900"
+                    }`}
+                    onClick={() => handleSelect(option)}
+                  >
+                    {optionLabel}
+                  </div>
+                );
+              })
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ---------------- Main Component ----------------
 export function DynamicFormDialog({
   open,
   onOpenChange,
@@ -60,55 +184,27 @@ export function DynamicFormDialog({
       // Clear dropdown data when dialog opens to ensure fresh data
       setDropdownData({});
     }
-  }, [open]); // Only depend on open, not initialValues
+  }, [open]);
 
   // Update form data when initialValues change (for editing scenarios)
   useEffect(() => {
     if (open && initialValues && Object.keys(initialValues).length > 0) {
-      console.log('Setting initial values:', initialValues);
-      setFormData(initialValues);
-      
-      // If we have a form_module in initialValues, fetch its sub-modules
-      if (initialValues.form_module) {
-        const fetchSubModules = async () => {
-          try {
-            console.log('Fetching sub-modules for initial form_module:', initialValues.form_module);
-            const res = await get(`/master/submodules/?module_id=${initialValues.form_module}`);
-            const items = Array.isArray(res) ? res : res.data ?? res.results ?? [];
-            console.log('Initial sub-modules loaded:', items);
-            console.log('Looking for sub-module with ID:', initialValues.sub_module);
-            
-            // Check if the selected sub-module exists in the fetched items
-            const selectedSubModule = items.find(item => 
-              (item.id || item.value) == initialValues.sub_module
-            );
-            console.log('Selected sub-module found:', selectedSubModule);
-            
-            setDropdownData((prev) => ({ ...prev, sub_module: items }));
-            
-            // Ensure the submodule is still selected after fetching
-            if (initialValues.sub_module && selectedSubModule) {
-              console.log('Re-setting submodule selection:', initialValues.sub_module);
-              setFormData((prev) => ({ ...prev, sub_module: initialValues.sub_module }));
-            }
-          } catch (err) {
-            console.error('Failed to fetch initial sub-modules:', err);
-            setDropdownData((prev) => ({ ...prev, sub_module: [] }));
-          }
-        };
-        
-        fetchSubModules();
-      }
+      setFormData(prev => {
+        const hasExistingData = Object.values(prev).some(value => value !== "" && value !== null && value !== undefined);
+        if (!hasExistingData) {
+          return { ...prev, ...initialValues };
+        }
+        return prev;
+      });
     }
   }, [initialValues, open]);
 
   // Fetch dropdowns from API
   useEffect(() => {
     fields.forEach(async (field) => {
-      if (field.type === "dropdown" && field.apiEndpoint) {
+      if ((field.type === "dropdown" || field.type === "searchable-dropdown") && field.apiEndpoint) {
         try {
           const res = await get(field.apiEndpoint);
-          // normalize: extract array from API response
           const items = Array.isArray(res) ? res : res.data ?? [];
           setDropdownData((prev) => ({ ...prev, [field.name]: items }));
         } catch (err) {
@@ -178,15 +274,8 @@ export function DynamicFormDialog({
   // Get dropdown options (static or from API)
   const getDropdownOptions = (field: FieldConfig): any[] => {
     if (field.options) {
-      // Static options
       return field.options;
     } else if (field.apiEndpoint && dropdownData[field.name]) {
-      // API options
-      console.log(`Getting dropdown options for ${field.name}:`, dropdownData[field.name]);
-      return dropdownData[field.name];
-    } else if (field.name === "sub_module" && dropdownData[field.name]) {
-      // Special handling for sub_module without apiEndpoint
-      console.log(`Getting sub-module options:`, dropdownData[field.name]);
       return dropdownData[field.name];
     }
     return [];
@@ -208,7 +297,7 @@ export function DynamicFormDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       {trigger && <DialogTrigger asChild>{trigger}</DialogTrigger>}
 
-      <DialogContent className="lg:max-w-lg shadow-xl border-0 bg-white p-0 rounded-1xl">
+      <DialogContent className="lg:max-w-4xl shadow-xl border-0 bg-white p-0 rounded-1xl">
         {/* Header */}
         <DialogHeader className="bg-gradient-to-r from-[#1a2746] to-[#223366] p-4 text-white">
           <DialogTitle className="text-lg font-semibold">{title}</DialogTitle>
@@ -220,7 +309,7 @@ export function DynamicFormDialog({
         </DialogHeader>
 
         {/* Form Body */}
-        <div className="space-y-4 max-h-[60vh] overflow-y-auto p-4 custom-scrollbar">
+        <div className="space-y-4 max-h-[70vh] overflow-y-auto p-4 custom-scrollbar">
           {fields.map((field) => 
             shouldShowField(field) ? (
             <div key={field.name} className="space-y-2">
@@ -249,7 +338,7 @@ export function DynamicFormDialog({
                   value={formData[field.name] || ""}
                   required={field.required}
                   onChange={(e) => handleChange(field.name, e.target.value)}
-                  className="w-full rounded-lg border-gray-300 focus:border-indigo-500 focus:ring focus:ring-indigo-200 p-2"
+                  className="w-full rounded-lg border-black/40 border-2 focus:border-indigo-500 focus:ring focus:ring-indigo-200 p-2"
                 />
               )}
 
@@ -271,7 +360,7 @@ export function DynamicFormDialog({
                 </div>
               )}
 
-              {/* Dropdown */}
+              {/* Regular Dropdown */}
               {(field.type === "dropdown" || field.type === "static-dropdown") && (
                 <select
                   id={field.name}
@@ -279,7 +368,6 @@ export function DynamicFormDialog({
                   required={field.required}
                   onChange={(e) => {
                     handleChange(field.name, e.target.value);
-                    // Call custom onChange handler if provided
                     if (field.onChange) {
                       field.onChange(e.target.value);
                     }
@@ -306,7 +394,44 @@ export function DynamicFormDialog({
                 </select>
               )}
 
-              {/* Comma Dropdown - Shows comma-separated values as dropdown options */}
+              {/* Searchable Dropdown */}
+              {field.type === "searchable-dropdown" && (
+                <SearchableDropdown
+                  value={formData[field.name]}
+                  options={getDropdownOptions(field)}
+                  placeholder={field.placeholder || `Select ${field.label}`}
+                  required={field.required}
+                  onChange={(value) => handleChange(field.name, value)}
+                  onCustomChange={field.onChange}
+                />
+              )}
+              
+{/* Radio Buttons */}
+{field.type === "radio" && (
+  <div className="space-y-2 flex flex-row gap-8 items-end">
+    {field.options?.map((option: any, idx: number) => (
+      <div key={idx} className="flex items-center">
+        <input
+          type="radio"
+          id={`${field.name}-${option.value}`}
+          name={field.name}
+          value={option.value}
+          checked={formData[field.name] === option.value}
+          onChange={(e) => handleChange(field.name, e.target.value)}
+          className="h-4 w-4 text-indigo-600 border-gray-300 focus:ring-indigo-500"
+        />
+        <Label 
+          htmlFor={`${field.name}-${option.value}`} 
+          className="ml-2 text-gray-700 cursor-pointer"
+        >
+          {option.label}
+        </Label>
+      </div>
+    ))}
+  </div>
+)}
+
+              {/* Comma Dropdown */}
               {field.type === "comma-dropdown" && (
                 <div className="space-y-2">
                   <textarea
@@ -342,7 +467,7 @@ export function DynamicFormDialog({
         </div>
 
         {/* Footer */}
-        <DialogFooter className="flex justify-end gap-3 p-4 border-t">
+        <DialogFooter className="flex justify-end gap-3 p-4 border-t border-2">
           <Button
             variant="outline"
             onClick={() => onOpenChange(false)}

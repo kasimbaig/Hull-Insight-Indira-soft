@@ -1,23 +1,55 @@
 import React from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import CommentorSheet from '../../components/CommentorSheet';
 import PreliminaryUnderwaterHullInspectionReportForm from '../../components/forms/Pre_unde_Hull_inspe/PreliminaryUnderwaterHullInspectionReportForm';
 
 const PreliminaryUnderwaterHullInspectionReport = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { record, mode } = location.state || {};
+
+  // If no state is passed (direct navigation), redirect to table page
+  React.useEffect(() => {
+    if (!location.state) {
+      navigate('/app/reports/preliminary-underwater-hull-inspection-report-page');
+    }
+  }, [location.state, navigate]);
+
   const handleFormSubmit = (formData: any) => {
     console.log('Preliminary Underwater Hull Inspection Form submitted:', formData);
     alert('Preliminary Underwater Hull Inspection Form data submitted! Check console for details.');
+    
+    // Navigate back to the table after successful submission
+    navigate('/app/reports/preliminary-underwater-hull-inspection-report-page');
   };
 
   const handleAddComment = (comment: any) => {
     console.log('New comment added:', comment);
   };
 
+  const handleBack = () => {
+    navigate('/app/reports/preliminary-underwater-hull-inspection-report-page');
+  };
+
+  // Determine the title based on mode
+  const getTitle = () => {
+    if (mode === 'edit') {
+      return `PRELIMINARY UNDERWATER HULL INSPECTION - INS (Edit: ${record?.ship || 'Record'})`;
+    } else if (mode === 'view') {
+      return `PRELIMINARY UNDERWATER HULL INSPECTION - INS (View: ${record?.ship || 'Record'})`;
+    }
+    return "PRELIMINARY UNDERWATER HULL INSPECTION - INS";
+  };
+
   return (
     <CommentorSheet
-      title="PRELIMINARY UNDERWATER HULL INSPECTION - INS"
+      title={getTitle()}
       customForm={PreliminaryUnderwaterHullInspectionReportForm}
       onSubmit={handleFormSubmit}
       onAddComment={handleAddComment}
+      onBack={handleBack}
+      mode={mode}
+      record={record}
       comments={[
         {
           id: 1,
