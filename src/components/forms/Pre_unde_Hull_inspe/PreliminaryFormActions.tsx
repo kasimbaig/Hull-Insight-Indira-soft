@@ -272,13 +272,15 @@ const PreliminaryFormActions: React.FC<PreliminaryFormActionsProps> = ({
                       <TableCell>{new Date(draft.created_on).toLocaleString()}</TableCell>
                       <TableCell>
                         <div className="flex space-x-2">
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => onEdit(draft)}
-                          >
-                            Edit
-                          </Button>
+                          {draft.user_permissions?.permissions?.edit && (
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => onEdit(draft)}
+                            >
+                              Edit
+                            </Button>
+                          )}
                           <Button
                             variant="destructive"
                             size="sm"

@@ -43,6 +43,7 @@ export interface CommentorSheetProps {
   onSubmit?: (formData: FormData) => void;
   onAddComment?: (comment: Comment) => void;
   onBack?: () => void;
+  onForward?: () => void;
   mode?: 'add' | 'edit' | 'view';
   record?: any;
   className?: string;
@@ -67,6 +68,7 @@ const CommentorSheet: React.FC<CommentorSheetProps> = ({
   onSubmit,
   onAddComment,
   onBack,
+  onForward,
   mode = 'add',
   record,
   className = "",
@@ -346,15 +348,26 @@ const CommentorSheet: React.FC<CommentorSheetProps> = ({
         {/* Toggle Header */}
         <div className="bg-white border-b border-gray-200 p-6">
           <div className="flex justify-between items-center mb-4">
-            {onBack && (
-              <button
-                onClick={onBack}
-                className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors"
-              >
-                <ArrowDown className="w-4 h-4 rotate-90" />
-                Back to List
-              </button>
-            )}
+            <div className="flex items-center gap-3">
+              {onBack && (
+                <button
+                  onClick={onBack}
+                  className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors"
+                >
+                  <ArrowDown className="w-4 h-4 rotate-90" />
+                  Back to List
+                </button>
+              )}
+              {onForward && (
+                <button
+                  onClick={onForward}
+                  className="flex items-center gap-2 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors"
+                >
+                  <ArrowDown className="w-4 h-4 -rotate-90" />
+                  Forward
+                </button>
+              )}
+            </div>
             <div className="flex-1"></div>
           </div>
           <div className="flex justify-center">

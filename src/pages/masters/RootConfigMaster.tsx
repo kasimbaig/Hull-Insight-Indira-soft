@@ -5,8 +5,10 @@ import { DataTable, Column, TablePagination } from "@/components/ui/table";
 import { Edit, Trash2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { DynamicFormDialog } from "@/components/DynamicFormDialog";
-import { get, post, put, del, getUnitId } from "@/lib/api";
+import { get, post, getUnitId } from "@/lib/api";
 import { Badge } from "@/components/ui/badge";
+import DeleteDialog from "@/components/ui/delete-dialog";
+import { useDeleteDialog } from "@/hooks/use-delete-dialog";
 
 interface RouteConfig {
   id: number;
@@ -27,6 +29,12 @@ interface RouteConfig {
   ship?: string;
   unit?: string;
   userName?: string;
+  // API response fields
+  vessel_name?: string;
+  sub_module_name?: string;
+  user_name?: string;
+  directorate_name?: string;
+  module_name?: string;
 }
 
 interface DropdownOption {
@@ -81,6 +89,7 @@ const RouteConfigMaster = () => {
   const [subModulesLoading, setSubModulesLoading] = useState(false);
   const [selectedModule, setSelectedModule] = useState<string>("");
   const [selectedUnit, setSelectedUnit] = useState<string>("");
+  const [editingModuleId, setEditingModuleId] = useState<string>("");
 
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -88,15 +97,36 @@ const RouteConfigMaster = () => {
 
   const localUnitId = getUnitId();
 
+  // Debug logging
+  console.log("=== DEBUG INFO ===");
+  console.log("localUnitId:", localUnitId);
+  console.log("selectedUnit:", selectedUnit);
+  console.log("shouldShowUserFields:", selectedUnit === localUnitId);
+  console.log("isDialogOpen:", isDialogOpen);
+  console.log("units dropdown options:", units);
+  console.log("===================");
+
+  // Delete dialog hook
+  const deleteDialog = useDeleteDialog({
+    onConfirm: async (itemId) => {
+      if (itemId) {
+        await handleDelete(itemId as number);
+      }
+    },
+    title: "Delete Route Config",
+    description: "Are you sure you want to delete this route configuration? This action cannot be undone.",
+    confirmText: "Delete",
+    cancelText: "Cancel"
+  });
+
   const columns: Column<RouteConfig>[] = [
-    { header: "Module", accessor: "module" },
-    { header: "Sub Module", accessor: "subModule" },
-    { header: "Vessel", accessor: "ship" },
-    { header: "Directorate", accessor: "unit" },
-    { header: "User", accessor: "userName" },
+    { header: "Module", accessor: "module_name" },
+    { header: "Sub Module", accessor: "sub_module_name" },
+    { header: "Vessel", accessor: "vessel_name" },
+    { header: "Directorate", accessor: "directorate_name" },
+    { header: "User", accessor: "user_name" },
     { header: "Level", accessor: "level" },
     { header: "Route Type", accessor: "route_type" },
-    { header: "Description", accessor: "description" },
     {
       header: "Permissions",
       accessor: "permissions",
@@ -121,7 +151,7 @@ const RouteConfigMaster = () => {
           <Button
             variant="outline"
             size="icon"
-            onClick={() => handleDelete(row.id)}
+            onClick={() => deleteDialog.openDialog({ id: row.id, name: row.description })}
           >
             <Trash2 className="h-4 w-4" />
           </Button>
@@ -187,6 +217,9 @@ const RouteConfigMaster = () => {
       }));
       setUnits(unitsOptions);
 
+      console.log("Fetched units:", unitsOptions);
+      console.log("Looking for unitId:", localUnitId, "in units list");
+      
       setDropdownsLoaded(true);
       
     } catch (err: any) {
@@ -276,11 +309,53 @@ const RouteConfigMaster = () => {
     }
   };
 
+  const fetchModuleBySubModuleId = async (subModuleId: number): Promise<string> => {
+    try {
+      const subModuleRes = await get(`/master/submodules/?id=${subModuleId}`);
+      let subModuleData = null;
+      
+      if (subModuleRes && subModuleRes.data && Array.isArray(subModuleRes.data) && subModuleRes.data.length > 0) {
+        subModuleData = subModuleRes.data[0];
+      } else if (Array.isArray(subModuleRes) && subModuleRes.length > 0) {
+        subModuleData = subModuleRes[0];
+      }
+      
+      if (subModuleData && subModuleData.module) {
+        return subModuleData.module.name || `Module ${subModuleData.module.id}`;
+      }
+      
+      return `Module for SubModule ${subModuleId}`;
+    } catch (err: any) {
+      console.error('Error fetching module by submodule ID:', err);
+      return `Module for SubModule ${subModuleId}`;
+    }
+  };
+
   const fetchConfigs = async (pageNum: number = 1) => {
     try {
       setLoading(true);
       const res = await get(`/config/route-configs/?page=${pageNum}`);
-      setConfigs(res.results || []);
+      
+      // Process each config to fetch module names
+      const processedConfigs = await Promise.all(
+        (res.results || []).map(async (config: RouteConfig) => {
+          try {
+            const moduleName = await fetchModuleBySubModuleId(config.sub_module);
+            return {
+              ...config,
+              module_name: moduleName
+            };
+          } catch (err) {
+            console.error('Error processing config:', err);
+            return {
+              ...config,
+              module_name: `Module for SubModule ${config.sub_module}`
+            };
+          }
+        })
+      );
+      
+      setConfigs(processedConfigs);
       setTotalPages(Math.ceil((res.count || 0) / 10));
     } catch (err: any) {
       toast({
@@ -318,33 +393,100 @@ const RouteConfigMaster = () => {
   useEffect(() => {
     if (selectedUnit) {
       fetchUsersByUnit(selectedUnit);
+      console.log("Unit selected:", selectedUnit, "Comparing with localUnitId:", localUnitId);
     } else {
       setUsers([]);
     }
   }, [selectedUnit]);
 
+  // Check if selected unit matches the current unit ID
+// Check if selected unit matches the current unit ID - FIXED COMPARISON
+const shouldShowUserFields = selectedUnit.toString() === localUnitId.toString();
+
+console.log("=== DEBUG INFO ===");
+console.log("localUnitId:", localUnitId, "type:", typeof localUnitId);
+console.log("selectedUnit:", selectedUnit, "type:", typeof selectedUnit);
+console.log("shouldShowUserFields:", shouldShowUserFields);
+console.log("isDialogOpen:", isDialogOpen);
+console.log("===================");
+
+console.log("Condition check - selectedUnit:", selectedUnit, "localUnitId:", localUnitId, "Result:", shouldShowUserFields);
+
   const handleSave = async (formData: any) => {
+    // Validate level field - prevent negative values
+    const levelStr = formData.level?.toString().trim();
+    if (!levelStr) {
+      toast({
+        title: "Validation Error",
+        description: "Level is required",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Check if level contains negative sign or is not a valid positive number
+    if (levelStr.includes('-') || levelStr.includes('+') || isNaN(parseInt(levelStr)) || parseInt(levelStr) < 0) {
+      toast({
+        title: "Validation Error",
+        description: "Level must be a positive number (0 or greater). Negative values are not allowed.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const level = parseInt(levelStr);
+    if (level < 0) {
+      toast({
+        title: "Validation Error",
+        description: "Level must be a number greater than or equal to 0",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Additional validation for required fields
+    if (!formData.ship || !formData.subModule || !formData.unit || !formData.routeType) {
+      toast({
+        title: "Validation Error",
+        description: "Please fill in all required fields",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Only require permission type if user fields are shown
+    if (shouldShowUserFields && !formData.permissionType) {
+      toast({
+        title: "Validation Error",
+        description: "Permission Type is required when Directorate matches current unit",
+        variant: "destructive",
+      });
+      return;
+    }
+
     const payload = {
       vessel: parseInt(formData.ship),
       sub_module: parseInt(formData.subModule),
-      level: parseInt(formData.level) || 1,
+      level: level,
       route_type: formData.routeType,
       directorate: parseInt(formData.unit),
-      user: formData.user ? parseInt(formData.user) : null,
-      description: formData.description || "Route configuration",
-      permissions: [
+      user: shouldShowUserFields && formData.user ? parseInt(formData.user) : null,
+      permissions: shouldShowUserFields ? [
         {
           permission_type: formData.permissionType || "edit",
           is_granted: true
         }
-      ]
+      ] : []
     };
 
     try {
       if (editingConfig) {
-        await put(`/config/route-configs/`, { ...payload, id: editingConfig.id });
+        // UPDATE - using POST with ID in payload
+        const updatePayload = { ...payload, id: editingConfig.id };
+        await post(`/config/route-configs/`, updatePayload);
         toast({ title: "Success", description: "Route Config updated successfully" });
       } else {
+        // CREATE
         await post(`/config/route-configs/`, payload);
         toast({ title: "Success", description: "Route Config created successfully" });
       }
@@ -363,30 +505,54 @@ const RouteConfigMaster = () => {
     }
   };
 
-  const handleEdit = (config: RouteConfig) => {
+  const handleEdit = async (config: RouteConfig) => {
     setEditingConfig(config);
-    setSelectedModule(config.module || "");
-    setSelectedUnit(config.unit || "");
+    
+    // Fetch the module ID for the submodule to set the correct module selection
+    try {
+      const subModuleRes = await get(`/master/submodules/?id=${config.sub_module}`);
+      let subModuleData = null;
+      
+      if (subModuleRes && subModuleRes.data && Array.isArray(subModuleRes.data) && subModuleRes.data.length > 0) {
+        subModuleData = subModuleRes.data[0];
+      } else if (Array.isArray(subModuleRes) && subModuleRes.length > 0) {
+        subModuleData = subModuleRes[0];
+      }
+      
+      if (subModuleData && subModuleData.module) {
+        const moduleId = subModuleData.module.id.toString();
+        setSelectedModule(moduleId);
+        setEditingModuleId(moduleId);
+      } else {
+        setSelectedModule("");
+        setEditingModuleId("");
+      }
+    } catch (err) {
+      console.error('Error fetching module for edit:', err);
+      setSelectedModule("");
+      setEditingModuleId("");
+    }
+    
+    setSelectedUnit(config.directorate?.toString() || "");
     setIsDialogOpen(true);
   };
 
   const handleDelete = async (id: number) => {
-    if (confirm("Are you sure you want to delete this config?")) {
-      try {
-        const payload = { id: id, delete: true };
-        await del(`/config/route-configs/`, payload);
-        setConfigs((prev) => prev.filter((c) => c.id !== id));
-        toast({
-          title: "Success",
-          description: "Route Config deleted successfully",
-        });
-      } catch (err: any) {
-        toast({
-          title: "Error",
-          description: err.message || "Failed to delete route config",
-          variant: "destructive",
-        });
-      }
+    try {
+      const payload = { id: id, delete: true };
+      await post(`/config/route-configs/`, payload);
+      setConfigs((prev) => prev.filter((c) => c.id !== id));
+      toast({
+        title: "Success",
+        description: "Route Config deleted successfully",
+      });
+    } catch (err: any) {
+      toast({
+        title: "Error",
+        description: err.message || "Failed to delete route config",
+        variant: "destructive",
+      });
+      throw err; // Re-throw to let the dialog handle the error state
     }
   };
 
@@ -398,19 +564,25 @@ const RouteConfigMaster = () => {
   };
 
   const handleModuleChange = (moduleId: string) => {
+    console.log("Module changed to:", moduleId);
     setSelectedModule(moduleId);
     setSubModules([]);
   };
 
   const handleUnitChange = (unitId: string) => {
+    console.log("Unit changed to:", unitId, "Comparing with localUnitId:", localUnitId);
     setSelectedUnit(unitId);
   };
 
   const filteredConfigs = configs.filter((c) =>
-    c.description.toLowerCase().includes(searchTerm.toLowerCase())
+    c.vessel_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    c.sub_module_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    c.directorate_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    c.user_name?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const formFields = [
+  // Base form fields
+  const baseFormFields = [
     {
       name: "module",
       label: "Module",
@@ -419,7 +591,9 @@ const RouteConfigMaster = () => {
       placeholder: "Select module",
       loading: dropdownsLoading,
       onChange: handleModuleChange,
-      required: true
+      required: true,
+      row: 1,
+      width: "w-auto"
     },
     {
       name: "subModule",
@@ -430,7 +604,9 @@ const RouteConfigMaster = () => {
       loading: subModulesLoading,
       disabled: !selectedModule,
       clearable: true,
-      required: true
+      required: true,
+      row: 1,
+      width: "w-auto"
     },
     {
       name: "ship",
@@ -439,35 +615,9 @@ const RouteConfigMaster = () => {
       options: ships,
       placeholder: "Select vessel",
       loading: dropdownsLoading,
-      required: true
-    },
-    {
-      name: "level",
-      label: "Level",
-      type: "number",
-      placeholder: "Enter level (e.g., 1)",
-      min: 1,
-      required: true
-    },
-    {
-      name: "unit",
-      label: "Directorate",
-      type: "searchable-dropdown",
-      options: units,
-      placeholder: "Select directorate",
-      loading: dropdownsLoading,
-      onChange: handleUnitChange,
-      required: true
-    },
-    {
-      name: "user",
-      label: "User",
-      type: "searchable-dropdown",
-      options: users,
-      placeholder: selectedUnit ? "Select user" : "Please select directorate first",
-      loading: dropdownsLoading,
-      disabled: !selectedUnit,
-      clearable: true
+      required: true,
+      row: 2,
+      width: "w-auto"
     },
     {
       name: "routeType",
@@ -477,7 +627,71 @@ const RouteConfigMaster = () => {
         { value: "internal", label: "Internal" },
         { value: "external", label: "External" }
       ],
-      required: true
+      required: true,
+      row: 2,
+      width: "w-auto"
+    },
+    {
+      name: "level",
+      label: "Level",
+      type: "text",
+      placeholder: "Enter level (minimum 0)",
+      required: true,
+      row: 3,
+      width: "w-auto",
+      onChange: (value: string) => {
+        // Prevent negative values
+        if (value.includes('-')) {
+          toast({
+            title: "Invalid Input",
+            description: "Negative values are not allowed. Please enter a positive number.",
+            variant: "destructive",
+          });
+          return ""; // Return empty string to clear the field
+        }
+        
+        // Allow only digits
+        const cleanValue = value.replace(/[^0-9]/g, '');
+        
+        // Show warning if user tries to enter non-numeric characters
+        if (value !== cleanValue && value.length > 0) {
+          toast({
+            title: "Invalid Input",
+            description: "Only numbers are allowed in the level field.",
+            variant: "destructive",
+          });
+        }
+        
+        return cleanValue;
+      }
+    },
+    {
+      name: "unit",
+      label: "Directorate",
+      type: "searchable-dropdown",
+      options: units,
+      placeholder: "Select directorate",
+      loading: dropdownsLoading,
+      onChange: handleUnitChange,
+      required: true,
+      row: 3,
+      width: "w-auto"
+    }
+  ];
+
+  // User and permission fields (only shown when unit matches)
+  const userPermissionFields = shouldShowUserFields ? [
+    {
+      name: "user",
+      label: "User",
+      type: "searchable-dropdown",
+      options: users,
+      placeholder: selectedUnit ? "Select user" : "Please select directorate first",
+      loading: dropdownsLoading,
+      disabled: !selectedUnit,
+      clearable: true,
+      row: 4,
+      width: "w-auto"
     },
     {
       name: "permissionType",
@@ -487,16 +701,21 @@ const RouteConfigMaster = () => {
         { value: "edit", label: "Edit" },
         { value: "comment", label: "Comment" }
       ],
-      required: true
-    },
-    {
-      name: "description",
-      label: "Description",
-      type: "textarea",
-      placeholder: "Enter description",
-      rows: 3
+      required: true,
+      row: 4
     }
+  ] : [];
+
+  // Route type field is now included in baseFormFields
+
+  // Combine all fields based on condition
+  const formFields = [
+    ...baseFormFields,
+    ...userPermissionFields
   ];
+
+  console.log("Form fields being rendered. User fields included:", shouldShowUserFields);
+  console.log("Total form fields count:", formFields.length);
 
   return (
     <div className="">
@@ -529,11 +748,13 @@ const RouteConfigMaster = () => {
       <DynamicFormDialog
         open={isDialogOpen}
         onOpenChange={(open) => {
+          console.log("Dialog open state changed to:", open);
           setIsDialogOpen(open);
           if (!open) {
             setEditingConfig(null);
             setSelectedModule("");
             setSelectedUnit("");
+            setEditingModuleId("");
           }
         }}
         title={editingConfig ? "Edit Route Config" : "Add Route Config"}
@@ -543,18 +764,30 @@ const RouteConfigMaster = () => {
         initialValues={
           editingConfig
             ? {
-                module: editingConfig.module,
-                subModule: editingConfig.subModule,
-                ship: editingConfig.ship,
+                module: editingModuleId,
+                subModule: editingConfig.sub_module?.toString(),
+                ship: editingConfig.vessel?.toString(),
                 level: editingConfig.level,
-                unit: editingConfig.unit,
-                user: editingConfig.user,
+                unit: editingConfig.directorate?.toString(),
+                user: editingConfig.user?.toString(),
                 routeType: editingConfig.route_type,
                 permissionType: editingConfig.permissions?.[0]?.permission_type,
-                description: editingConfig.description,
               }
             : {}
         }
+      />
+      
+      {/* Delete Dialog */}
+      <DeleteDialog
+        isOpen={deleteDialog.isOpen}
+        onClose={deleteDialog.closeDialog}
+        onConfirm={deleteDialog.handleConfirm}
+        title={deleteDialog.title}
+        description={deleteDialog.description}
+        itemName={deleteDialog.itemToDelete?.name}
+        isLoading={deleteDialog.isLoading}
+        confirmText={deleteDialog.confirmText}
+        cancelText={deleteDialog.cancelText}
       />
     </div>
   );

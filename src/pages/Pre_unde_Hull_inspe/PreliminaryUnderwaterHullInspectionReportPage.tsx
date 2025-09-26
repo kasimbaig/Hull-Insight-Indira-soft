@@ -46,6 +46,14 @@ interface PreliminaryInspectionRecord {
   created_by: number;
   modified_on?: string;
   modified_by?: number;
+  user_permissions: {
+    has_access: boolean;
+    is_turn: boolean;
+    permissions: {
+      edit: boolean;
+      comment: boolean;
+    };
+  };
 }
 
 const PreliminaryUnderwaterHullInspectionReportPage: React.FC = () => {
@@ -173,9 +181,11 @@ const PreliminaryUnderwaterHullInspectionReportPage: React.FC = () => {
       accessor: "actions",
       render: (row) => (
         <div className="flex gap-2">
-          <Button variant="outline" size="icon" onClick={() => handleEdit(row)}>
-            <Edit className="h-4 w-4" />
-          </Button>
+          {row.user_permissions?.permissions?.edit && (
+            <Button variant="outline" size="icon" onClick={() => handleEdit(row)}>
+              <Edit className="h-4 w-4" />
+            </Button>
+          )}
           <Button variant="outline" size="icon" onClick={() => handleDelete(row.id)}>
             <Trash2 className="h-4 w-4" />
           </Button>

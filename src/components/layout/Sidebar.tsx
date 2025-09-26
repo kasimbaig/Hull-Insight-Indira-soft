@@ -80,6 +80,7 @@ const sidebarItems = [
         title: "Transactions",
         icon: Building2,
         items: [
+          { title: "Preliminary Underwater Hull Inspection Report", path: "/app/reports/preliminary-underwater-hull-inspection-report-page" },
           { title: "Accommodation Ladder", path: "/app/forms/accommodation-ladder" },
           { title: "Anchor Capstan", path: "/app/forms/anchor-capstan" },
           { title: "APT Trial Protocol", path: "/app/forms/apt-trial-protocol" },
@@ -114,7 +115,6 @@ const sidebarItems = [
           { title: "P-75 Doors and Hatches", path: "/app/forms/p75-doors-hatches" },
           { title: "P-75 FWD Mooring Capstan", path: "/app/forms/p75-fwd-mooring-capstan" },
           { title: "Pre-Wetting System", path: "/app/forms/pre-wetting-system" },
-          { title: "Preliminary Underwater Hull Inspection Report", path: "/app/reports/preliminary-underwater-hull-inspection-report-page" },
           { title: "RAS Capstan", path: "/app/forms/ras-capstan" },
           { title: "RAS Winch", path: "/app/forms/ras-winch" },
           { title: "RHIB - Ship Borne Boat - Harbour Checks", path: "/app/forms/rhib-harbour-checks" },
