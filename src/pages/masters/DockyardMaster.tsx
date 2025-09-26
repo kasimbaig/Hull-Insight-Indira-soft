@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Search, Plus, Edit, Trash2 } from "lucide-react";
+import { Search, Plus } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { DataTable, Column } from "@/components/ui/table";
 import { DynamicFormDialog, FieldConfig } from "@/components/DynamicFormDialog";
@@ -26,10 +26,6 @@ const DockyardMaster = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingDockyard, setEditingDockyard] = useState<Dockyard | null>(null);
 
-  // Pagination
-  const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-
   // Table columns
   const columns: Column<Dockyard>[] = [
     { header: "Name", accessor: "name" },
@@ -43,26 +39,7 @@ const DockyardMaster = () => {
         </Badge>
       ),
     },
-    // { header: "Created By", accessor: "created_by" },
-    // { header: "Created Date", accessor: "created_on" },
-    {
-      header: "Actions",
-      accessor: "actions",
-      render: (row) => (
-        <div className="flex justify-end gap-2">
-          <Button variant="outline" size="icon" onClick={() => handleEdit(row)}>
-            <Edit className="h-4 w-4" />
-          </Button>
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={() => handleDelete(row.id)}
-          >
-            <Trash2 className="h-4 w-4" />
-          </Button>
-        </div>
-      ),
-    },
+    { header: "Actions", accessor: "actions" },
   ];
 
   // Form fields
@@ -77,13 +54,12 @@ const DockyardMaster = () => {
     },
   ];
 
-  // Fetch dockyards with pagination
-  const fetchDockyards = async (pageNum: number = 1) => {
+  // Fetch dockyards
+  const fetchDockyards = async () => {
     setLoading(true);
     try {
-      const res = await get(`/master/dockyards/?page=${pageNum}`);
-      setDockyards(res.results || []);
-      setTotalPages(Math.ceil((res.count || 0) / 5));
+      const res = await get(`/master/dockyards/`);
+      setDockyards(res.results || res.data || []);
     } catch {
       toast({
         title: "Error",
@@ -96,8 +72,8 @@ const DockyardMaster = () => {
   };
 
   useEffect(() => {
-    fetchDockyards(page);
-  }, [page]);
+    fetchDockyards();
+  }, []);
 
   // Save (Create / Update)
   const handleSave = async (formData: any) => {
@@ -117,7 +93,7 @@ const DockyardMaster = () => {
         await post("/master/dockyards/", payload);
         toast({ title: "Success", description: "Dockyard created successfully" });
       }
-      fetchDockyards(page);
+      fetchDockyards();
     } catch {
       toast({
         title: "Error",
@@ -140,24 +116,21 @@ const DockyardMaster = () => {
   };
 
   // Delete
-  const handleDelete = async (id: number) => {
-    if (confirm("Are you sure you want to delete this dockyard?")) {
-      try {
-        const payload = { id: id, delete: true };
-        await post("/master/dockyards/", payload);
-        setDockyards((prev) => prev.filter((d) => d.id !== id));
-        toast({
-          title: "Success",
-          description: "Dockyard deleted successfully",
-        });
-        fetchDockyards(page);
-      } catch {
-        toast({
-          title: "Error",
-          description: "Failed to delete dockyard",
-          variant: "destructive",
-        });
-      }
+  const handleDelete = async (dockyard: Dockyard) => {
+    try {
+      const payload = { id: dockyard.id, delete: true };
+      await post("/master/dockyards/", payload);
+      setDockyards((prev) => prev.filter((d) => d.id !== dockyard.id));
+      toast({
+        title: "Success",
+        description: "Dockyard deleted successfully",
+      });
+    } catch {
+      toast({
+        title: "Error",
+        description: "Failed to delete dockyard",
+        variant: "destructive",
+      });
     }
   };
 
@@ -233,30 +206,19 @@ const DockyardMaster = () => {
           <CardTitle>Dockyards</CardTitle>
         </CardHeader>
         <CardContent>
-          <DataTable columns={columns} data={filteredDockyards} rowsPerPage={5} />
+          <DataTable
+            columns={columns}
+            data={filteredDockyards}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
+            rowsPerPage={5}
+            deleteMessage="Are you sure you want to delete this dockyard? This action cannot be undone."
+            deleteTitle="Delete Dockyard"
+          />
         </CardContent>
       </Card>
 
-      {/* Pagination */}
-      <div className="flex justify-center gap-2 mt-4">
-        <Button
-          variant="outline"
-          disabled={page === 1}
-          onClick={() => setPage((p) => p - 1)}
-        >
-          Previous
-        </Button>
-        <span className="text-sm">
-          Page {page} of {totalPages}
-        </span>
-        <Button
-          variant="outline"
-          disabled={page === totalPages}
-          onClick={() => setPage((p) => p + 1)}
-        >
-          Next
-        </Button>
-      </div>
+      {/* Pagination is now handled by DataTable */}
     </div>
   );
 };

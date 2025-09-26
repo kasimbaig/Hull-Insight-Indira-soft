@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search, Plus, Edit, Trash2 } from "lucide-react";
+import { Search, Plus } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { DataTable, Column } from "@/components/ui/table";
@@ -24,10 +24,6 @@ const CommandMaster = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingCommand, setEditingCommand] = useState<Command | null>(null);
 
-  // Pagination
-  const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-
   // Table columns
   const columns: Column<Command>[] = [
     { header: "Name", accessor: "name" },
@@ -41,37 +37,14 @@ const CommandMaster = () => {
         </Badge>
       ),
     },
-    // { header: "Created Date", accessor: "created_on" },
-    {
-      header: "Actions",
-      accessor: "actions",
-      render: (row) => (
-        <div className="flex gap-2">
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={() => handleEdit(row)}
-          >
-            <Edit className="h-4 w-4" />
-          </Button>
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={() => handleDelete(row.id)}
-          >
-            <Trash2 className="h-4 w-4" />
-          </Button>
-        </div>
-      ),
-    },
+    { header: "Actions", accessor: "actions" },
   ];
 
   // Fetch commands from API
-  const fetchCommands = async (pageNum: number = 1) => {
+  const fetchCommands = async () => {
     try {
-      const res = await get(`/master/commands/?page=${pageNum}`);
-      setCommands(res.results || []);
-      setTotalPages(Math.ceil((res.count || 0) / 10));
+      const res = await get(`/master/commands/`);
+      setCommands(res.results || res.data || []);
     } catch (err) {
       console.error("Failed to fetch commands", err);
       toast({
@@ -83,8 +56,8 @@ const CommandMaster = () => {
   };
 
   useEffect(() => {
-    fetchCommands(page);
-  }, [page]);
+    fetchCommands();
+  }, []);
 
   // Save / Update API
   const handleSave = async (formData: any) => {
@@ -115,7 +88,7 @@ const CommandMaster = () => {
         toast({ title: "Success", description: "Command created successfully" });
       }
 
-      fetchCommands(page); // refresh table
+      fetchCommands(); // refresh table
       setIsDialogOpen(false);
       setEditingCommand(null);
     } catch (err) {
@@ -133,25 +106,23 @@ const CommandMaster = () => {
     setIsDialogOpen(true);
   };
 
-  // Delete API
-  const handleDelete = async (id: number) => {
-    if (confirm("Are you sure you want to delete this command?")) {
-      try {
-        const payload = { id: id, delete: true };
-        await post(`/master/commands/`, payload);
-        setCommands((prev) => prev.filter((c) => c.id !== id));
-        toast({
-          title: "Success",
-          description: "Command deleted successfully",
-        });
-      } catch (err) {
-        console.error("Delete failed", err);
-        toast({
-          title: "Error",
-          description: "Failed to delete command",
-          variant: "destructive",
-        });
-      }
+  // Delete API - Updated for DataTable
+  const handleDelete = async (command: Command) => {
+    try {
+      const payload = { id: command.id, delete: true };
+      await post(`/master/commands/`, payload);
+      setCommands((prev) => prev.filter((c) => c.id !== command.id));
+      toast({
+        title: "Success",
+        description: "Command deleted successfully",
+      });
+    } catch (err) {
+      console.error("Delete failed", err);
+      toast({
+        title: "Error",
+        description: "Failed to delete command",
+        variant: "destructive",
+      });
     }
   };
 
@@ -234,30 +205,19 @@ const CommandMaster = () => {
           <CardTitle>Commands</CardTitle>
         </CardHeader>
         <CardContent>
-          <DataTable columns={columns} data={filteredCommands} rowsPerPage={10} />
+          <DataTable
+            columns={columns}
+            data={filteredCommands}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
+            rowsPerPage={10}
+            deleteMessage="Are you sure you want to delete this command? This action cannot be undone."
+            deleteTitle="Delete Command"
+          />
         </CardContent>
       </Card>
 
-      {/* Pagination */}
-      <div className="flex justify-center gap-2 mt-4">
-        <Button
-          variant="outline"
-          disabled={page === 1}
-          onClick={() => setPage((p) => p - 1)}
-        >
-          Previous
-        </Button>
-        <span className="text-sm">
-          Page {page} of {totalPages}
-        </span>
-        <Button
-          variant="outline"
-          disabled={page === totalPages}
-          onClick={() => setPage((p) => p + 1)}
-        >
-          Next
-        </Button>
-      </div>
+      {/* Pagination is now handled by DataTable */}
     </div>
   );
 };

@@ -8,6 +8,8 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog";
+import { Edit, Trash2, Download, Upload } from "lucide-react";
+import { DynamicFormDialog } from "@/components/DynamicFormDialog";
 
 // ---------------- Table Components ----------------
 const Table = React.forwardRef<
@@ -151,6 +153,9 @@ interface DataTableProps<T> {
   onEdit?: (row: T) => void;
   onDelete?: (row: T) => void;
   className?: string;
+  // Delete confirmation customization
+  deleteMessage?: string;
+  deleteTitle?: string;
 }
 
 export function DataTable<T extends Record<string, any>>({
@@ -160,6 +165,9 @@ export function DataTable<T extends Record<string, any>>({
   onEdit,
   onDelete,
   className,
+  // Delete confirmation customization with defaults
+  deleteMessage = "Are you sure you want to delete this record?",
+  deleteTitle = "Confirm Delete",
 }: DataTableProps<T>) {
   const [currentPage, setCurrentPage] = React.useState(1);
   const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false);
@@ -175,14 +183,6 @@ export function DataTable<T extends Record<string, any>>({
   const handleDeleteClick = (row: T) => {
     setRowToDelete(row);
     setDeleteDialogOpen(true);
-  };
-
-  const confirmDelete = () => {
-    if (rowToDelete && onDelete) {
-      onDelete(rowToDelete);
-    }
-    setDeleteDialogOpen(false);
-    setRowToDelete(null);
   };
 
   // ---------------- Import Handler ----------------
@@ -230,12 +230,14 @@ export function DataTable<T extends Record<string, any>>({
         <Button
           className="bg-[#1a2746] text-white hover:bg-[#223366] rounded-lg shadow-sm"
           onClick={handleImport}
+          title="Import"
         >
           Import
         </Button>
         <Button
           className="bg-green-600 text-white hover:bg-green-700 rounded-lg shadow-sm"
           onClick={handleExport}
+          title="Export"
         >
           Export
         </Button>
@@ -262,21 +264,21 @@ export function DataTable<T extends Record<string, any>>({
                         {onEdit && (
                           <Button
                             size="sm"
-                            variant="secondary"
-                            className="bg-[#1a2746] text-white hover:bg-[#223366] border border-gray-400 rounded-md"
+                            variant="outline"
+                            className="h-8 w-8 p-0 hover:bg-blue-100"
                             onClick={() => onEdit(row)}
                           >
-                            Edit
+                            <Edit className="h-4 w-4 text-blue-600" />
                           </Button>
                         )}
                         {onDelete && (
                           <Button
                             size="sm"
-                            variant="destructive"
-                            className="bg-red-600 text-white hover:bg-red-700 border border-gray-400 rounded-md"
+                            variant="outline"
+                            className="h-8 w-8 p-0 hover:bg-red-100"
                             onClick={() => handleDeleteClick(row)}
                           >
-                            Delete
+                            <Trash2 className="h-4 w-4 text-red-600" />
                           </Button>
                         )}
                       </div>
@@ -301,28 +303,32 @@ export function DataTable<T extends Record<string, any>>({
         />
       )} */}
 
-      {/* Delete Confirmation Dialog */}
-      <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-        <DialogContent className="rounded-xl shadow-lg">
-          <DialogHeader>
-            <DialogTitle>Confirm Delete</DialogTitle>
-          </DialogHeader>
-          <div className="text-gray-700">
-            Are you sure you want to delete this record?
-          </div>
-          <DialogFooter>
-            <Button
-              variant="outline"
-              onClick={() => setDeleteDialogOpen(false)}
-            >
-              Cancel
-            </Button>
-            <Button variant="destructive" onClick={confirmDelete}>
-              Delete
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      {/* Delete Confirmation Dialog using DynamicFormDialog */}
+      <DynamicFormDialog
+        open={deleteDialogOpen}
+        onOpenChange={setDeleteDialogOpen}
+        title={deleteTitle}
+        description={deleteMessage}
+        fields={[
+          {
+            name: "confirmation",
+            label: "Type 'DELETE' to confirm",
+            type: "text",
+            required: true,
+            placeholder: "Type DELETE to confirm deletion"
+          }
+        ]}
+        onSubmit={async (formData) => {
+          if (formData.confirmation === "DELETE" && rowToDelete && onDelete) {
+            onDelete(rowToDelete);
+            setDeleteDialogOpen(false);
+            setRowToDelete(null);
+          } else {
+            alert("Please type 'DELETE' exactly to confirm deletion");
+          }
+        }}
+        initialValues={{}}
+      />
     </div>
   );
 }

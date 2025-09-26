@@ -14,7 +14,7 @@ import { Label } from "@/components/ui/label";
 import { get } from "@/lib/api";
 
 // ---------------- Types ----------------
-export interface FieldConfig {
+export interface ReusableFieldConfig {
   name: string;
   label: string;
   type: "text" | "textarea" | "number" | "dropdown" | "date" | "checkbox" | "static-dropdown" | "comma-dropdown";
@@ -26,19 +26,31 @@ export interface FieldConfig {
   showWhen?: { field: string; value: string }; // conditional visibility
 }
 
-interface DynamicFormDialogProps {
+interface ReusableFormProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   title: string;
   description?: string;
-  fields: FieldConfig[];
+  fields: ReusableFieldConfig[];
   initialValues?: Record<string, any>;
   trigger?: React.ReactNode;
   onSubmit: (values: Record<string, any>) => Promise<void> | void;
+  // Styling customization
+  headerClassName?: string;
+  titleClassName?: string;
+  descriptionClassName?: string;
+  contentClassName?: string;
+  footerClassName?: string;
+  submitButtonClassName?: string;
+  cancelButtonClassName?: string;
+  submitButtonText?: string;
+  cancelButtonText?: string;
+  maxWidth?: string;
+  showCancel?: boolean;
 }
 
 // ---------------- Component ----------------
-export function DynamicFormDialog({
+export function ReusableForm({
   open,
   onOpenChange,
   title,
@@ -47,7 +59,19 @@ export function DynamicFormDialog({
   initialValues = {},
   trigger,
   onSubmit,
-}: DynamicFormDialogProps) {
+  // Styling props with defaults
+  headerClassName = "bg-gradient-to-r from-[#1a2746] to-[#223366] p-4 text-white",
+  titleClassName = "text-lg font-semibold",
+  descriptionClassName = "text-sm opacity-90 text-white",
+  contentClassName = "lg:max-w-lg shadow-xl border-0 bg-white p-0 rounded-1xl",
+  footerClassName = "flex justify-end gap-3 p-4 border-t",
+  submitButtonClassName = "bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg",
+  cancelButtonClassName = "rounded-lg",
+  submitButtonText = "Save",
+  cancelButtonText = "Cancel",
+  maxWidth = "lg:max-w-lg",
+  showCancel = true,
+}: ReusableFormProps) {
   const [formData, setFormData] = useState<Record<string, any>>(initialValues);
   const [dropdownData, setDropdownData] = useState<Record<string, any[]>>({});
   const [loading, setLoading] = useState(false);
@@ -55,52 +79,10 @@ export function DynamicFormDialog({
   // Reset form when dialog opens
   useEffect(() => {
     if (open) {
-      console.log('Dialog opened with initialValues:', initialValues);
       setFormData(initialValues);
-      // Clear dropdown data when dialog opens to ensure fresh data
       setDropdownData({});
     }
-  }, [open]); // Only depend on open, not initialValues
-
-  // Update form data when initialValues change (for editing scenarios)
-  useEffect(() => {
-    if (open && initialValues && Object.keys(initialValues).length > 0) {
-      console.log('Setting initial values:', initialValues);
-      setFormData(initialValues);
-      
-      // If we have a form_module in initialValues, fetch its sub-modules
-      if (initialValues.form_module) {
-        const fetchSubModules = async () => {
-          try {
-            console.log('Fetching sub-modules for initial form_module:', initialValues.form_module);
-            const res = await get(`/master/submodules/?module_id=${initialValues.form_module}`);
-            const items = Array.isArray(res) ? res : res.data ?? res.results ?? [];
-            console.log('Initial sub-modules loaded:', items);
-            console.log('Looking for sub-module with ID:', initialValues.sub_module);
-            
-            // Check if the selected sub-module exists in the fetched items
-            const selectedSubModule = items.find(item => 
-              (item.id || item.value) == initialValues.sub_module
-            );
-            console.log('Selected sub-module found:', selectedSubModule);
-            
-            setDropdownData((prev) => ({ ...prev, sub_module: items }));
-            
-            // Ensure the submodule is still selected after fetching
-            if (initialValues.sub_module && selectedSubModule) {
-              console.log('Re-setting submodule selection:', initialValues.sub_module);
-              setFormData((prev) => ({ ...prev, sub_module: initialValues.sub_module }));
-            }
-          } catch (err) {
-            console.error('Failed to fetch initial sub-modules:', err);
-            setDropdownData((prev) => ({ ...prev, sub_module: [] }));
-          }
-        };
-        
-        fetchSubModules();
-      }
-    }
-  }, [initialValues, open]);
+  }, [open, initialValues]);
 
   // Fetch dropdowns from API
   useEffect(() => {
@@ -108,8 +90,7 @@ export function DynamicFormDialog({
       if (field.type === "dropdown" && field.apiEndpoint) {
         try {
           const res = await get(field.apiEndpoint);
-          // normalize: extract array from API response
-          const items = Array.isArray(res) ? res : res.data ?? [];
+          const items = Array.isArray(res) ? res : res.data ?? res.results ?? [];
           setDropdownData((prev) => ({ ...prev, [field.name]: items }));
         } catch (err) {
           console.error("Dropdown fetch failed for", field.apiEndpoint, err);
@@ -119,74 +100,21 @@ export function DynamicFormDialog({
     });
   }, [fields]);
 
-  // Fetch sub-modules when form module changes
-  useEffect(() => {
-    const fetchSubModules = async () => {
-      if (formData.form_module) {
-        try {
-          console.log('Fetching sub-modules for module ID:', formData.form_module);
-          
-          // Try different API endpoint formats
-          let res;
-          try {
-            res = await get(`/master/submodules/?module_id=${formData.form_module}`);
-          } catch (firstError) {
-            console.log('First API format failed, trying alternative:', firstError);
-            try {
-              res = await get(`/master/submodules/?module=${formData.form_module}`);
-            } catch (secondError) {
-              console.log('Second API format failed, trying third:', secondError);
-              res = await get(`/master/submodules/${formData.form_module}/`);
-            }
-          }
-          
-          console.log('Sub-modules API response:', res);
-          const items = Array.isArray(res) ? res : res.data ?? res.results ?? [];
-          console.log('Processed sub-modules:', items);
-          setDropdownData((prev) => ({ ...prev, sub_module: items }));
-          
-          // Only clear sub_module selection if we're not in edit mode (no initialValues)
-          if (!initialValues || Object.keys(initialValues).length === 0) {
-            setFormData((prev) => ({ ...prev, sub_module: "" }));
-          }
-        } catch (err) {
-          console.error("Sub-modules fetch failed", err);
-          setDropdownData((prev) => ({ ...prev, sub_module: [] }));
-        }
-      } else {
-        // Clear sub-modules when no form module is selected
-        setDropdownData((prev) => ({ ...prev, sub_module: [] }));
-        if (!initialValues || Object.keys(initialValues).length === 0) {
-          setFormData((prev) => ({ ...prev, sub_module: "" }));
-        }
-      }
-    };
-
-    fetchSubModules();
-  }, [formData.form_module, initialValues]);
-
   const handleChange = (name: string, value: any) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   // Check if field should be visible based on conditional logic
-  const shouldShowField = (field: FieldConfig): boolean => {
+  const shouldShowField = (field: ReusableFieldConfig): boolean => {
     if (!field.showWhen) return true;
     return formData[field.showWhen.field] === field.showWhen.value;
   };
 
   // Get dropdown options (static or from API)
-  const getDropdownOptions = (field: FieldConfig): any[] => {
+  const getDropdownOptions = (field: ReusableFieldConfig): any[] => {
     if (field.options) {
-      // Static options
       return field.options;
     } else if (field.apiEndpoint && dropdownData[field.name]) {
-      // API options
-      console.log(`Getting dropdown options for ${field.name}:`, dropdownData[field.name]);
-      return dropdownData[field.name];
-    } else if (field.name === "sub_module" && dropdownData[field.name]) {
-      // Special handling for sub_module without apiEndpoint
-      console.log(`Getting sub-module options:`, dropdownData[field.name]);
       return dropdownData[field.name];
     }
     return [];
@@ -208,12 +136,12 @@ export function DynamicFormDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       {trigger && <DialogTrigger asChild>{trigger}</DialogTrigger>}
 
-      <DialogContent className="lg:max-w-lg shadow-xl border-0 bg-white p-0 rounded-1xl">
+      <DialogContent className={`${maxWidth} shadow-xl border-0 bg-white p-0 rounded-1xl ${contentClassName}`}>
         {/* Header */}
-        <DialogHeader className="bg-gradient-to-r from-[#1a2746] to-[#223366] p-4 text-white">
-          <DialogTitle className="text-lg font-semibold">{title}</DialogTitle>
+        <DialogHeader className={headerClassName}>
+          <DialogTitle className={titleClassName}>{title}</DialogTitle>
           {description && (
-            <DialogDescription className="text-sm opacity-90 text-white">
+            <DialogDescription className={descriptionClassName}>
               {description}
             </DialogDescription>
           )}
@@ -250,6 +178,7 @@ export function DynamicFormDialog({
                   required={field.required}
                   onChange={(e) => handleChange(field.name, e.target.value)}
                   className="w-full rounded-lg border-gray-300 focus:border-indigo-500 focus:ring focus:ring-indigo-200 p-2"
+                  rows={3}
                 />
               )}
 
@@ -279,26 +208,18 @@ export function DynamicFormDialog({
                   required={field.required}
                   onChange={(e) => {
                     handleChange(field.name, e.target.value);
-                    // Call custom onChange handler if provided
                     if (field.onChange) {
                       field.onChange(e.target.value);
                     }
                   }}
                   className="w-full rounded-lg border-gray-300 focus:border-indigo-500 focus:ring focus:ring-indigo-200 p-2"
-                  disabled={field.name === "sub_module" && !formData.form_module}
                 >
-                  <option value="">
-                    {field.name === "sub_module" && !formData.form_module 
-                      ? "Select a form module first" 
-                      : `Select ${field.label}`}
-                  </option>
+                  <option value="">{`Select ${field.label}`}</option>
                   {getDropdownOptions(field).map((opt: any, idx: number) => {
                     const value = String(opt.value || opt.id);
                     const label = opt.label || opt.name;
-                    const isSelected = value === String(formData[field.name] || "");
-                    // console.log(`Rendering option ${idx}: value=${value}, label=${label}, current formData[${field.name}]=${formData[field.name]}, isSelected=${isSelected}`);
                     return (
-                      <option key={idx} value={value} selected={isSelected}>
+                      <option key={idx} value={value}>
                         {label}
                       </option>
                     );
@@ -306,7 +227,7 @@ export function DynamicFormDialog({
                 </select>
               )}
 
-              {/* Comma Dropdown - Shows comma-separated values as dropdown options */}
+              {/* Comma Dropdown */}
               {field.type === "comma-dropdown" && (
                 <div className="space-y-2">
                   <textarea
@@ -342,23 +263,27 @@ export function DynamicFormDialog({
         </div>
 
         {/* Footer */}
-        <DialogFooter className="flex justify-end gap-3 p-4 border-t">
-          <Button
-            variant="outline"
-            onClick={() => onOpenChange(false)}
-            className="rounded-lg"
-          >
-            Cancel
-          </Button>
+        <DialogFooter className={footerClassName}>
+          {showCancel && (
+            <Button
+              variant="outline"
+              onClick={() => onOpenChange(false)}
+              className={cancelButtonClassName}
+            >
+              {cancelButtonText}
+            </Button>
+          )}
           <Button
             onClick={handleSubmit}
             disabled={loading}
-            className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg"
+            className={submitButtonClassName}
           >
-            {loading ? "Saving..." : "Save"}
+            {loading ? "Saving..." : submitButtonText}
           </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
   );
 }
+
+export default ReusableForm;

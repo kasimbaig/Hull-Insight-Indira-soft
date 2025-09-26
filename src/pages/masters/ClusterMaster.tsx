@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search, Plus, Edit, Trash2 } from "lucide-react";
+import { Search, Plus } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { DataTable, Column } from "@/components/ui/table";
@@ -47,9 +47,7 @@ const ClusterMaster = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingCluster, setEditingCluster] = useState<Cluster | null>(null);
 
-  // Pagination
-  const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
+  // Pagination is now handled by DataTable
 
   // Table columns
   const columns: Column<Cluster>[] = [
@@ -67,29 +65,8 @@ const ClusterMaster = () => {
         </Badge>
       ),
     },
-    // { header: "Created Date", accessor: "created_on" },
-    {
-      header: "Actions",
-      accessor: "actions",
-      render: (row) => (
-        <div className="flex gap-2">
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={() => handleEdit(row)}
-          >
-            <Edit className="h-4 w-4" />
-          </Button>
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={() => handleDelete(row.id)}
-          >
-            <Trash2 className="h-4 w-4" />
-          </Button>
-        </div>
-      ),
-    },
+    // { header: "Created Date", accessor: "created_on"     },
+    { header: "Actions", accessor: "actions" },
   ];
 
   // Fetch vessels from API
@@ -133,11 +110,10 @@ const ClusterMaster = () => {
   };
 
   // Fetch clusters from API
-  const fetchClusters = async (pageNum: number = 1) => {
+  const fetchClusters = async () => {
     try {
-      const res = await get(`/master/clusters/?page=${pageNum}`);
-      setClusters(res.results || []);
-      setTotalPages(Math.ceil((res.count || 0) / 10));
+      const res = await get(`/master/clusters/`);
+      setClusters(res.results || res.data || []);
     } catch (err) {
       console.error("Failed to fetch clusters", err);
       toast({
@@ -151,11 +127,8 @@ const ClusterMaster = () => {
   useEffect(() => {
     fetchVessels();
     fetchCompartments();
+    fetchClusters();
   }, []);
-
-  useEffect(() => {
-    fetchClusters(page);
-  }, [page]);
 
   // Save / Update API
   const handleSave = async (formData: any) => {
@@ -207,7 +180,7 @@ const ClusterMaster = () => {
         toast({ title: "Success", description: "Cluster created successfully" });
       }
 
-      fetchClusters(page); // refresh table
+      fetchClusters(); // refresh table
       setIsDialogOpen(false);
       setEditingCluster(null);
     } catch (err) {
@@ -226,24 +199,22 @@ const ClusterMaster = () => {
   };
 
   // Delete API
-  const handleDelete = async (id: number) => {
-    if (confirm("Are you sure you want to delete this cluster?")) {
-      try {
-        const payload = { id: id, delete: true };
-        await post(`/master/clusters/`, payload);
-        setClusters((prev) => prev.filter((c) => c.id !== id));
-        toast({
-          title: "Success",
-          description: "Cluster deleted successfully",
-        });
-      } catch (err) {
-        console.error("Delete failed", err);
-        toast({
-          title: "Error",
-          description: "Failed to delete cluster",
-          variant: "destructive",
-        });
-      }
+  const handleDelete = async (cluster: Cluster) => {
+    try {
+      const payload = { id: cluster.id, delete: true };
+      await post(`/master/clusters/`, payload);
+      setClusters((prev) => prev.filter((c) => c.id !== cluster.id));
+      toast({
+        title: "Success",
+        description: "Cluster deleted successfully",
+      });
+    } catch (err) {
+      console.error("Delete failed", err);
+      toast({
+        title: "Error",
+        description: "Failed to delete cluster",
+        variant: "destructive",
+      });
     }
   };
 
@@ -282,14 +253,14 @@ const ClusterMaster = () => {
               required: true,
               options: (() => {
                 if (isLoadingVessels) {
-                  return [{ id: "loading", name: "Loading vessels..." }];
+                  return [{ value: "loading", label: "Loading vessels..." }];
                 }
                 if (vessels.length === 0) {
-                  return [{ id: "no-vessels", name: "No vessels available" }];
+                  return [{ value: "no-vessels", label: "No vessels available" }];
                 }
                 return vessels.map(vessel => ({ 
-                  id: vessel.id, 
-                  name: vessel.name 
+                  value: vessel.id, 
+                  label: vessel.name 
                 }));
               })(),
             },
@@ -300,14 +271,14 @@ const ClusterMaster = () => {
               required: true,
               options: (() => {
                 if (isLoadingCompartments) {
-                  return [{ id: "loading", name: "Loading compartments..." }];
+                  return [{ value: "loading", label: "Loading compartments..." }];
                 }
                 if (compartments.length === 0) {
-                  return [{ id: "no-compartments", name: "No compartments available" }];
+                  return [{ value: "no-compartments", label: "No compartments available" }];
                 }
                 return compartments.map(compartment => ({ 
-                  id: compartment.id, 
-                  name: compartment.name 
+                  value: compartment.id, 
+                  label: compartment.name 
                 }));
               })(),
             },
@@ -369,30 +340,19 @@ const ClusterMaster = () => {
           <CardTitle>Clusters</CardTitle>
         </CardHeader>
         <CardContent>
-          <DataTable columns={columns} data={filteredClusters} rowsPerPage={10} />
+          <DataTable
+            columns={columns}
+            data={filteredClusters}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
+            deleteMessage="Are you sure you want to delete this cluster? This action cannot be undone."
+            deleteTitle="Delete Cluster"
+            rowsPerPage={10}
+          />
         </CardContent>
       </Card>
 
-      {/* Pagination */}
-      <div className="flex justify-center gap-2 mt-4">
-        <Button
-          variant="outline"
-          disabled={page === 1}
-          onClick={() => setPage((p) => p - 1)}
-        >
-          Previous
-        </Button>
-        <span className="text-sm">
-          Page {page} of {totalPages}
-        </span>
-        <Button
-          variant="outline"
-          disabled={page === totalPages}
-          onClick={() => setPage((p) => p + 1)}
-        >
-          Next
-        </Button>
-      </div>
+      {/* Pagination is now handled by DataTable */}
     </div>
   );
 };

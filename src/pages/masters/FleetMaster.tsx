@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Plus, Edit, Trash2, Search, Filter } from "lucide-react";
+import { Plus, Search, Filter } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { DataTable, Column } from "@/components/ui/table";
@@ -74,31 +74,7 @@ const FleetMaster = () => {
       ),
     },
     { header: "Created", accessor: "createdAt" },
-    {
-      header: "Actions",
-      accessor: "actions",
-      render: (fleet) => (
-        <div className="space-x-2 text-right">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => {
-              setEditingFleet(fleet);
-              setIsDialogOpen(true);
-            }}
-          >
-            <Edit className="h-4 w-4" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => handleDelete(fleet.id)}
-          >
-            <Trash2 className="h-4 w-4" />
-          </Button>
-        </div>
-      ),
-    },
+    { header: "Actions", accessor: "actions" },
   ];
 
   // Form fields for DynamicFormDialog
@@ -158,8 +134,13 @@ const FleetMaster = () => {
     setEditingFleet(null);
   };
 
-  const handleDelete = (id: string) => {
-    setFleets((prev) => prev.filter((fleet) => fleet.id !== id));
+  const handleEdit = (fleet: Fleet) => {
+    setEditingFleet(fleet);
+    setIsDialogOpen(true);
+  };
+
+  const handleDelete = (fleet: Fleet) => {
+    setFleets((prev) => prev.filter((f) => f.id !== fleet.id));
     toast({ title: "Success", description: "Fleet deleted successfully" });
   };
 
@@ -208,7 +189,15 @@ const FleetMaster = () => {
           <CardDescription>Total: {filteredFleets.length} fleets</CardDescription>
         </CardHeader>
         <CardContent>
-          <DataTable columns={columns} data={filteredFleets} />
+          <DataTable
+            columns={columns}
+            data={filteredFleets}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
+            rowsPerPage={10}
+            deleteMessage="Are you sure you want to delete this fleet? This action cannot be undone."
+            deleteTitle="Delete Fleet"
+          />
         </CardContent>
       </Card>
 

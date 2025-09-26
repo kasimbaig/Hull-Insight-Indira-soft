@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { DataTable, Column } from "@/components/ui/table";
-import { Edit, Plus, Search, Trash2 } from "lucide-react";
+import { Plus, Search } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { DynamicFormDialog } from "@/components/DynamicFormDialog";
 import { get, post, put, del } from "@/lib/api";
@@ -14,19 +14,39 @@ import { Textarea } from "@/components/ui/textarea";
 
 interface DynamicFormField {
   id: number;
-  form_module: string;
-  sub_module_name: string;
+  sub_module: {
+    id: number;
+    name: string;
+    module: number; // This is the module ID we need
+    code: string;
+    active: number;
+    created_on: string;
+    created_ip: string;
+    modified_on: string;
+    modified_ip?: string;
+    content_type_name?: string;
+    linked_model_name?: string;
+    created_by?: string;
+    modified_by?: string;
+    parent?: number;
+    content_type?: number;
+  };
+  dropdown_options_list?: any;
+  data_source_name?: string;
+  data_source_id?: number;
   label: string;
   field_type: string;
   key: string;
   required: boolean;
   position_on_form: number;
-  dropdown_type?: string; // Static/Dynamic
-  comma_separated_values?: string; // For static dropdowns
-  data_source?: string; // For dynamic dropdowns
   active: number; // 1 = Active, 2 = Inactive
-  created_by?: string;
-  created_on?: string;
+  dropdown_options?: string;
+  data_source?: string;
+  // Legacy fields for backward compatibility
+  form_module?: string;
+  sub_module_name?: string;
+  dropdown_type?: string;
+  comma_separated_values?: string;
 }
 
 
@@ -38,16 +58,12 @@ const DynamicFormFieldsMaster = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingField, setEditingField] = useState<DynamicFormField | null>(null);
 
-  // Pagination states
-  const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
+  // Pagination is now handled by DataTable
 
   const columns: Column<DynamicFormField>[] = [
-    // { header: "Form Module", accessor: "form_module" },
-    { header: "Sub Module", accessor: "sub_module_name" },
+    { header: "Sub Module", accessor: "sub_module", render: (row) => row.sub_module.name },
     { header: "Label", accessor: "label" },
     { header: "Field Type", accessor: "field_type" },
-    // { header: "Key", accessor: "key" },
     {
       header: "Required",
       accessor: "required",
@@ -57,33 +73,6 @@ const DynamicFormFieldsMaster = () => {
         </Badge>
       ),
     },
-    // { header: "Position", accessor: "position_on_form" },
-    // {
-    //   header: "Dropdown Type",
-    //   accessor: "dropdown_type",
-    //   render: (row) => (
-    //     row.field_type === "dropdown" ? (
-    //       <Badge variant="outline">
-    //         {row.dropdown_type || "Not Set"}
-    //       </Badge>
-    //     ) : (
-    //       <span className="text-muted-foreground">-</span>
-    //     )
-    //   ),
-    // },
-    // {
-    //   header: "Data Source",
-    //   accessor: "data_source",
-    //   render: (row) => (
-    //     row.field_type === "dropdown" && row.dropdown_type === "Dynamic" ? (
-    //       <span className="text-sm font-mono bg-gray-100 px-2 py-1 rounded">
-    //         {row.data_source || "Not Set"}
-    //       </span>
-    //     ) : (
-    //       <span className="text-muted-foreground">-</span>
-    //     )
-    //   ),
-    // },
     {
       header: "Status",
       accessor: "active",
@@ -93,36 +82,14 @@ const DynamicFormFieldsMaster = () => {
         </Badge>
       ),
     },
-    {
-      header: "Actions",
-      accessor: "actions",
-      render: (row) => (
-        <div className="flex gap-2">
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={() => handleEdit(row)}
-          >
-            <Edit className="h-4 w-4" />
-          </Button>
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={() => handleDelete(row.id)}
-          >
-            <Trash2 className="h-4 w-4" />
-          </Button>
-        </div>
-      ),
-    },
+    { header: "Actions", accessor: "actions" },
   ];
 
   // Fetch form fields from API
-  const fetchFormFields = async (pageNum: number = 1) => {
+  const fetchFormFields = async () => {
     try {
-      const res = await get(`/master/dynamic-fields/?page=${pageNum}&order_by=-id`);
-      setFormFields(res.results || []);
-      setTotalPages(Math.ceil((res.count || 0) / 10));
+      const res = await get(`/master/dynamic-fields/?order_by=-id`);
+      setFormFields(res.results || res.data || []);
     } catch (err) {
       toast({
         title: "Error",
@@ -134,8 +101,8 @@ const DynamicFormFieldsMaster = () => {
 
 
   useEffect(() => {
-    fetchFormFields(page);
-  }, [page]);
+    fetchFormFields();
+  }, []);
 
   // Save / Update API
   const handleSave = async (formData: any) => {
@@ -230,20 +197,20 @@ const DynamicFormFieldsMaster = () => {
       dropdown_type: formData.dropdown_type,
       comma_separated_values: formData.comma_separated_values,
       data_source: formData.data_source,
-      active: formData.status === "Active" ? 1 : 2,
+      active: formData.status ? 1 : 2,
     };
 
     try {
       if (editingField) {
         const payloadWithId = { ...payload, id: editingField.id };
-        await put(`/master/dynamic-fields/`, payloadWithId);
+        await post(`/master/dynamic-fields/`, payloadWithId);
         toast({ title: "Success", description: "Dynamic form field updated successfully" });
       } else {
         await post(`/master/dynamic-fields/`, payload);
         toast({ title: "Success", description: "Dynamic form field created successfully" });
       }
 
-      fetchFormFields(page);
+      fetchFormFields();
       setIsDialogOpen(false);
       setEditingField(null);
     } catch (err) {
@@ -261,30 +228,27 @@ const DynamicFormFieldsMaster = () => {
   };
 
   // Delete API
-  const handleDelete = async (id: number) => {
-    if (confirm("Are you sure you want to delete this dynamic form field?")) {
-      try {
-        await del(`/master/dynamic-fields/${id}/`);
-        setFormFields((prev) => prev.filter((f) => f.id !== id));
-        toast({
-          title: "Success",
-          description: "Dynamic form field deleted successfully",
-        });
-      } catch (err) {
-        toast({
-          title: "Error",
-          description: "Failed to delete dynamic form field",
-          variant: "destructive",
-        });
-      }
+  const handleDelete = async (field: DynamicFormField) => {
+    try {
+      await del(`/master/dynamic-fields/${field.id}/`);
+      setFormFields((prev) => prev.filter((f) => f.id !== field.id));
+      toast({
+        title: "Success",
+        description: "Dynamic form field deleted successfully",
+      });
+    } catch (err) {
+      toast({
+        title: "Error",
+        description: "Failed to delete dynamic form field",
+        variant: "destructive",
+      });
     }
   };
 
   // Filter by search
   const filteredFormFields = formFields.filter((f) =>
     f.label.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    f.form_module.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    f.sub_module_name.toLowerCase().includes(searchTerm.toLowerCase())
+    f.sub_module.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   // Custom form fields for the dialog
@@ -404,19 +368,21 @@ const DynamicFormFieldsMaster = () => {
           initialValues={
             editingField
               ? {
-                  form_module: editingField.form_module,
-                  sub_module: editingField.sub_module_name,
+                  form_module: editingField.sub_module.module.toString(), // Use module ID from sub_module
+                  sub_module: editingField.sub_module.id.toString(), // Use sub_module ID
                   label: editingField.label,
                   field_type: editingField.field_type,
                   key: editingField.key,
                   required: editingField.required ? "Yes" : "No",
                   position_on_form: editingField.position_on_form.toString(),
-                  dropdown_type: editingField.dropdown_type,
-                  comma_separated_values: editingField.comma_separated_values,
-                  data_source: editingField.data_source,
-                  status: editingField.active === 1 ? "Active" : "Inactive",
+                  dropdown_type: editingField.dropdown_options ? "Static" : "Dynamic", // Infer from dropdown_options
+                  comma_separated_values: editingField.dropdown_options || "",
+                  data_source: editingField.data_source || "",
+                  status: editingField.active === 1,
                 }
-              : {}
+              : {
+                  status: true // Default to Active (checked) when adding new field
+                }
           }
           trigger={
             <Button
@@ -453,30 +419,19 @@ const DynamicFormFieldsMaster = () => {
           <CardTitle>Dynamic Form Fields</CardTitle>
         </CardHeader>
         <CardContent>
-          <DataTable columns={columns} data={filteredFormFields} rowsPerPage={10} />
+          <DataTable
+            columns={columns}
+            data={filteredFormFields}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
+            deleteMessage="Are you sure you want to delete this dynamic form field? This action cannot be undone."
+            deleteTitle="Delete Dynamic Form Field"
+            rowsPerPage={10}
+          />
         </CardContent>
       </Card>
 
-      {/* Pagination */}
-      <div className="flex justify-center gap-2 mt-4">
-        <Button
-          variant="outline"
-          disabled={page === 1}
-          onClick={() => setPage((p) => p - 1)}
-        >
-          Previous
-        </Button>
-        <span className="text-sm">
-          Page {page} of {totalPages}
-        </span>
-        <Button
-          variant="outline"
-          disabled={page === totalPages}
-          onClick={() => setPage((p) => p + 1)}
-        >
-          Next
-        </Button>
-      </div>
+      {/* Pagination is now handled by DataTable */}
     </div>
   );
 };

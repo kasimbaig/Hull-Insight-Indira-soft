@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search, Plus, Edit, Trash2 } from "lucide-react";
+import { Search, Plus } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { DataTable, Column } from "@/components/ui/table";
@@ -24,10 +24,6 @@ const RefitMaster = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingRefit, setEditingRefit] = useState<Refit | null>(null);
 
-  // Pagination
-  const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-
   // Table columns
   const columns: Column<Refit>[] = [
     { header: "Name", accessor: "name" },
@@ -41,37 +37,14 @@ const RefitMaster = () => {
         </Badge>
       ),
     },
-    // { header: "Created Date", accessor: "created_on" },
-    {
-      header: "Actions",
-      accessor: "actions",
-      render: (row) => (
-        <div className="flex gap-2">
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={() => handleEdit(row)}
-          >
-            <Edit className="h-4 w-4" />
-          </Button>
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={() => handleDelete(row.id)}
-          >
-            <Trash2 className="h-4 w-4" />
-          </Button>
-        </div>
-      ),
-    },
+    { header: "Actions", accessor: "actions" },
   ];
 
   // Fetch refits from API
-  const fetchRefits = async (pageNum: number = 1) => {
+  const fetchRefits = async () => {
     try {
-      const res = await get(`/master/refits/?page=${pageNum}`);
-      setRefits(res.results || []);
-      setTotalPages(Math.ceil((res.count || 0) / 10));
+      const res = await get(`/master/refits/`);
+      setRefits(res.results || res.data || []);
     } catch (err) {
       console.error("Failed to fetch refits", err);
       toast({
@@ -83,8 +56,8 @@ const RefitMaster = () => {
   };
 
   useEffect(() => {
-    fetchRefits(page);
-  }, [page]);
+    fetchRefits();
+  }, []);
 
   // Save / Update API
   const handleSave = async (formData: any) => {
@@ -115,7 +88,7 @@ const RefitMaster = () => {
         toast({ title: "Success", description: "Refit created successfully" });
       }
 
-      fetchRefits(page); // refresh table
+      fetchRefits();
       setIsDialogOpen(false);
       setEditingRefit(null);
     } catch (err) {
@@ -134,24 +107,22 @@ const RefitMaster = () => {
   };
 
   // Delete API
-  const handleDelete = async (id: number) => {
-    if (confirm("Are you sure you want to delete this refit?")) {
-      try {
-        const payload = { id: id, delete: true };
-        await post(`/master/refits/`, payload);
-        setRefits((prev) => prev.filter((r) => r.id !== id));
-        toast({
-          title: "Success",
-          description: "Refit deleted successfully",
-        });
-      } catch (err) {
-        console.error("Delete failed", err);
-        toast({
-          title: "Error",
-          description: "Failed to delete refit",
-          variant: "destructive",
-        });
-      }
+  const handleDelete = async (refit: Refit) => {
+    try {
+      const payload = { id: refit.id, delete: true };
+      await post(`/master/refits/`, payload);
+      setRefits((prev) => prev.filter((r) => r.id !== refit.id));
+      toast({
+        title: "Success",
+        description: "Refit deleted successfully",
+      });
+    } catch (err) {
+      console.error("Delete failed", err);
+      toast({
+        title: "Error",
+        description: "Failed to delete refit",
+        variant: "destructive",
+      });
     }
   };
 
@@ -234,30 +205,19 @@ const RefitMaster = () => {
           <CardTitle>Refits</CardTitle>
         </CardHeader>
         <CardContent>
-          <DataTable columns={columns} data={filteredRefits} rowsPerPage={10} />
+          <DataTable
+            columns={columns}
+            data={filteredRefits}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
+            rowsPerPage={10}
+            deleteMessage="Are you sure you want to delete this refit? This action cannot be undone."
+            deleteTitle="Delete Refit"
+          />
         </CardContent>
       </Card>
 
-      {/* Pagination */}
-      <div className="flex justify-center gap-2 mt-4">
-        <Button
-          variant="outline"
-          disabled={page === 1}
-          onClick={() => setPage((p) => p - 1)}
-        >
-          Previous
-        </Button>
-        <span className="text-sm">
-          Page {page} of {totalPages}
-        </span>
-        <Button
-          variant="outline"
-          disabled={page === totalPages}
-          onClick={() => setPage((p) => p + 1)}
-        >
-          Next
-        </Button>
-      </div>
+      {/* Pagination is now handled by DataTable */}
     </div>
   );
 };
