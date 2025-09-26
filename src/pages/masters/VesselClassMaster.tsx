@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { DataTable, Column } from "@/components/ui/table";
-import { Edit, Plus, Search, Trash2 } from "lucide-react";
+import { Plus, Search } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { DynamicFormDialog } from "@/components/DynamicFormDialog";
 import { get, post, put, del } from "@/lib/api";
@@ -25,11 +25,6 @@ const VesselClassMaster = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingVesselClass, setEditingVesselClass] = useState<VesselClass | null>(null);
 
-
-  // Pagination states
-  const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-
   const columns: Column<VesselClass>[] = [
     { header: "Vessel Class Name", accessor: "name" },
     { header: "Code", accessor: "code" },
@@ -42,36 +37,14 @@ const VesselClassMaster = () => {
         </Badge>
       ),
     },
-    {
-      header: "Actions",
-      accessor: "actions",
-      render: (row) => (
-        <div className="flex gap-2">
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={() => handleEdit(row)}
-          >
-            <Edit className="h-4 w-4" />
-          </Button>
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={() => handleDelete(row.id)}
-          >
-            <Trash2 className="h-4 w-4" />
-          </Button>
-        </div>
-      ),
-    },
+    { header: "Actions", accessor: "actions" },
   ];
 
   // Fetch vessel classes from API
-  const fetchVesselClasses = async (pageNum: number = 1) => {
+  const fetchVesselClasses = async () => {
     try {
-      const res = await get(`/master/classofvessels/?page=${pageNum}`);
-      setVesselClasses(res.results || []);
-      setTotalPages(Math.ceil(res.count / 10));
+      const res = await get(`/master/classofvessels/`);
+      setVesselClasses(res.results || res.data || []);
     } catch (err) {     
       console.error("Failed to fetch vessel classes", err);
       toast({
@@ -83,8 +56,8 @@ const VesselClassMaster = () => {
   };
 
   useEffect(() => {
-    fetchVesselClasses(page);
-  }, [page]);
+    fetchVesselClasses();
+  }, []);
 
   // Save / Update API
   const handleSave = async (formData: any) => {
@@ -115,7 +88,7 @@ const VesselClassMaster = () => {
         toast({ title: "Success", description: "Vessel class created successfully" });
       }
 
-      fetchVesselClasses(page); // refresh table
+      fetchVesselClasses(); // refresh table
       setIsDialogOpen(false);
       setEditingVesselClass(null);
     } catch (err) {
@@ -135,24 +108,22 @@ const VesselClassMaster = () => {
 
 
   // Delete API
-  const handleDelete = async (id: number) => {
-    if (confirm("Are you sure you want to delete this vessel class?")) {
-      try {
-        const payload = { id: id, delete: true };
-        await post(`/master/classofvessels/`, payload);
-        setVesselClasses((prev) => prev.filter((vesselClass) => vesselClass.id !== id));
-        toast({
-          title: "Success",
-          description: "Vessel class deleted successfully",
-        });
-      } catch (err) {
-        console.error("Delete failed", err);
-        toast({
-          title: "Error",
-          description: "Failed to delete vessel class",
-          variant: "destructive",
-        });
-      }
+  const handleDelete = async (vesselClass: VesselClass) => {
+    try {
+      const payload = { id: vesselClass.id, delete: true };
+      await post(`/master/classofvessels/`, payload);
+      setVesselClasses((prev) => prev.filter((vc) => vc.id !== vesselClass.id));
+      toast({
+        title: "Success",
+        description: "Vessel class deleted successfully",
+      });
+    } catch (err) {
+      console.error("Delete failed", err);
+      toast({
+        title: "Error",
+        description: "Failed to delete vessel class",
+        variant: "destructive",
+      });
     }
   };
 
@@ -234,30 +205,19 @@ const VesselClassMaster = () => {
           <CardTitle>Vessel Classes</CardTitle>
         </CardHeader>
         <CardContent>
-          <DataTable columns={columns} data={filteredVesselClasses} rowsPerPage={10} />
+          <DataTable
+            columns={columns}
+            data={filteredVesselClasses}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
+            rowsPerPage={10}
+            deleteMessage="Are you sure you want to delete this vessel class? This action cannot be undone."
+            deleteTitle="Delete Vessel Class"
+          />
         </CardContent>
       </Card>
 
-      {/* Pagination */}
-      <div className="flex justify-center gap-2 mt-4">
-        <Button
-          variant="outline"
-          disabled={page === 1}
-          onClick={() => setPage((p) => p - 1)}
-        >
-          Previous
-        </Button>
-        <span className="text-sm">
-          Page {page} of {totalPages}
-        </span>
-        <Button
-          variant="outline"
-          disabled={page === totalPages}
-          onClick={() => setPage((p) => p + 1)}
-        >
-          Next
-        </Button>
-      </div>
+      {/* Pagination is now handled by DataTable */}
 
     </div>
   );

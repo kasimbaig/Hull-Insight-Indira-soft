@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { DataTable, Column } from "@/components/ui/table";
-import { Edit, Plus, Search, Trash2 } from "lucide-react";
+import { Plus, Search } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { DynamicFormDialog } from "@/components/DynamicFormDialog";
 import { get, post, put, del } from "@/lib/api";
@@ -25,10 +25,6 @@ const ModuleMaster = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingModule, setEditingModule] = useState<Module | null>(null);
 
-  // Pagination states
-  const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-
   const columns: Column<Module>[] = [
     { header: "Module Name", accessor: "name" },
     { header: "Code", accessor: "code" },
@@ -41,36 +37,14 @@ const ModuleMaster = () => {
         </Badge>
       ),
     },
-    {
-      header: "Actions",
-      accessor: "actions",
-      render: (row) => (
-        <div className="flex gap-2">
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={() => handleEdit(row)}
-          >
-            <Edit className="h-4 w-4" />
-          </Button>
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={() => handleDelete(row.id)}
-          >
-            <Trash2 className="h-4 w-4" />
-          </Button>
-        </div>
-      ),
-    },
+    { header: "Actions", accessor: "actions" },
   ];
 
   // Fetch modules from API
-  const fetchModules = async (pageNum: number = 1) => {
+  const fetchModules = async () => {
     try {
-      const res = await get(`/master/modules/?page=${pageNum}`);
-      setModules(res.results || []);
-      setTotalPages(Math.ceil((res.count || 0) / 10));
+      const res = await get(`/master/modules/`);
+      setModules(res.results || res.data || []);
     } catch (err) {
       toast({
         title: "Error",
@@ -81,8 +55,8 @@ const ModuleMaster = () => {
   };
 
   useEffect(() => {
-    fetchModules(page);
-  }, [page]);
+    fetchModules();
+  }, []);
 
   // Save / Update API
   const handleSave = async (formData: any) => {
@@ -113,7 +87,7 @@ const ModuleMaster = () => {
         toast({ title: "Success", description: "Module created successfully" });
       }
 
-      fetchModules(page);
+      fetchModules();
       setIsDialogOpen(false);
       setEditingModule(null);
     } catch (err) {
@@ -131,23 +105,21 @@ const ModuleMaster = () => {
   };
 
   // Delete API
-  const handleDelete = async (id: number) => {
-    if (confirm("Are you sure you want to delete this module?")) {
-      try {
-        const payload = { id: id, delete: true };
-        await post(`/master/modules/`, payload);
-        setModules((prev) => prev.filter((m) => m.id !== id));
-        toast({
-          title: "Success",
-          description: "Module deleted successfully",
-        });
-      } catch (err) {
-        toast({
-          title: "Error",
-          description: "Failed to delete module",
-          variant: "destructive",
-        });
-      }
+  const handleDelete = async (module: Module) => {
+    try {
+      const payload = { id: module.id, delete: true };
+      await post(`/master/modules/`, payload);
+      setModules((prev) => prev.filter((m) => m.id !== module.id));
+      toast({
+        title: "Success",
+        description: "Module deleted successfully",
+      });
+    } catch (err) {
+      toast({
+        title: "Error",
+        description: "Failed to delete module",
+        variant: "destructive",
+      });
     }
   };
 
@@ -229,30 +201,19 @@ const ModuleMaster = () => {
           <CardTitle>Modules</CardTitle>
         </CardHeader>
         <CardContent>
-          <DataTable columns={columns} data={filteredModules} rowsPerPage={10} />
+          <DataTable
+            columns={columns}
+            data={filteredModules}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
+            rowsPerPage={10}
+            deleteMessage="Are you sure you want to delete this module? This action cannot be undone."
+            deleteTitle="Delete Module"
+          />
         </CardContent>
       </Card>
 
-      {/* Pagination */}
-      <div className="flex justify-center gap-2 mt-4">
-        <Button
-          variant="outline"
-          disabled={page === 1}
-          onClick={() => setPage((p) => p - 1)}
-        >
-          Previous
-        </Button>
-        <span className="text-sm">
-          Page {page} of {totalPages}
-        </span>
-        <Button
-          variant="outline"
-          disabled={page === totalPages}
-          onClick={() => setPage((p) => p + 1)}
-        >
-          Next
-        </Button>
-      </div>
+      {/* Pagination is now handled by DataTable */}
     </div>
   );
 };

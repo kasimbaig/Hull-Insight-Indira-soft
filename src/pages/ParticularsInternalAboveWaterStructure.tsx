@@ -244,6 +244,7 @@ const ParticularsInternalAboveWaterStructure = () => {
       generalObservationOnConditionOfHullMaterialState: '0',
       date: ''
     });
+    setCurrentDraftId(null);
   };
 
   // Part II handlers
@@ -343,15 +344,25 @@ const ParticularsInternalAboveWaterStructure = () => {
         draft_status: 'draft'
       };
 
-      const draftData = {
-        part1: part1Data,
-        part2: tableData
-      };
-      
-      console.log('Saving draft...', draftData);
-      const result = await HullSurveyApiService.saveDraft(draftData);
-      console.log('Draft saved successfully:', result);
-      alert('Draft saved successfully!');
+      let result;
+      if (currentDraftId) {
+        // Update existing draft
+        console.log('Updating draft...', currentDraftId, part1Data);
+        result = await HullSurveyApiService.updateInternalAbovewaterHullSurvey(parseInt(currentDraftId), part1Data);
+        console.log('Draft updated successfully:', result);
+        alert('Draft updated successfully!');
+      } else {
+        // Create new draft
+        const draftData = {
+          part1: part1Data,
+          part2: tableData
+        };
+        
+        console.log('Saving new draft...', draftData);
+        result = await HullSurveyApiService.saveDraft(draftData);
+        console.log('Draft saved successfully:', result);
+        alert('Draft saved successfully!');
+      }
     } catch (err) {
       setError('Failed to save draft');
       console.error('Error saving draft:', err);
@@ -362,20 +373,68 @@ const ParticularsInternalAboveWaterStructure = () => {
   };
 
   const handleEditDraft = (draft: any) => {
-    setFormData(draft.data.part1);
-    setTableData(draft.data.part2);
-    setTotalRows(draft.data.part2.length);
+    // Convert API response format to form data format
+    const formDataFromDraft = {
+      nameOfShip: draft.vessel ? draft.vessel.toString() : '0',
+      typeOfRefit: draft.type_of_refit || '0',
+      refitStartedOn: draft.refit_started_on || '',
+      refitCompletionOn: draft.refit_completion_on || '',
+      refittingYard: draft.refitting_yard || '0',
+      place: draft.place || '',
+      supervisor: draft.supervisor || '',
+      officerInCharge: draft.officer_in_charge || '',
+      surveyParticulars: draft.survey_particulars || '',
+      typeOfSurveyCarriedOut: draft.type_of_survey || '0',
+      totalAreaSurveyed: draft.total_area_surveyed ? draft.total_area_surveyed.toString() : '',
+      areaSurveyed: draft.area_surveyed ? draft.area_surveyed.toString() : '',
+      areaGradedSuspect: draft.area_graded_suspect ? draft.area_graded_suspect.toString() : '',
+      areaGradedDefective: draft.area_graded_defective ? draft.area_graded_defective.toString() : '',
+      areaGradedSuspectAndRenewed: draft.area_graded_suspect_renewed ? draft.area_graded_suspect_renewed.toString() : '',
+      areaGradedDefectiveAndRenewed: draft.area_graded_defective_renewed ? draft.area_graded_defective_renewed.toString() : '',
+      areaGradedSuspectDefectiveAndTemporary: draft.area_graded_suspect_defective_temporary ? draft.area_graded_suspect_defective_temporary.toString() : '',
+      repairCarriedOut: draft.repair_carried_out ? draft.repair_carried_out.toString() : '',
+      totalTonnageOfHullStructureRenewal: draft.total_tonnage_renewal ? draft.total_tonnage_renewal.toString() : '',
+      generalObservationOnConditionOfHullMaterialState: draft.condition_of_hull_material_state || '0',
+      date: draft.date || ''
+    };
+    
+    setFormData(formDataFromDraft);
+    
+    // For now, set empty table data since Part II data is not included in the current API response
+    // You may need to fetch Part II data separately or modify the API to include it
+    setTableData([{
+      id: 1,
+      strakeDeckNo: '',
+      frameStationFrom: '',
+      frameStationTo: '',
+      originalThickness: '',
+      extentOfCorrosion: '',
+      extentOfPitting: '',
+      meanThickness: '',
+      reductionInThickness: '',
+      grading: '',
+      actionTaken: ''
+    }]);
+    setTotalRows(1);
     setCurrentDraftId(draft.id);
     setIsDraftModalOpen(false);
   };
 
   const handleDeleteDraft = async (draftId: string) => {
+    if (!window.confirm('Are you sure you want to delete this draft?')) {
+      return;
+    }
+    
     try {
       setLoading(true);
       setError(null);
       console.log('Deleting draft:', draftId);
       await HullSurveyApiService.deleteDraft(draftId);
-      setDrafts(prev => prev.filter(draft => draft.id !== draftId));
+      
+      // Refresh the drafts list
+      const draftsData = await HullSurveyApiService.getDrafts();
+      setDrafts(draftsData);
+      
       console.log('Draft deleted successfully');
       alert('Draft deleted successfully!');
     } catch (err) {
@@ -1041,7 +1100,7 @@ const ParticularsInternalAboveWaterStructure = () => {
                 disabled={loading}
                 className="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {loading ? 'SAVING...' : 'SAVE DRAFT'}
+                {loading ? 'SAVING...' : currentDraftId ? 'UPDATE DRAFT' : 'SAVE DRAFT'}
               </button>
               <button
                 type="button"
@@ -1098,10 +1157,10 @@ const ParticularsInternalAboveWaterStructure = () => {
                   {drafts.map((draft) => (
                     <tr key={draft.id}>
                       <td className="p-3 border border-gray-300 text-sm text-center">
-                        {new Date(draft.timestamp).toLocaleString()}
+                        {new Date(draft.created_on).toLocaleString()}
                       </td>
                       <td className="p-3 border border-gray-300 text-sm text-center">
-                        {vessels.find(v => v.id === parseInt(draft.data.part1.nameOfShip))?.name || 'Unknown Ship'}
+                        {vessels.find(v => v.id === draft.vessel)?.name || 'No Ship Selected'}
                       </td>
                       <td className="p-3 border border-gray-300 text-sm text-center">
                         <div className="flex gap-2 justify-center">

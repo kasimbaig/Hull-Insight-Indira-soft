@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { DataTable, Column } from "@/components/ui/table";
-import { Edit, Plus, Search, Trash2 } from "lucide-react";
+import { Plus, Search } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { DynamicFormDialog } from "@/components/DynamicFormDialog";
 import { get, post, put, del } from "@/lib/api";
@@ -25,10 +25,6 @@ const SystemMaster = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingSystem, setEditingSystem] = useState<System | null>(null);
 
-  // Pagination states
-  const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-
   const columns: Column<System>[] = [
     { header: "System Name", accessor: "name" },
     { header: "Code", accessor: "code" },
@@ -41,36 +37,14 @@ const SystemMaster = () => {
         </Badge>
       ),
     },
-    {
-      header: "Actions",
-      accessor: "actions",
-      render: (row) => (
-        <div className="flex gap-2">
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={() => handleEdit(row)}
-          >
-            <Edit className="h-4 w-4" />
-          </Button>
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={() => handleDelete(row.id)}
-          >
-            <Trash2 className="h-4 w-4" />
-          </Button>
-        </div>
-      ),
-    },
+    { header: "Actions", accessor: "actions" },
   ];
 
   // Fetch systems from API
-  const fetchSystems = async (pageNum: number = 1) => {
+  const fetchSystems = async () => {
     try {
-      const res = await get(`/master/systems/?page=${pageNum}`);
-      setSystems(res.results || []);
-      setTotalPages(Math.ceil((res.count || 0) / 10));
+      const res = await get(`/master/systems/`);
+      setSystems(res.results || res.data || []);
     } catch (err) {
       toast({
         title: "Error",
@@ -81,8 +55,8 @@ const SystemMaster = () => {
   };
 
   useEffect(() => {
-    fetchSystems(page);
-  }, [page]);
+    fetchSystems();
+  }, []);
 
   // Save / Update API
   const handleSave = async (formData: any) => {
@@ -113,7 +87,7 @@ const SystemMaster = () => {
         toast({ title: "Success", description: "System created successfully" });
       }
 
-      fetchSystems(page);
+      fetchSystems();
       setIsDialogOpen(false);
       setEditingSystem(null);
     } catch (err) {
@@ -131,23 +105,21 @@ const SystemMaster = () => {
   };
 
   // Delete API
-  const handleDelete = async (id: number) => {
-    if (confirm("Are you sure you want to delete this system?")) {
-      try {
-        const payload = { id: id, delete: true };
-        await post(`/master/systems/`, payload);
-        setSystems((prev) => prev.filter((s) => s.id !== id));
-        toast({
-          title: "Success",
-          description: "System deleted successfully",
-        });
-      } catch (err) {
-        toast({
-          title: "Error",
-          description: "Failed to delete system",
-          variant: "destructive",
-        });
-      }
+  const handleDelete = async (system: System) => {
+    try {
+      const payload = { id: system.id, delete: true };
+      await post(`/master/systems/`, payload);
+      setSystems((prev) => prev.filter((s) => s.id !== system.id));
+      toast({
+        title: "Success",
+        description: "System deleted successfully",
+      });
+    } catch (err) {
+      toast({
+        title: "Error",
+        description: "Failed to delete system",
+        variant: "destructive",
+      });
     }
   };
 
@@ -229,30 +201,19 @@ const SystemMaster = () => {
           <CardTitle>Systems</CardTitle>
         </CardHeader>
         <CardContent>
-          <DataTable columns={columns} data={filteredSystems} rowsPerPage={10} />
+          <DataTable
+            columns={columns}
+            data={filteredSystems}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
+            rowsPerPage={10}
+            deleteMessage="Are you sure you want to delete this system? This action cannot be undone."
+            deleteTitle="Delete System"
+          />
         </CardContent>
       </Card>
 
-      {/* Pagination */}
-      <div className="flex justify-center gap-2 mt-4">
-        <Button
-          variant="outline"
-          disabled={page === 1}
-          onClick={() => setPage((p) => p - 1)}
-        >
-          Previous
-        </Button>
-        <span className="text-sm">
-          Page {page} of {totalPages}
-        </span>
-        <Button
-          variant="outline"
-          disabled={page === totalPages}
-          onClick={() => setPage((p) => p + 1)}
-        >
-          Next
-        </Button>
-      </div>
+      {/* Pagination is now handled by DataTable */}
     </div>
   );
 };

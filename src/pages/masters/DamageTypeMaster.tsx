@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { DataTable, Column } from "@/components/ui/table";
-import { Edit, Plus, Search, Trash2 } from "lucide-react";
+import { Plus, Search } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { DynamicFormDialog } from "@/components/DynamicFormDialog";
 import { get, post, put, del } from "@/lib/api";
@@ -25,10 +25,6 @@ const DamageTypeMaster = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingDamageType, setEditingDamageType] = useState<DamageType | null>(null);
 
-  // Pagination states
-  const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-
   const columns: Column<DamageType>[] = [
     { header: "Damage Type Name", accessor: "name" },
     { header: "Code", accessor: "code" },
@@ -41,36 +37,14 @@ const DamageTypeMaster = () => {
         </Badge>
       ),
     },
-    {
-      header: "Actions",
-      accessor: "actions",
-      render: (row) => (
-        <div className="flex gap-2">
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={() => handleEdit(row)}
-          >
-            <Edit className="h-4 w-4" />
-          </Button>
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={() => handleDelete(row.id)}
-          >
-            <Trash2 className="h-4 w-4" />
-          </Button>
-        </div>
-      ),
-    },
+    { header: "Actions", accessor: "actions" },
   ];
 
   // Fetch damage types from API
-  const fetchDamageTypes = async (pageNum: number = 1) => {
+  const fetchDamageTypes = async () => {
     try {
-      const res = await get(`/master/damagetypes/?page=${pageNum}`);
-      setDamageTypes(res.results || []);
-      setTotalPages(Math.ceil((res.count || 0) / 10));
+      const res = await get(`/master/damagetypes/`);
+      setDamageTypes(res.results || res.data || []);
     } catch (err) {
       toast({
         title: "Error",
@@ -81,8 +55,8 @@ const DamageTypeMaster = () => {
   };
 
   useEffect(() => {
-    fetchDamageTypes(page);
-  }, [page]);
+    fetchDamageTypes();
+  }, []);
 
   // Save / Update API
   const handleSave = async (formData: any) => {
@@ -113,7 +87,7 @@ const DamageTypeMaster = () => {
         toast({ title: "Success", description: "Damage Type created successfully" });
       }
 
-      fetchDamageTypes(page);
+      fetchDamageTypes();
       setIsDialogOpen(false);
       setEditingDamageType(null);
     } catch (err) {
@@ -131,23 +105,21 @@ const DamageTypeMaster = () => {
   };
 
   // Delete API
-  const handleDelete = async (id: number) => {
-    if (confirm("Are you sure you want to delete this damage type?")) {
-      try {
-        const payload = { id: id, delete: true };
-        await post(`/master/damagetypes/`, payload);
-        setDamageTypes((prev) => prev.filter((dt) => dt.id !== id));
-        toast({
-          title: "Success",
-          description: "Damage Type deleted successfully",
-        });
-      } catch (err) {
-        toast({
-          title: "Error",
-          description: "Failed to delete damage type",
-          variant: "destructive",
-        });
-      }
+  const handleDelete = async (damageType: DamageType) => {
+    try {
+      const payload = { id: damageType.id, delete: true };
+      await post(`/master/damagetypes/`, payload);
+      setDamageTypes((prev) => prev.filter((dt) => dt.id !== damageType.id));
+      toast({
+        title: "Success",
+        description: "Damage Type deleted successfully",
+      });
+    } catch (err) {
+      toast({
+        title: "Error",
+        description: "Failed to delete damage type",
+        variant: "destructive",
+      });
     }
   };
 
@@ -229,30 +201,19 @@ const DamageTypeMaster = () => {
           <CardTitle>Damage Types</CardTitle>
         </CardHeader>
         <CardContent>
-          <DataTable columns={columns} data={filteredDamageTypes} rowsPerPage={10} />
+          <DataTable
+            columns={columns}
+            data={filteredDamageTypes}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
+            rowsPerPage={10}
+            deleteMessage="Are you sure you want to delete this damage type? This action cannot be undone."
+            deleteTitle="Delete Damage Type"
+          />
         </CardContent>
       </Card>
 
-      {/* Pagination */}
-      <div className="flex justify-center gap-2 mt-4">
-        <Button
-          variant="outline"
-          disabled={page === 1}
-          onClick={() => setPage((p) => p - 1)}
-        >
-          Previous
-        </Button>
-        <span className="text-sm">
-          Page {page} of {totalPages}
-        </span>
-        <Button
-          variant="outline"
-          disabled={page === totalPages}
-          onClick={() => setPage((p) => p + 1)}
-        >
-          Next
-        </Button>
-      </div>
+      {/* Pagination is now handled by DataTable */}
     </div>
   );
 };

@@ -11,6 +11,43 @@ import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { CalendarIcon } from 'lucide-react';
 import { format } from 'date-fns';
+import { get, post, put, del } from '@/lib/api';
+
+// API Types
+interface Vessel {
+  id: number;
+  name: string;
+  code: string;
+  active: number;
+  created_on: string;
+  created_ip: string;
+  modified_on: string;
+  modified_ip: string | null;
+  year_of_build: number;
+  year_of_delivery: number;
+  created_by: number;
+  modified_by: number | null;
+  classofvessel: {
+    id: number;
+    code: string;
+    name: string;
+  };
+  vesseltype: {
+    id: number;
+    code: string;
+    name: string;
+  };
+  yard: {
+    id: number;
+    code: string;
+    name: string;
+  };
+  command: {
+    id: number;
+    code: string;
+    name: string;
+  };
+}
 
 interface IntermediateUnderwaterHullInspectionReportFormData {
   intermediate_inspection: string;
@@ -69,6 +106,34 @@ interface NewObservation {
   remarks: string;
 }
 
+interface Observation {
+  id?: number;
+  section: string;
+  sr_no: number;
+  observation: string;
+  remarks: string;
+}
+
+interface IntermediateUnderwaterHullInspectionReportData {
+  id?: number;
+  vessel_id?: number;
+  vessel?: Vessel;
+  dt_inspection?: string;
+  type_of_survey?: string;
+  pt_of_tanks?: string;
+  pt_of_sea_tubes?: string;
+  ndt_undertaken?: string;
+  draft_status?: 'draft' | 'approved';
+  dynamic_fields?: Record<string, any>;
+  observations?: Observation[];
+  created_by?: number;
+  modified_by?: number | null;
+  created_on?: string;
+  modified_on?: string;
+  created_ip?: string;
+  modified_ip?: string | null;
+}
+
 const IntermediateUnderwaterHullInspectionReportForm: React.FC = () => {
   const [formData, setFormData] = useState<IntermediateUnderwaterHullInspectionReportFormData>({
     intermediate_inspection: '',
@@ -101,7 +166,188 @@ const IntermediateUnderwaterHullInspectionReportForm: React.FC = () => {
   const [defectRectificationCount, setDefectRectificationCount] = useState(1);
   const [newObservationCount, setNewObservationCount] = useState(1);
   const [isDraftModalOpen, setIsDraftModalOpen] = useState(false);
-  const [drafts, setDrafts] = useState<any[]>([]);
+  const [drafts, setDrafts] = useState<IntermediateUnderwaterHullInspectionReportData[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [currentDraftId, setCurrentDraftId] = useState<string | null>(null);
+  const [vessels, setVessels] = useState<Vessel[]>([]);
+
+  // Load vessels on component mount
+  useEffect(() => {
+    const loadVessels = async () => {
+      try {
+        setLoading(true);
+        const response = await get('master/vessels');
+        
+        // Handle different response structures
+        let vesselsData: Vessel[] = [];
+        if (response.data && Array.isArray(response.data)) {
+          vesselsData = response.data;
+        } else if (Array.isArray(response)) {
+          vesselsData = response;
+        } else if (response.results && Array.isArray(response.results)) {
+          vesselsData = response.results;
+        } else {
+          vesselsData = [];
+        }
+
+        setVessels(vesselsData);
+      } catch (err) {
+        console.error('Failed to load vessels:', err);
+        setError('Failed to load vessels: ' + (err.message || 'Unknown error'));
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadVessels();
+  }, []);
+
+  // API Helper Functions
+  const convertFormDataToApiFormat = (formData: IntermediateUnderwaterHullInspectionReportFormData): IntermediateUnderwaterHullInspectionReportData => {
+    // Convert inspectors to observations
+    const inspectorObservations: Observation[] = formData.inspectors.map((inspector, index) => ({
+      section: 'HITU_INSPECTORS',
+      sr_no: index + 1,
+      observation: `${inspector.name} - ${inspector.rank}`,
+      remarks: inspector.designation
+    }));
+
+    // Convert survey and repairs to observations
+    const surveyRepairObservations: Observation[] = formData.surveyAndRepairs.map((surveyRepair, index) => ({
+      section: 'HULL_SURVEY_REPAIRS',
+      sr_no: index + 1,
+      observation: surveyRepair.type,
+      remarks: surveyRepair.input
+    }));
+
+    // Convert defect rectification to observations
+    const defectRectificationObservations: Observation[] = formData.defectRectification.map((defect, index) => ({
+      section: 'DEFECT_RECTIFICATION',
+      sr_no: index + 1,
+      observation: `${defect.location} (Frame ${defect.frameStationFrom}-${defect.frameStationTo}): ${defect.observation}`,
+      remarks: defect.remarks
+    }));
+
+    // Convert new observations to observations
+    const newObservationObservations: Observation[] = formData.newObservations.map((observation, index) => ({
+      section: 'NEW_OBSERVATIONS',
+      sr_no: index + 1,
+      observation: `${observation.location} (Frame ${observation.frameStationFrom}-${observation.frameStationTo}): ${observation.observation}`,
+      remarks: observation.remarks
+    }));
+
+    // Combine all observations
+    const allObservations = [
+      ...inspectorObservations,
+      ...surveyRepairObservations,
+      ...defectRectificationObservations,
+      ...newObservationObservations
+    ];
+
+    const result = {
+      vessel_id: formData.intermediate_inspection ? parseInt(formData.intermediate_inspection) : undefined,
+      dt_inspection: formData.dt_inspection ? formData.dt_inspection.split('T')[0] : undefined, // Format as YYYY-MM-DD
+      type_of_survey: formData.type_of_survey || undefined,
+      pt_of_tanks: formData.pressure_testing_of_tanks || undefined,
+      pt_of_sea_tubes: formData.pressure_testing_of_sea_tubes || undefined,
+      ndt_undertaken: formData.ndt_undertaken || undefined,
+      dynamic_fields: {
+        auth_inspection: formData.auth_inspection,
+        name_ship_staff: formData.name_ship_staff,
+        rank_ship_staff: formData.rank_ship_staff,
+        dsg_ship_staff: formData.dsg_ship_staff,
+        name_refitting_auth: formData.name_refitting_auth,
+        rank_refitting_auth: formData.rank_refitting_auth,
+        dsg_refitting_auth: formData.dsg_refitting_auth,
+        name_hitu_inspector: formData.name_hitu_inspector,
+        rank_hitu_inspector: formData.rank_hitu_inspector,
+        dsg_hitu_inspector: formData.dsg_hitu_inspector,
+        sign_ship_staff: formData.sign_ship_staff?.name || null,
+        sign_refitting_auth: formData.sign_refitting_auth?.name || null,
+        sign_hitu_inspector: formData.sign_hitu_inspector?.name || null
+      },
+      observations: allObservations
+      // draft_status will be set by the calling function
+    };
+    
+    return result;
+  };
+
+  const convertApiDataToFormFormat = (apiData: IntermediateUnderwaterHullInspectionReportData): Partial<IntermediateUnderwaterHullInspectionReportFormData> => {
+    const dynamicFields = apiData.dynamic_fields || {};
+    
+    // Extract inspectors from observations
+    const inspectorObservations = apiData.observations?.filter(obs => obs.section === 'HITU_INSPECTORS') || [];
+    const inspectors: Inspector[] = inspectorObservations.map((obs, index) => ({
+      id: index + 1,
+      name: obs.observation.split(' - ')[0] || '',
+      rank: obs.observation.split(' - ')[1] || '',
+      designation: obs.remarks || ''
+    }));
+
+    // Extract survey and repairs from observations
+    const surveyRepairObservations = apiData.observations?.filter(obs => obs.section === 'HULL_SURVEY_REPAIRS') || [];
+    const surveyAndRepairs: SurveyAndRepair[] = surveyRepairObservations.map((obs, index) => ({
+      id: index + 1,
+      type: obs.observation || '',
+      input: obs.remarks || ''
+    }));
+
+    // Extract defect rectification from observations
+    const defectObservations = apiData.observations?.filter(obs => obs.section === 'DEFECT_RECTIFICATION') || [];
+    const defectRectification: DefectRectification[] = defectObservations.map((obs, index) => {
+      const match = obs.observation.match(/^(.+?) \(Frame (.+?)-(.+?)\): (.+)$/);
+      return {
+        id: index + 1,
+        location: match ? match[1] : '',
+        frameStationFrom: match ? match[2] : '',
+        frameStationTo: match ? match[3] : '',
+        observation: match ? match[4] : obs.observation,
+        remarks: obs.remarks || ''
+      };
+    });
+
+    // Extract new observations from observations
+    const newObservations = apiData.observations?.filter(obs => obs.section === 'NEW_OBSERVATIONS') || [];
+    const newObservationsFormatted: NewObservation[] = newObservations.map((obs, index) => {
+      const match = obs.observation.match(/^(.+?) \(Frame (.+?)-(.+?)\): (.+)$/);
+      return {
+        id: index + 1,
+        location: match ? match[1] : '',
+        frameStationFrom: match ? match[2] : '',
+        frameStationTo: match ? match[3] : '',
+        observation: match ? match[4] : obs.observation,
+        remarks: obs.remarks || ''
+      };
+    });
+
+    return {
+      intermediate_inspection: apiData.vessel?.id ? apiData.vessel.id.toString() : (apiData.vessel_id ? apiData.vessel_id.toString() : ''),
+      dt_inspection: apiData.dt_inspection || '',
+      auth_inspection: dynamicFields.auth_inspection || '',
+      type_of_survey: apiData.type_of_survey || '',
+      pressure_testing_of_tanks: apiData.pt_of_tanks || '',
+      pressure_testing_of_sea_tubes: apiData.pt_of_sea_tubes || '',
+      ndt_undertaken: apiData.ndt_undertaken || '',
+      name_ship_staff: dynamicFields.name_ship_staff || '',
+      rank_ship_staff: dynamicFields.rank_ship_staff || '',
+      dsg_ship_staff: dynamicFields.dsg_ship_staff || '',
+      name_refitting_auth: dynamicFields.name_refitting_auth || '',
+      rank_refitting_auth: dynamicFields.rank_refitting_auth || '',
+      dsg_refitting_auth: dynamicFields.dsg_refitting_auth || '',
+      name_hitu_inspector: dynamicFields.name_hitu_inspector || '',
+      rank_hitu_inspector: dynamicFields.rank_hitu_inspector || '',
+      dsg_hitu_inspector: dynamicFields.dsg_hitu_inspector || '',
+      sign_ship_staff: null, // File objects can't be restored from API
+      sign_refitting_auth: null,
+      sign_hitu_inspector: null,
+      inspectors: inspectors.length > 0 ? inspectors : [{ id: 1, name: '', rank: '', designation: '' }],
+      surveyAndRepairs: surveyAndRepairs.length > 0 ? surveyAndRepairs : [{ id: 1, type: '', input: '' }],
+      defectRectification: defectRectification.length > 0 ? defectRectification : [{ id: 1, location: '', frameStationFrom: '', frameStationTo: '', observation: '', remarks: '' }],
+      newObservations: newObservationsFormatted.length > 0 ? newObservationsFormatted : [{ id: 1, location: '', frameStationFrom: '', frameStationTo: '', observation: '', remarks: '' }]
+    };
+  };
 
   const ships = [
     'SHIVALIK', 'JAMUNA', 'BANGARAM', 'TARANGINI', 'SARYU', 'KUMBHIR', 'T-83', 'AIRAVAT',
@@ -418,37 +664,153 @@ const IntermediateUnderwaterHullInspectionReportForm: React.FC = () => {
     return true;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (validateForm()) {
-      console.log('Form submitted:', formData);
+  const handleSubmit = async () => {
+    console.log('Save button clicked - handleSubmit called');
+    
+    if (!validateForm()) {
+      console.log('Form validation failed');
+      return;
+    }
+    console.log('Form validation passed');
+
+    try {
+      setLoading(true);
+      setError(null);
+
+      // Convert form data to API format
+      const apiData = convertFormDataToApiFormat(formData);
+      // Remove draft_status for final submission
+      delete apiData.draft_status;
+      
+      console.log('About to submit form with data:', apiData);
+      const response = await post('/hitumodule/intermediate-underwater-hull-inspection-reports/', apiData);
+      console.log('Form submitted successfully:', response);
       alert('Form submitted successfully!');
+      handleClearForm();
+    } catch (err) {
+      setError('Failed to submit form');
+      console.error('Error submitting form:', err);
+      alert('Failed to submit form. Please try again.');
+    } finally {
+      setLoading(false);
     }
   };
 
-  const handleSaveDraft = () => {
-    if (validateForm()) {
-      const draftData = {
-        ...formData,
-        timestamp: new Date().toISOString()
-      };
-      localStorage.setItem('intermediateUnderwaterHullInspectionDraft', JSON.stringify(draftData));
-      alert('Draft saved successfully!');
+  const handleSaveDraft = async () => {
+    if (!validateForm()) {
+      return;
+    }
+
+    try {
+      setLoading(true);
+      setError(null);
+
+      // Convert form data to API format
+      const apiData = convertFormDataToApiFormat(formData);
+      // Ensure draft_status is set to 'draft'
+      apiData.draft_status = 'draft';
+      
+      let result;
+      if (currentDraftId) {
+        // Update existing draft
+        const response = await put(`/hitumodule/intermediate-underwater-hull-inspection-reports/${currentDraftId}/`, apiData);
+        result = response.data || response;
+        alert('Draft updated successfully!');
+      } else {
+        // Create new draft
+        const response = await post('/hitumodule/intermediate-underwater-hull-inspection-reports/', apiData);
+        result = response.data || response;
+        alert('Draft saved successfully!');
+      }
+    } catch (err) {
+      setError('Failed to save draft');
+      console.error('Error saving draft:', err);
+      alert('Failed to save draft. Please try again.');
+    } finally {
+      setLoading(false);
     }
   };
 
-  const handleFetchDrafts = () => {
-    const savedDrafts = localStorage.getItem('intermediateUnderwaterHullInspectionDraft');
-    if (savedDrafts) {
-      const draft = JSON.parse(savedDrafts);
-      setDrafts([draft]);
+  const handleFetchDrafts = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      
+      const response = await get('/hitumodule/intermediate-underwater-hull-inspection-reports/?draft_status=draft');
+      
+      // Handle different response structures
+      let draftsData: IntermediateUnderwaterHullInspectionReportData[];
+      if (response.data && Array.isArray(response.data)) {
+        draftsData = response.data;
+      } else if (Array.isArray(response)) {
+        draftsData = response;
+      } else {
+        draftsData = [];
+      }
+      
+      setDrafts(draftsData);
+      setIsDraftModalOpen(true);
+    } catch (err) {
+      setError('Failed to fetch drafts');
+      console.error('Error fetching drafts:', err);
+      alert('Failed to fetch drafts. Please try again.');
+    } finally {
+      setLoading(false);
     }
-    setIsDraftModalOpen(true);
   };
 
-  const handleLoadDraft = (draft: any) => {
-    setFormData(draft);
+  const handleLoadDraft = (draft: IntermediateUnderwaterHullInspectionReportData) => {
+    // Convert API data to form format
+    const formDataFromDraft = convertApiDataToFormFormat(draft);
+    
+    setFormData(prev => ({
+      ...prev,
+      ...formDataFromDraft
+    }));
+    
+    // Update row counts
+    setInspectorCount(formDataFromDraft.inspectors?.length || 1);
+    setSurveyRepairCount(formDataFromDraft.surveyAndRepairs?.length || 1);
+    setDefectRectificationCount(formDataFromDraft.defectRectification?.length || 1);
+    setNewObservationCount(formDataFromDraft.newObservations?.length || 1);
+    
+    setCurrentDraftId(draft.id?.toString() || null);
     setIsDraftModalOpen(false);
+  };
+
+  const handleDeleteDraft = async (draftId: string) => {
+    if (!window.confirm('Are you sure you want to delete this draft?')) {
+      return;
+    }
+    
+    try {
+      setLoading(true);
+      setError(null);
+      
+      await del(`/hitumodule/intermediate-underwater-hull-inspection-reports/${draftId}/`);
+      
+      // Refresh the drafts list
+      const response = await get('/hitumodule/intermediate-underwater-hull-inspection-reports/?draft_status=draft');
+      
+      // Handle different response structures
+      let draftsData: IntermediateUnderwaterHullInspectionReportData[];
+      if (response.data && Array.isArray(response.data)) {
+        draftsData = response.data;
+      } else if (Array.isArray(response)) {
+        draftsData = response;
+      } else {
+        draftsData = [];
+      }
+      
+      setDrafts(draftsData);
+      alert('Draft deleted successfully!');
+    } catch (err) {
+      setError('Failed to delete draft');
+      console.error('Error deleting draft:', err);
+      alert('Failed to delete draft. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleClearForm = () => {
@@ -481,6 +843,7 @@ const IntermediateUnderwaterHullInspectionReportForm: React.FC = () => {
     setSurveyRepairCount(1);
     setDefectRectificationCount(1);
     setNewObservationCount(1);
+    setCurrentDraftId(null);
   };
 
   return (
@@ -491,12 +854,12 @@ const IntermediateUnderwaterHullInspectionReportForm: React.FC = () => {
             INTERMEDIATE UNDERWATER HULL INSPECTION - INS{' '}
             <Select value={formData.intermediate_inspection} onValueChange={(value) => handleInputChange('intermediate_inspection', value)}>
               <SelectTrigger className="w-48">
-                <SelectValue placeholder="--Select--" />
+                <SelectValue placeholder={loading ? 'Loading vessels...' : '--Select--'} />
               </SelectTrigger>
               <SelectContent>
-                {ships.map((ship) => (
-                  <SelectItem key={ship} value={ship}>
-                    {ship}
+                {vessels.map((vessel) => (
+                  <SelectItem key={vessel.id} value={vessel.id.toString()}>
+                    {vessel.name}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -968,17 +1331,17 @@ const IntermediateUnderwaterHullInspectionReportForm: React.FC = () => {
 
             {/* Form Actions */}
             <div className="flex justify-center space-x-4">
-              <Button type="button" className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded" onClick={handleFetchDrafts}>
-                Fetch Drafts
+              <Button type="button" className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded" onClick={handleFetchDrafts} disabled={loading}>
+                {loading ? 'LOADING...' : 'FETCH DRAFTS'}
               </Button>
-              <Button type="button" className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded" onClick={handleSaveDraft}>
-                SAVE DRAFT
+              <Button type="button" className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded" onClick={handleSaveDraft} disabled={loading}>
+                {loading ? 'SAVING...' : currentDraftId ? 'SAVE DRAFT' : 'SAVE DRAFT'}
               </Button>
               <Button type="button" className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded" onClick={handleClearForm}>
                 Clear
               </Button>
-              <Button type="submit" className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded">
-                Save
+              <Button type="button" className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded" onClick={handleSubmit}>
+                {loading ? 'SAVING...' : 'SAVE'}
               </Button>
             </div>
           </form>
@@ -1006,16 +1369,26 @@ const IntermediateUnderwaterHullInspectionReportForm: React.FC = () => {
                   {drafts.map((draft, index) => (
                     <TableRow key={index}>
                       <TableCell>{index + 1}</TableCell>
-                      <TableCell>{draft.intermediate_inspection}</TableCell>
-                      <TableCell>{new Date(draft.timestamp).toLocaleString()}</TableCell>
+                      <TableCell>{draft.vessel?.name || 'No Ship Selected'}</TableCell>
+                      <TableCell>{new Date(draft.created_on || '').toLocaleString()}</TableCell>
                       <TableCell>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => handleLoadDraft(draft)}
-                        >
-                          Load
-                        </Button>
+                        <div className="flex gap-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleLoadDraft(draft)}
+                          >
+                            Edit
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleDeleteDraft(draft.id?.toString() || '')}
+                            className="bg-red-500 hover:bg-red-600 text-white"
+                          >
+                            Delete
+                          </Button>
+                        </div>
                       </TableCell>
                     </TableRow>
                   ))}

@@ -179,7 +179,10 @@ export function DynamicFormDialog({
   // Reset form when dialog opens
   useEffect(() => {
     if (open) {
+      console.log('Dialog opened with initialValues:', initialValues);
       setFormData(initialValues);
+      // Clear dropdown data when dialog opens to ensure fresh data
+      setDropdownData({});
     }
   }, [open]);
 
@@ -211,6 +214,52 @@ export function DynamicFormDialog({
       }
     });
   }, [fields]);
+
+  // Fetch sub-modules when form module changes
+  useEffect(() => {
+    const fetchSubModules = async () => {
+      if (formData.form_module) {
+        try {
+          console.log('Fetching sub-modules for module ID:', formData.form_module);
+          
+          // Try different API endpoint formats
+          let res;
+          try {
+            res = await get(`/master/submodules/?module_id=${formData.form_module}`);
+          } catch (firstError) {
+            console.log('First API format failed, trying alternative:', firstError);
+            try {
+              res = await get(`/master/submodules/?module=${formData.form_module}`);
+            } catch (secondError) {
+              console.log('Second API format failed, trying third:', secondError);
+              res = await get(`/master/submodules/${formData.form_module}/`);
+            }
+          }
+          
+          console.log('Sub-modules API response:', res);
+          const items = Array.isArray(res) ? res : res.data ?? res.results ?? [];
+          console.log('Processed sub-modules:', items);
+          setDropdownData((prev) => ({ ...prev, sub_module: items }));
+          
+          // Only clear sub_module selection if we're not in edit mode (no initialValues)
+          if (!initialValues || Object.keys(initialValues).length === 0) {
+            setFormData((prev) => ({ ...prev, sub_module: "" }));
+          }
+        } catch (err) {
+          console.error("Sub-modules fetch failed", err);
+          setDropdownData((prev) => ({ ...prev, sub_module: [] }));
+        }
+      } else {
+        // Clear sub-modules when no form module is selected
+        setDropdownData((prev) => ({ ...prev, sub_module: [] }));
+        if (!initialValues || Object.keys(initialValues).length === 0) {
+          setFormData((prev) => ({ ...prev, sub_module: "" }));
+        }
+      }
+    };
+
+    fetchSubModules();
+  }, [formData.form_module, initialValues]);
 
   const handleChange = (name: string, value: any) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -315,7 +364,7 @@ export function DynamicFormDialog({
               {(field.type === "dropdown" || field.type === "static-dropdown") && (
                 <select
                   id={field.name}
-                  value={formData[field.name] || ""}
+                  value={String(formData[field.name] || "")}
                   required={field.required}
                   onChange={(e) => {
                     handleChange(field.name, e.target.value);
@@ -324,13 +373,24 @@ export function DynamicFormDialog({
                     }
                   }}
                   className="w-full rounded-lg border-gray-300 focus:border-indigo-500 focus:ring focus:ring-indigo-200 p-2"
+                  disabled={field.name === "sub_module" && !formData.form_module}
                 >
-                  <option value="">Select {field.label}</option>
-                  {getDropdownOptions(field).map((opt: any, idx: number) => (
-                    <option key={idx} value={opt.value || opt.id}>
-                      {opt.label || opt.name}
-                    </option>
-                  ))}
+                  <option value="">
+                    {field.name === "sub_module" && !formData.form_module 
+                      ? "Select a form module first" 
+                      : `Select ${field.label}`}
+                  </option>
+                  {getDropdownOptions(field).map((opt: any, idx: number) => {
+                    const value = String(opt.value || opt.id);
+                    const label = opt.label || opt.name;
+                    const isSelected = value === String(formData[field.name] || "");
+                    // console.log(`Rendering option ${idx}: value=${value}, label=${label}, current formData[${field.name}]=${formData[field.name]}, isSelected=${isSelected}`);
+                    return (
+                      <option key={idx} value={value} selected={isSelected}>
+                        {label}
+                      </option>
+                    );
+                  })}
                 </select>
               )}
 

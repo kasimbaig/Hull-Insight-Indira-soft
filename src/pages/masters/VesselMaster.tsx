@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Search, Plus, Edit, Trash2 } from "lucide-react";
+import { Search, Plus } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { DataTable, Column } from "@/components/ui/table";
 import { DynamicFormDialog, FieldConfig } from "@/components/DynamicFormDialog";
@@ -29,18 +29,14 @@ const VesselMaster = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingVessel, setEditingVessel] = useState<Vessel | null>(null);
 
-  const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-
   // Store for dynamic dropdown options
   const [dropdownData, setDropdownData] = useState<Record<string, { label: string; value: number }[]>>({});
 
   // ---------------- Fetch vessels ----------------
-  const fetchVessels = async (pageNum: number = 1) => {
+  const fetchVessels = async () => {
     try {
-      const res = await get(`/master/vessels/?page=${pageNum}`);
-      setVessels(res.results || []);
-      setTotalPages(Math.ceil((res.count || 0) / 10));
+      const res = await get(`/master/vessels/`);
+      setVessels(res.results || res.data || []);
     } catch (err) {
       toast({ title: "Error", description: "Failed to fetch vessels", variant: "destructive" });
     }
@@ -82,8 +78,8 @@ const VesselMaster = () => {
 
   useEffect(() => {
     fetchDropdowns();
-    fetchVessels(page);
-  }, [page]);
+    fetchVessels();
+  }, []);
 
   // ---------------- Save / Update ----------------
   const handleSave = async (formData: any) => {
@@ -103,7 +99,7 @@ const VesselMaster = () => {
         await post(`/master/vessels/`, payload);
         toast({ title: "Success", description: "Vessel created successfully" });
       }
-      fetchVessels(page);
+      fetchVessels();
       setIsDialogOpen(false);
       setEditingVessel(null);
     } catch (err) {
@@ -116,16 +112,14 @@ const VesselMaster = () => {
     setIsDialogOpen(true);
   };
 
-  const handleDelete = async (id: number) => {
-    if (confirm("Are you sure you want to delete this vessel?")) {
-      try {
-        const payload = { id: id, delete: true };
-        await post(`/master/vessels/`, payload);
-        toast({ title: "Success", description: "Vessel deleted successfully" });
-        fetchVessels(page);
-      } catch (err) {
-        toast({ title: "Error", description: "Failed to delete vessel", variant: "destructive" });
-      }
+  const handleDelete = async (vessel: Vessel) => {
+    try {
+      const payload = { id: vessel.id, delete: true };
+      await post(`/master/vessels/`, payload);
+      setVessels((prev) => prev.filter((v) => v.id !== vessel.id));
+      toast({ title: "Success", description: "Vessel deleted successfully" });
+    } catch (err) {
+      toast({ title: "Error", description: "Failed to delete vessel", variant: "destructive" });
     }
   };
 
@@ -145,20 +139,7 @@ const VesselMaster = () => {
         </Badge>
       )
     },
-    {
-      header: "Actions",
-      accessor: "actions",
-      render: (row) => (
-        <div className="flex gap-2">
-          <Button variant="outline" size="icon" onClick={() => handleEdit(row)}>
-            <Edit className="h-4 w-4" />
-          </Button>
-          <Button variant="outline" size="icon" onClick={() => handleDelete(row.id)}>
-            <Trash2 className="h-4 w-4" />
-          </Button>
-        </div>
-      ),
-    },
+    { header: "Actions", accessor: "actions" },
   ];
 
   const filteredVessels = vessels.filter(
@@ -239,16 +220,19 @@ const VesselMaster = () => {
           <CardTitle>Vessels</CardTitle>
         </CardHeader>
         <CardContent>
-          <DataTable columns={columns} data={filteredVessels} rowsPerPage={10} />
+          <DataTable
+            columns={columns}
+            data={filteredVessels}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
+            rowsPerPage={10}
+            deleteMessage="Are you sure you want to delete this vessel? This action cannot be undone."
+            deleteTitle="Delete Vessel"
+          />
         </CardContent>
       </Card>
 
-      {/* Pagination */}
-      <div className="flex justify-center gap-2 mt-4">
-        <Button variant="outline" disabled={page === 1} onClick={() => setPage((p) => p - 1)}>Previous</Button>
-        <span className="text-sm">Page {page} of {totalPages}</span>
-        <Button variant="outline" disabled={page === totalPages} onClick={() => setPage((p) => p + 1)}>Next</Button>
-      </div>
+      {/* Pagination is now handled by DataTable */}
     </div>
   );
 };
