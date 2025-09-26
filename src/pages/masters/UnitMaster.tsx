@@ -2,9 +2,9 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Edit, Plus, Search, Trash2 } from "lucide-react";
+import { Plus, Search } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { ReusableForm } from "@/components/ReusableForm";
+import { DynamicFormDialog } from "@/components/DynamicFormDialog";
 import { get, post, put, del } from "@/lib/api";
 import { Badge } from "@/components/ui/badge";
 import { DataTable, Column } from "@/components/ui/table";
@@ -74,7 +74,7 @@ const UnitMaster = () => {
     const payload = {
       name: formData.name,
       code: formData.code,
-      active: formData.status === "Active" ? 1 : 2,
+      active: formData.status ? 1 : 2,
     };
 
     try {
@@ -144,7 +144,7 @@ const UnitMaster = () => {
           </p>
         </div>
 
-        <ReusableForm
+        <DynamicFormDialog
           open={isDialogOpen}
           onOpenChange={setIsDialogOpen}
           title={editingUnit ? "Edit Unit" : "Add Unit"}
@@ -176,10 +176,10 @@ const UnitMaster = () => {
               ? {
                   name: editingUnit.name,
                   code: editingUnit.code,
-                  status: editingUnit.active === 1 ? "Active" : "Inactive",
+                  status: editingUnit.active === 1,
                 }
               : {
-                  status: "Active" // Default to Active when adding new unit
+                  status: true // Default to Active (checked) when adding new unit
                 }
           }
           trigger={
@@ -214,7 +214,7 @@ const UnitMaster = () => {
       {/* Units Table */}
       <Card>
         <CardHeader>
-
+          <CardTitle>Units</CardTitle>
         </CardHeader>
         <CardContent>
           <DataTable
@@ -229,28 +229,7 @@ const UnitMaster = () => {
         </CardContent>
       </Card>
 
-      {/* Pagination */}
-      <div className="flex justify-center items-center gap-4 mt-4">
-        <Button
-          variant="outline"
-          disabled={page === 1}
-          onClick={() => setPage((p) => p - 1)}
-          className="border-2 border-black text-black"
-        >
-          Previous
-        </Button>
-        <span className="text-sm font-medium">
-          Page {page} of {totalPages}
-        </span>
-        <Button
-          variant="outline"
-          disabled={page === totalPages}
-          onClick={() => setPage((p) => p + 1)}
-          className="border-2 border-black"
-        >
-          Next
-        </Button>
-      </div>
+      {/* Pagination is now handled by DataTable */}
     </div>
   );
 };
