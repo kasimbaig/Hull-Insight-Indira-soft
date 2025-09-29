@@ -1,7 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { MessageSquare, FileText, Download, Shield, Send, ArrowDown } from 'lucide-react';
 import jsPDF from 'jspdf';
-import QRCode from 'qrcode';
+import * as QRCode from 'qrcode';
+import { get, post } from '@/lib/api';
 
 export interface Comment {
   id: number;
@@ -11,6 +12,21 @@ export interface Comment {
   text: string;
   likes: number;
   replies: number;
+  _apiData?: ApiCommentData;
+}
+
+interface ApiCommentData {
+  id: number;
+  created_by?: {
+    id: number;
+    first_name: string;
+    last_name: string;
+    hrcdf_designation?: string;
+    [key: string]: unknown;
+  } | null;
+  comment: string;
+  created_on: string;
+  [key: string]: unknown;
 }
 
 export interface FormData {
@@ -45,9 +61,11 @@ export interface CommentorSheetProps {
   onBack?: () => void;
   onForward?: () => void;
   mode?: 'add' | 'edit' | 'view';
-  record?: any;
+  record?: Record<string, unknown>;
   className?: string;
-  customForm?: React.ComponentType<any>;
+  customForm?: React.ComponentType<{ mode?: string; record?: Record<string, unknown> }>;
+  transactionId?: number;
+  submodule?: number;
 }
 
 const CommentorSheet: React.FC<CommentorSheetProps> = ({
@@ -73,6 +91,8 @@ const CommentorSheet: React.FC<CommentorSheetProps> = ({
   record,
   className = "",
   customForm: CustomForm,
+  transactionId,
+  submodule,
 }) => {
   const [viewMode, setViewMode] = useState<'form' | 'comments'>('form');
   const [qrCodes, setQrCodes] = useState<{[key: number]: string}>({});
@@ -82,6 +102,8 @@ const CommentorSheet: React.FC<CommentorSheetProps> = ({
     text: ''
   });
   const [showCommentForm, setShowCommentForm] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [commentsLoading, setCommentsLoading] = useState(false);
   const commentsEndRef = useRef<HTMLDivElement>(null);
   const commentsSectionRef = useRef<HTMLDivElement>(null);
   const [formData, setFormData] = useState<FormData>({
@@ -126,46 +148,75 @@ const CommentorSheet: React.FC<CommentorSheetProps> = ({
   const handleAddComment = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!newComment.author.trim() || !newComment.text.trim()) {
-      alert('Please fill in both author name and comment text.');
+    if (!newComment.text.trim()) {
+      alert('Please fill in the comment text.');
       return;
     }
 
-    const newCommentData: Comment = {
-      id: Math.max(...comments.map(c => c.id), 0) + 1,
-      avatar: newComment.author.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2),
-      author: newComment.author.trim(),
-      date: new Date().toLocaleString(),
-      text: newComment.text.trim(),
-      likes: 0,
-      replies: 0
-    };
-
-    // Add the new comment
-    setComments(prevComments => [newCommentData, ...prevComments]);
-
-    // Generate QR code for the new comment
-    const qrCode = await generateQRCode(newCommentData.id, newCommentData);
-    if (qrCode) {
-      setQrCodes(prevCodes => ({
-        ...prevCodes,
-        [newCommentData.id]: qrCode
-      }));
+    if (!transactionId || !submodule) {
+      alert('Missing transaction ID or submodule information.');
+      return;
     }
 
-    // Reset form
-    setNewComment({ author: '', text: '' });
-    setShowCommentForm(false);
-    
-    // Scroll to bottom after adding comment
-    setTimeout(() => {
-      scrollToBottom();
-    }, 100);
-    
-    if (onAddComment) {
-      onAddComment(newCommentData);
-    } else {
-      alert('Comment added successfully!');
+    setLoading(true);
+    try {
+      // Post comment to API
+      const commentPayload = {
+        submodule: submodule,
+        transaction_id: transactionId,
+        comment: newComment.text.trim()
+      };
+
+      console.log('Posting comment:', commentPayload);
+      const response = await post('/hitumodule/comments/', commentPayload);
+      console.log('Comment API response:', response);
+
+      // Create new comment data for UI
+      // Note: Author name will be populated from API response when comments are refreshed
+      const newCommentData: Comment = {
+        id: response.id || Math.max(...comments.map(c => c.id), 0) + 1,
+        avatar: 'U', // Temporary avatar, will be updated when comments are refreshed
+        author: 'You', // Temporary author, will be updated when comments are refreshed
+        date: new Date().toLocaleString(),
+        text: newComment.text.trim(),
+        likes: 0,
+        replies: 0
+      };
+
+      // Add the new comment to UI
+      setComments(prevComments => [newCommentData, ...prevComments]);
+
+      // Generate QR code for the new comment
+      const qrCode = await generateQRCode(newCommentData.id, newCommentData);
+      if (qrCode) {
+        setQrCodes(prevCodes => ({
+          ...prevCodes,
+          [newCommentData.id]: qrCode
+        }));
+      }
+
+      // Reset form
+      setNewComment({ author: '', text: '' });
+      setShowCommentForm(false);
+      
+      // Refresh comments to get the correct author name from API
+      fetchComments();
+      
+      // Scroll to bottom after adding comment
+      setTimeout(() => {
+        scrollToBottom();
+      }, 100);
+      
+      if (onAddComment) {
+        onAddComment(newCommentData);
+      } else {
+        alert('Comment added successfully!');
+      }
+    } catch (error) {
+      console.error('Error adding comment:', error);
+      alert('Failed to add comment. Please try again.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -182,13 +233,26 @@ const CommentorSheet: React.FC<CommentorSheetProps> = ({
     }, 100);
   };
 
-  const generateQRCode = async (commentId: number, commentData: any) => {
+  const generateQRCode = async (commentId: number, commentData: Comment, apiCommentData?: ApiCommentData) => {
     try {
-      // Create a very simple, basic text format that all scanners can read
-      const simpleData = `Comment ID: ${commentId}\nAuthor: ${commentData.author}\nDate: ${commentData.date}\nText: ${commentData.text}`;
+      // Get author details from API response if available
+      let authorName = commentData.author;
+      let designation = '';
+      
+      if (apiCommentData?.created_by) {
+        const { first_name, last_name, hrcdf_designation } = apiCommentData.created_by;
+        authorName = `${first_name || ''} ${last_name || ''}`.trim();
+        designation = hrcdf_designation || '';
+      }
+      
+      // Create QR code data with only author and designation
+      const qrData = [
+        `Author: ${authorName}`,
+        designation ? `Designation: ${designation}` : ''
+      ].filter(line => line).join('\n');
       
       // Generate QR code with basic settings for maximum compatibility
-      const qrCodeDataURL = await QRCode.toDataURL(simpleData, {
+      const qrCodeDataURL = await QRCode.toDataURL(qrData, {
         width: 256,           // Standard size for better detection
         margin: 2,            // Minimal margin for better detection
         color: {
@@ -206,11 +270,58 @@ const CommentorSheet: React.FC<CommentorSheetProps> = ({
     }
   };
 
+  // Fetch comments from API
+  const fetchComments = useCallback(async () => {
+    if (!transactionId || !submodule) return;
+    
+    setCommentsLoading(true);
+    try {
+      const apiUrl = `/hitumodule/comments/?submodule=${submodule}&transaction_id=${transactionId}`;
+      console.log('Fetching comments from:', apiUrl);
+      const response = await get(apiUrl);
+      console.log('Comments API response:', response);
+      
+      // Transform API response to Comment format
+      const apiComments: Comment[] = (response.results || response.data || []).map((comment: ApiCommentData) => {
+        // Use first_name and last_name from created_by object
+        const authorName = comment.created_by 
+          ? `${comment.created_by.first_name || ''} ${comment.created_by.last_name || ''}`.trim()
+          : 'Unknown User';
+        
+        return {
+          id: comment.id,
+          avatar: authorName ? authorName.split(' ').map((n: string) => n[0]).join('').toUpperCase().slice(0, 2) : 'U',
+          author: authorName,
+          date: comment.created_on ? new Date(comment.created_on).toLocaleString() : new Date().toLocaleString(),
+          text: comment.comment || comment.text || '',
+          likes: 0,
+          replies: 0,
+          // Store original API data for QR code generation
+          _apiData: comment
+        };
+      });
+      
+      setComments(apiComments);
+    } catch (error) {
+      console.error('Error fetching comments:', error);
+      // Keep existing comments if API fails
+    } finally {
+      setCommentsLoading(false);
+    }
+  }, [transactionId, submodule]);
+
+  // Fetch comments when component mounts or transactionId/submodule changes
+  useEffect(() => {
+    if (transactionId && submodule) {
+      fetchComments();
+    }
+  }, [transactionId, submodule, fetchComments]);
+
   // Generate QR codes for all comments
   useEffect(() => {
     const generateAllQRCodes = async () => {
       const qrCodePromises = comments.map(async (comment) => {
-        const qrCode = await generateQRCode(comment.id, comment);
+        const qrCode = await generateQRCode(comment.id, comment, comment._apiData);
         return { id: comment.id, qrCode };
       });
       
@@ -329,7 +440,7 @@ const CommentorSheet: React.FC<CommentorSheetProps> = ({
     }
     
     // Add footer
-    const totalPages = doc.internal.getNumberOfPages();
+    const totalPages = doc.internal.pages.length;
     for (let i = 1; i <= totalPages; i++) {
       doc.setPage(i);
       doc.setFontSize(8);
@@ -429,7 +540,16 @@ const CommentorSheet: React.FC<CommentorSheetProps> = ({
               <div className="flex-1 flex flex-col">
                 {/* Comments Container */}
                 <div className="flex-1 overflow-y-auto space-y-4 mb-4">
-                  {comments.map(comment => (
+                  {commentsLoading ? (
+                    <div className="flex justify-center items-center py-8">
+                      <div className="text-gray-500">Loading comments...</div>
+                    </div>
+                  ) : comments.length === 0 ? (
+                    <div className="flex justify-center items-center py-8">
+                      <div className="text-gray-500">No comments yet. Be the first to add one!</div>
+                    </div>
+                  ) : (
+                    comments.map(comment => (
                     <div key={comment.id} className="flex items-start space-x-3 p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors duration-200">
                       {/* Avatar */}
                       <div className="flex-shrink-0">
@@ -472,7 +592,8 @@ const CommentorSheet: React.FC<CommentorSheetProps> = ({
                         )}
                       </div>
                     </div>
-                  ))}
+                    ))
+                  )}
                   
                   {/* Scroll anchor */}
                   <div ref={commentsEndRef} />
@@ -485,18 +606,6 @@ const CommentorSheet: React.FC<CommentorSheetProps> = ({
                       <h3 className="text-sm font-semibold text-gray-800 mb-2">Add New Comment</h3>
                     </div>
                     <form onSubmit={handleAddComment} className="space-y-3">
-                    <div>
-                      <input
-                        type="text"
-                        id="author"
-                        name="author"
-                        value={newComment.author}
-                        onChange={handleCommentInputChange}
-                          placeholder="Your name"
-                        required
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 bg-white text-sm"
-                      />
-                    </div>
                       <div className="flex space-x-2">
                       <textarea
                         id="text"
@@ -510,9 +619,14 @@ const CommentorSheet: React.FC<CommentorSheetProps> = ({
                       />
                       <button
                         type="submit"
-                          className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-all duration-300 flex items-center justify-center"
+                        disabled={loading}
+                          className="px-4 py-2 bg-blue-500 hover:bg-blue-600 disabled:bg-gray-400 disabled:cursor-not-allowed text-white rounded-lg transition-all duration-300 flex items-center justify-center"
                       >
-                          <Send className="w-4 h-4" />
+                          {loading ? (
+                            <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                          ) : (
+                            <Send className="w-4 h-4" />
+                          )}
                       </button>
                       </div>
                       <div className="flex justify-end">
